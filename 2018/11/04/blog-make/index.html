@@ -97,7 +97,7 @@
 <meta property="og:image" content="http://yoursite.com/2018/11/04/blog-make/aliyun_control.png">
 <meta property="og:image" content="http://yoursite.com/2018/11/04/blog-make/dns.png">
 <meta property="og:image" content="http://yoursite.com/2018/11/04/blog-make/cname.png">
-<meta property="og:updated_time" content="2018-11-05T04:32:48.249Z">
+<meta property="og:updated_time" content="2018-11-05T06:43:16.762Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="使用Hexo搭建基于Github的私人博客">
 <meta name="twitter:description" content="本篇主要介绍使用hexo+Github进行个人博客的搭建，并实现通过个人域名进行网址访问。使用环境为Mac。 Preparation三个必备条件：  Github Hexo 个人域名  Github对于绝大部分人来说都有github账号并且在个人电脑配置了ssh，如未满足该条件请参考右侧链接👉👉  1，下载Git installer，地址；http://git-scm.com/downloa">
@@ -383,6 +383,16 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/11/04/blog-make/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/11/04/blog-make/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -412,7 +422,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  2.4k 字
+                  2.6k 字
                 </span>
               
 
@@ -428,7 +438,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  9 分钟
+                  10 分钟
                 </span>
               
             </div>
@@ -597,7 +607,7 @@
 </li>
 <li><p>网页模式调试</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo s --debug</span><br></pre></td></tr></table></figure>
-<p>在<a href="http://localhost:4000查看博文，这是后可以使用md编辑器一边编博客，一边在网页查看显示状况。" target="_blank" rel="noopener">http://localhost:4000查看博文，这是后可以使用md编辑器一边编博客，一边在网页查看显示状况。</a></p>
+<p>在<code>http://localhost:4000</code>查看博文，这是后可以使用md编辑器一边编博客，一边在网页查看显示状况。</p>
 </li>
 <li><p>编写完毕后进行发布</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo clean &amp;&amp; hexo g --d</span><br></pre></td></tr></table></figure>
@@ -607,6 +617,16 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">hexo generate (hexo g) 生成静态文件，会在当前目录下生成一个新的叫做public的文件夹</span><br><span class="line">hexo server (hexo s) 启动本地web服务，用于博客的预览</span><br><span class="line">hexo deploy (hexo d) 部署博客到远端服务器</span><br><span class="line">hexo new post <span class="string">"postName"</span> <span class="comment">#新建文章</span></span><br><span class="line">hexo new page <span class="string">"pageName"</span> <span class="comment">#新建页面</span></span><br></pre></td></tr></table></figure>
 <p>简写：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ hexo n == hexo new</span><br><span class="line">$ hexo g == hexo generate</span><br><span class="line">$ hexo s == hexo server</span><br><span class="line">$ hexo d == hexo deploy</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>对博文进行压缩</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ npm install gulp -g</span><br><span class="line">$ npm install gulp-minify-css gulp-uglify gulp-htmlmin gulp-htmlclean gulp --save</span><br></pre></td></tr></table></figure>
+<p>在blog文件夹下创建文件<code>gulpfile.js</code>，填写如下内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">var gulp = require(<span class="string">'gulp'</span>);</span><br><span class="line">var minifycss = require(<span class="string">'gulp-minify-css'</span>);</span><br><span class="line">var uglify = require(<span class="string">'gulp-uglify'</span>);</span><br><span class="line">var htmlmin = require(<span class="string">'gulp-htmlmin'</span>);</span><br><span class="line">var htmlclean = require(<span class="string">'gulp-htmlclean'</span>);</span><br><span class="line">// 压缩 public 目录 css</span><br><span class="line">gulp.task(<span class="string">'minify-css'</span>, <span class="function"><span class="title">function</span></span>() &#123;</span><br><span class="line">    <span class="built_in">return</span> gulp.src(<span class="string">'./public/**/*.css'</span>)</span><br><span class="line">        .pipe(minifycss())</span><br><span class="line">        .pipe(gulp.dest(<span class="string">'./public'</span>));</span><br><span class="line">&#125;);</span><br><span class="line">// 压缩 public 目录 html</span><br><span class="line">gulp.task(<span class="string">'minify-html'</span>, <span class="function"><span class="title">function</span></span>() &#123;</span><br><span class="line">  <span class="built_in">return</span> gulp.src(<span class="string">'./public/**/*.html'</span>)</span><br><span class="line">    .pipe(htmlclean())</span><br><span class="line">    .pipe(htmlmin(&#123;</span><br><span class="line">         removeComments: <span class="literal">true</span>,</span><br><span class="line">         minifyJS: <span class="literal">true</span>,</span><br><span class="line">         minifyCSS: <span class="literal">true</span>,</span><br><span class="line">         minifyURLs: <span class="literal">true</span>,</span><br><span class="line">    &#125;))</span><br><span class="line">    .pipe(gulp.dest(<span class="string">'./public'</span>))</span><br><span class="line">&#125;);</span><br><span class="line">// 压缩 public/js 目录 js</span><br><span class="line">gulp.task(<span class="string">'minify-js'</span>, <span class="function"><span class="title">function</span></span>() &#123;</span><br><span class="line">    <span class="built_in">return</span> gulp.src(<span class="string">'./public/**/*.js'</span>)</span><br><span class="line">        .pipe(uglify())</span><br><span class="line">        .pipe(gulp.dest(<span class="string">'./public'</span>));</span><br><span class="line">&#125;);</span><br><span class="line">// 执行 gulp 命令时执行的任务</span><br><span class="line">gulp.task(<span class="string">'default'</span>, [</span><br><span class="line">    <span class="string">'minify-html'</span>,<span class="string">'minify-css'</span>,<span class="string">'minify-js'</span></span><br><span class="line">]);</span><br></pre></td></tr></table></figure>
+<p>当添加博文压缩功能之后，对博文进行生成并部署的命令修改为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo clean &amp;&amp; hexo g &amp;&amp; gulp</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+
       
     </div>
     
@@ -670,6 +690,9 @@
           
 
   
+    <div class="comments" id="comments">
+    </div>
+  
 
 
 
@@ -705,6 +728,8 @@
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="ShiXiaofeng">
             
               <p class="site-author-name" itemprop="name">ShiXiaofeng</p>
               <p class="site-description motion-element" itemprop="description">机器学习，深度学习相关技术分享及记录</p>
@@ -976,6 +1001,28 @@
 
 
 
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz',
+        appKey: 'zJasiQnAqgUwf4kiHhHyXwOP',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
 
 
 
