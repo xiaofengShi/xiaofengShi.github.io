@@ -90,7 +90,7 @@
 <meta property="og:description" content="​    决策树是机器学习中非常容易理解机模型，是最基础最常见的有监督学习模型，被用于分类或者回归，由于树结构与销售、教育、医疗诊断场景决策过程相似，因此在该领域应用广泛。 决策树的生成包括三个部分：特征选择，构造树，树剪枝">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://xiaofengshi.com/2018/11/09/机器学习-决策树/tree.png">
-<meta property="og:updated_time" content="2018-11-10T15:56:37.212Z">
+<meta property="og:updated_time" content="2018-11-10T16:22:36.015Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="机器学习-决策树">
 <meta name="twitter:description" content="​    决策树是机器学习中非常容易理解机模型，是最基础最常见的有监督学习模型，被用于分类或者回归，由于树结构与销售、教育、医疗诊断场景决策过程相似，因此在该领域应用广泛。 决策树的生成包括三个部分：特征选择，构造树，树剪枝">
@@ -436,7 +436,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.3k 字
+                  1.4k 字
                 </span>
               
 
@@ -484,7 +484,7 @@ p_{i}=\frac{|C_{i}|}{D}</script><ul>
 <li>$|C_{i}|$表示该子集的样本个数</li>
 <li>$|D_{i}|$表示整个样本集的个数</li>
 </ul>
-<p>数据集$D​$的熵为</p>
+<p>数据集$D$的熵为</p>
 <script type="math/tex; mode=display">
 H(D)=-\sum_{i=1}^{n}p_{i}log_{2}p_{i}</script><ul>
 <li>$n$表示标签数</li>
@@ -530,7 +530,9 @@ g(D,A)=H(D)-H(D|A)</script><h3 id="算法流程"><a href="#算法流程" class="
 <h2 id="C4-5-信息增益率"><a href="#C4-5-信息增益率" class="headerlink" title="C4.5-信息增益率"></a>C4.5-信息增益率</h2><p>为了修正使用最大信息增益偏向取值较多的特征这一个不足，引入了<strong>信息增益率</strong>。</p>
 <h3 id="信息增益率"><a href="#信息增益率" class="headerlink" title="信息增益率"></a>信息增益率</h3><p>定义：</p>
 <script type="math/tex; mode=display">
-g_{g}(D,A)=\frac{g(D,A)}{H_{A}(D)}\\其中H_{A}(D)=-\sum_{i=1}^{n}\frac{|D_{i}|}{|D|}log_{2}\frac{|D_{i}|}{|D|}</script><p>求得信息增益之后，将信息增益与数据集关于特征$A$的取值的熵作比，得到信息增益率。取值较多的特征对应的信息增益较大，但是对应的特征的取值的熵也较大，一定程度上对取值较多的特征进行了惩罚和抑制。</p>
+g_{g}(D,A)=\frac{g(D,A)}{H_{A}(D)}</script><p>式子中的$H_{A}(D)$如下所示:arrow_down:</p>
+<script type="math/tex; mode=display">
+H_{A}(D)=-\sum_{i=1}^{n}\frac{|D_{i}|}{|D|}log_{2}\frac{|D_{i}|}{|D|}</script><p>求得信息增益之后，将信息增益与数据集关于特征$A$的取值的熵作比，得到信息增益率。取值较多的特征对应的信息增益较大，但是对应的特征的取值的熵也较大，一定程度上对取值较多的特征进行了惩罚和抑制。</p>
 <h2 id="CART-基尼指数Gini"><a href="#CART-基尼指数Gini" class="headerlink" title="CART-基尼指数Gini"></a>CART-基尼指数Gini</h2><p>与熵相似，熵描述的是数据的混乱程度，基尼指数描述的是数据的纯度</p>
 <h3 id="Gini定义"><a href="#Gini定义" class="headerlink" title="Gini定义"></a>Gini定义</h3><p>分类问题中，假设存在$K$个类，样本点属于$k$的概率为$p_{k}$，则概率分布的基尼指数为</p>
 <script type="math/tex; mode=display">
