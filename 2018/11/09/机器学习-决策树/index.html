@@ -90,7 +90,7 @@
 <meta property="og:description" content="​    决策树是机器学习中非常容易理解机模型，是最基础最常见的有监督学习模型，被用于分类或者回归，由于树结构与销售、教育、医疗诊断场景决策过程相似，因此在该领域应用广泛。 决策树的生成包括三个部分：特征选择，构造树，树剪枝">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://xiaofengshi.com/2018/11/09/机器学习-决策树/tree.png">
-<meta property="og:updated_time" content="2018-11-10T16:22:36.015Z">
+<meta property="og:updated_time" content="2018-11-10T16:36:25.269Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="机器学习-决策树">
 <meta name="twitter:description" content="​    决策树是机器学习中非常容易理解机模型，是最基础最常见的有监督学习模型，被用于分类或者回归，由于树结构与销售、教育、医疗诊断场景决策过程相似，因此在该领域应用广泛。 决策树的生成包括三个部分：特征选择，构造树，树剪枝">
@@ -548,12 +548,12 @@ Gini(D)=1-\sum_{k=1}^{K}(\frac{|C_{k}|}{|D|})^{2}</script><ul>
 <li><p>$|C_{k}|$为样本集合D中属于第$k$类标签的样本子集的样本数量，$K$是类的个数</p>
 </li>
 </ul>
-<p>特征A的Gini指数为：</p>
+<p>特征A的$Gini$指数为：</p>
 <script type="math/tex; mode=display">
-Gini(D|A)=\sum_{k=1}^{K}\frac{|D_{k}|}{|D|}Gini(D_{k})</script><p>每次选择Gini指数最小的特征及其对应的切分点进行分类</p>
-<p>如果样本D根据特征A是否取某一可能值a被分割成$D_{1}$,$D_{2}$两部分，则$D_{1}={(x,y)\in D|A=a}$并且$D_{2}=D-D_{1}$则在特征条件$A$的条件下，集合$D$的基尼指数可以定义为：</p>
+Gini(D|A)=\sum_{k=1}^{K}\frac{|D_{k}|}{|D|}Gini(D_{k})</script><p>每次选择$Gini$指数最小的特征及其对应的切分点进行分类</p>
+<p>如果样本$D$根据特征$A$是否取某一可能值$a$被分割成$D_{1}$和$D_{2}$两部分，则$D_{1}={(x,y)\in D|A=a}$并且$D_{2}=D-D_{1}$则在特征条件$A$的条件下，集合$D$的基尼指数可以定义为：</p>
 <script type="math/tex; mode=display">
-Gini(D|A)=\frac{|D_{1}|}{|D|}Gini(D_{1})+\frac{|D_{2}|}{|D|}Gini(D_{2})</script><p>基尼指数值越大，对应的样本的不确定性越大，与熵相似，因此选择最小的基尼指数作为活粉标准。</p>
+Gini(D|A)=\frac{|D_{1}|}{|D|}Gini(D_{1})+\frac{|D_{2}|}{|D|}Gini(D_{2})</script><p>基尼指数值越大，对应的样本的不确定性越大，与熵相似，因此选择最小的基尼指数作为划分标准。</p>
 
       
     </div>
