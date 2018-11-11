@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://xiaofengshi.com/"/>
-  <updated>2018-11-11T09:23:33.915Z</updated>
+  <updated>2018-11-11T12:27:39.716Z</updated>
   <id>http://xiaofengshi.com/</id>
   
   <author>
@@ -15,6 +15,35 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>机器学习-SVM</title>
+    <link href="http://xiaofengshi.com/2018/11/11/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-SVM/"/>
+    <id>http://xiaofengshi.com/2018/11/11/机器学习-SVM/</id>
+    <published>2018-11-11T11:38:05.000Z</published>
+    <updated>2018-11-11T12:27:39.716Z</updated>
+    
+    <content type="html"><![CDATA[<img src="/2018/11/11/机器学习-SVM/svm.png" title="SVM"><p>支持向量机是非常高效的一种有监督机器学习算法，是一个二类分类模型，他的基本模型是定义在特征空间上的间隔最大的现行分类器，间隔最大使它有别于感知机；此外核函数的应用，使该算法可以应用有非线性空间。</p><a id="more"></a><p>支持向量机由简入繁主要包含如下几种：</p><ul><li>线性可分支持向量机</li><li>线性支持向量机</li><li>非线性支持向量机</li></ul><h2 id="线性可分支持向量机"><a href="#线性可分支持向量机" class="headerlink" title="线性可分支持向量机"></a>线性可分支持向量机</h2><h3 id="函数间隔和几何间隔"><a href="#函数间隔和几何间隔" class="headerlink" title="函数间隔和几何间隔"></a>函数间隔和几何间隔</h3><p>给定数据集$T=[(x_{1},y_{1}),(x_{2},y_{2}),(x_{3},y_{3}),…,(x_{n},y_{n})]$，其中$x_{i}\in R^{n}$，$y_{i} \in[-1,+1]$，$i=1,2,…,N$，$x_{i}$为第$i$个特征向量，$y_{i}$为$x_{i}$的类标签。学习的目标是在特征空间内找到一个分离超平面，能够将实例分到不同的类，分离超平面对应于方程$\omega.x+b=0$，它由法向量$\omega$以及对应的截距$b$构成。分离超平面将整个样本空间划分为两类，一类为正，即$y=1$，另一类为负，即$y=-1$。训练的过程根据间隔最大化来求得最优分离超平面的过程。</p><p>一个点距离分离超平面的距离可以表示该分类预测的确信程度，可以使用$|\omega.x+b|$表示点$x$距离超平面的远近，此外，$\omega.x+b$与类标记$y$是否一致来表示分类的正确性。<strong>因此使用$y(\omega.x+b)$表示分类的正确性及确信度</strong>。这就是函数间隔的概念。</p><p>函数间隔使用符号$\bar{\gamma_{i}}$存在如下公式</p><script type="math/tex; mode=display">\bar{\gamma_{i}}=y_{i}(w.x_{i}+b)</script><p>使用函数间隔可以表示实例预测的正确性和确信度，但是会存在一个问题，如果成比例的增加参数$w$和$b$，得到的函数间隔变大了两倍，但是对应的分离超平面没有变化，这是时候需要对参数进行规范化，使得对于一个实例来说其参数是确定的。</p><p>使用符号$\gamma_{i}$表示，得到公式</p><script type="math/tex; mode=display">\gamma_{i}=\frac{w}{||w||}.x_{i}+\frac{b}{||w||}</script>]]></content>
+    
+    <summary type="html">
+    
+      &lt;img src=&quot;/2018/11/11/机器学习-SVM/svm.png&quot; title=&quot;SVM&quot;&gt;
+&lt;p&gt;支持向量机是非常高效的一种有监督机器学习算法，是一个二类分类模型，他的基本模型是定义在特征空间上的间隔最大的现行分类器，间隔最大使它有别于感知机；此外核函数的应用，使该算法可以应用有非线性空间。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="机器学习，有监督" scheme="http://xiaofengshi.com/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%EF%BC%8C%E6%9C%89%E7%9B%91%E7%9D%A3/"/>
+    
+    
+      <category term="机器学习" scheme="http://xiaofengshi.com/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    
+      <category term="SVM" scheme="http://xiaofengshi.com/tags/SVM/"/>
+    
+      <category term="SMO" scheme="http://xiaofengshi.com/tags/SMO/"/>
+    
+      <category term="核函数" scheme="http://xiaofengshi.com/tags/%E6%A0%B8%E5%87%BD%E6%95%B0/"/>
+    
+  </entry>
   
   <entry>
     <title>机器学习-决策树</title>
