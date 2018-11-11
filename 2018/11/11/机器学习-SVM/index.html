@@ -94,7 +94,7 @@
 <meta property="og:description" content="支持向量机是非常高效的一种有监督机器学习算法，是一个二类分类模型，他的基本模型是定义在特征空间上的间隔最大的现行分类器，间隔最大使它有别于感知机；此外核函数的应用，使该算法可以应用有非线性空间。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://xiaofengshi.com/2018/11/11/机器学习-SVM/svm.png">
-<meta property="og:updated_time" content="2018-11-11T15:37:31.143Z">
+<meta property="og:updated_time" content="2018-11-11T16:16:24.231Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="机器学习-SVM">
 <meta name="twitter:description" content="支持向量机是非常高效的一种有监督机器学习算法，是一个二类分类模型，他的基本模型是定义在特征空间上的间隔最大的现行分类器，间隔最大使它有别于感知机；此外核函数的应用，使该算法可以应用有非线性空间。">
@@ -429,7 +429,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.7k 字
+                  2.3k 字
                 </span>
               
 
@@ -445,7 +445,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  7 分钟
+                  9 分钟
                 </span>
               
             </div>
@@ -541,13 +541,53 @@ L(w,b,\alpha)&=\frac{1}{2}||w||^{2}-\sum_{i=1}^{N}\alpha_{i}y_{i}(w.x_{i}+b)+\su
 \nabla_{w}L(w,b,\alpha)=0 \:\:\:\:\:\:\ & \Rightarrow w=\sum_{i=1}^{N}\alpha_{i}y_{i}x_{i} \\
 \nabla_{b}L(w,b,\alpha)=0  \:\:\:\:\:\:\ &\Rightarrow  \sum_{i=1}^{N}\alpha_{i}y_{i}=0 \\
 \nabla_{\alpha}L(w,b,\alpha)=0 \:\:\:\:\:\:\ &\Rightarrow  \max_{\alpha} \:\:\:-\frac{1}{2}\sum_{i=1}^{N}\sum_{j=1}^{N}\alpha_{i}\alpha_{j}y_{i}y_{j}(x_{i}.x_{j})+\sum_{i=1}^{N}\alpha_{i}
-\end{align*}\\</script><p>这样实际上就得到了<strong>对偶问题的最优化问题</strong></p>
+\end{align*}\\</script><p>这也就得到了<strong>对偶问题的最优化问题</strong></p>
 <script type="math/tex; mode=display">
 \begin{align*}
 \max_{\alpha} \:\:\:\:\:\:\:\:\:\: & -\frac{1}{2}\sum_{i=1}^{N}\sum_{j=1}^{N}\alpha_{i}\alpha_{j}y_{i}y_{j}(x_{i}.x_{j})+\sum_{i=1}^{N}\alpha_{i}\\
 s.t. \:\:\:\:\:\:\:\:\:\: & \sum_{i=1}^{N}\alpha_{i}y_{i}=0\\
 &\alpha_{i} \ge0 \:\:\:\: i=1,2,...,N
-\end{align*}</script>
+\end{align*}</script><p>最优问题对应的解就是</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+w^{*}&=\sum_{i=1}^{N}\alpha_{i}^{*}y_{i}x_{i}\\
+b^{*}&=y_{j}-\sum_{i=1}^{N}\alpha_{i}^{*}y_{i}(x_{i}.x_{j})
+\end{align*}</script><h2 id="线性支持向量机"><a href="#线性支持向量机" class="headerlink" title="线性支持向量机"></a>线性支持向量机</h2><h3 id="软间隔"><a href="#软间隔" class="headerlink" title="软间隔"></a>软间隔</h3><p>对于线性可分的数据使用线性可分支持向量机可以完成任务，但是对于线性不可分的数据，这时候就要线性可分支持向量机的硬间隔变为软间隔，线性不可分实际上意味着在数据集中存在某些点不能满足函数间隔大于等于1的最优问题约束条件，修改约束条件</p>
+<script type="math/tex; mode=display">
+y_{i}(w.x_{i}+b)\ge1-\xi_{i}</script><p>同时目标函数修改为</p>
+<script type="math/tex; mode=display">
+\frac{1}{2}||w||^{2}+C\sum_{i=1}^{N}\xi_{i}</script><ul>
+<li>其中$C$是惩罚参数，类似于正则化的概念</li>
+</ul>
+<p>得到对于线性支持向量机的最优化问题</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+\max_{w,b,\xi} \:\:\:\:\:\:\: & \frac{1}{2}||w||^{2}+C\sum_{i=1}^{N}\xi_{i}\\
+s.t.\:\:\:\:\:\:\: & y_{i}(w.x_{i}+b)\ge1-\xi_{i} \:\:\:\:\:\:\: & i=1,2,...,N\\
+&\xi_{i}\ge0  &i=1,2,...,N
+\end{align*}</script><p><strong>实际上线性支持向量机是对线性可分支持向量机的扩展，具有更好的适用性。</strong></p>
+<h3 id="对偶算法-1"><a href="#对偶算法-1" class="headerlink" title="对偶算法"></a>对偶算法</h3><p>同样是首先得到拉格朗日函数</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+L(w,b,\xi,\alpha,\mu)&=\frac{1}{2}||w||^{2}+C\sum_{i=1}^{N}\xi_{i}-\sum_{i=1}^{N}\alpha_{i}[y_{i}(w.x_{i}+b)-1+\xi_{i}]+\sum_{i=1}^{N}\mu_{i}\xi_{i}\\
+\alpha_{i}&\ge0  \:\:\:\:\:\:\:\:\:\:\ i=1,2,...,N\\
+\mu_{i}&\ge0  \:\:\:\:\:\:\:\:\:\:\ i=1,2,...,N
+\end{align*}</script><p>然后对偶问题的极大极小问题</p>
+<script type="math/tex; mode=display">
+\max \limits_{\alpha,\mu}\min\limits_{w,b,\xi}L(w,b,\alpha)</script><p>最终得到对偶问题最优解</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+\max_{\alpha} \:\:\:\:\:\:\:\:\:\: & -\frac{1}{2}\sum_{i=1}^{N}\sum_{j=1}^{N}\alpha_{i}\alpha_{j}y_{i}y_{j}(x_{i}.x_{j})+\sum_{i=1}^{N}\alpha_{i}\\
+s.t. \:\:\:\:\:\:\:\:\:\: & \sum_{i=1}^{N}\alpha_{i}y_{i}=0\\
+&0\le \alpha_{i}\le C\ \:\:\:\:\:\:\:\:\:\:\ i=1,2,...,N \\
+
+\end{align*}</script><p>对应的最优解为</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+w^{*}&=\sum_{i=1}^{N}\alpha_{i}^{*}y_{i}x_{i}\\
+b^{*}&=y_{j}-\sum_{i=1}^{N}\alpha_{i}^{*}y_{i}(x_{i}.x_{j})
+\end{align*}</script><p>可以看到最优解与线性可分支持向量机相同，只是最优解的约束条件里有原来的$a_{i} \ge 0 $ 增加了新的约束条件为$ 0\le \alpha_{i}\le C $</p>
+
       
     </div>
     
@@ -577,7 +617,7 @@ s.t. \:\:\:\:\:\:\:\:\:\: & \sum_{i=1}^{N}\alpha_{i}y_{i}=0\\
   <p><span>本文标题:</span><a href="/2018/11/11/机器学习-SVM/">机器学习-SVM</a></p>
   <p><span>文章作者:</span><a href="/" title="访问 ShiXiaofeng 的个人博客">ShiXiaofeng</a></p>
   <p><span>发布时间:</span>2018年11月11日 - 19:38</p>
-  <p><span>最后更新:</span>2018年11月11日 - 23:37</p>
+  <p><span>最后更新:</span>2018年11月12日 - 00:16</p>
   <p><span>原始链接:</span><a href="/2018/11/11/机器学习-SVM/" title="机器学习-SVM">http://xiaofengshi.com/2018/11/11/机器学习-SVM/</a>
     <span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://xiaofengshi.com/2018/11/11/机器学习-SVM/" aria-label="复制成功！"></i></span>
   </p>
@@ -800,7 +840,7 @@ s.t. \:\:\:\:\:\:\:\:\:\: & \sum_{i=1}^{N}\alpha_{i}y_{i}=0\\
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#线性可分支持向量机"><span class="nav-number">1.</span> <span class="nav-text">线性可分支持向量机</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#函数间隔和几何间隔"><span class="nav-number">1.1.</span> <span class="nav-text">函数间隔和几何间隔</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#间隔最大化"><span class="nav-number">1.2.</span> <span class="nav-text">间隔最大化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最大分离超平面的存在且唯一性"><span class="nav-number">1.3.</span> <span class="nav-text">最大分离超平面的存在且唯一性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#存在性"><span class="nav-number">1.3.1.</span> <span class="nav-text">存在性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#唯一性"><span class="nav-number">1.3.2.</span> <span class="nav-text">唯一性</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#支持向量和间隔边界"><span class="nav-number">1.4.</span> <span class="nav-text">支持向量和间隔边界</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对偶算法"><span class="nav-number">1.5.</span> <span class="nav-text">对偶算法</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#线性可分支持向量机"><span class="nav-number">1.</span> <span class="nav-text">线性可分支持向量机</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#函数间隔和几何间隔"><span class="nav-number">1.1.</span> <span class="nav-text">函数间隔和几何间隔</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#间隔最大化"><span class="nav-number">1.2.</span> <span class="nav-text">间隔最大化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最大分离超平面的存在且唯一性"><span class="nav-number">1.3.</span> <span class="nav-text">最大分离超平面的存在且唯一性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#存在性"><span class="nav-number">1.3.1.</span> <span class="nav-text">存在性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#唯一性"><span class="nav-number">1.3.2.</span> <span class="nav-text">唯一性</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#支持向量和间隔边界"><span class="nav-number">1.4.</span> <span class="nav-text">支持向量和间隔边界</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对偶算法"><span class="nav-number">1.5.</span> <span class="nav-text">对偶算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线性支持向量机"><span class="nav-number">2.</span> <span class="nav-text">线性支持向量机</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#软间隔"><span class="nav-number">2.1.</span> <span class="nav-text">软间隔</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对偶算法-1"><span class="nav-number">2.2.</span> <span class="nav-text">对偶算法</span></a></li></ol></li></ol></div>
             
 
           </div>
