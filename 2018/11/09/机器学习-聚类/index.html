@@ -90,7 +90,7 @@
 <meta property="og:description" content="聚类是一个无监督任务主要用于处理分类任务。给出一组无标记的数据，目标是找到这组数据的模式特征，例如哪些数据是同一类型的，那些数据是另外的类型。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://xiaofengshi.com/2018/11/09/机器学习-聚类/k-means.png">
-<meta property="og:updated_time" content="2018-11-10T16:55:21.056Z">
+<meta property="og:updated_time" content="2018-11-11T05:22:52.382Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="机器学习-聚类">
 <meta name="twitter:description" content="聚类是一个无监督任务主要用于处理分类任务。给出一组无标记的数据，目标是找到这组数据的模式特征，例如哪些数据是同一类型的，那些数据是另外的类型。">
@@ -493,15 +493,15 @@
 </ul>
 <h3 id="k均值聚类的优缺点"><a href="#k均值聚类的优缺点" class="headerlink" title="k均值聚类的优缺点"></a>k均值聚类的优缺点</h3><ul>
 <li>缺点<ul>
-<li>会受到初始值和离群点的影响；</li>
+<li>会受到初始值和离群点的影响；</li>
 <li>结果通常不是全局最优，一般是局部最优</li>
-<li>无法解决簇分布比例差别比较大的情况，比如有两个簇，但是两个簇的样本量差别很大，那么数量少的那个簇很容易会无法提取到</li>
+<li>无法解决簇分布比例差别比较大的情况，比如有两个簇，但是两个簇的样本量差别很大，那么数量少的那个簇很容易会无法提取到</li>
 <li>需要人工干预进行<strong>K</strong>设置</li>
 </ul>
 </li>
 <li>优点<ul>
 <li>对于大数据集，<strong>K</strong>均值聚类是可伸缩和高效的</li>
-<li>计算复杂度$NKt$ 其中N为样本规模，K为设置的簇的数量，t为迭代的轮数</li>
+<li>计算复杂度$NKt$ 其中N为样本规模，K为设置的簇的数量，t为迭代的轮数</li>
 </ul>
 </li>
 </ul>
@@ -510,7 +510,7 @@
 </li>
 <li><p>k值的选择</p>
 <ul>
-<li><p>手肘法：横轴K，纵轴为代价损失，随着k增加，代价损失会降低，选择代价函数降低幅度显著变小的点对应的k值，这种方法不够自动化，并且很依赖经验</p>
+<li><p>手肘法：横轴K，纵轴为代价损失，随着k增加，代价损失会降低，选择代价函数降低幅度显著变小的点对应的k值，这种方法不够自动化，并且很依赖经验</p>
 </li>
 <li><p>Gap Statistic方法：$Gap(K)=E(logE_{k})-logD_{k}$ </p>
 <p>其中$E(logE_{k})$代表$logD_{k}$的期望，在样本空间所在的区域内，按照均匀分布生成和原始样本数量相同的随机样本，并对这个样本进行k均值，得到一个$D_{k}$,重复多次计算出$E(logE_{k})$的近似值。</p>
