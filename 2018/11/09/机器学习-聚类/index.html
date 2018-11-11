@@ -81,19 +81,19 @@
 
 
 
-<meta name="description" content="聚类是一个无监督任务主要用于处理分类任务。给出一组无标记的数据，目标是找到这组数据的模式特征，例如哪些数据是同一类型的，那些数据是另外的类型。">
+<meta name="description" content="聚类是一种主要用于处理分类的无监督任务。给出一组无标记的数据，目标是找到这组数据的模式特征，例如哪些数据是同一类型的，那些数据是另外的类型。">
 <meta name="keywords" content="机器学习,聚类,EM,高斯混合分布">
 <meta property="og:type" content="article">
 <meta property="og:title" content="机器学习-聚类">
 <meta property="og:url" content="http://xiaofengshi.com/2018/11/09/机器学习-聚类/index.html">
 <meta property="og:site_name" content="Xiaofeng‘s Technical station">
-<meta property="og:description" content="聚类是一个无监督任务主要用于处理分类任务。给出一组无标记的数据，目标是找到这组数据的模式特征，例如哪些数据是同一类型的，那些数据是另外的类型。">
+<meta property="og:description" content="聚类是一种主要用于处理分类的无监督任务。给出一组无标记的数据，目标是找到这组数据的模式特征，例如哪些数据是同一类型的，那些数据是另外的类型。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://xiaofengshi.com/2018/11/09/机器学习-聚类/k-means.png">
-<meta property="og:updated_time" content="2018-11-11T05:22:52.382Z">
+<meta property="og:updated_time" content="2018-11-11T05:43:18.305Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="机器学习-聚类">
-<meta name="twitter:description" content="聚类是一个无监督任务主要用于处理分类任务。给出一组无标记的数据，目标是找到这组数据的模式特征，例如哪些数据是同一类型的，那些数据是另外的类型。">
+<meta name="twitter:description" content="聚类是一种主要用于处理分类的无监督任务。给出一组无标记的数据，目标是找到这组数据的模式特征，例如哪些数据是同一类型的，那些数据是另外的类型。">
 <meta name="twitter:image" content="http://xiaofengshi.com/2018/11/09/机器学习-聚类/k-means.png">
 
 
@@ -473,7 +473,7 @@
       
 
       
-        <p>聚类是一个无监督任务主要用于处理分类任务。给出一组无标记的数据，目标是找到这组数据的模式特征，例如哪些数据是同一类型的，那些数据是另外的类型。</p>
+        <p>聚类是一种主要用于处理分类的无监督任务。给出一组无标记的数据，目标是找到这组数据的模式特征，例如哪些数据是同一类型的，那些数据是另外的类型。</p>
 <a id="more"></a>
 <img src="/2018/11/09/机器学习-聚类/k-means.png" title="待聚类数据">
 <h2 id="K均值聚类"><a href="#K均值聚类" class="headerlink" title="K均值聚类"></a>K均值聚类</h2><p>k均值聚类是最基础最常用的聚类算法，基本思想是：通过迭代的方式寻找K个簇的一种划分方案，是的聚类结果的代价函数最小，一般使用各个样本距离所属簇的中心点的误差平方和。</p>
@@ -494,8 +494,8 @@
 <h3 id="k均值聚类的优缺点"><a href="#k均值聚类的优缺点" class="headerlink" title="k均值聚类的优缺点"></a>k均值聚类的优缺点</h3><ul>
 <li>缺点<ul>
 <li>会受到初始值和离群点的影响；</li>
-<li>结果通常不是全局最优，一般是局部最优</li>
-<li>无法解决簇分布比例差别比较大的情况，比如有两个簇，但是两个簇的样本量差别很大，那么数量少的那个簇很容易会无法提取到</li>
+<li>结果通常不是全局最优，一般是局部最优;</li>
+<li>无法解决簇分布比例差别比较大的情况，比如有两个簇，但是两个簇的样本量差别很大(一个簇包含100个样本，另一个簇包含10个样本)，那么数量少的那个簇很容易会无法提取到;</li>
 <li>需要人工干预进行<strong>K</strong>设置</li>
 </ul>
 </li>
@@ -518,7 +518,7 @@
 <li><p>核函数</p>
 <p>类似于svm的方法，对原始数据样本进行非线性映射，将输入空间的数据点映射到高维特征空间，并在新的特征空间中进行聚类。</p>
 </li>
-<li><p>二分k-means</p>
+<li><p>二分$k-means$</p>
 <p>该算法首先将所有点作为一个簇，然后将该簇一分为二。之后选择其中一个簇继续进行划分，选择哪一个簇进行划分取决于对其划分时候可以最大程度降低 SSE（平方和误差）的值。上述基于 SSE 的划分过程不断重复，直到得到用户指定的簇数目为止。</p>
 </li>
 </ul>
@@ -546,18 +546,18 @@
 </li>
 <li><p>m=M:求极大得到模型参数：</p>
 <script type="math/tex; mode=display">
-\theta=argmax_{\theta}\sum_{i=1}^{m}\sum_{z^{(i)}}Q_{i}(z^{(i)})log\frac {P(x^{(i)},z^{(i)}|\theta)}{Q_{i}(z^{(i)})}</script></li>
+\theta=argmax_{\theta}\sum_{i=1}^{m}\sum_{z^{(i)}}Q_{i}(z^{(i)})log\frac {P(x^{(i)},z^{(i)}|\theta)}{Q_{i}(z^{(i)})}</script><p>K均值聚类是一种EM算法。</p>
+</li>
 </ul>
-<p>K均值聚类是一种EM算法。</p>
 <p>先固定一个变量是整体函数为凸优化函数，求导得到最值，然后利用最优化参数更新被固定的变量</p>
 <h2 id="高斯混合模型"><a href="#高斯混合模型" class="headerlink" title="高斯混合模型"></a>高斯混合模型</h2><p>使用多个高斯分布函数的线性组合来对数据分布进行拟合，理论上能够拟合出任意类型分布。</p>
 <ul>
 <li><p>核心思想：</p>
-<p>假设数据可以看做从多个高斯分布中生成出来，每个单独的分模型都是标准高斯分布，均值为$\mu_{i}$和方差$\sigma_{i}$是待估计的参数，每个分模型还有一个参数$\pi_{i}​$认为是权重或者生成数据的概率</p>
+<p>  假设数据可以看做从多个高斯分布中生成出来，每个单独的分模型都是标准高斯分布，均值为$\mu_{i}$和方差$\sigma_{i}$是待估计的参数，每个分模型还有一个参数$\pi_{i}​$认为是权重或者生成数据的概率</p>
 </li>
 <li><p>高斯混合分布公式：</p>
 <script type="math/tex; mode=display">
-p(x)=\sum_{i=1}^{K}\pi_{i}N(x|\mu_{i}, \sigma_{i})</script><p>每次循环是，首先固定当前高斯分布不变，获得每个数据点由各个高斯分布生成的概率；然后固定生成概率不变，根据数据点和生成概率，获得一个更加的高斯分布，更新高斯分布的参数。</p>
+p(x)=\sum_{i=1}^{K}\pi_{i}N(x|\mu_{i}, \sigma_{i})</script><p>每次循环时，首先固定当前高斯分布不变，获得每个数据点由各个高斯分布生成的概率；然后固定生成概率不变，根据数据点和生成概率，获得一个更加的高斯分布，更新高斯分布的参数。</p>
 </li>
 <li><p>高斯分布不仅可以用于聚类，还可以用于概率密度的估计，并且生成新的样本点</p>
 </li>
@@ -726,7 +726,7 @@ p(x)=\sum_{i=1}^{K}\pi_{i}N(x|\mu_{i}, \sigma_{i})</script><p>每次循环是，
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
