@@ -90,7 +90,7 @@
 <meta property="og:description" content="聚类是一个无监督任务主要用于处理分类任务。给出一组无标记的数据，目标是找到这组数据的模式特征，例如哪些数据是同一类型的，那些数据是另外的类型。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://xiaofengshi.com/2018/11/09/机器学习-聚类/k-means.png">
-<meta property="og:updated_time" content="2018-11-10T16:51:37.012Z">
+<meta property="og:updated_time" content="2018-11-10T16:55:21.056Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="机器学习-聚类">
 <meta name="twitter:description" content="聚类是一个无监督任务主要用于处理分类任务。给出一组无标记的数据，目标是找到这组数据的模式特征，例如哪些数据是同一类型的，那些数据是另外的类型。">
@@ -480,7 +480,7 @@
 <h3 id="k均值聚类的算法思想"><a href="#k均值聚类的算法思想" class="headerlink" title="k均值聚类的算法思想"></a>k均值聚类的算法思想</h3><ul>
 <li>首先对数据进行预处理，数据归一化以及离群点删除；</li>
 <li>随机选取K个点作为k个簇的中心点；</li>
-<li>计算样本中各个样本与选取的k个值的距离，把每个数据样本分配到距离其最近的聚类中心所属于的簇，成本函数$J=\frac{1}{m}\sum^{m}||x_{i}-u||^2$</li>
+<li>计算样本中各个样本与选取的k个值的距离，把每个数据样本分配到距离其最近的聚类中心所属于的簇，成本函数$J=\frac{1}{m}\sum^{m}||x_{i}-u||^2$</li>
 <li>重新计算各自簇的中心，使用属于该簇中所有点的平均值作为新的簇的中心；</li>
 <li>不断迭代直到聚类中心不再移动。</li>
 </ul>
