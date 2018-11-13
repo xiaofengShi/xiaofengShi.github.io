@@ -85,23 +85,25 @@
 
 
 
-<meta name="description" content="目标检测为计算机视觉领域内的相关任务，输入一张图片，输出图片中物体所在位置及物体的名称。是一个典型的多任务模型。a">
+<meta name="description" content="目标检测为计算机视觉领域内的相关任务，输入一张图片，输出图片中物体所在位置及物体的名称。是一个典型的多任务模型。">
 <meta name="keywords" content="深度学习,计算机视觉,OCR,目标识别,图像翻译,seq2seq">
 <meta property="og:type" content="article">
 <meta property="og:title" content="深度学习-目标检测">
 <meta property="og:url" content="http://xiaofengshi.com/2018/11/12/深度学习-目标检测/index.html">
 <meta property="og:site_name" content="机器学习那点事">
-<meta property="og:description" content="目标检测为计算机视觉领域内的相关任务，输入一张图片，输出图片中物体所在位置及物体的名称。是一个典型的多任务模型。a">
+<meta property="og:description" content="目标检测为计算机视觉领域内的相关任务，输入一张图片，输出图片中物体所在位置及物体的名称。是一个典型的多任务模型。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://xiaofengshi.com/2018/11/12/深度学习-目标检测/object_detection.jpg">
 <meta property="og:image" content="http://xiaofengshi.com/2018/11/12/深度学习-目标检测/RCNN.png">
 <meta property="og:image" content="http://xiaofengshi.com/2018/11/12/深度学习-目标检测/FastRCNN.png">
 <meta property="og:image" content="http://xiaofengshi.com/2018/11/12/深度学习-目标检测/fastrcnn_strueture.png">
 <meta property="og:image" content="http://xiaofengshi.com/2018/11/12/深度学习-目标检测/fastrcnn_pipeline.png">
-<meta property="og:updated_time" content="2018-11-12T12:18:37.437Z">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/12/深度学习-目标检测/loss.png">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/12/深度学习-目标检测/svd.png">
+<meta property="og:updated_time" content="2018-11-13T09:50:31.041Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深度学习-目标检测">
-<meta name="twitter:description" content="目标检测为计算机视觉领域内的相关任务，输入一张图片，输出图片中物体所在位置及物体的名称。是一个典型的多任务模型。a">
+<meta name="twitter:description" content="目标检测为计算机视觉领域内的相关任务，输入一张图片，输出图片中物体所在位置及物体的名称。是一个典型的多任务模型。">
 <meta name="twitter:image" content="http://xiaofengshi.com/2018/11/12/深度学习-目标检测/object_detection.jpg">
 
 
@@ -455,7 +457,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.4k 字
+                  2.1k 字
                 </span>
               
 
@@ -471,7 +473,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  5 分钟
+                  7 分钟
                 </span>
               
             </div>
@@ -492,11 +494,11 @@
       
 
       
-        <p>目标检测为计算机视觉领域内的相关任务，输入一张图片，输出图片中物体所在位置及物体的名称。是一个典型的多任务模型。a</p>
+        <p>目标检测为计算机视觉领域内的相关任务，输入一张图片，输出图片中物体所在位置及物体的名称。是一个典型的多任务模型。</p>
 <img src="/2018/11/12/深度学习-目标检测/object_detection.jpg" title="object detection">
 <a id="more"></a>
 <p>深度学习目标检测技术近年来发展迅速并且取得的成果相当棒，从最早的RCNN到Fast，Faster再到后来的SSD,YOLO等相关算法，不同的算法在目标检测识别正确率和运行速度之间在不算提升。</p>
-<h3 id="目标检测三部曲"><a href="#目标检测三部曲" class="headerlink" title="目标检测三部曲"></a>目标检测三部曲</h3><h3 id="Rcnn"><a href="#Rcnn" class="headerlink" title="Rcnn"></a>Rcnn</h3><p>虽然现在RCNN算法早已经被超越并抛弃了，但是作为深度学习的目标检测技术将CNN引入的开山之作还是有必要了解其相关算法的。RCNN的算法结构如下所示</p>
+<h2 id="目标检测三部曲"><a href="#目标检测三部曲" class="headerlink" title="目标检测三部曲"></a>目标检测三部曲</h2><h3 id="Rcnn"><a href="#Rcnn" class="headerlink" title="Rcnn"></a>Rcnn</h3><p>虽然现在RCNN算法早已经被超越并抛弃了，但是作为深度学习的目标检测技术将CNN引入的开山之作还是有必要了解其相关算法的。RCNN的算法结构如下所示</p>
 <img src="/2018/11/12/深度学习-目标检测/RCNN.png" title="RCNN">
 <p><strong>论文链接</strong>：<a href="https://arxiv.org/pdf/1311.2524.pdf" target="_blank" rel="noopener">https://arxiv.org/pdf/1311.2524.pdf</a></p>
 <h4 id="pipeline"><a href="#pipeline" class="headerlink" title="pipeline"></a>pipeline</h4><ul>
@@ -504,49 +506,49 @@
 <p>输入要进行目标检测的图片，及其图片中物体的目标框(ground truth)及对应的label</p>
 </li>
 <li><p>候选区生产</p>
-<p>对图片使用ROI(region of interest)区域提取，常用selective search算法，对输入图片进行感兴趣区域的提取，一张图像能提取到2k左右的ROI</p>
+<p>对图片使用$ROI$(region of interest)区域提取，常用<code>selective search</code>算法，对输入图片进行感兴趣区域的提取，一张图像能提取到2k左右的$ROI$</p>
 </li>
 <li><p>特征提取</p>
-<p>将得到的ROI进行卷积CNN特征提取。将候选区域归一化成同一尺寸227×227，使用的是ImageNet(卷积之后最终维度4096,之后全连接维度为1000，在rcnn中去掉全连接层)</p>
+<p>将得到的$ROI$进行卷积CNN特征提取。将候选区域归一化成同一尺寸$227\times227$，使用的是ImageNet(卷积之后最终维度4096,之后全连接维度为1000，在rcnn中去掉全连接层)</p>
 </li>
 <li><p>分类计算</p>
-<p>CNN之后连接的是SVM进行分类计算，SVM进行每个类别的二分类计算(对于某一类来说，设计一个svm来判断该类是否为正，为一个二分类任务)，这就说明，如果数据集中的物体类别数量为n，那么就需要设计n个SVM，由于在所有的ROI中负样本数量相对正样本数量很多，因此使用了<code>hard negative mining</code>的方法</p>
+<p>CNN之后连接的是SVM进行分类计算，SVM进行每个类别的二分类计算(对于某一类来说，设计一个svm来判断该类是否为正，为一个二分类任务)，这就说明，如果数据集中的物体类别数量为n，那么就需要设计n个SVM，由于在所有的$ROI$中负样本数量相对正样本数量很多，因此使用了<code>hard negative mining</code>的方法</p>
 <ul>
-<li>正样本：输入的roi为与label相同</li>
-<li>负样本：考察每个候选框，如果和本类别的目标框的IOU小于0.3，认为负样本</li>
+<li>正样本：输入的$ROI$为与label相同</li>
+<li>负样本：考察每个候选框，如果和本类别的目标框的$IOU$小于0.3，认为负样本</li>
 </ul>
 </li>
 <li><p>目标框修正</p>
-<p>对于目标检测任务，其评价指标一为预测的目标框与ground truth之间IOU，另一个为类别是否正确。通过SS提取到的ROI一般和ground truth 差别很大，就需要进行目标框的修正。</p>
+<p>对于目标检测任务，其评价指标一为预测的目标框与ground truth之间$IOU$，另一个为类别是否正确。通过SS提取到的$ROI$一般和ground truth 差别很大，就需要进行目标框的修正。</p>
 <p>使用回归器训练目标检测框的准确性，输入同样为CNN 之后得到的维度4096的向量，输出为xy方向的缩放和偏移。同样，对于每个分类训练一个目标检测框</p>
 </li>
 </ul>
 <p><strong>作为深度学习目标检测的开山之作，RCNN在当年取得的识别正确率相对于传统的直方图方法是颠覆性的，由此，目标检测相关算法在此基础上不断发展。</strong></p>
 <h4 id="RCN缺点"><a href="#RCN缺点" class="headerlink" title="RCN缺点"></a>RCN缺点</h4><ul>
-<li>使用ss算法进行ROI的提取，对所有的Region会存在重复计算，会拖慢悬链速度</li>
+<li>使用ss算法进行$ROI$的提取，对所有的Region会存在重复计算，会拖慢悬链速度</li>
 <li>使用SVM和回归器进行分类和位置回归计算，不太符合深度学习端对端的方法，不太优雅并且每个类别对应一个分类器和回归器，这就需要训练数据要足够大才可以</li>
 </ul>
-<h2 id="FastRcnn"><a href="#FastRcnn" class="headerlink" title="FastRcnn"></a>FastRcnn</h2><img src="/2018/11/12/深度学习-目标检测/FastRCNN.png" title="FastRCNN">
-<p>fastrcnn是对rcnn的改进，主要针对上文所述的rcnn存在的缺点。</p>
+<h3 id="FastRcnn"><a href="#FastRcnn" class="headerlink" title="FastRcnn"></a>FastRcnn</h3><img src="/2018/11/12/深度学习-目标检测/FastRCNN.png" title="FastRCNN">
+<p><code>FastRcnn</code>是对rcnn的改进，主要针对上文所述的<code>RCNN</code>存在的缺点。</p>
 <ul>
 <li>将<strong>整张图像</strong>归一化后<strong>直接送入深度网络</strong>。在邻接时，才加入候选框信息，在末尾的少数几层处理每个候选框。</li>
 <li>在训练时，将一张图像送入网络，<strong>紧接着送入</strong>从这幅图像上提取出的<strong>候选区域</strong>。这些候选区域的前几层特征不需要再重复计算。</li>
 <li>类别判断和位置精调<strong>统一用深度网络实现</strong>，不再需要额外存储。</li>
 </ul>
-<h3 id="pipeline-1"><a href="#pipeline-1" class="headerlink" title="pipeline"></a>pipeline</h3><img src="/2018/11/12/深度学习-目标检测/fastrcnn_strueture.png" title="fastrcnn_strueture">
+<h4 id="pipeline-1"><a href="#pipeline-1" class="headerlink" title="pipeline"></a>pipeline</h4><img src="/2018/11/12/深度学习-目标检测/fastrcnn_strueture.png" title="fastrcnn_strueture">
 <img src="/2018/11/12/深度学习-目标检测/fastrcnn_pipeline.png" title="fastrcnn_pipeline">
 <ul>
-<li><p>图像归一化为$224 \times224$</p>
+<li><p>为了进行批量输入计算，图像归一化为$224 \times224$</p>
 </li>
 <li><p>特征提取</p>
 <p>卷积网络CNN+RELU+POOLING</p>
 </li>
-<li><p>roi_pooling layer</p>
-<p>仍然使用SS算法进行ROI提议得到2K个ROIs</p>
-<p>在特征图中找到每个ROI对应的特征框(进行比例缩放)，并使用max pool将每个特征框池化到固定的大小</p>
+<li><p><code>ROI_pooling_layer</code></p>
+<p>仍然使用SS算法进行$ROI$提议得到2K个$ROI$s</p>
+<p>在特征图中找到每个$ROI$对应的特征框(进行比例缩放)，并使用<code>max pool</code>将每个特征框池化到固定的大小</p>
 <p><strong>forward实现方法</strong><br>首先假设建议框对应特征图中的特征框大小为$h \times w$，将其划分$H \times W$个子窗口，每个子窗$h/H \times w/W$，然后对每个子窗口采用max pooling下采样操作，每个子窗口只取一个最大值，则特征框最终池化为$H \times W$固定的尺寸【特征框各深度同理】，这将各个大小不一的特征框转化为大小统一的数据输入下一层。</p>
 <p><strong>backward</strong></p>
-<p>对于maxpool层，设$x_{i}$为roi_pooling输入层的第$i$个节点，$y_{j}$为输出层第$r$个ROI的第$j$个节点，存在如下关系</p>
+<p>对于<code>maxpool</code>层，设$x_{i}$为<code>ROI_pooling</code>输入层的第$i$个节点，$y_{j}$为输出层第$r$个$ROI$的第$j$个节点，存在如下关系</p>
 <script type="math/tex; mode=display">
 \begin{align*}
 \frac{\partial L}{\partial x_{i}}=
@@ -555,18 +557,89 @@
 & \frac{\partial L}{\partial y_{j}} & if & \delta(i,j)=true
 \end{cases}
 \end{align*}</script><p>判决函数$\delta(i,j)$表示节点$i$是否被节点$j$选择为最大值输出</p>
-<p>对于roi max pooling，一个输入节点可能和多个输出节点相连。设$x_{i}$为输入层的节点，$y_{rj}$为第$r$个候选区域的第$j$个输出节点</p>
+<p>对于<code>ROI max pooling</code>，一个输入节点可能和多个输出节点相连。设$x_{i}$为输入层的节点，$y_{rj}$为第$r$个候选区域的第$j$个输出节点</p>
 <script type="math/tex; mode=display">
 \begin{align*}
 \frac{\partial L}{\partial x_{i}}=\sum_{r}\sum_{j}\delta(i,r,j)\frac{\partial L}{\partial y_{rj}}
-\end{align*}</script><p>判决函数$\delta(i,r,j)$表示节点是否被第$r$个ROI的第$j$个节点选为最大输出</p>
+\end{align*}</script><p>判决函数$\delta(i,r,j)$表示节点是否被第$r$个<code>ROI</code>的第$j$个节点选为最大输出</p>
 </li>
 <li><p>全连接计算</p>
-<p>得到的固定大小的特征框$[H,W,Dims,P]$，其中使用全连接得到固定大小的特征向量$[1,H  \times W  \times Dims \times P]$</p>
+<p>得到的固定大小的特征框$[r,H,W,Dims]$，其中使用全连接得到固定大小的特征向量$[r,H  \times W  \times Dims]$，共得到$r$个$ROI$的固定大小的向量</p>
 </li>
-<li></li>
-<li></li>
+<li><p>分类计算+预测框计算</p>
+<hr>
+
+<img src="/2018/11/12/深度学习-目标检测/loss.png" title="Loss">
+<p><code>cls_score</code>为全连接之后得到的类别预测，输出为$k+1$维度，表示属于$k$类和背景类别的概率，使用$softmax$计算</p>
+<p><code>bbox_predict</code>为全连接之后得到的预测目标框，维度为$4 \times k$，对每个目标输出一个预测框</p>
+<p><code>bbox_targets</code>为目标值，对应着真实的目标框，维度为$4 \times 1$表示当前ROI中包含物体的目标框</p>
+<p><code>bbox_loss_weights</code>用于标记每一个预测的<code>box</code>是否属于某一个类，只有预测和真实类别相同时才进行<code>loss</code>计算</p>
+<hr>
+
+<ul>
+<li><p>分类计算及代价函数</p>
+<p>假设数据集中一共存在$K$个类别，输入为全连接之后的固定长度的向量$[r,H  \times W  \times Dims]$，输出为$[r,K+1]$，进行$K+1$个类别的输出，包含$K$个物体类别以及$1$个背景类，使用的是全连接的计算方式</p>
+<p><strong>代价函数</strong></p>
+<p>代价函数由真实的类别标签<code>label</code>和预测得到类别${pred}$经过softmax计算得到：</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+L_{cls}(label,{pred})&=-log({pred}_{u})\\
+&=-u*log(softmax(pred))
+\end{align*}</script><p><strong>说明：假设数据集中包含的目标类别数量为$100$对于单个的ROI进行类别判别时，输出的数据维度为$[1, (100+1)]$,对应着$100$个数据集中的目标类别和$1$个背景类别，假设当前输入的ROI中目标数量为1，并且对应着1个类别为$1$，对应的数据格式为$[1,0,0,…]$，也就是在相应的类别处数据为1，其余位置均为0。在进行计算时，使用$sofmax$函数，将类别预测的概率控制在$[0,1]$之间</strong></p>
+<p>$softmax$函数计算公式为</p>
+<script type="math/tex; mode=display">
+\sigma(x_{j})=\frac{e^{x_{j}}}{\sum_{k=1}^{K}e^{x_{k}}}</script><p>在进行类别计算时，计算的是预测值在所有类别中的概率。得到输出的类别预测的概率，将其与真实$label$相乘，得到损失。</p>
+</li>
+<li><p>预测框计算</p>
+<p>每个预测框的<code>label</code>包含四个坐标$box=[x,y,h,w]$(左上角的$x,y$坐标值及真实框的高度和宽度)，因此对应的输出维度为$[r,(K+1)*4]$</p>
+<p><strong>代价函数</strong></p>
+<p>真实类别$u$对应的目标框为$v=[v_{x},v_{y},v_{w},v_{h}]$，预测的目标$u$对应的类别为$t^{u}=[t^{x},t^{y},t^{w},t^{h}]$，可以由此计算</p>
+<script type="math/tex; mode=display">
+L_{loc}=\sum_{i \in\lbrace x,y,w,h\rbrace}smooth_{L_{1}}(t_{i}^{u}-v_{i})</script><p>其中</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+smooth_{L_{1}}=
+\begin{cases}
+0.5|x|^{2}\:\:\:\:\:\:\:\:\:\:& if |x|<1 \\
+|x|-0.5 & otherwise
+\end{cases}
+\end{align*}</script><p>该损失函数对应的是检测框的偏移量，比于<code>L2</code>损失函数，其对离群点、异常值不敏感，可控制梯度的量级使训练时不容易跑飞。</p>
+<p><strong>这里需要说明一点：对于单个的<code>ROI</code>，输出的向量为$[1,4 \times (k+1)]$ ，对应着所以类别预测的目标框，但是在当前的<code>ROI</code>中，对应的标签为该ROI中对应的目标类别和该目标的位置，因此在进行预测框损失函数的计算是，只考虑输出的的所有数据中对应的输入ROI的类别的位置的数据，假设当前的<code>ROI</code>中包含一个目标，类别分别为1，整个样本中的所有类别为$100$，因此，对于当前的位置计算时，预测框的输出为$[1,4 \times 100]$，但是在计算位置损失时，只是用输出数据的第1行的数据，其余的输出数据不参与损失计算</strong></p>
+<p>代码实现</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">rois = tf.placeholder(tf.int32,[<span class="keyword">None</span>, <span class="number">5</span>], name=<span class="string">'rois'</span>)</span><br><span class="line">y_true = tf.placeholder(tf.float32, [<span class="keyword">None</span>, class_num*<span class="number">5</span><span class="number">-4</span>], name=<span class="string">'labels'</span>)</span><br><span class="line">logits=slim.fully_connected(drop7, class_num,activation_fn=nn_ops.softmax ,scope=<span class="string">'fc_8'</span>)</span><br><span class="line">bbox = bbox = slim.fully_connected(drop7, (class_num<span class="number">-1</span>)*<span class="number">4</span>,                                     </span><br><span class="line">                                        activation_fn=<span class="keyword">None</span> ,scope=<span class="string">'fc_9'</span>)</span><br><span class="line">cls_pred = logits</span><br><span class="line"><span class="comment"># label中数据的存储格式为[cls_1,cls_2,...,cls_nums,box_1_1,box_1_2,box_1_3,....]</span></span><br><span class="line"><span class="comment"># 前面存储的是label，后面存储的是每个label对应的groundtruth</span></span><br><span class="line">cls_true = y_true[:, :class_num]</span><br><span class="line">bbox_pred = bbox</span><br><span class="line">bbox_ture = y_true[:, class_num:]</span><br><span class="line"></span><br><span class="line">cls_pred /= tf.reduce_sum(cls_pred,</span><br><span class="line">                          reduction_indices=len(cls_pred.get_shape()) - <span class="number">1</span>,</span><br><span class="line">                          keep_dims=<span class="keyword">True</span>)</span><br><span class="line">cls_pred = tf.clip_by_value(cls_pred, tf.cast(<span class="number">1e-10</span>, dtype=tf.float32), tf.cast(<span class="number">1.</span> - <span class="number">1e-10</span>, dtype=tf.float32))</span><br><span class="line">cross_entropy = -tf.reduce_sum(cls_true * tf.log(cls_pred), reduction_indices=len(cls_pred.get_shape()) - <span class="number">1</span>)</span><br><span class="line">cls_loss = tf.reduce_mean(cross_entropy)</span><br><span class="line">tf.losses.add_loss(cls_loss)</span><br><span class="line">tf.summary.scalar(<span class="string">'class-loss'</span>, cls_loss)</span><br><span class="line"></span><br><span class="line">mask = tf.tile(tf.reshape(cls_true[:, <span class="number">1</span>], [<span class="number">-1</span>, <span class="number">1</span>]), [<span class="number">1</span>, <span class="number">4</span>])</span><br><span class="line"><span class="keyword">for</span> cls_idx <span class="keyword">in</span> range(<span class="number">2</span>, self.class_num):</span><br><span class="line">    mask =tf.concat([mask, tf.tile(tf.reshape(cls_true[:, int(cls_idx)], [<span class="number">-1</span>, <span class="number">1</span>]), [<span class="number">1</span>, <span class="number">4</span>])], <span class="number">1</span>)</span><br><span class="line">bbox_sub =  tf.square(mask * (bbox_pred - bbox_ture))</span><br><span class="line">bbox_loss = tf.reduce_mean(tf.reduce_sum(bbox_sub, <span class="number">1</span>))</span><br><span class="line">tf.losses.add_loss(bbox_loss)</span><br><span class="line">tf.summary.scalar(<span class="string">'bbox-loss'</span>, bbox_loss)</span><br></pre></td></tr></table></figure>
+<p>代码连接：</p>
+<p><a href="https://github.com/Liu-Yicheng/Fast-RCNN" target="_blank" rel="noopener">https://github.com/Liu-Yicheng/Fast-RCNN</a></p>
+</li>
 </ul>
+</li>
+</ul>
+<h4 id="Tricks"><a href="#Tricks" class="headerlink" title="Tricks"></a>Tricks</h4><ul>
+<li><p>参数初始化</p>
+<p>使用<code>ImageNet</code>上预训练的模型，并去除最后的全连接层</p>
+</li>
+<li><p>分层数据</p>
+<p>在调优训练时，每一个<code>mini-batch</code>中首先加入$N$张完整图片，而后加入从$N$张图片中选取的$R$个候选框。这$R$个候选框可以复用$N$张图片前5个阶段的网络特征。<br>实际选择$N=2$， $R=128$</p>
+</li>
+<li><p>训练数据增强</p>
+<p>$N$张完整图片以$50\%$概率水平翻转</p>
+</li>
+<li><p>全连接层加速</p>
+<p>正常的全连接层，假设输入为$x$，输出为$y$，中间的参数为$W=u \times v$，对应的计算复杂度为$u \times v$</p>
+<script type="math/tex; mode=display">
+y=Wx</script><p>对权重参数$W$进行$SVD$分解</p>
+<script type="math/tex; mode=display">
+W\approx U \sum_{t}V^{T}</script><p>其中各个变量的尺寸为$U=u \times v$，$\sum_{t}=t\times t$，$V=v \times t$，如此全连接计算变为</p>
+<script type="math/tex; mode=display">
+y=Wx= U.(\sum_{t}.V^{T}).x</script><p>对应的计算复杂度为$u \times t +v \times t$，如此实现了将一个全连接拆分成两个低纬度的全连接，节约了计算资源提升计算速度。</p>
+<hr>
+
+<img src="/2018/11/12/深度学习-目标检测/svd.png" title="svd">
+<hr>
+
+</li>
+</ul>
+<h2 id="FasterRcnn"><a href="#FasterRcnn" class="headerlink" title="FasterRcnn"></a>FasterRcnn</h2><p>作为<code>FastRcnn</code>的继承和改进，主要针对<code>ROI</code>生成的改进，在<code>FastRcnn</code>中使用<code>Selective Search</code>的方法进行<code>ROI</code>的生成。</p>
+<p><code>FasterRcnn</code>开发了用于生成<code>ROI</code>的卷积网络<code>RPN</code></p>
 
       
     </div>
@@ -597,7 +670,7 @@
   <p><span>本文标题:</span><a href="/2018/11/12/深度学习-目标检测/">深度学习-目标检测</a></p>
   <p><span>文章作者:</span><a href="/" title="访问 ShiXiaofeng 的个人博客">ShiXiaofeng</a></p>
   <p><span>发布时间:</span>2018年11月12日 - 17:27</p>
-  <p><span>最后更新:</span>2018年11月12日 - 20:18</p>
+  <p><span>最后更新:</span>2018年11月13日 - 17:50</p>
   <p><span>原始链接:</span><a href="/2018/11/12/深度学习-目标检测/" title="深度学习-目标检测">http://xiaofengshi.com/2018/11/12/深度学习-目标检测/</a>
     <span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://xiaofengshi.com/2018/11/12/深度学习-目标检测/" aria-label="复制成功！"></i></span>
   </p>
@@ -824,7 +897,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#目标检测三部曲"><span class="nav-number">1.</span> <span class="nav-text">目标检测三部曲</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Rcnn"><span class="nav-number">2.</span> <span class="nav-text">Rcnn</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#pipeline"><span class="nav-number">2.1.</span> <span class="nav-text">pipeline</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RCN缺点"><span class="nav-number">2.2.</span> <span class="nav-text">RCN缺点</span></a></li></ol></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#FastRcnn"><span class="nav-number"></span> <span class="nav-text">FastRcnn</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pipeline-1"><span class="nav-number">1.</span> <span class="nav-text">pipeline</span></a></li></ol></li></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#目标检测三部曲"><span class="nav-number">1.</span> <span class="nav-text">目标检测三部曲</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Rcnn"><span class="nav-number">1.1.</span> <span class="nav-text">Rcnn</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#pipeline"><span class="nav-number">1.1.1.</span> <span class="nav-text">pipeline</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RCN缺点"><span class="nav-number">1.1.2.</span> <span class="nav-text">RCN缺点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FastRcnn"><span class="nav-number">1.2.</span> <span class="nav-text">FastRcnn</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#pipeline-1"><span class="nav-number">1.2.1.</span> <span class="nav-text">pipeline</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Tricks"><span class="nav-number">1.2.2.</span> <span class="nav-text">Tricks</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FasterRcnn"><span class="nav-number">2.</span> <span class="nav-text">FasterRcnn</span></a></li></ol></div>
             
 
           </div>
