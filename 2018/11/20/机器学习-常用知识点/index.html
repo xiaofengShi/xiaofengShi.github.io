@@ -72,7 +72,7 @@
 
 
 
-  <meta name="keywords" content="机器学习,深度学习,神经网络,">
+  <meta name="keywords" content="深度学习,机器学习,神经网络,">
 
 
 
@@ -85,13 +85,13 @@
 
 
 
-<meta name="description" content="多层感知机和布尔函数 只是用一个隐藏层，实现$n$元输入的任意布尔函数，需要的隐藏节点数量：$2^{n-1}$ 多个隐藏层，实现$n$元输入的任意布尔函数，需要的隐藏节点数量为(包含输出层节点)$3(n-1)$，使用多层，可以有效减少节点数量，这些节点数量对应着$2(n-1)$网络层，对每层使用二分思想，两两分组进行异或运算，最少需要的网络层数为$2log_{2}N$向上取整。  激活函数博客中曲">
-<meta name="keywords" content="机器学习,深度学习,神经网络">
+<meta name="description" content="多层感知机和布尔函数 只是用一个隐藏层，实现$n$元输入的任意布尔函数，需要的隐藏节点数量：$2^{n-1}$ 多个隐藏层，实现$n$元输入的任意布尔函数，需要的隐藏节点数量为(包含输出层节点)$3(n-1)$，使用多个隐藏层的方式，可以有效减少节点数量，这些节点数量对应着$2(n-1)$网络层，对每层使用二分思想，两两分组进行异或运算，最少需要的网络层数为$2log_{2}N$向上取整。  激活">
+<meta name="keywords" content="深度学习,机器学习,神经网络">
 <meta property="og:type" content="article">
 <meta property="og:title" content="机器学习-常用知识点">
 <meta property="og:url" content="http://xiaofengshi.com/2018/11/20/机器学习-常用知识点/index.html">
 <meta property="og:site_name" content="机器学习那点事">
-<meta property="og:description" content="多层感知机和布尔函数 只是用一个隐藏层，实现$n$元输入的任意布尔函数，需要的隐藏节点数量：$2^{n-1}$ 多个隐藏层，实现$n$元输入的任意布尔函数，需要的隐藏节点数量为(包含输出层节点)$3(n-1)$，使用多层，可以有效减少节点数量，这些节点数量对应着$2(n-1)$网络层，对每层使用二分思想，两两分组进行异或运算，最少需要的网络层数为$2log_{2}N$向上取整。  激活函数博客中曲">
+<meta property="og:description" content="多层感知机和布尔函数 只是用一个隐藏层，实现$n$元输入的任意布尔函数，需要的隐藏节点数量：$2^{n-1}$ 多个隐藏层，实现$n$元输入的任意布尔函数，需要的隐藏节点数量为(包含输出层节点)$3(n-1)$，使用多个隐藏层的方式，可以有效减少节点数量，这些节点数量对应着$2(n-1)$网络层，对每层使用二分思想，两两分组进行异或运算，最少需要的网络层数为$2log_{2}N$向上取整。  激活">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://xiaofengshi.com/2018/11/20/机器学习-常用知识点/loss_function.jpg">
 <meta property="og:image" content="http://xiaofengshi.com/2018/11/20/机器学习-常用知识点/sigmoid.jpg">
@@ -100,10 +100,13 @@
 <meta property="og:image" content="http://xiaofengshi.com/2018/11/20/机器学习-常用知识点/leaky_relu.jpg">
 <meta property="og:image" content="http://xiaofengshi.com/2018/11/20/机器学习-常用知识点/elus.jpg">
 <meta property="og:image" content="http://xiaofengshi.com/2018/11/20/机器学习-常用知识点/swish.jpg">
-<meta property="og:updated_time" content="2018-11-21T08:49:03.664Z">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/20/机器学习-常用知识点/L1.jpg">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/20/机器学习-常用知识点/L1_para.jpg">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/20/机器学习-常用知识点/L2.jpg">
+<meta property="og:updated_time" content="2018-11-22T11:33:59.678Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="机器学习-常用知识点">
-<meta name="twitter:description" content="多层感知机和布尔函数 只是用一个隐藏层，实现$n$元输入的任意布尔函数，需要的隐藏节点数量：$2^{n-1}$ 多个隐藏层，实现$n$元输入的任意布尔函数，需要的隐藏节点数量为(包含输出层节点)$3(n-1)$，使用多层，可以有效减少节点数量，这些节点数量对应着$2(n-1)$网络层，对每层使用二分思想，两两分组进行异或运算，最少需要的网络层数为$2log_{2}N$向上取整。  激活函数博客中曲">
+<meta name="twitter:description" content="多层感知机和布尔函数 只是用一个隐藏层，实现$n$元输入的任意布尔函数，需要的隐藏节点数量：$2^{n-1}$ 多个隐藏层，实现$n$元输入的任意布尔函数，需要的隐藏节点数量为(包含输出层节点)$3(n-1)$，使用多个隐藏层的方式，可以有效减少节点数量，这些节点数量对应着$2(n-1)$网络层，对每层使用二分思想，两两分组进行异或运算，最少需要的网络层数为$2log_{2}N$向上取整。  激活">
 <meta name="twitter:image" content="http://xiaofengshi.com/2018/11/20/机器学习-常用知识点/loss_function.jpg">
 
 
@@ -485,7 +488,7 @@
       
         <h2 id="多层感知机和布尔函数"><a href="#多层感知机和布尔函数" class="headerlink" title="多层感知机和布尔函数"></a>多层感知机和布尔函数</h2><ul>
 <li>只是用一个隐藏层，实现$n$元输入的任意布尔函数，需要的隐藏节点数量：<strong>$2^{n-1}$</strong></li>
-<li>多个隐藏层，实现$n$元输入的任意布尔函数，需要的隐藏节点数量为(包含输出层节点)<strong>$3(n-1)$</strong>，<em>使用多层，可以有效减少节点数量</em>，这些节点数量对应着$2(n-1)$网络层，对每层使用二分思想，两两分组进行异或运算，最少需要的网络层数为<strong>$2log_{2}N$</strong>向上取整。</li>
+<li>多个隐藏层，实现$n$元输入的任意布尔函数，需要的隐藏节点数量为(包含输出层节点)<strong>$3(n-1)$</strong>，<strong>使用多个隐藏层的方式，可以有效减少节点数量</strong>，这些节点数量对应着$2(n-1)$网络层，对每层使用二分思想，两两分组进行异或运算，最少需要的网络层数为<strong>$2log_{2}N$</strong>向上取整。</li>
 </ul>
 <h2 id="激活函数"><a href="#激活函数" class="headerlink" title="激活函数"></a>激活函数</h2><p>博客中曲线均使用<code>Mac</code>自带应用<code>Grapher</code>绘制</p>
 <hr>
@@ -589,8 +592,8 @@ MSE&=\frac{1}{n}\sum_{i=1}^{n}(observed-predict)^{2} \\
 \delta ^{L}&=-(observed-predict) \bar{f}(z^{L})
 \end{align}</script><p>其中$z^L$为第<code>L</code>层节点的输出，满足关系式$predict=f(z^L)$</p>
 <p>如果激活函数$f(.)$为<code>sigmoid</code>时，如果$z^L$的绝对值较大，函数的梯度会趋于饱和接近于$0$，即$\bar{f}(z^L)$的绝对值非常小，导致反向求导时$\delta ^L$取值会非常小，使得基于梯度的学习速度非常缓慢。而如果在<code>sigmoid</code>之后使用的是交叉熵损失函数，不会出现这种问题。</p>
-<h2 id="Dropuout"><a href="#Dropuout" class="headerlink" title="Dropuout"></a>Dropuout</h2><p>在神经网络训练时，以一定的概率随机的丢弃一部分神经元节点，<code>Droupout</code>作用于每份小批量训练数据，相当于每次迭代都会在训练不同结构的神经网络，实际上这是一种<code>Bagging</code>集成学习的一种方法，在训练时，减弱了全体神经元之间的级联性，减少了过拟合的风险，增强了泛化能力。</p>
-<h2 id="批归一化BN"><a href="#批归一化BN" class="headerlink" title="批归一化BN"></a>批归一化BN</h2><p>神经网络训练的过程就是学习数据分布的过程，因此在训练之前对输入数据进行归一化处理。随着训练数据的增加，数据的分布随之该改变，致使网络在每次迭代时需要拟合不同的数据分布，这就增大了训练的复杂度和过拟合的风险。</p>
+<h2 id="Dropuout-防止过拟合"><a href="#Dropuout-防止过拟合" class="headerlink" title="Dropuout-防止过拟合"></a>Dropuout-防止过拟合</h2><p>在神经网络训练时，以一定的概率随机的丢弃一部分神经元节点，<code>Droupout</code>作用于每份小批量训练数据，相当于每次迭代都会在训练不同结构的神经网络，实际上这是一种<code>Bagging</code>集成学习的一种方法，在训练时，减弱了全体神经元之间的级联性，减少了过拟合的风险，增强了泛化能力。</p>
+<h2 id="批归一化BN-防止过拟合"><a href="#批归一化BN-防止过拟合" class="headerlink" title="批归一化BN-防止过拟合"></a>批归一化BN-防止过拟合</h2><p>神经网络训练的过程就是学习数据分布的过程，因此在训练之前对输入数据进行归一化处理。随着训练数据的增加，数据的分布随之该改变，致使网络在每次迭代时需要拟合不同的数据分布，这就增大了训练的复杂度和过拟合的风险。</p>
 <p>批归一化针对每一批次输入的训练数据，在网络的每层输入之前加入归一化处理(均值为0，标准化为1)，将所有批数据强制在统一的数据分布之下，对该层的每一个神经元</p>
 <script type="math/tex; mode=display">
 \bar{x}^{k}=\frac{x^{k}-E(x^{k})}{\sqrt{Var[x^{k}]}}</script><p>其中$x^{k}$为第$k$层神经元的原始数据，$E[x^{k}]$为这一批次的数据在第$k$个神经元的均值，$\sqrt{Var[x^{k}]}$为这一批次数据在第$k$个神经元的标准差。</p>
@@ -599,7 +602,58 @@ MSE&=\frac{1}{n}\sum_{i=1}^{n}(observed-predict)^{2} \\
 y^{k}=\gamma ^{k} \bar{x}^{k}+\beta ^{k}</script><p>$\gamma ^{k}$ 和$\beta ^{k}$分别为输入数据分布的方差和标准差，为学习参数。使用这两个参数进行反向变换，得到了原始数据的分布。</p>
 <p>在卷积网络之中使用<code>BN</code>，由于卷积神经网络的参数共享机制，每一个卷积核参数在不同位置的神经元中是共享的，每一个卷积核对应一组待学习的<code>BN</code>参数$\gamma ,\beta $</p>
 <p><code>BN</code>在一定程度上可以代替<code>Droupout</code></p>
-<h2 id="卷积网络"><a href="#卷积网络" class="headerlink" title="卷积网络"></a>卷积网络</h2><h3 id="卷积操作的本质特征"><a href="#卷积操作的本质特征" class="headerlink" title="卷积操作的本质特征"></a>卷积操作的本质特征</h3><p>本质特征：稀疏交互，参数共享</p>
+<h2 id="正则化-防止过拟合"><a href="#正则化-防止过拟合" class="headerlink" title="正则化-防止过拟合"></a>正则化-防止过拟合</h2><h3 id="所谓正则化"><a href="#所谓正则化" class="headerlink" title="所谓正则化"></a>所谓正则化</h3><p>在神经网络计算损失的过程中，在损失后面增加一项，如此损失值所代表的输出与标准结果之间的误差就会收到干扰，倒是学习到的参数<code>w</code>和<code>b</code>无法按照目标方向进行调整，实现模型无法与样本无法完全拟合的结果，从此实现了防止过拟合的效果。</p>
+<ul>
+<li>模型欠拟合时，希望正则化对模型误差的影响越小越好，以便模型快速拟合</li>
+<li>模型过拟合时，希望正则化对模型影响越大越好，以便模型不要发生过拟合</li>
+</ul>
+<p>正则化的一般形式为</p>
+<script type="math/tex; mode=display">
+\min _{f \in F} \frac{1}{N} \sum _{i=1}^{N}    L(y_{i},f(x_{i}))+\lambda J(f)</script><p>其中第一项<code>L</code>是经验损失，第二项<code>J</code>为正则化项，$\lambda$为平衡系数</p>
+<p>对于常用的正则，一般为<code>L1</code>正则和<code>L2</code>正则</p>
+<script type="math/tex; mode=display">
+L_{1}=less(0)+\lambda\sum_{W}^{n}|W| \\
+L_{2}=less(0)+\frac{\lambda}{2}\sum_{W}^{n}W^2</script><p><code>L1</code>：所有学习参数<code>w</code>的绝对值的和</p>
+<p><code>L2</code>：所有学习参数<code>w</code>的平方和然后再求平方根</p>
+<h3 id="两种正则化的对模型的影响"><a href="#两种正则化的对模型的影响" class="headerlink" title="两种正则化的对模型的影响"></a>两种正则化的对模型的影响</h3><h4 id="L1"><a href="#L1" class="headerlink" title="L1"></a>L1</h4><p>对于添加正则化的优化问题，可以认为是在原有优化目标的基础上增加了一个约束项,</p>
+<p>对于<code>L1</code>正则化</p>
+<script type="math/tex; mode=display">
+\begin{align}
+& \min_{w} \:\:\:\:\:\:\: & \frac{1}{N}\sum_{i=1}^{N} (f(x,w)-y)^{2} \\
+& s.t & \lambda\sum_{W}^{n}|W| \le a
+\end{align}</script><p>对应的拉格朗日问题为</p>
+<script type="math/tex; mode=display">
+L(x,\beta)=\frac{1}{N}\sum_{i=1}^{N} (f(x,w)-y)^{2}+\beta(\lambda\sum_{W}^{n}|W|- a)</script><p>根据KKT条件可以得到：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+& |W| \le \frac{a}{\lambda}
+\end{align}</script><p>同理对于<code>L2</code>正则化KK条件可以得到：</p>
+<script type="math/tex; mode=display">
+W^{2} \le \frac{a}{\lambda}</script><p>由此可以看出，约束条件限制了神经网络参数的取值空间。对于二维情况下，权值为$w^{1}$和$w^{2}$，此时解空间的约束为$|w^{1}|+|w^{2}| \le A$，此时的<code>L1</code>约束可以得到$w^{1}$和$w^{2}$的约束空间与目标函数的学习参数的解</p>
+<img src="/2018/11/20/机器学习-常用知识点/L1.jpg" title="L1">
+<p>可以看出，对于<code>L1</code>正则的目标函数，会在正则项的解空间和经验损失的解空间的交点处，得到模型的参数。</p>
+<p><strong>L1损失函数会产生稀疏模型并防止过拟合</strong></p>
+<p>对于<code>L1</code>正则化，平衡参数$\lambda$越大，可以使得代价函数在参数为$0$时取得最小值。</p>
+<img src="/2018/11/20/机器学习-常用知识点/L1_para.jpg" title="L1_lambda">
+<h4 id="L2"><a href="#L2" class="headerlink" title="L2"></a>L2</h4><p>对于<code>L2</code>损失函数，同样进行如此分析，解空间的约束为$(w^{1})^{2}+(w^2)^{2}&lt;A$</p>
+<img src="/2018/11/20/机器学习-常用知识点/L2.jpg" title="L2">
+<p>对于<code>L2</code>的目标函数，正则项约束了解的空间为一个圆形，与经验损失的解空间的交集出于<code>L1</code>相比，没有尖角特性，因此不会对模型的稀疏性产生影响。</p>
+<p><strong>L2损失函数只会对参数的值产生限制，但并不会使模型产生稀疏性</strong></p>
+<p>对于模型训练，一般认为得到的模型参数数值小的模型更简单，并且能够更好的适应不同的数据集，在一定程度上能够避免过拟合的现象。对于<code>L2</code>正则化可以使得模型获得更小的参数值</p>
+<p>对于模型训练，假设代价函数为$E_{k}=\frac{1}{2}\sum_{j=1}^{l}(\bar{y}-y)^2$，进行反向求导可以得到参数更新的方法为$\delta _{hj}=\delta_{hj}-\eta\frac{\partial{E_{k}}}{\partial{w_{hj}}}$，其中参数$\eta$为学习率，控制参数更新幅度，如果模型的代价函数加上了<code>L2</code>正则化，则参数更新方法为$\delta _{hj}=\delta_{hj}(1-a\lambda)-\eta\frac{\partial{E_{k}}}{\partial{w_{hj}}}$，在进行训练时，当前的参数都会乘以一个小于1的因子，使得更新之后的参数$\delta_{hj}$不断减小。</p>
+<h2 id="卷积网络"><a href="#卷积网络" class="headerlink" title="卷积网络"></a>卷积网络</h2><h3 id="卷积输出的尺寸计算公式"><a href="#卷积输出的尺寸计算公式" class="headerlink" title="卷积输出的尺寸计算公式"></a>卷积输出的尺寸计算公式</h3><p>卷积有两种<code>padding</code>表示是否要对输出的<code>feature map</code>进行边框补零操作，如果<code>padding=SAME</code>并且卷积的移动步长为1是生成的<code>feature map</code>与输入的尺寸相等。</p>
+<p>如果<code>padding=SAME</code>，计算公式为</p>
+<script type="math/tex; mode=display">
+\begin{align}
+height_{out}&=ceil[height_{input} \div height_{stride}] \\
+width_{out}&=ceil[width_{input} \div width_{stride}]
+\end{align}</script><p>如果<code>padding=VALID</code>，计算公式为</p>
+<script type="math/tex; mode=display">
+\begin{align}
+height_{out}&=ceil[(height_{input}-height_{kernel}+1) \div height_{stride}] \\
+width_{out}&=ceil[(width_{input}-width_{kernel}+1) \div width_{stride}]
+\end{align}</script><p><code>ceil</code>表示向上取整</p>
+<h3 id="卷积操作的本质特征"><a href="#卷积操作的本质特征" class="headerlink" title="卷积操作的本质特征"></a>卷积操作的本质特征</h3><p>本质特征：稀疏交互，参数共享</p>
 <h4 id="稀疏交互"><a href="#稀疏交互" class="headerlink" title="稀疏交互"></a>稀疏交互</h4><p>对于全连接来说，任何一对输入与输出神经元之间都产生交互，形成稠密连接结构。</p>
 <p>卷积网络中，卷积核尺度远小于输入的维度，每个输出神经元金鱼前一层特定区域内（卷积核感受野区域）的神经元存在连接，成为稀疏交互</p>
 <p>相对全连接来说，模型的参数量会减小几个数量级，会改善过拟合的情况</p>
@@ -607,10 +661,30 @@ y^{k}=\gamma ^{k} \bar{x}^{k}+\beta ^{k}</script><p>$\gamma ^{k}$ 和$\beta ^{k}
 <h4 id="参数共享"><a href="#参数共享" class="headerlink" title="参数共享"></a>参数共享</h4><p>在同一个模型的不同模块中使用相同的参数，这是卷积运算的固有属性。</p>
 <p>卷积核中的每个元素将作用于每一次局部输入的特定位置上，只需要学习一组参数，而不需要去学习每个位置的每个参数，降低了模型的存储需求和参数量</p>
 <p><strong>参数共享的物理意义：使卷积层具有平移不变形，假设一张图像中有一只🐱，不论这只猫在什么位置，都应该识别出来是🐱。当$f(g(x))=g(f(x))$时，乘坐$f(x)$关于变换$g$具有不变性，将$g$视为输入的任意平移函数。</strong></p>
-<h3 id="池化操作"><a href="#池化操作" class="headerlink" title="池化操作"></a>池化操作</h3><p>池化主要针对非重叠区域，包括均值池化和最大池化。</p>
+<h3 id="池化操作"><a href="#池化操作" class="headerlink" title="池化操作"></a>池化操作</h3><p>池化主要针对非重叠区域，包括均值池化和最大池化。<strong>其本质是进行降采样。</strong></p>
 <ul>
 <li>均值池化：对区域内数值求平均值，能够抑制由于邻域大小受限造成的估值方差增大的现象，<strong>对背景保留较好；</strong></li>
 <li>最大池化：提取区域内的最大值，能够抑制网络参数误差造成估计均值偏差的现象，<strong>能更好提取问题信息；</strong></li>
+<li>相邻重叠区域池化：采用的是比池化窗口更小的步长，在窗口每次滑动时存在重叠区域；</li>
+<li>空间金字塔池化：多尺度池化，使用不同尺寸的矩阵进行池化，之后将所有结果拼接在一起作为整个池化的结果输出；</li>
+</ul>
+<p>池化不但能够显著降低模型的参数量，还能够对模型保持平移、伸缩、旋转操作的不变性。</p>
+<ul>
+<li><p>平移不变性：输出的结果对输入的小量平移基本保持不变</p>
+</li>
+<li><p>伸缩不变性：池化主要感受的是邻域范围内的值，并不是某个确定的值，当输入尺度变换之后，输出保持不变；</p>
+</li>
+<li><p>旋转不变性：当池化之前的卷积核学习到不同角度的旋转时，对于之后的池化都会产生激活</p>
+</li>
+</ul>
+<h3 id="卷积应用于文本分类"><a href="#卷积应用于文本分类" class="headerlink" title="卷积应用于文本分类"></a>卷积应用于文本分类</h3><p>在图像上，卷积操作捕捉局部特征，对于文本来说，可以看做高度为$1$，宽度为<code>L</code>的序列。</p>
+<p>对于文本分来任务，局部特征可以看做由若干个单词组成的滑动窗口，类似于<code>N-gram</code>。卷积能够实现对<code>N-gram</code>特征进行组合和删选，获取不同层次的语义信息，由于卷积操作共享权重，因此参数量更小，训练速度快。</p>
+<p>具体实现：</p>
+<ul>
+<li>输入为$N \times K$的矩阵，$N$为文章对应的单词总数，$K$表示每个词对应的表示向量的维度。每个词的$K$维向量可以从其它从语料库中训练好的，类似于加载预训练参数，也可以使用词向量<code>word embeding</code>的方式进行生成。</li>
+<li>由于<code>N</code>对应着文章中所有的单词，一般情况下<code>N</code>是一个非常大的数，使用卷积核在<code>N</code>的方向上进行移动，假设每次卷积核的视野为$n \times H$，每次卷积核与感受野范围内的矩阵进行运算得到一个输出值，假设<code>n=2</code>，经过卷积，最终可以得到<code>N-2</code>个卷积输出，将这些输出连接在一起</li>
+<li>卷积之后进行池化降采样，可以使用最大池化或者平均池化</li>
+<li>池化之后链接<code>softmax</code>进行文本分类输出</li>
 </ul>
 
       
@@ -642,7 +716,7 @@ y^{k}=\gamma ^{k} \bar{x}^{k}+\beta ^{k}</script><p>$\gamma ^{k}$ 和$\beta ^{k}
   <p><span>本文标题:</span><a href="/2018/11/20/机器学习-常用知识点/">机器学习-常用知识点</a></p>
   <p><span>文章作者:</span><a href="/" title="访问 ShiXiaofeng 的个人博客">ShiXiaofeng</a></p>
   <p><span>发布时间:</span>2018年11月20日 - 19:53</p>
-  <p><span>最后更新:</span>2018年11月21日 - 16:49</p>
+  <p><span>最后更新:</span>2018年11月22日 - 19:33</p>
   <p><span>原始链接:</span><a href="/2018/11/20/机器学习-常用知识点/" title="机器学习-常用知识点">http://xiaofengshi.com/2018/11/20/机器学习-常用知识点/</a>
     <span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://xiaofengshi.com/2018/11/20/机器学习-常用知识点/" aria-label="复制成功！"></i></span>
   </p>
@@ -677,9 +751,9 @@ y^{k}=\gamma ^{k} \bar{x}^{k}+\beta ^{k}</script><p>$\gamma ^{k}$ 和$\beta ^{k}
       
         <div class="post-tags">
           
-            <a href="/tags/机器学习/" rel="tag"><i class="fa fa-tag"></i> 机器学习</a>
-          
             <a href="/tags/深度学习/" rel="tag"><i class="fa fa-tag"></i> 深度学习</a>
+          
+            <a href="/tags/机器学习/" rel="tag"><i class="fa fa-tag"></i> 机器学习</a>
           
             <a href="/tags/神经网络/" rel="tag"><i class="fa fa-tag"></i> 神经网络</a>
           
@@ -704,6 +778,10 @@ y^{k}=\gamma ^{k} \bar{x}^{k}+\beta ^{k}</script><p>$\gamma ^{k}$ 和$\beta ^{k}
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/23/深度学习-图像识别/" rel="prev" title="深度学习-图像识别">
+                深度学习-图像识别 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -785,7 +863,7 @@ y^{k}=\gamma ^{k} \bar{x}^{k}+\beta ^{k}</script><p>$\gamma ^{k}$ 和$\beta ^{k}
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -796,7 +874,7 @@ y^{k}=\gamma ^{k} \bar{x}^{k}+\beta ^{k}</script><p>$\gamma ^{k}$ 和$\beta ^{k}
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -807,7 +885,7 @@ y^{k}=\gamma ^{k} \bar{x}^{k}+\beta ^{k}</script><p>$\gamma ^{k}$ 和$\beta ^{k}
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -863,7 +941,7 @@ y^{k}=\gamma ^{k} \bar{x}^{k}+\beta ^{k}</script><p>$\gamma ^{k}$ 和$\beta ^{k}
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#多层感知机和布尔函数"><span class="nav-number">1.</span> <span class="nav-text">多层感知机和布尔函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#激活函数"><span class="nav-number">2.</span> <span class="nav-text">激活函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sigmoid函数"><span class="nav-number">2.1.</span> <span class="nav-text">sigmoid函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Tanh函数"><span class="nav-number">2.2.</span> <span class="nav-text">Tanh函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Relu-整流线性函数"><span class="nav-number">2.3.</span> <span class="nav-text">Relu 整流线性函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#relu改进型"><span class="nav-number">2.3.1.</span> <span class="nav-text">relu改进型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#swish函数"><span class="nav-number">2.4.</span> <span class="nav-text">swish函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#softmax-处理分类处理问题"><span class="nav-number">3.</span> <span class="nav-text">softmax-处理分类处理问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Loss-Fuction"><span class="nav-number">4.</span> <span class="nav-text">Loss_Fuction</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MSE"><span class="nav-number">4.1.</span> <span class="nav-text">MSE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#crossentropy"><span class="nav-number">4.2.</span> <span class="nav-text">crossentropy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#平方差损失函数为何不适合最后一层含有sigmoid或softmax"><span class="nav-number">4.3.</span> <span class="nav-text">平方差损失函数为何不适合最后一层含有sigmoid或softmax</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dropuout"><span class="nav-number">5.</span> <span class="nav-text">Dropuout</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#批归一化BN"><span class="nav-number">6.</span> <span class="nav-text">批归一化BN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#卷积网络"><span class="nav-number">7.</span> <span class="nav-text">卷积网络</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#卷积操作的本质特征"><span class="nav-number">7.1.</span> <span class="nav-text">卷积操作的本质特征</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#稀疏交互"><span class="nav-number">7.1.1.</span> <span class="nav-text">稀疏交互</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参数共享"><span class="nav-number">7.1.2.</span> <span class="nav-text">参数共享</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#池化操作"><span class="nav-number">7.2.</span> <span class="nav-text">池化操作</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#多层感知机和布尔函数"><span class="nav-number">1.</span> <span class="nav-text">多层感知机和布尔函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#激活函数"><span class="nav-number">2.</span> <span class="nav-text">激活函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sigmoid函数"><span class="nav-number">2.1.</span> <span class="nav-text">sigmoid函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Tanh函数"><span class="nav-number">2.2.</span> <span class="nav-text">Tanh函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Relu-整流线性函数"><span class="nav-number">2.3.</span> <span class="nav-text">Relu 整流线性函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#relu改进型"><span class="nav-number">2.3.1.</span> <span class="nav-text">relu改进型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#swish函数"><span class="nav-number">2.4.</span> <span class="nav-text">swish函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#softmax-处理分类处理问题"><span class="nav-number">3.</span> <span class="nav-text">softmax-处理分类处理问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Loss-Fuction"><span class="nav-number">4.</span> <span class="nav-text">Loss_Fuction</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MSE"><span class="nav-number">4.1.</span> <span class="nav-text">MSE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#crossentropy"><span class="nav-number">4.2.</span> <span class="nav-text">crossentropy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#平方差损失函数为何不适合最后一层含有sigmoid或softmax"><span class="nav-number">4.3.</span> <span class="nav-text">平方差损失函数为何不适合最后一层含有sigmoid或softmax</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dropuout-防止过拟合"><span class="nav-number">5.</span> <span class="nav-text">Dropuout-防止过拟合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#批归一化BN-防止过拟合"><span class="nav-number">6.</span> <span class="nav-text">批归一化BN-防止过拟合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#正则化-防止过拟合"><span class="nav-number">7.</span> <span class="nav-text">正则化-防止过拟合</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#所谓正则化"><span class="nav-number">7.1.</span> <span class="nav-text">所谓正则化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#两种正则化的对模型的影响"><span class="nav-number">7.2.</span> <span class="nav-text">两种正则化的对模型的影响</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#L1"><span class="nav-number">7.2.1.</span> <span class="nav-text">L1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#L2"><span class="nav-number">7.2.2.</span> <span class="nav-text">L2</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#卷积网络"><span class="nav-number">8.</span> <span class="nav-text">卷积网络</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#卷积输出的尺寸计算公式"><span class="nav-number">8.1.</span> <span class="nav-text">卷积输出的尺寸计算公式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#卷积操作的本质特征"><span class="nav-number">8.2.</span> <span class="nav-text">卷积操作的本质特征</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#稀疏交互"><span class="nav-number">8.2.1.</span> <span class="nav-text">稀疏交互</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参数共享"><span class="nav-number">8.2.2.</span> <span class="nav-text">参数共享</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#池化操作"><span class="nav-number">8.3.</span> <span class="nav-text">池化操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#卷积应用于文本分类"><span class="nav-number">8.4.</span> <span class="nav-text">卷积应用于文本分类</span></a></li></ol></li></ol></div>
             
 
           </div>
