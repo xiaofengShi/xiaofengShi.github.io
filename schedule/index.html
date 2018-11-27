@@ -85,18 +85,18 @@
 
 
 
-<meta name="description" content="1. 机器学习 数学基础  线性代数 随机过程 统计理论   传统机器学习算法  数据集及评价指标 线性回归 决策树 支持向量机 聚类 神经网络ANN   深度学习  计算机视觉  卷积，池化 目标分类 目标识别 图像标注/翻译 GANs   自然语言处理  机器翻译 语音识别">
+<meta name="description" content="回归算法 线性回归 逻辑回归 多元自适应回归（MARS） 本地散点平滑估计（LOESS）   基于实例的学习算法 K - 邻近算法（kNN） 学习矢量化（LVQ） 自组织映射算法（SOM） 局部加权学习算法（LWL）   正则化算法 岭回归（Ridge Regression） LASSO（Least Absolute Shrinkage and Selection Operator） Elast">
 <meta name="keywords" content="机器学习，深度学习，计算机视觉，tensorflow，pytorch,Leetcode">
 <meta property="og:type" content="website">
 <meta property="og:title" content="机器学习深度学习路径">
 <meta property="og:url" content="http://xiaofengshi.com/schedule/index.html">
 <meta property="og:site_name" content="机器学习那点事">
-<meta property="og:description" content="1. 机器学习 数学基础  线性代数 随机过程 统计理论   传统机器学习算法  数据集及评价指标 线性回归 决策树 支持向量机 聚类 神经网络ANN   深度学习  计算机视觉  卷积，池化 目标分类 目标识别 图像标注/翻译 GANs   自然语言处理  机器翻译 语音识别">
+<meta property="og:description" content="回归算法 线性回归 逻辑回归 多元自适应回归（MARS） 本地散点平滑估计（LOESS）   基于实例的学习算法 K - 邻近算法（kNN） 学习矢量化（LVQ） 自组织映射算法（SOM） 局部加权学习算法（LWL）   正则化算法 岭回归（Ridge Regression） LASSO（Least Absolute Shrinkage and Selection Operator） Elast">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-11-09T14:40:17.747Z">
+<meta property="og:updated_time" content="2018-11-25T12:08:16.773Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="机器学习深度学习路径">
-<meta name="twitter:description" content="1. 机器学习 数学基础  线性代数 随机过程 统计理论   传统机器学习算法  数据集及评价指标 线性回归 决策树 支持向量机 聚类 神经网络ANN   深度学习  计算机视觉  卷积，池化 目标分类 目标识别 图像标注/翻译 GANs   自然语言处理  机器翻译 语音识别">
+<meta name="twitter:description" content="回归算法 线性回归 逻辑回归 多元自适应回归（MARS） 本地散点平滑估计（LOESS）   基于实例的学习算法 K - 邻近算法（kNN） 学习矢量化（LVQ） 自组织映射算法（SOM） 局部加权学习算法（LWL）   正则化算法 岭回归（Ridge Regression） LASSO（Least Absolute Shrinkage and Selection Operator） Elast">
 
 
 
@@ -328,42 +328,132 @@
       <div class="post-body">
         
         
-          <h2 id="1-机器学习"><a href="#1-机器学习" class="headerlink" title="1. 机器学习"></a>1. 机器学习</h2><ul>
-<li><p>数学基础</p>
-<ul>
-<li>线性代数</li>
-<li>随机过程</li>
-<li>统计理论</li>
-</ul>
-</li>
-<li><p>传统机器学习算法</p>
-<ul>
-<li>数据集及评价指标</li>
+          <ul>
+<li>回归算法<ul>
 <li>线性回归</li>
-<li>决策树</li>
-<li>支持向量机</li>
-<li>聚类</li>
-<li>神经网络ANN</li>
+<li>逻辑回归</li>
+<li>多元自适应回归（MARS）</li>
+<li>本地散点平滑估计（LOESS）</li>
 </ul>
 </li>
-<li><p>深度学习</p>
-<ul>
-<li><p>计算机视觉</p>
-<ul>
-<li>卷积，池化</li>
-<li>目标分类</li>
-<li>目标识别</li>
-<li>图像标注/翻译</li>
-<li>GANs</li>
+<li>基于实例的学习算法<ul>
+<li>K - 邻近算法（kNN）</li>
+<li>学习矢量化（LVQ）</li>
+<li>自组织映射算法（SOM）</li>
+<li>局部加权学习算法（LWL）</li>
 </ul>
 </li>
-<li><p>自然语言处理</p>
-<ul>
-<li>机器翻译</li>
-<li>语音识别</li>
-<li></li>
+<li>正则化算法<ul>
+<li>岭回归（Ridge Regression）</li>
+<li>LASSO（Least Absolute Shrinkage and Selection Operator）</li>
+<li>Elastic Net</li>
+<li>最小角回归（LARS）</li>
 </ul>
 </li>
+<li>决策树算法<ul>
+<li>分类和回归树（CART）<ul>
+<li>分类：基尼指数</li>
+<li>回归：最小平方差</li>
+<li>离散+连续数据</li>
+</ul>
+</li>
+<li>ID3 算法 (Iterative Dichotomiser 3)<ul>
+<li>最大信息增益</li>
+<li>分类</li>
+<li>离散数据</li>
+</ul>
+</li>
+<li>C4.5 和 C5.0<ul>
+<li>最大信息增益率</li>
+<li>分类</li>
+<li>离散+连续数据</li>
+</ul>
+</li>
+<li>CHAID（Chi-squared Automatic Interaction Detection(）</li>
+<li>随机森林（Random Forest）</li>
+<li>多元自适应回归样条（MARS）</li>
+<li>梯度推进机（Gradient Boosting Machine， GBM）</li>
+</ul>
+</li>
+<li>贝叶斯算法<ul>
+<li>朴素贝叶斯</li>
+<li>高斯朴素贝叶斯</li>
+<li>多项式朴素贝叶斯</li>
+<li>AODE（Averaged One-Dependence Estimators）</li>
+<li>贝叶斯网络（Bayesian Belief Network）</li>
+</ul>
+</li>
+<li>基于核的算法<ul>
+<li>支持向量机（SVM）<ul>
+<li>函数间隔，几何间隔，软间隔</li>
+<li>拉格朗日函数，对偶问题，KKT</li>
+<li>SMO，核函数</li>
+</ul>
+</li>
+<li>径向基函数（Radial Basis Function ，RBF)</li>
+<li>线性判别分析（Linear Discriminate Analysis ，LDA)</li>
+</ul>
+</li>
+<li>聚类算法<ul>
+<li>K - 均值<ul>
+<li><code>Kmeans</code>，<code>Kmeans++</code>，二分<code>kemans</code></li>
+</ul>
+</li>
+<li>K - 中位数</li>
+<li>EM 算法</li>
+<li>分层聚类</li>
+</ul>
+</li>
+<li>关联规则学习<ul>
+<li>Apriori 算法</li>
+<li>Eclat 算法</li>
+</ul>
+</li>
+<li>神经网络<ul>
+<li>感知器</li>
+<li>反向传播算法（BP）</li>
+<li>Hopfield 网络</li>
+<li>径向基函数网络（RBFN）</li>
+</ul>
+</li>
+<li>深度学习<ul>
+<li>深度玻尔兹曼机（DBM）</li>
+<li>卷积神经网络（CNN）</li>
+<li>递归神经网络（RNN、LSTM）</li>
+<li>栈式自编码算法（Stacked Auto-Encoder）</li>
+</ul>
+</li>
+<li>降维算法<ul>
+<li>主成分分析法（PCA）</li>
+<li>主成分回归（PCR）</li>
+<li>偏最小二乘回归（PLSR）</li>
+<li>萨蒙映射</li>
+<li>多维尺度分析法（MDS）</li>
+<li>投影寻踪法（PP）</li>
+<li>线性判别分析法（LDA）</li>
+<li>混合判别分析法（MDA）</li>
+<li>二次判别分析法（QDA）</li>
+<li>灵活判别分析法（Flexible Discriminant Analysis，FDA</li>
+</ul>
+</li>
+<li>集成算法<ul>
+<li>Boosting</li>
+<li>Bagging</li>
+<li>AdaBoost</li>
+<li>堆叠泛化（混合）</li>
+<li>GBM 算法</li>
+<li>GBRT 算法</li>
+<li>随机森林</li>
+</ul>
+</li>
+<li>其他算法<ul>
+<li>特征选择算法</li>
+<li>性能评估算法</li>
+<li>自然语言处理</li>
+<li>计算机视觉</li>
+<li>推荐系统</li>
+<li>强化学习</li>
+<li>迁移学习</li>
 </ul>
 </li>
 </ul>
@@ -405,17 +495,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -432,7 +513,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -443,7 +524,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -454,7 +535,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">25</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -500,22 +581,6 @@
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-机器学习"><span class="nav-number">1.</span> <span class="nav-text">1. 机器学习</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       

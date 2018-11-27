@@ -72,7 +72,7 @@
 
 
 
-  <meta name="keywords" content="机器学习,聚类,EM,高斯混合分布,">
+  <meta name="keywords" content="机器学习,EM,聚类,高斯混合分布,">
 
 
 
@@ -85,19 +85,19 @@
 
 
 
-<meta name="description" content="聚类是一种主要用于处理分类的无监督任务。给出一组无标记的数据，目标是找到这组数据的模式特征，例如哪些数据是同一类型的，那些数据是另外的类型。">
-<meta name="keywords" content="机器学习,聚类,EM,高斯混合分布">
+<meta name="description" content="聚类是一种主要用于处理分类的无监督任务。给出一组无标记的数据，目标是找到这组数据的模式特征，例如哪些数据是同一类型的，哪些数据是另外的类型。聚类与分类的最大区别就是分类的目标实现已知，例如我们熟知的猫狗大战，在进行分类之前我们就已经知道给定的样本非猫即狗，但是在聚类的时候，对目标是未知的，只能根据给定的数据的特征，按照自己设定的划分标准将样本进行划分">
+<meta name="keywords" content="机器学习,EM,聚类,高斯混合分布">
 <meta property="og:type" content="article">
 <meta property="og:title" content="机器学习-聚类">
 <meta property="og:url" content="http://xiaofengshi.com/2018/11/09/机器学习-聚类/index.html">
 <meta property="og:site_name" content="机器学习那点事">
-<meta property="og:description" content="聚类是一种主要用于处理分类的无监督任务。给出一组无标记的数据，目标是找到这组数据的模式特征，例如哪些数据是同一类型的，那些数据是另外的类型。">
+<meta property="og:description" content="聚类是一种主要用于处理分类的无监督任务。给出一组无标记的数据，目标是找到这组数据的模式特征，例如哪些数据是同一类型的，哪些数据是另外的类型。聚类与分类的最大区别就是分类的目标实现已知，例如我们熟知的猫狗大战，在进行分类之前我们就已经知道给定的样本非猫即狗，但是在聚类的时候，对目标是未知的，只能根据给定的数据的特征，按照自己设定的划分标准将样本进行划分">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://xiaofengshi.com/2018/11/09/机器学习-聚类/k-means.png">
-<meta property="og:updated_time" content="2018-11-11T09:23:44.436Z">
+<meta property="og:updated_time" content="2018-11-25T13:19:25.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="机器学习-聚类">
-<meta name="twitter:description" content="聚类是一种主要用于处理分类的无监督任务。给出一组无标记的数据，目标是找到这组数据的模式特征，例如哪些数据是同一类型的，那些数据是另外的类型。">
+<meta name="twitter:description" content="聚类是一种主要用于处理分类的无监督任务。给出一组无标记的数据，目标是找到这组数据的模式特征，例如哪些数据是同一类型的，哪些数据是另外的类型。聚类与分类的最大区别就是分类的目标实现已知，例如我们熟知的猫狗大战，在进行分类之前我们就已经知道给定的样本非猫即狗，但是在聚类的时候，对目标是未知的，只能根据给定的数据的特征，按照自己设定的划分标准将样本进行划分">
 <meta name="twitter:image" content="http://xiaofengshi.com/2018/11/09/机器学习-聚类/k-means.png">
 
 
@@ -440,7 +440,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.7k 字
+                  1.9k 字
                 </span>
               
 
@@ -477,11 +477,11 @@
       
 
       
-        <p>聚类是一种主要用于处理分类的无监督任务。给出一组无标记的数据，目标是找到这组数据的模式特征，例如哪些数据是同一类型的，那些数据是另外的类型。</p>
+        <p>聚类是一种主要用于处理分类的无监督任务。<strong>给出一组无标记的数据</strong>，目标是找到这组数据的模式特征，例如哪些数据是同一类型的，哪些数据是另外的类型。聚类与分类的最大区别就是分类的目标实现已知，例如我们熟知的猫狗大战，在进行分类之前我们就已经知道给定的样本非猫即狗，但是在聚类的时候，对目标是未知的，只能根据给定的数据的特征，按照自己设定的划分标准将样本进行划分</p>
 <a id="more"></a>
 <img src="/2018/11/09/机器学习-聚类/k-means.png" title="待聚类数据">
-<h2 id="K均值聚类"><a href="#K均值聚类" class="headerlink" title="K均值聚类"></a>K均值聚类</h2><p>k均值聚类是最基础最常用的聚类算法，基本思想是：通过迭代的方式寻找K个簇的一种划分方案，是的聚类结果的代价函数最小，一般使用各个样本距离所属簇的中心点的误差平方和。</p>
-<h3 id="k均值聚类的算法思想"><a href="#k均值聚类的算法思想" class="headerlink" title="k均值聚类的算法思想"></a>k均值聚类的算法思想</h3><ul>
+<h2 id="K-means"><a href="#K-means" class="headerlink" title="K-means"></a>K-means</h2><p>k均值聚类是最基础最常用的聚类算法，基本思想是：通过迭代的方式寻找K个簇的一种划分方案，是的聚类结果的代价函数最小，一般使用各个样本距离所属簇的中心点的误差平方和。常用的距离计算的方法有欧氏距离，曼哈顿距离和余弦相似性距离。</p>
+<h3 id="k-means的工作流程"><a href="#k-means的工作流程" class="headerlink" title="k-means的工作流程"></a>k-means的工作流程</h3><ul>
 <li>首先对数据进行预处理，数据归一化以及离群点删除；</li>
 <li>随机选取K个点作为k个簇的中心点；</li>
 <li>计算样本中各个样本与选取的k个值的距离，把每个数据样本分配到距离其最近的聚类中心所属于的簇，成本函数$J=\frac{1}{m}\sum^{m}||x_{i}-u||^2$</li>
@@ -495,32 +495,35 @@
 <li><p><strong>sklearn实现</strong>：<a href="https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/10.kmeans/kMeansSklearn.py" target="_blank" rel="noopener">https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/10.kmeans/kMeansSklearn.py</a></p>
 </li>
 </ul>
-<h3 id="k均值聚类的优缺点"><a href="#k均值聚类的优缺点" class="headerlink" title="k均值聚类的优缺点"></a>k均值聚类的优缺点</h3><ul>
-<li>缺点<ul>
-<li>会受到初始值和离群点的影响；</li>
-<li>结果通常不是全局最优，一般是局部最优;</li>
-<li>无法解决簇分布比例差别比较大的情况，比如有两个簇，但是两个簇的样本量差别很大(一个簇包含100个样本，另一个簇包含10个样本)，那么数量少的那个簇很容易会无法提取到;</li>
-<li>需要人工干预进行<strong>K</strong>设置</li>
+<h3 id="k均值聚类的优缺点"><a href="#k均值聚类的优缺点" class="headerlink" title="k均值聚类的优缺点"></a>k均值聚类的优缺点</h3><p><code>K-means</code>针对的数据类型为<strong>数值型数据</strong></p>
+<ul>
+<li>优点<ul>
+<li>无监督学习，无需准备数据集</li>
+<li>对于大数据集，<code>K-means</code>是可伸缩和高效的</li>
+<li>计算复杂度$NKt$ 其中N为样本规模，K为设置的簇的数量，t为迭代的轮数</li>
+<li>原理简单，实现容易，可解释性强</li>
 </ul>
 </li>
-<li>优点<ul>
-<li>对于大数据集，<strong>K</strong>均值聚类是可伸缩和高效的</li>
-<li>计算复杂度$NKt$ 其中N为样本规模，K为设置的簇的数量，t为迭代的轮数</li>
+<li>缺点<ul>
+<li>会受到初始值和离群点的影响；</li>
+<li>结果通常不是全局最优，一般是局部最优，大规模数据集收敛较慢;</li>
+<li>无法解决簇分布比例差别比较大的情况，比如有两个簇，但是两个簇的样本量差别很大(一个簇包含100个样本，另一个簇包含10个样本)，那么数量少的那个簇很容易会无法提取到;</li>
+<li>需要人工干预进行$k$设置</li>
 </ul>
 </li>
 </ul>
 <h3 id="调优方法"><a href="#调优方法" class="headerlink" title="调优方法"></a>调优方法</h3><ul>
 <li><p>数据归一化和离群点处理，归一化是由于代价函数为距离，要进行归一化处理，离群点或噪声会对均值产生很大影响。</p>
 </li>
-<li><p>k值的选择</p>
+<li><p><code>k</code>值的选择</p>
 <ul>
-<li><p>手肘法：横轴K，纵轴为代价损失，随着k增加，代价损失会降低，选择代价函数降低幅度显著变小的点对应的k值，这种方法不够自动化，并且很依赖经验</p>
+<li><p>手肘法：横轴<code>K</code>，纵轴为代价损失，随着<code>k</code>增加，代价损失会降低，选择代价函数降低幅度显著变小的点对应的<code>k</code>值，这种方法不够自动化，并且很依赖经验</p>
 </li>
-<li><p>Gap Statistic方法：$Gap(K)=E(logE_{k})-logD_{k}$ </p>
+<li><p><code>Gap Statistic</code>方法：$Gap(K)=E(logE_{k})-logD_{k}$ </p>
 <p>其中$E(logE_{k})$代表$logD_{k}$的期望，在样本空间所在的区域内，按照均匀分布生成和原始样本数量相同的随机样本，并对这个样本进行k均值，得到一个$D_{k}$,重复多次计算出$E(logE_{k})$的近似值。</p>
 </li>
 <li><p>核函数</p>
-<p>类似于svm的方法，对原始数据样本进行非线性映射，将输入空间的数据点映射到高维特征空间，并在新的特征空间中进行聚类。</p>
+<p>类似于<code>svm</code>的方法，对原始数据样本进行非线性映射，将输入空间的数据点映射到高维特征空间，并在新的特征空间中进行聚类。</p>
 </li>
 <li><p>二分$k-means$</p>
 <p>该算法首先将所有点作为一个簇，然后将该簇一分为二。之后选择其中一个簇继续进行划分，选择哪一个簇进行划分取决于对其划分时候可以最大程度降低 SSE（平方和误差）的值。上述基于 SSE 的划分过程不断重复，直到得到用户指定的簇数目为止。</p>
@@ -529,8 +532,8 @@
 </li>
 </ul>
 <h2 id="k-means"><a href="#k-means" class="headerlink" title="k-means++"></a>k-means++</h2><p><strong>针对k-means中的k个初始值的选择进行了改进。</strong></p>
-<p>在k-means中初始k个点选择为全部随机选择。在<strong>k-means++</strong>中，假设已经选取了n个聚类中心，在选择第n+1个聚类中心时，距离当前n个聚类中心更远的点会有更高的概率被选为第N+1个点；第一个点仍然是随机选择，从第二个点开始，按照如上原则进行选择。</p>
-<h2 id="ISOdata算法"><a href="#ISOdata算法" class="headerlink" title="ISOdata算法"></a>ISOdata算法</h2><p><strong>针对k-means中k大小的选择进行了改进</strong></p>
+<p>在<code>k-means</code>中初始<code>k</code>个点选择为全部随机选择。在<strong>k-means++</strong>中，假设已经选取了<code>n</code>个聚类中心，在选择第<code>n+1</code>个聚类中心时，距离当前<code>n</code>个聚类中心更远的点会有更高的概率被选为第<code>n+1</code>个点；第一个点仍然是随机选择，从第二个点开始，按照如上原则进行选择。</p>
+<h2 id="ISOdata算法"><a href="#ISOdata算法" class="headerlink" title="ISOdata算法"></a>ISOdata算法</h2><p><strong>针对<code>k-means</code>中<code>k</code>大小的选择进行了改进</strong></p>
 <ul>
 <li><p>思想：</p>
 <p>当属于某一个簇的数量样本少于一定阈值是，把这个类进行删除(合并操作)；当属于某个簇的样本数量过多、分赛程度较大时，把该簇分为两个簇(分裂操作)。在原来k-means的基础上增加了合并操作和分裂操作。</p>
@@ -596,7 +599,7 @@ p(x)=\sum_{i=1}^{K}\pi_{i}N(x|\mu_{i}, \sigma_{i})</script><p>每次循环时，
   <p><span>本文标题:</span><a href="/2018/11/09/机器学习-聚类/">机器学习-聚类</a></p>
   <p><span>文章作者:</span><a href="/" title="访问 ShiXiaofeng 的个人博客">ShiXiaofeng</a></p>
   <p><span>发布时间:</span>2018年11月09日 - 16:59</p>
-  <p><span>最后更新:</span>2018年11月11日 - 17:23</p>
+  <p><span>最后更新:</span>2018年11月25日 - 21:19</p>
   <p><span>原始链接:</span><a href="/2018/11/09/机器学习-聚类/" title="机器学习-聚类">http://xiaofengshi.com/2018/11/09/机器学习-聚类/</a>
     <span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://xiaofengshi.com/2018/11/09/机器学习-聚类/" aria-label="复制成功！"></i></span>
   </p>
@@ -633,9 +636,9 @@ p(x)=\sum_{i=1}^{K}\pi_{i}N(x|\mu_{i}, \sigma_{i})</script><p>每次循环时，
           
             <a href="/tags/机器学习/" rel="tag"><i class="fa fa-tag"></i> 机器学习</a>
           
-            <a href="/tags/聚类/" rel="tag"><i class="fa fa-tag"></i> 聚类</a>
-          
             <a href="/tags/EM/" rel="tag"><i class="fa fa-tag"></i> EM</a>
+          
+            <a href="/tags/聚类/" rel="tag"><i class="fa fa-tag"></i> 聚类</a>
           
             <a href="/tags/高斯混合分布/" rel="tag"><i class="fa fa-tag"></i> 高斯混合分布</a>
           
@@ -745,7 +748,7 @@ p(x)=\sum_{i=1}^{K}\pi_{i}N(x|\mu_{i}, \sigma_{i})</script><p>每次循环时，
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -756,7 +759,7 @@ p(x)=\sum_{i=1}^{K}\pi_{i}N(x|\mu_{i}, \sigma_{i})</script><p>每次循环时，
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -767,7 +770,7 @@ p(x)=\sum_{i=1}^{K}\pi_{i}N(x|\mu_{i}, \sigma_{i})</script><p>每次循环时，
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">25</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -823,7 +826,7 @@ p(x)=\sum_{i=1}^{K}\pi_{i}N(x|\mu_{i}, \sigma_{i})</script><p>每次循环时，
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#K均值聚类"><span class="nav-number">1.</span> <span class="nav-text">K均值聚类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#k均值聚类的算法思想"><span class="nav-number">1.1.</span> <span class="nav-text">k均值聚类的算法思想</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#k均值聚类的优缺点"><span class="nav-number">1.2.</span> <span class="nav-text">k均值聚类的优缺点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#调优方法"><span class="nav-number">1.3.</span> <span class="nav-text">调优方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k-means"><span class="nav-number">2.</span> <span class="nav-text">k-means++</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ISOdata算法"><span class="nav-number">3.</span> <span class="nav-text">ISOdata算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EM算法"><span class="nav-number">4.</span> <span class="nav-text">EM算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#高斯混合模型"><span class="nav-number">5.</span> <span class="nav-text">高斯混合模型</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#K-means"><span class="nav-number">1.</span> <span class="nav-text">K-means</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#k-means的工作流程"><span class="nav-number">1.1.</span> <span class="nav-text">k-means的工作流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#k均值聚类的优缺点"><span class="nav-number">1.2.</span> <span class="nav-text">k均值聚类的优缺点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#调优方法"><span class="nav-number">1.3.</span> <span class="nav-text">调优方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k-means"><span class="nav-number">2.</span> <span class="nav-text">k-means++</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ISOdata算法"><span class="nav-number">3.</span> <span class="nav-text">ISOdata算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EM算法"><span class="nav-number">4.</span> <span class="nav-text">EM算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#高斯混合模型"><span class="nav-number">5.</span> <span class="nav-text">高斯混合模型</span></a></li></ol></div>
             
 
           </div>

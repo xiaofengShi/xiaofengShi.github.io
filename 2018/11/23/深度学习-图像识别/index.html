@@ -110,7 +110,7 @@
 <meta property="og:image" content="http://xiaofengshi.com/2018/11/23/深度学习-图像识别/squeezenet_result.png">
 <meta property="og:image" content="http://xiaofengshi.com/2018/11/23/深度学习-图像识别/mobilenet_conv.png">
 <meta property="og:image" content="http://xiaofengshi.com/2018/11/23/深度学习-图像识别/mobilenet_cov2.png">
-<meta property="og:updated_time" content="2018-11-24T08:37:43.006Z">
+<meta property="og:updated_time" content="2018-11-25T11:22:09.792Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深度学习-图像识别">
 <meta name="twitter:description" content="所谓图像识别，就是识别一张图像的类别，比如说猫狗大战，图像识别是最基础的计算机视觉任务。对于计算机视觉而言，从简单到复杂一般包括：  图像识别 目标检测 图像分割 图像翻译/描述  对于图像识别任务中，待识别的照片类似于大头贴的形式，即目标基本覆盖整张图像的大部分区域。对于机器学习任务，网络的搭建以及模型的训练过程，实际上就是学习输入数据到标签之间的映射的过程，假设输入的数据为X，对应的标签为Y,">
@@ -603,7 +603,7 @@ x_{l}=H_{l}([x_{0},x_{1}...,x_{l-1}])</script><p>其中$[x_{0},x_{1}…,x_{l-1}]
 </ul>
 <img src="/2018/11/23/深度学习-图像识别/densenet_Archi.jpg" title="densenet_Archi">
 <p>在每个<code>densenet block</code>内部进行不同feature 的连接</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Dense_net</span><span class="params">(self, input_x)</span>:</span></span><br><span class="line">    	<span class="comment"># input_X=[224，224，3]，self.filters=12</span></span><br><span class="line">    	<span class="comment"># 输入图片首先进行conv7-2</span></span><br><span class="line">        <span class="comment"># 输出为：[112,112,24]</span></span><br><span class="line">        x = conv_layer(input_x, filter=<span class="number">2</span> * self.filters, kernel=[<span class="number">7</span>,<span class="number">7</span>], stride=<span class="number">2</span>, layer_name=<span class="string">'conv0'</span>)</span><br><span class="line">        <span class="comment"># maxpool3-2 输出[56,56,24]</span></span><br><span class="line">        x = Max_Pooling(x, pool_size=[<span class="number">3</span>,<span class="number">3</span>], stride=<span class="number">2</span>)</span><br><span class="line">		<span class="comment"># block+transition</span></span><br><span class="line">        x = self.dense_block(input_x=x, nb_layers=<span class="number">6</span>, layer_name=<span class="string">'dense_1'</span>)</span><br><span class="line">        x = self.transition_layer(x, scope=<span class="string">'trans_1'</span>)</span><br><span class="line"></span><br><span class="line">        x = self.dense_block(input_x=x, nb_layers=<span class="number">12</span>, layer_name=<span class="string">'dense_2'</span>)</span><br><span class="line">        x = self.transition_layer(x, scope=<span class="string">'trans_2'</span>)</span><br><span class="line"></span><br><span class="line">        x = self.dense_block(input_x=x, nb_layers=<span class="number">48</span>, layer_name=<span class="string">'dense_3'</span>)</span><br><span class="line">        x = self.transition_layer(x, scope=<span class="string">'trans_3'</span>)</span><br><span class="line"></span><br><span class="line">        x = self.dense_block(input_x=x, nb_layers=<span class="number">32</span>, layer_name=<span class="string">'dense_final'</span>) </span><br><span class="line">        </span><br><span class="line">        x = Batch_Normalization(x, training=self.training, scope=<span class="string">'linear_batch'</span>)</span><br><span class="line">        x = Relu(x)</span><br><span class="line">        x = Global_Average_Pooling(x)</span><br><span class="line">        x = Linear(x)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Dense_net</span><span class="params">(self, input_x)</span>:</span></span><br><span class="line">        <span class="comment"># input_X=[224，224，3]，self.filters=12</span></span><br><span class="line">        <span class="comment"># 输入图片首先进行conv7-2</span></span><br><span class="line">        <span class="comment"># 输出为：[112,112,24]</span></span><br><span class="line">        x = conv_layer(input_x, filter=<span class="number">2</span> * self.filters, kernel=[<span class="number">7</span>,<span class="number">7</span>], stride=<span class="number">2</span>, layer_name=<span class="string">'conv0'</span>)</span><br><span class="line">        <span class="comment"># maxpool3-2 输出[56,56,24]</span></span><br><span class="line">        x = Max_Pooling(x, pool_size=[<span class="number">3</span>,<span class="number">3</span>], stride=<span class="number">2</span>)</span><br><span class="line">        <span class="comment"># block+transition</span></span><br><span class="line">        x = self.dense_block(input_x=x, nb_layers=<span class="number">6</span>, layer_name=<span class="string">'dense_1'</span>)</span><br><span class="line">        x = self.transition_layer(x, scope=<span class="string">'trans_1'</span>)</span><br><span class="line"></span><br><span class="line">        x = self.dense_block(input_x=x, nb_layers=<span class="number">12</span>, layer_name=<span class="string">'dense_2'</span>)</span><br><span class="line">        x = self.transition_layer(x, scope=<span class="string">'trans_2'</span>)</span><br><span class="line"></span><br><span class="line">        x = self.dense_block(input_x=x, nb_layers=<span class="number">48</span>, layer_name=<span class="string">'dense_3'</span>)</span><br><span class="line">        x = self.transition_layer(x, scope=<span class="string">'trans_3'</span>)</span><br><span class="line"></span><br><span class="line">        x = self.dense_block(input_x=x, nb_layers=<span class="number">32</span>, layer_name=<span class="string">'dense_final'</span>) </span><br><span class="line"></span><br><span class="line">        x = Batch_Normalization(x, training=self.training, scope=<span class="string">'linear_batch'</span>)</span><br><span class="line">        x = Relu(x)</span><br><span class="line">        x = Global_Average_Pooling(x)</span><br><span class="line">        x = Linear(x)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
 <ul>
 <li><p>Dense block</p>
 <img src="/2018/11/23/深度学习-图像识别/Denseblock.jpg" title="Denseblock">
@@ -771,7 +771,7 @@ H*W*16*(1*1*C)+H*W*64*(1*1*16)&+H*W*64*(3*3*16) \\
   <p><span>本文标题:</span><a href="/2018/11/23/深度学习-图像识别/">深度学习-图像识别</a></p>
   <p><span>文章作者:</span><a href="/" title="访问 ShiXiaofeng 的个人博客">ShiXiaofeng</a></p>
   <p><span>发布时间:</span>2018年11月23日 - 16:17</p>
-  <p><span>最后更新:</span>2018年11月24日 - 16:37</p>
+  <p><span>最后更新:</span>2018年11月25日 - 19:22</p>
   <p><span>原始链接:</span><a href="/2018/11/23/深度学习-图像识别/" title="深度学习-图像识别">http://xiaofengshi.com/2018/11/23/深度学习-图像识别/</a>
     <span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://xiaofengshi.com/2018/11/23/深度学习-图像识别/" aria-label="复制成功！"></i></span>
   </p>
@@ -833,6 +833,10 @@ H*W*16*(1*1*C)+H*W*64*(1*1*16)&+H*W*64*(3*3*16) \\
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/25/机器学习-EM算法/" rel="prev" title="机器学习-EM算法">
+                机器学习-EM算法 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -914,7 +918,7 @@ H*W*16*(1*1*C)+H*W*64*(1*1*16)&+H*W*64*(3*3*16) \\
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -925,7 +929,7 @@ H*W*16*(1*1*C)+H*W*64*(1*1*16)&+H*W*64*(3*3*16) \\
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -936,7 +940,7 @@ H*W*16*(1*1*C)+H*W*64*(1*1*16)&+H*W*64*(3*3*16) \\
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">25</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
