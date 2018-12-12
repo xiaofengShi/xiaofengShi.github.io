@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://xiaofengshi.com/"/>
-  <updated>2018-12-12T09:13:51.043Z</updated>
+  <updated>2018-12-12T09:30:22.542Z</updated>
   <id>http://xiaofengshi.com/</id>
   
   <author>
@@ -17,11 +17,25 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>ImageCaption</title>
+    <link href="http://xiaofengshi.com/2018/12/12/ImageCaption/"/>
+    <id>http://xiaofengshi.com/2018/12/12/ImageCaption/</id>
+    <published>2018-12-12T09:30:22.000Z</published>
+    <updated>2018-12-12T09:30:22.542Z</updated>
+    
+    <summary type="html">
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
     <title>AwsomeProcess</title>
     <link href="http://xiaofengshi.com/2018/12/12/AwsomeProcess/"/>
     <id>http://xiaofengshi.com/2018/12/12/AwsomeProcess/</id>
     <published>2018-12-12T08:37:46.000Z</published>
-    <updated>2018-12-12T09:13:51.043Z</updated>
+    <updated>2018-12-12T09:26:54.569Z</updated>
     
     <content type="html"><![CDATA[<p>本篇涉及一些常用操作及查询手册</p><h2 id="Jupyter服务器布置"><a href="#Jupyter服务器布置" class="headerlink" title="Jupyter服务器布置"></a>Jupyter服务器布置</h2><p>RT，由于服务器端是不提供图形界面的，因此在进行开发时候，一般采用的是本地开发调试，通过之后再进行服务器端的<code>deploy</code>，对于机器学习来说，由于本人使用的<code>Mac</code>电脑，硬件配置是在堪忧，而服务器端用的是<code>3*1080Ti</code>，如何实现在服务器端启动jupyter服务，并且在本地进行文件编写及测试呢？</p><ol><li><p>登录远程服务器，一般的使用的是<code>ssh</code>的方式</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh usrname@server_url</span><br></pre></td></tr></table></figure><p>提示输入密码登录即可</p></li><li><p>确保在服务器端安装了<code>jupyter notebook</code> 或者<code>jupyterlab</code>，可以先进入个人账户名下的虚拟环境并激活，接下来进行<code>jupyter</code>的设置</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sudo pip install pyzmq</span><br><span class="line">sudo pip install tornado</span><br><span class="line">sudo pip install jinja2</span><br><span class="line">sudo pip install jsonschema</span><br><span class="line">sudo pip install jupyter</span><br><span class="line">sudo pip install jupyterlab</span><br></pre></td></tr></table></figure></li><li><p>生成配置文件</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jupyter notebook --generate-config</span><br></pre></td></tr></table></figure><p>生成的配置文件保地址为</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/.jupyter/jupyter_notebook_config.py</span><br></pre></td></tr></table></figure></li><li><p>生成本地登录密码，在服务器端打开<code>ipython</code></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">In [1]: from IPython.lib import passwd</span><br><span class="line">In [2]: passwd()</span><br><span class="line"><span class="comment"># 这里输入的密码为本地访问服务器jupyter是需要输入的密码</span></span><br><span class="line">Enter password: </span><br><span class="line">Verify password: </span><br><span class="line">Out[2]: <span class="string">'sha1:0e422dfccef2:84cfbcbb3ef95872fb8e23be3999c123f862d856'</span></span><br></pre></td></tr></table></figure></li><li><p>保存并复制生成的密码<code>sha1:....</code>，修改<strong>第三步</strong>生成的配置文件</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.jupyter/jupyter_notebook_config.py</span><br></pre></td></tr></table></figure><p>会看到该文件大部分为注释，随便选个位置复制粘贴如下内容并保存配置文件</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">c.NotebookApp.ip=<span class="string">'*'</span></span><br><span class="line">c.NotebookApp.password = u<span class="string">'sha1:ce...刚才复制的那个密文'</span></span><br><span class="line">c.NotebookApp.open_browser = False</span><br><span class="line">c.NotebookApp.port =9999 <span class="comment">#随便指定一个端口,为本地访问的端口</span></span><br><span class="line">c.IPKernelApp.pylab = <span class="string">'inline'</span></span><br></pre></td></tr></table></figure></li><li><p>服务器端启动<code>jupyter</code></p><p>下面这两个启动一个就可以，<code>jupyter lab</code> 为<code>jupyter notebook</code> 的高级版本</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ jupyter notebook  <span class="comment"># 启动notebook</span></span><br><span class="line">$ jupyter lab       <span class="comment"># 启动jupyterlab</span></span><br></pre></td></tr></table></figure></li><li><p>本地访问服务器端启动的<code>jupyter</code></p><ul><li><p>在本地浏览器输入如下地址<code>server_url:port</code>，其中<code>server_url</code>为服务器的url地址，<code>port</code>为在<strong>第五步</strong>设置的端口</p></li><li><p>此时会弹出输入密码窗口，输入<strong>第四步</strong>设置的密码即可实现登录</p><img src="/2018/12/12/AwsomeProcess/jupyter_login.png"></li></ul></li></ol>]]></content>
     
