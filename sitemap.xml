@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://xiaofengshi.com/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/</loc>
+    
+    <lastmod>2018-12-16T08:27:44.366Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://xiaofengshi.com/2018/12/12/ImageCaption/</loc>
     
     <lastmod>2018-12-12T09:30:22.542Z</lastmod>
@@ -12,13 +19,6 @@
     <loc>http://xiaofengshi.com/2018/12/12/AwsomeProcess/</loc>
     
     <lastmod>2018-12-12T09:26:54.569Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://xiaofengshi.com/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/</loc>
-    
-    <lastmod>2018-12-01T13:59:40.044Z</lastmod>
     
   </url>
   
