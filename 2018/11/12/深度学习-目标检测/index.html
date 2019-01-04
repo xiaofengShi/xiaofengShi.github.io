@@ -115,7 +115,7 @@
 <meta property="og:image" content="http://xiaofengshi.com/2018/11/12/深度学习-目标检测/yolov2_darknet19.png">
 <meta property="og:image" content="http://xiaofengshi.com/2018/11/12/深度学习-目标检测/yolov2v3.jpg">
 <meta property="og:image" content="http://xiaofengshi.com/2018/11/12/深度学习-目标检测/yolov2_v3_over.jpg">
-<meta property="og:updated_time" content="2019-01-04T14:00:32.584Z">
+<meta property="og:updated_time" content="2019-01-04T16:50:31.602Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深度学习-目标检测">
 <meta name="twitter:description" content="目标检测为计算机视觉领域内的相关任务，输入一张图片，输出图片中物体所在位置及物体的名称。是一个典型的多任务模型。">
@@ -800,7 +800,7 @@ yr_{proposal}&=t_{y}*anchor_{height}+center_{y}+0.5 \times exp^{t_{height}} \tim
 <p>使用<code>ROI POOLING</code>对<code>proposal</code>进行尺寸统一，之后进行全连接目标分类预测和预测框的再次精修</p>
 <p><strong>由于进行了两次的目标框提取以及分类计算，faster rcnn的模型准确率目前来讲也是非常高的，但是由此也带来了大量的计算量，计算效率不是太高</strong></p>
 <p><strong>代码参考：</strong><a href="https://github.com/xiaofengShi/CV/tree/master/Faster-RCNN_TF" target="_blank" rel="noopener">https://github.com/xiaofengShi/CV/tree/master/Faster-RCNN_TF</a></p>
-<h2 id="SSD目标检测算法"><a href="#SSD目标检测算法" class="headerlink" title="SSD目标检测算法"></a>SSD目标检测算法</h2><p><code>SSD: Single Shot MultiBox Detector</code>目标检测，结合了<code>Faster rcnn</code>中多尺度检测的思想和<code>yolo</code>使用单个深度网络进行检测方法，没有使用<code>faster rcnn</code>中在固定的<code>feature map</code>上进行<code>anchor box</code>生成，而是在多个下采样的<code>feature map</code>上进行预测框生成，并将多个<code>feature map</code>上的分类预测和目标框的回归预测进行合并，计算整个模型的总体损失。</p>
+<h2 id="SSD目标检测算法"><a href="#SSD目标检测算法" class="headerlink" title="SSD目标检测算法"></a>SSD目标检测算法</h2><p><code>SSD: Single Shot MultiBox Detector</code>目标检测，结合了<code>Faster rcnn</code>中多尺度检测的思想和<code>YOLO</code>使用单个深度网络进行检测方法，没有使用<code>faster rcnn</code>中在固定的<code>feature map</code>上进行<code>anchor box</code>生成，而是在多个下采样的<code>feature map</code>上进行预测框生成，并将多个<code>feature map</code>上的分类预测和目标框的回归预测进行合并，计算整个模型的总体损失。</p>
 <p><code>SSD</code>框架的核心思想：低层特征图感受野较小，用它去检测小物体，高层特征图感受野较大，用它去检测大物体。<strong>但是实际上这样存在一个问题，低层卷积语义信息很弱，无法对后续的分类有很好的帮助，导致小目标的检测提升其实不是很大。</strong></p>
 <p>论文链接：<a href="https://arxiv.org/abs/1512.02325" target="_blank" rel="noopener">https://arxiv.org/abs/1512.02325</a></p>
 <p>代码链接：<a href="https://github.com/xiaofengShi/CV/tree/master/SDC-vehicle-dection" target="_blank" rel="noopener">https://github.com/xiaofengShi/CV/tree/master/SDC-vehicle-dection</a></p>
@@ -937,19 +937,20 @@ L_{conf}(x,c)=-\sum_{i \in Pos}^{N}x_{ij}^{p}log(c_{i}^{p})-\sum_{i \in Neg}log(
 <h3 id="FPN-RPN"><a href="#FPN-RPN" class="headerlink" title="FPN-RPN"></a>FPN-RPN</h3><p>在FPN网络结构中，仍然使用<code>RPN</code>网络进行区域生成，在<code>FasteRcnn</code>中，<code>RPN</code>只接受主网络某个卷积层输出的<code>feature map</code>作为输入，只有一个尺度的<code>feature map</code>，但是在<code>FPN</code>中，将预测层均使用<code>RPN</code>进行区域生成，在每个<code>sacle</code>层都定义了大小不同的<code>anchor</code>尺寸，分别是$32^2$,$64^2$,$128^2$,$256^2$.$512^2$，并且每个<code>scale</code>层都有三个长宽比$1:2$,$1:1$,$2:1$三种，也就是说，总共会生成$15$中不同尺寸的<code>anchor</code>。</p>
 <p>正负样本的判定和<code>FasterRcnn</code>相差不多，如果某个<code>anchor</code>与<code>groundtruth</code>有最高的IOU或者和任意一个<code>groundtruth</code>的<code>IOU</code>都大于$0.7$，则为正样本，如果某个<code>anchor</code>与任意一个<code>groundtruth</code>的IOU都小于$0.3$，则判定为负样本。</p>
 <h3 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h3><p>在论文中对比了<code>FPN</code>中不同网络结构设计证实了该网络结构的对识别准确率的提升，同时利用低层特征高分辨率和高层特征的高语义信息，通过融合不同层的特征达到预测的效果，并且预测在每个融合后的特征层上单独进行，可以认为是对<code>SSD</code>的一种改进。</p>
-<h2 id="YOLOV1-V3"><a href="#YOLOV1-V3" class="headerlink" title="YOLOV1~V3"></a>YOLOV1~V3</h2><p>现在已经到<code>YOLO</code>的第三个版本了，个人认为是2018年最棒的一个目标检测算法，本来早就该写了的，拖延症一直到现在才刚开始动笔。</p>
-<p>自诞生之日起，<code>yolo</code>就被贴上了两个标签：</p>
+<h2 id="YOLOV1-V3"><a href="#YOLOV1-V3" class="headerlink" title="YOLOV1~V3"></a>YOLOV1~V3</h2><p><strong>为了表示对作者的致敬，先挂上作者的<a href="https://pjreddie.com/" target="_blank" rel="noopener">主页</a>和<a href="https://www.ted.com/talks/joseph_redmon_how_a_computer_learns_to_recognize_objects_instantly" target="_blank" rel="noopener">TED演讲</a>。</strong></p>
+<p>现在已经到<code>YOLO</code>的第三个版本了，个人认为是目前最棒的一个目标检测算法，本来早就该写了的，拖延症一直到现在才刚开始动笔。</p>
+<p>自诞生之日起，<code>YOLO</code>就被贴上了两个标签：</p>
 <ul>
 <li>速度快</li>
 <li>不擅长检测小物体</li>
 </ul>
-<h3 id="YoloV1"><a href="#YoloV1" class="headerlink" title="YoloV1"></a>YoloV1</h3><p>网络结构图如下</p>
-<img src="/2018/11/12/深度学习-目标检测/yolov1.jpeg" title="yolov1_model">
-<p><code>yolov1</code>中，只对最后一层的卷积输出，并使用全连接的方式进行预测输出，由于卷积结构中，我们老生常谈的问题：随着卷积层的增加，<code>feature layer</code>中包含的语义信息越来越多，但是对于小物体，在高层卷积层中几乎已经没有信息了，由此很难是被出来。</p>
-<img src="/2018/11/12/深度学习-目标检测/yolov1_str.png" title="yolov1_structure">
+<h3 id="YOLOv1"><a href="#YOLOv1" class="headerlink" title="YOLOv1"></a>YOLOv1</h3><p>网络结构图如下</p>
+<img src="/2018/11/12/深度学习-目标检测/yolov1.jpeg" title="YOLOv1_model">
+<p><code>YOLOv1</code>中，只对最后一层的卷积输出，并使用全连接的方式进行预测输出，由于卷积结构中，我们老生常谈的问题：随着卷积层的增加，<code>feature layer</code>中包含的语义信息越来越多，但是对于小物体，在高层卷积层中几乎已经没有信息了，由此很难是被出来。</p>
+<img src="/2018/11/12/深度学习-目标检测/yolov1_str.png" title="YOLOv1_structure">
 <p>在最后一层中<code>feature map</code>的尺寸为$S\times S$，可以认为使用$S\times S$个网格对该层的<code>feature map</code>进行分割如果某个物体的<code>groundtruth</code>的中心位置落在某个格子中，那么这个各自就负责检测这个物体。对应于每个各自预测B个<code>boundingbox</code>及置信度<code>confidence score</code>以及<code>C</code>个类别概率。boundingbox为(x,yw,h)分别对应着和物体的中心位置相对格子位置的偏移和宽度，均被归一化。置信度反应是否包含物体以及包含物体情况下位置的准确性，定义为$P_{r}(Object) \times IOU_{pred}^{truth}$，也就是预测位置与<code>groundtruth</code>之间的<code>IOU</code>。</p>
 <p>整个网络结构包含$24$个卷积层，$2$个全连接层，相较于同时代的<code>faster</code>那是真的快，但是是被效果也是真的没法和<code>faster</code>比，但是这种网络结构的设计是的具有实时性的目标检测成为可能，算是<code>real-time detector</code>的鼻祖了，可以说是功在当代了，由于是被精度太差，因此在自动驾驶中，一般落地的用的是上面说的<code>FPN</code>。</p>
-<h3 id="YoloV2"><a href="#YoloV2" class="headerlink" title="YoloV2"></a>YoloV2</h3><p>在yolov1之后，第二年作者一系列的骚操作创造出了<code>Yolov2</code>，也叫<code>YOLO9000</code>。</p>
+<h3 id="YOLOv2"><a href="#YOLOv2" class="headerlink" title="YOLOv2"></a>YOLOv2</h3><p>在YOLOv1之后，第二年作者一系列的骚操作创造出了<code>Yolov2</code>，也叫<code>YOLO9000</code>。</p>
 <ul>
 <li><p><strong>维度聚类Dimension Clusters</strong></p>
 <ul>
@@ -959,7 +960,7 @@ L_{conf}(x,c)=-\sum_{i \in Pos}^{N}x_{ij}^{p}log(c_{i}^{p})-\sum_{i \in Neg}log(
 <li><p><strong>直接位置预测Direct location prediction </strong></p>
 </li>
 </ul>
-<img src="/2018/11/12/深度学习-目标检测/yolov2_loca.png" title="yolov2_loca">
+<img src="/2018/11/12/深度学习-目标检测/yolov2_loca.png" title="YOLOv2_loca">
 <ul>
 <li><p>修改了常用的<code>FasterRcnn</code>那一套进行位置损失的计算方法，设计了新的位置位置偏移计算方式。</p>
 <p>在<code>FasterRcnn</code>中位置回归计算如下：</p>
@@ -969,21 +970,21 @@ L_{conf}(x,c)=-\sum_{i \in Pos}^{N}x_{ij}^{p}log(c_{i}^{p})-\sum_{i \in Neg}log(
 x&=(t_x \times w_a)-x_a \\
 y&=(t_y \times h_a)-y_a
 \end{align}</script><p>但是对于上面的公式，由于不存在约束项，因此预测的边框有可能向任意一个方向产生偏移，当$t_x=1$时边界框向有偏移先验框的一个宽度的大小，当$t_x=-1$时边界框将向左偏移先验框的一个宽度大小，因此每个位置预测的边界框可以落在图片的任何一个位置，这就会导致整个模型不稳定，要训练很久才会收敛，预测出正确的offset。</p>
-<p><code>Yolov2</code>中没有使用这种预测方式，而是继续采用了<code>yolov1</code>中的方法，预测边框中心点相对于<code>cell</code>左上角位置的相对偏移值，为了将边界框中心店约束在当前的<code>cell</code>中，由于每个cell的尺度可以看做长宽皆为1，因此使用<code>sigmoid</code>进行偏移值处理，使偏移值在$(0~1)$之间。根据<code>anchor</code>预测得到的边界框$(t_x,t_y,t_w,t_h)$，边界框的实际位置和大小的计算方法如下：</p>
+<p><code>Yolov2</code>中没有使用这种预测方式，而是继续采用了<code>YOLOv1</code>中的方法，预测边框中心点相对于<code>cell</code>左上角位置的相对偏移值，为了将边界框中心店约束在当前的<code>cell</code>中，由于每个cell的尺度可以看做长宽皆为1，因此使用<code>sigmoid</code>进行偏移值处理，使偏移值在$(0~1)$之间。根据<code>anchor</code>预测得到的边界框$(t_x,t_y,t_w,t_h)$，边界框的实际位置和大小的计算方法如下：</p>
 <script type="math/tex; mode=display">
 \begin{align}
 b_x&=\sigma (t_x)+c_x\\
 b_y&=\sigma(t_y)+c_y\\
 b_w&=p_w \exp(t_w) \\
 b_h&=p_h \exp (t_h)
-\end{align}</script><p>其中$(c_x,c_y)$是当前cell的左上角的坐标，$\sigma$为<code>sigmoid</code>函数。在计算的时候每个<code>cell</code>的尺度都是1，<strong>如图yolov2_loca中所示</strong>，所以当前<code>cell</code>的左上角的坐标为$(1,1)$，由于使用的<code>sigmoid</code>函数，边界框的中心位置会约束在当前cell的内部，也就是图中的$b_x,b_y$坐标，$p_w,p_h$是先验框的宽度和长度，他们的值是相对于当前特征图大小进行过缩放的，在特征图中每个cell的长和宽都是1，此处特征图的大小记作$(W,H)$，（在论文中初始的输入图像为$416 \times 416$，经过32步下采样，最终得到的feature的尺寸为$13 \times 13$）这样对公式(38—41)稍加修改，就可以将边界框相对于整张图片的位置和大小计算出来(四个值均在0-1之间)</p>
+\end{align}</script><p>其中$(c_x,c_y)$是当前cell的左上角的坐标，$\sigma$为<code>sigmoid</code>函数。在计算的时候每个<code>cell</code>的尺度都是1，<strong>如图YOLOv2_loca中所示</strong>，所以当前<code>cell</code>的左上角的坐标为$(1,1)$，由于使用的<code>sigmoid</code>函数，边界框的中心位置会约束在当前cell的内部，也就是图中的$b_x,b_y$坐标，$p_w,p_h$是先验框的宽度和长度，他们的值是相对于当前特征图大小进行过缩放的，在特征图中每个cell的长和宽都是1，此处特征图的大小记作$(W,H)$，（在论文中初始的输入图像为$416 \times 416$，经过32步下采样，最终得到的feature的尺寸为$13 \times 13$）这样对公式(38—41)稍加修改，就可以将边界框相对于整张图片的位置和大小计算出来(四个值均在0-1之间)</p>
 <script type="math/tex; mode=display">
 \begin{align}
 b_x&=(\sigma (t_x)+c_x)/W\\
 b_y&=(\sigma(t_y)+c_y)/H\\
 b_w&=(p_w \exp(t_w))/W \\
 b_h&=(p_h \exp (t_h))/H
-\end{align}</script><p>将上述的4个值分别乘以图片的宽度和高度就可以得到边界框的最终位置和大小了，这就是<code>yolov2</code>的解码过程。</p>
+\end{align}</script><p>将上述的4个值分别乘以图片的宽度和高度就可以得到边界框的最终位置和大小了，这就是<code>YOLOv2</code>的解码过程。</p>
 </li>
 <li><p><strong>设计了新的basenet-DarkNet19</strong></p>
 <ul>
@@ -991,17 +992,73 @@ b_h&=(p_h \exp (t_h))/H
 </ul>
 </li>
 </ul>
-<img src="/2018/11/12/深度学习-目标检测/yolov2_darknet19.png" title="yolov2_darknet19">
+<img src="/2018/11/12/深度学习-目标检测/yolov2_darknet19.png" title="YOLOv2_darknet19">
 <ul>
 <li><strong>Fine-Grained Features</strong>-小物体检测<ul>
-<li>为了实现弥补<code>yolov1</code>中对小物体检测准确率较低的问题，在<code>yolov2</code>中进行了改进设计，初始输入图像尺寸为$416\times 416$，经过<code>DarkNet</code>下采样之后得到的特征图尺寸为$13 \times 13$，对于检测较大的物体这个尺寸是够的，<strong>但是对于小的物体，希望使用浅层的feature进行检测，浅层<code>feature</code>由于具有更高的分辨率，更利于小物体的检测</strong>。在网络设计中<code>yolov2</code>提出了一个<code>passthrough</code>层，类似于<code>resnet</code>中的<code>shortcut</code>或者<code>FPN</code>网络中的<code>skip-connection</code>，<code>yolov2</code>将$26 \times 26 \times 512$的特征图连接到最后一层$13 \times 13 \times 1024$的特征图上。<code>passthrough</code>层对$26 \times 26\times 512 $特征图分别按行和列进行隔点采样，得到4个$13 \times 13 \times 512$的特征图，然后把这四个特征图在维度方向上连接起来，由此将$26 \times 26 \times 512$ 转换为$ 13 \times 13 \times 2048$，特征图的大小降低了$4$倍，通道数增加了$4$倍，这样就可以和最后的$ 13 \times 13 \times 1024$的特征度进行连接，最终得到了$13 \times 13 \times 3072$的特征图，并在这个基础上进行卷积预测。</li>
+<li>为了实现弥补<code>YOLOv1</code>中对小物体检测准确率较低的问题，在<code>YOLOv2</code>中进行了改进设计，初始输入图像尺寸为$416\times 416$，经过<code>DarkNet</code>下采样之后得到的特征图尺寸为$13 \times 13$，对于检测较大的物体这个尺寸是够的，<strong>但是对于小的物体，希望使用浅层的feature进行检测，浅层<code>feature</code>由于具有更高的分辨率，更利于小物体的检测</strong>。在网络设计中<code>YOLOv2</code>提出了一个<code>passthrough</code>层，类似于<code>resnet</code>中的<code>shortcut</code>或者<code>FPN</code>网络中的<code>skip-connection</code>，<code>YOLOv2</code>将$26 \times 26 \times 512$的特征图连接到最后一层$13 \times 13 \times 1024$的特征图上。<code>passthrough</code>层对$26 \times 26\times 512 $特征图分别按行和列进行隔点采样，得到4个$13 \times 13 \times 512$的特征图，然后把这四个特征图在维度方向上连接起来，由此将$26 \times 26 \times 512$ 转换为$ 13 \times 13 \times 2048$，特征图的大小降低了$4$倍，通道数增加了$4$倍，这样就可以和最后的$ 13 \times 13 \times 1024$的特征度进行连接，最终得到了$13 \times 13 \times 3072$的特征图，并在这个基础上进行卷积预测。</li>
 </ul>
 </li>
 </ul>
-<h3 id="YoloV3"><a href="#YoloV3" class="headerlink" title="YoloV3"></a>YoloV3</h3><p>终于来到了<code>yolov3</code>，在<code>yolov3</code>中对于小目标的识别，提升是非常明显的，在此处盗图一张，来对比<code>yolov2</code>和<code>yolov3</code>，可以明显的看到，<code>yolov3</code>对小物体的识别提升</p>
-<img src="/2018/11/12/深度学习-目标检测/yolov2v3.jpg" title="YoloV3_vs_yoloV2_small">
-<p>在目标检测领域，对于重叠目标检测是很困难的，在这个方面<code>yolov3</code>相比于<code>yolov2</code>同样提升明显</p>
-<img src="/2018/11/12/深度学习-目标检测/yolov2_v3_over.jpg" title="yolov2_v3_overlap">
+<h3 id="YOLOv3"><a href="#YOLOv3" class="headerlink" title="YOLOv3"></a>YOLOv3</h3><h4 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h4><ul>
+<li><p>Train:PYTORCH_YOLO_V3](<a href="https://github.com/eriklindernoren/PyTorch-YOLOv3" target="_blank" rel="noopener">https://github.com/eriklindernoren/PyTorch-YOLOv3</a>)</p>
+<ul>
+<li>原理讲解博客<a href="https://blog.paperspace.com/how-to-implement-a-yolo-v3-object-detector-from-scratch-in-pytorch-part-3/" target="_blank" rel="noopener">here</a></li>
+<li>blog对应repop,只能检测无法训练<a href="https://github.com/ayooshkathuria/YOLO_v3_tutorial_from_scratch" target="_blank" rel="noopener">here</a></li>
+</ul>
+</li>
+<li><p><a href="https://github.com/qqwweee/keras-yolo3" target="_blank" rel="noopener">Keras_yolo_v3</a></p>
+</li>
+</ul>
+<p>终于来到了<code>YOLOv3</code>，在<code>YOLOv3</code>中对于小目标的识别，提升是非常明显的，在此处盗图一张，来对比<code>YOLOv2</code>和<code>YOLOv3</code>，可以明显的看到，<code>YOLOv3</code>对小物体的识别提升</p>
+<hr>
+
+<img src="/2018/11/12/深度学习-目标检测/yolov2v3.jpg" title="YoloV3_vs_YOLOV2_small">
+<hr>
+
+<p>在目标检测领域，对于重叠目标检测是很困难的，在这个方面<code>YOLOv3</code>相比于<code>YOLOv2</code>同样提升明显</p>
+<hr>
+
+<img src="/2018/11/12/深度学习-目标检测/yolov2_v3_over.jpg" title="YOLOv2_v3_overlap">
+<hr>
+
+<p>按照论文思路及个人理解对YOLOv3给出下面一些分析，在YOLOv2的基础上尝试了一些Trick，</p>
+<ol>
+<li>考虑到检测物体的重叠情况，用多标签的方式替代了之前softmax单标签方式；</li>
+<li>骨干架构使用了更为有效的残差网络，网络深度也更深；</li>
+<li>多尺度特征使用的是FPN的思想；</li>
+<li>锚点聚类成了9类。</li>
+</ol>
+<hr>
+
+<p>下面进行分点说明：</p>
+<ul>
+<li><p><strong>多标签任务</strong></p>
+<p>在检测任务中，对于目标之间相互重叠的场景是不可避免点，一个区域内可能会包含多个不同的物体，在以往的目标检测网络中选择和锚点<code>IoU</code>最大的<code>Ground Truth</code>作为匹配类别，使用<code>softmax</code>作为激活函数，这是基于一个区域内包含一个物体的假设。但是这和目标检测任务中常见的场景是不符合的。</p>
+<p>为了解决这一问题，在<code>YOLOv3</code>中提出了多标签的概念，也就是将原来的<code>softmax</code>函数改成了<code>logistics</code>函数，使用<code>sigmoid</code>分类器。原来每个分类器使用<code>softmax</code>，会使得每个类别的输出结果控制在总和在$[0,1]$之间，并且所有分类结果之和为1；修改为<code>sigmoid</code>之后，每个类别的得分仍然在$[0,1]$之间，但是所有分类结果之和不再是1。</p>
+<p>虽然<code>YOLOv3</code>改变了输出层的激活函数，但是其锚点和<code>Ground Truth</code>的匹配方法仍旧采用的是<code>YOLOv1</code> 的方法，即每个<code>Ground Truth</code>匹配且只匹配唯一一个与其<code>IoU</code>最大的锚点。但是在输出的时候由于各类的概率之和不再是1，只要置信度大于阈值，该锚点便被作为检测框输出。</p>
+<p><code>YOLOv3</code>多标签模型的提出，对于解决覆盖率高的图像的检测问题效果是十分显著的，就如同上面图片所显示的对于重叠目标的检测，<code>YOLOv3</code>不仅检测的更准确而且检测到了更多的重叠人物。</p>
+</li>
+<li><p><strong>basenet</strong></p>
+<p><code>YOLOv3</code>使用ResNet的残差模块构成的全卷积网络作为主干网络，整个网络层为53层，网络结构图如下所示</p>
+</li>
+</ul>
+
+<ul>
+<li><p><strong>多尺度检测</strong></p>
+<p>在<code>YOLOv2</code>中，使用了一个<code>passthrough</code>层来实现小目标检测，在<code>YOLOv3</code>中，受<code>FPN</code>的启发，使用了多尺度预测，使用最后三个尺寸的<code>feature layer</code>层进行预测，并且每个<code>cell</code>预测三个<code>boundingbox</code>。</p>
+<p>初始图片输出尺寸为$416 \times 416$，用于预测的<code>feature layer</code>的尺寸为$[13 \times 13, 26 \times 26, 52 \times 52]$，首先在$13 \times 13$尺寸上使用<code>conv1x1</code>进行预测，在每个<code>cell</code>上预测三个<code>boundingbox</code>，之后使用$13 \times 13$上采样值尺寸$26 \times 26$并与下采样的$26 \times 26$的<code>feature layer</code>进行<code>merge</code>，作为预测层，同样使用<code>conv1x1</code>预测，之后再对该层进行上采样并与下采样的$52 \times 52$的<code>feature layer</code>进行<code>merge</code>之后预测。整个网络的<code>boundingbox</code>的数量为$(13<em>13+26</em>26+52<em>52)</em>3=10647$，每一个<code>boundingbox</code>的向量为$[center_{x},center_{y},width,height,object_{score},cls_{1},cls_{2},…cls_{C}]$。</p>
+</li>
+<li><p><strong>锚点聚类</strong></p>
+<p>在<code>YOLOv2</code>中使用的是聚类的方法得到5个<code>anchor</code>，在<code>YOLOv3</code>中使用了9组锚点</p>
+<ul>
+<li>$13 \times 13$ 尺寸：$116 \times 90,\:\:\: 156 \times 198, \:\:\: 373 \times 326 $</li>
+<li>$26 \times 26 $ 尺寸：$30  \times 61 ,\:\:\: 62 \times 45, \:\:\: 59 \times 119 $</li>
+<li>$52 \times 52$ 尺寸：$10 \times 13,\:\:\: 16 \times 30, \:\:\: 33 \times 23 $</li>
+</ul>
+<p>可以看到，在大的<code>featurelayer</code>检测设置的<code>anchor</code>较小，用来对小目标进行检测。</p>
+</li>
+</ul>
+<h3 id="总结-2"><a href="#总结-2" class="headerlink" title="总结"></a>总结</h3><p>从<code>YOLOv1</code>到<code>YOLOv3</code>，首先实现了速度非飞跃，之后引入了RPN中的锚点机制，提高准确度，参考<code>FPN</code>的多尺度机制，提高了对小目标的检测效果，至此实现了对<code>RCNN</code>系列的碾压。<code>YOLO</code>因为强大的性能优势，在工业界具有很大的应用场景。貌似现在作者的兴趣点转向了<code>GAN</code>，应该<code>YOLO</code>系列短期不会有更大的更新了。</p>
 
       
     </div>
@@ -1032,7 +1089,7 @@ b_h&=(p_h \exp (t_h))/H
   <p><span>本文标题:</span><a href="/2018/11/12/深度学习-目标检测/">深度学习-目标检测</a></p>
   <p><span>文章作者:</span><a href="/" title="访问 ShiXiaofeng 的个人博客">ShiXiaofeng</a></p>
   <p><span>发布时间:</span>2018年11月12日 - 17:27</p>
-  <p><span>最后更新:</span>2019年01月04日 - 22:00</p>
+  <p><span>最后更新:</span>2019年01月05日 - 00:50</p>
   <p><span>原始链接:</span><a href="/2018/11/12/深度学习-目标检测/" title="深度学习-目标检测">http://xiaofengshi.com/2018/11/12/深度学习-目标检测/</a>
     <span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://xiaofengshi.com/2018/11/12/深度学习-目标检测/" aria-label="复制成功！"></i></span>
   </p>
@@ -1263,7 +1320,7 @@ b_h&=(p_h \exp (t_h))/H
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#目标检测三部曲"><span class="nav-number">1.</span> <span class="nav-text">目标检测三部曲</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Rcnn"><span class="nav-number">1.1.</span> <span class="nav-text">Rcnn</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#pipeline"><span class="nav-number">1.1.1.</span> <span class="nav-text">pipeline</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RCN缺点"><span class="nav-number">1.1.2.</span> <span class="nav-text">RCN缺点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FastRcnn"><span class="nav-number">1.2.</span> <span class="nav-text">FastRcnn</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Pipeline"><span class="nav-number">1.2.1.</span> <span class="nav-text">Pipeline</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Tricks"><span class="nav-number">1.2.2.</span> <span class="nav-text">Tricks</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FasterRcnn"><span class="nav-number">1.3.</span> <span class="nav-text">FasterRcnn</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#pipeleine"><span class="nav-number">1.3.1.</span> <span class="nav-text">pipeleine</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RPN网络"><span class="nav-number">1.3.2.</span> <span class="nav-text">RPN网络</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ROI-POOLING"><span class="nav-number">1.3.3.</span> <span class="nav-text">ROI_POOLING</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分类-回归"><span class="nav-number">1.3.4.</span> <span class="nav-text">分类+回归</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">1.3.5.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SSD目标检测算法"><span class="nav-number">2.</span> <span class="nav-text">SSD目标检测算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Anchor-box-generator"><span class="nav-number">2.1.</span> <span class="nav-text">Anchor_box_generator</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ground-truth-处理"><span class="nav-number">2.2.</span> <span class="nav-text">ground truth 处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hard-negative-mining"><span class="nav-number">2.3.</span> <span class="nav-text">hard_negative_mining</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Data-augmentation"><span class="nav-number">2.4.</span> <span class="nav-text">Data_augmentation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LOSS"><span class="nav-number">2.5.</span> <span class="nav-text">LOSS</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FPN"><span class="nav-number">3.</span> <span class="nav-text">FPN</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#FPN-RPN"><span class="nav-number">3.1.</span> <span class="nav-text">FPN-RPN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结-1"><span class="nav-number">3.2.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#YOLOV1-V3"><span class="nav-number">4.</span> <span class="nav-text">YOLOV1~V3</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#YoloV1"><span class="nav-number">4.1.</span> <span class="nav-text">YoloV1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#YoloV2"><span class="nav-number">4.2.</span> <span class="nav-text">YoloV2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#YoloV3"><span class="nav-number">4.3.</span> <span class="nav-text">YoloV3</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#目标检测三部曲"><span class="nav-number">1.</span> <span class="nav-text">目标检测三部曲</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Rcnn"><span class="nav-number">1.1.</span> <span class="nav-text">Rcnn</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#pipeline"><span class="nav-number">1.1.1.</span> <span class="nav-text">pipeline</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RCN缺点"><span class="nav-number">1.1.2.</span> <span class="nav-text">RCN缺点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FastRcnn"><span class="nav-number">1.2.</span> <span class="nav-text">FastRcnn</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Pipeline"><span class="nav-number">1.2.1.</span> <span class="nav-text">Pipeline</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Tricks"><span class="nav-number">1.2.2.</span> <span class="nav-text">Tricks</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FasterRcnn"><span class="nav-number">1.3.</span> <span class="nav-text">FasterRcnn</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#pipeleine"><span class="nav-number">1.3.1.</span> <span class="nav-text">pipeleine</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RPN网络"><span class="nav-number">1.3.2.</span> <span class="nav-text">RPN网络</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ROI-POOLING"><span class="nav-number">1.3.3.</span> <span class="nav-text">ROI_POOLING</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分类-回归"><span class="nav-number">1.3.4.</span> <span class="nav-text">分类+回归</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">1.3.5.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SSD目标检测算法"><span class="nav-number">2.</span> <span class="nav-text">SSD目标检测算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Anchor-box-generator"><span class="nav-number">2.1.</span> <span class="nav-text">Anchor_box_generator</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ground-truth-处理"><span class="nav-number">2.2.</span> <span class="nav-text">ground truth 处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hard-negative-mining"><span class="nav-number">2.3.</span> <span class="nav-text">hard_negative_mining</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Data-augmentation"><span class="nav-number">2.4.</span> <span class="nav-text">Data_augmentation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LOSS"><span class="nav-number">2.5.</span> <span class="nav-text">LOSS</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FPN"><span class="nav-number">3.</span> <span class="nav-text">FPN</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#FPN-RPN"><span class="nav-number">3.1.</span> <span class="nav-text">FPN-RPN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结-1"><span class="nav-number">3.2.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#YOLOV1-V3"><span class="nav-number">4.</span> <span class="nav-text">YOLOV1~V3</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#YOLOv1"><span class="nav-number">4.1.</span> <span class="nav-text">YOLOv1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#YOLOv2"><span class="nav-number">4.2.</span> <span class="nav-text">YOLOv2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#YOLOv3"><span class="nav-number">4.3.</span> <span class="nav-text">YOLOv3</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Reference"><span class="nav-number">4.3.1.</span> <span class="nav-text">Reference</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结-2"><span class="nav-number">4.4.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
             
 
           </div>
