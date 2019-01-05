@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title><![CDATA[ImageCaption]]></title>
-    <url>%2F2018%2F12%2F12%2FImageCaption%2F</url>
-    <content type="text"></content>
-  </entry>
-  <entry>
     <title><![CDATA[AwsomeProcess]]></title>
     <url>%2F2018%2F12%2F12%2FAwsomeProcess%2F</url>
     <content type="text"><![CDATA[本篇涉及一些常用操作及查询手册 Jupyter服务器布置RT，由于服务器端是不提供图形界面的，因此在进行开发时候，一般采用的是本地开发调试，通过之后再进行服务器端的deploy，对于机器学习来说，由于本人使用的Mac电脑，硬件配置是在堪忧，而服务器端用的是3*1080Ti，如何实现在服务器端启动jupyter服务，并且在本地进行文件编写及测试呢？ 登录远程服务器，一般的使用的是ssh的方式 1ssh usrname@server_url 提示输入密码登录即可 确保在服务器端安装了jupyter notebook 或者jupyterlab，可以先进入个人账户名下的虚拟环境并激活，接下来进行jupyter的设置 123456sudo pip install pyzmqsudo pip install tornadosudo pip install jinja2sudo pip install jsonschemasudo pip install jupytersudo pip install jupyterlab 生成配置文件 1jupyter notebook --generate-config 生成的配置文件保地址为 1~/.jupyter/jupyter_notebook_config.py 生成本地登录密码，在服务器端打开ipython 123456In [1]: from IPython.lib import passwdIn [2]: passwd()# 这里输入的密码为本地访问服务器jupyter是需要输入的密码Enter password: Verify password: Out[2]: 'sha1:0e422dfccef2:84cfbcbb3ef95872fb8e23be3999c123f862d856' 保存并复制生成的密码sha1:....，修改第三步生成的配置文件 1vim ~/.jupyter/jupyter_notebook_config.py 会看到该文件大部分为注释，随便选个位置复制粘贴如下内容并保存配置文件 12345c.NotebookApp.ip='*'c.NotebookApp.password = u'sha1:ce...刚才复制的那个密文'c.NotebookApp.open_browser = Falsec.NotebookApp.port =9999 #随便指定一个端口,为本地访问的端口c.IPKernelApp.pylab = 'inline' 服务器端启动jupyter 下面这两个启动一个就可以，jupyter lab 为jupyter notebook 的高级版本 12$ jupyter notebook # 启动notebook$ jupyter lab # 启动jupyterlab 本地访问服务器端启动的jupyter 在本地浏览器输入如下地址server_url:port，其中server_url为服务器的url地址，port为在第五步设置的端口 此时会弹出输入密码窗口，输入第四步设置的密码即可实现登录]]></content>

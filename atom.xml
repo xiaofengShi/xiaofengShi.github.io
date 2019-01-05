@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://xiaofengshi.com/"/>
-  <updated>2018-12-12T09:30:22.542Z</updated>
+  <updated>2018-12-12T09:26:54.569Z</updated>
   <id>http://xiaofengshi.com/</id>
   
   <author>
@@ -15,20 +15,6 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>ImageCaption</title>
-    <link href="http://xiaofengshi.com/2018/12/12/ImageCaption/"/>
-    <id>http://xiaofengshi.com/2018/12/12/ImageCaption/</id>
-    <published>2018-12-12T09:30:22.000Z</published>
-    <updated>2018-12-12T09:30:22.542Z</updated>
-    
-    <summary type="html">
-    
-    </summary>
-    
-    
-  </entry>
   
   <entry>
     <title>AwsomeProcess</title>
