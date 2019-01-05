@@ -115,7 +115,8 @@
 <meta property="og:image" content="http://xiaofengshi.com/2018/11/12/深度学习-目标检测/yolov2_darknet19.png">
 <meta property="og:image" content="http://xiaofengshi.com/2018/11/12/深度学习-目标检测/yolov2v3.jpg">
 <meta property="og:image" content="http://xiaofengshi.com/2018/11/12/深度学习-目标检测/yolov2_v3_over.jpg">
-<meta property="og:updated_time" content="2019-01-04T16:50:31.602Z">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/12/深度学习-目标检测/yolov3_model.jpg">
+<meta property="og:updated_time" content="2019-01-05T03:46:42.838Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深度学习-目标检测">
 <meta name="twitter:description" content="目标检测为计算机视觉领域内的相关任务，输入一张图片，输出图片中物体所在位置及物体的名称。是一个典型的多任务模型。">
@@ -1046,8 +1047,13 @@ b_h&=(p_h \exp (t_h))/H
 <ul>
 <li><p><strong>多尺度检测</strong></p>
 <p>在<code>YOLOv2</code>中，使用了一个<code>passthrough</code>层来实现小目标检测，在<code>YOLOv3</code>中，受<code>FPN</code>的启发，使用了多尺度预测，使用最后三个尺寸的<code>feature layer</code>层进行预测，并且每个<code>cell</code>预测三个<code>boundingbox</code>。</p>
-<p>初始图片输出尺寸为$416 \times 416$，用于预测的<code>feature layer</code>的尺寸为$[13 \times 13, 26 \times 26, 52 \times 52]$，首先在$13 \times 13$尺寸上使用<code>conv1x1</code>进行预测，在每个<code>cell</code>上预测三个<code>boundingbox</code>，之后使用$13 \times 13$上采样值尺寸$26 \times 26$并与下采样的$26 \times 26$的<code>feature layer</code>进行<code>merge</code>，作为预测层，同样使用<code>conv1x1</code>预测，之后再对该层进行上采样并与下采样的$52 \times 52$的<code>feature layer</code>进行<code>merge</code>之后预测。整个网络的<code>boundingbox</code>的数量为$(13<em>13+26</em>26+52<em>52)</em>3=10647$，每一个<code>boundingbox</code>的向量为$[center_{x},center_{y},width,height,object_{score},cls_{1},cls_{2},…cls_{C}]$。</p>
+<p>初始图片输出尺寸为$416 \times 416$，用于预测的<code>feature layer</code>的尺寸为$[13 \times 13, 26 \times 26, 52 \times 52]$，首先在$13 \times 13$尺寸上使用<code>conv1x1</code>进行预测，在每个<code>cell</code>上预测三个<code>boundingbox</code>，之后使用$13 \times 13$上采样值尺寸$26 \times 26$并与下采样的$26 \times 26$的<code>feature layer</code>进行<code>merge</code>，作为预测层，同样使用<code>conv1x1</code>预测，之后再对该层进行上采样并与下采样的$52 \times 52$的<code>feature layer</code>进行<code>merge</code>之后预测。整个网络的<code>boundingbox</code>的数量为</p>
+<script type="math/tex; mode=display">
+(13 \times 13+26 \times 26+52 \times 52) \times 3=10647</script><p>每一个<code>boundingbox</code>的向量为$[center_{x},center_{y},width,height,object_{score},cls_{1},cls_{2},…cls_{C}]$。</p>
 </li>
+</ul>
+<img src="/2018/11/12/深度学习-目标检测/yolov3_model.jpg" title="YOLOv3_predict">
+<ul>
 <li><p><strong>锚点聚类</strong></p>
 <p>在<code>YOLOv2</code>中使用的是聚类的方法得到5个<code>anchor</code>，在<code>YOLOv3</code>中使用了9组锚点</p>
 <ul>
@@ -1089,7 +1095,7 @@ b_h&=(p_h \exp (t_h))/H
   <p><span>本文标题:</span><a href="/2018/11/12/深度学习-目标检测/">深度学习-目标检测</a></p>
   <p><span>文章作者:</span><a href="/" title="访问 ShiXiaofeng 的个人博客">ShiXiaofeng</a></p>
   <p><span>发布时间:</span>2018年11月12日 - 17:27</p>
-  <p><span>最后更新:</span>2019年01月05日 - 00:50</p>
+  <p><span>最后更新:</span>2019年01月05日 - 11:46</p>
   <p><span>原始链接:</span><a href="/2018/11/12/深度学习-目标检测/" title="深度学习-目标检测">http://xiaofengshi.com/2018/11/12/深度学习-目标检测/</a>
     <span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://xiaofengshi.com/2018/11/12/深度学习-目标检测/" aria-label="复制成功！"></i></span>
   </p>
