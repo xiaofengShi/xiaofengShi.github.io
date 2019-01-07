@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="https://cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+  
+
+<link href="https://cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/panda_32px.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/panda_16px.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="深度学习,CV,OCR,seq2seq,CTC,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="挖掘机养成日记" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="本篇涉及使用深度学习的方法实现字符识别的任务，该任务与计算机视觉领域内的图像描述任务(ImageCaption)相似，对于图像描述任务，输入为图像，输出为对该图像的描述；而对于OCR任务，输入的图像为包含文字或字符的图片，而输出为这张图片中的文字或字符。">
+<meta name="keywords" content="深度学习,CV,OCR,seq2seq,CTC">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习-OCR">
+<meta property="og:url" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR/index.html">
+<meta property="og:site_name" content="挖掘机养成日记">
+<meta property="og:description" content="本篇涉及使用深度学习的方法实现字符识别的任务，该任务与计算机视觉领域内的图像描述任务(ImageCaption)相似，对于图像描述任务，输入为图像，输出为对该图像的描述；而对于OCR任务，输入的图像为包含文字或字符的图片，而输出为这张图片中的文字或字符。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR/imagecaption.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR/ocr.jpg">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR/RRPN.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR/FTSN.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR/DMPNet_anchors.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR/EAST.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR/TextBoxes.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR/SegLink.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR/TextBoxes++.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR/PixelLink.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR/WordSup.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR/CRNN.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR/RARE_STN.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR/RARE_SRN.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR/FOTS.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR/STN-OCR.png">
+<meta property="og:updated_time" content="2019-01-07T06:49:35.910Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深度学习-OCR">
+<meta name="twitter:description" content="本篇涉及使用深度学习的方法实现字符识别的任务，该任务与计算机视觉领域内的图像描述任务(ImageCaption)相似，对于图像描述任务，输入为图像，输出为对该图像的描述；而对于OCR任务，输入的图像为包含文字或字符的图片，而输出为这张图片中的文字或字符。">
+<meta name="twitter:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR/imagecaption.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://xiaofengshi.com/2019/01/05/深度学习-OCR/">
+
+
+
+
+
+  <title>深度学习-OCR | 挖掘机养成日记</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <!-- add fork me on github -->
+    <a href="https://github.com/xiaofengShi"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">挖掘机养成日记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>
+            
+            日程表
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-guestbook">
+          <a href="/guestbook/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-commenting"></i> <br>
+            
+            留言板
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2019/01/05/深度学习-OCR/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ShiXiaofeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="挖掘机养成日记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">深度学习-OCR</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-05T18:07:30+08:00">
+                2019-01-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/深度学习/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/深度学习/CV/" itemprop="url" rel="index">
+                    <span itemprop="name">CV</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/01/05/深度学习-OCR/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/01/05/深度学习-OCR/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2019/01/05/深度学习-OCR/" class="leancloud_visitors" data-flag-title="深度学习-OCR">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  5.3k 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  18 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本篇涉及使用深度学习的方法实现字符识别的任务，该任务与计算机视觉领域内的图像描述任务(<code>ImageCaption</code>)相似，对于图像描述任务，输入为图像，输出为对该图像的描述；而对于<code>OCR</code>任务，输入的图像为包含文字或字符的图片，而输出为这张图片中的文字或字符。</p>
+<a id="more"></a>
+<img src="/2019/01/05/深度学习-OCR/imagecaption.png" title="ImageCaption">
+<p>如图所示，对于<code>ImageCaption</code>任务来说，输入一张图片，输出对该图片的描述，简而言之就是看图说话。</p>
+<hr>
+
+<img src="/2019/01/05/深度学习-OCR/ocr.jpg" title="OCR">
+<p>如图所示，对于<code>OCR</code>任务，输入的是一张身份张照片，输出的就是该照片中包含的文字内容。</p>
+<hr>
+
+<p>下面结合自己的开发经验对<code>OCR</code>项目的一些相关技术思路进行一些记录说明。</p>
+<h2 id="技术方案"><a href="#技术方案" class="headerlink" title="技术方案"></a>技术方案</h2><h3 id="图像预处理"><a href="#图像预处理" class="headerlink" title="图像预处理"></a><strong>图像预处理</strong></h3><p>假如输入时一些扫描或相机拍摄的文档，首先第一点肯定是对图像进行一些预处理，比如灰度处理，二值化处理，仿射变换矫正等对图像进行预处理，使图像统一成设置好的规格。</p>
+<h3 id="定位待识别图像"><a href="#定位待识别图像" class="headerlink" title="定位待识别图像"></a><strong>定位待识别图像</strong></h3><p>对图像进行预处理之后，接下来就是要找到图像中包含待识别文本的图像，一般分为两种思路，单字符提取和文本行提取</p>
+<h4 id="单字符提取"><a href="#单字符提取" class="headerlink" title="单字符提取"></a><strong>单字符提取</strong></h4><p>这算是模式识别中比较常用的传统的方法，主要针对的印刷体文档图片，并且英文相比中文的提取效果很好(中文中包含很多左右文字结构，而不像英文都是使用空格进行各个字符分割)。具体的实现方法有如下几种：</p>
+<ul>
+<li>对图像进行二值化处理，仿射变换等预处理；对图像进行竖直方向投影，提取出文本行；对文本行在水平方向投影，提取出单个字符，以来设置的阈值进行字符提取，这里就可以看出对于中文来说，进行水平方向投影时，如果阈值设置的不合适，会存在将一个左右结构的汉字拆分成两个单独字符的风险，比如“从”可能会被提取成“人”“人”；</li>
+<li>假定字符本身是具有连通性的，然后通过连通区域的检测方法找到文字字符的候选。</li>
+<li>通过最大稳定极值区域（<code>MSER-Maximally Stable Extremal Regions</code>）得到字符的候选，并将这些字符候选看作连通图(graph)的顶点，此时就可以将文本行的寻找过程视为聚类（<code>clustering</code>）的过程，因为来自相同文本行的文本通常具有相同的方向、颜色、字体以及形状。最后使用一个文本分类器滤除非文本部分。</li>
+<li>北科大殷绪成教授研究组的一个工作对文本的信息进行了更加全面的考虑，使用了文本的颜色、笔画宽度、字符方向（<code>orientation</code>）以及投影的特征。</li>
+</ul>
+<h4 id="文本行提取"><a href="#文本行提取" class="headerlink" title="文本行提取"></a><strong>文本行提取</strong></h4><p>这是目前深度学习常用的方式，并且该方法鲁棒性更好，对于街景文字识别和文档识别效果都很好，使用最广泛的是基于<code>RegionProposal</code>的方法，其次是基于图像分割的方法。文本检测模型的目标是从图片中尽可能准确地找出文字所在区域。</p>
+<p>视觉领域常规物体检测方法(SSD, YOLO, Faster-RCNN等)直接套用于文字检测任务效果并不理想， 主要原因如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">·相比于常规物体，文字行长度、长宽比例变化范围很大。</span><br><span class="line">·文本行是有方向性的。常规物体边框BBox的四元组描述方式信息量不充足。</span><br><span class="line">·自然场景中某些物体局部图像与字母形状相似，如果不参考图像全局信息将有误报。</span><br><span class="line">·有些艺术字体使用了弯曲的文本行，而手写字体变化模式也很多。</span><br><span class="line">·由于丰富的背景图像干扰，手工设计特征在自然场景文本识别任务中不够鲁棒。</span><br></pre></td></tr></table></figure>
+<p>针对上述问题根因，近年来出现了各种基于深度学习的技术解决方案。它们从特征提取、区域建议网络(RPN)、多目标协同训练、Loss改进、非极大值抑制（NMS）、半监督学习等角度对常规物体检测方法进行改造，极大提升了自然场景图像中文本检测的准确率。例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">·CTPN方案中，用BLSTM模块提取字符所在图像上下文特征，以提高文本块识别精度。</span><br><span class="line">·RRPN等方案中，文本框标注采用BBOX +方向角度值的形式，模型中产生出可旋转的文字区域候选框，并	在边框回归计算过程中找到待测文本行的倾斜角度。</span><br><span class="line">·DMPNet等方案中，使用四边形（非矩形）标注文本框，来更紧凑的包围文本区域。</span><br><span class="line">·SegLink将单词切割为更易检测的小文字块，再预测邻近连接将小文字块连成词。</span><br><span class="line">·TextBoxes等方案中，调整了文字区域参考框的长宽比例，并将特征层卷积核调整为长方形，从而更适合检测出细长型的文本行。</span><br><span class="line">·FTSN方案中，作者使用Mask-NMS代替传统BBOX的NMS算法来过滤候选框。</span><br><span class="line">·WordSup方案中，采用半监督学习策略，用单词级标注数据来训练字符级文本检测模型。</span><br></pre></td></tr></table></figure>
+<h5 id="CTPN-2016年"><a href="#CTPN-2016年" class="headerlink" title="CTPN(2016年)"></a><code>CTPN</code>(2016年)</h5><p><a href="https://arxiv.org/abs/1609.03605" target="_blank" rel="noopener">论文链接Connectionist Text Proposal Network</a></p>
+<p><a href="https://github.com/eragonruan/text-detection-ctpn" target="_blank" rel="noopener">高星Repo</a></p>
+<p>该算法由华南理工大学金连文老师研究组提出，该算法脱胎于<code>FasterRcnn</code>，<code>CTPN</code>是目前流传最广、影响最大的开源文本检测模型，可以检测水平或微斜的文本行。在<code>FasterRcnn</code>基础上去掉了<code>ROI</code>层，引入了不同的<code>anchor</code>设置，<code>anchor</code>设置为固定宽度不同高度，来模拟不同高度的文本行，加入了<code>RNN</code>网络，使用<code>RNN</code>对目标的位置偏移和置信度得分的计算，具体的实现路径会在接下来进行详细的分析。该算法虽然很准，但是由于使用了<code>RNN</code>网络，拖慢了网络速度。</p>
+<p>在<code>CTPN</code>中文本行可以被看成一个字符<code>sequence</code>，而不是一般物体检测中单个独立的目标。同一文本行上各个字符图像间可以互为上下文，在训练阶段让检测模型学习图像中蕴含的这种上下文统计规律，可以使得预测阶段有效提升文本块预测准确率。<code>CTPN</code>模型的图像预测流程中，前端使用当时流行的<code>VGG16</code>做基础网络来提取各字符的局部图像特征，中间使用<code>BLSTM</code>层提取字符序列上下文特征，然后通过<code>FC</code>全连接层，末端经过预测分支输出各个文字块的坐标值和分类结果概率值。在数据后处理阶段，将合并相邻的小文字块为文本行。</p>
+<h5 id="RRPN-ECCV2017"><a href="#RRPN-ECCV2017" class="headerlink" title="RRPN(ECCV2017)"></a><code>RRPN</code>(ECCV2017)</h5><p><a href="https://arxiv.org/abs/1703.01086" target="_blank" rel="noopener">Arbitrary-Oriented Scene Text Detection via Rotation Proposals</a></p>
+<p><strong>这是第一个在场景文字检测中使用RNN的方法，但其主要用于水平文字的场景</strong>。基于旋转区域候选网络（<code>RRPN, Rotation Region Proposal Networks</code>）的方案，将旋转因素并入经典区域候选网络（如<code>FasterRCNN</code>）。这种方案中，一个文本区域的<code>ground truth</code>被表示为具有$5$元组$(x,y,h,w,\theta)$的旋转边框, 坐标$(x,y)$表示边框的几何中心, 高度$h$设定为边框的短边，宽度$w$为长边，方向是长边的方向。训练时，首先生成含有文本方向角的倾斜候选框，然后在边框回归过程中学习文本方向角。</p>
+<p><code>RRPN</code>中方案中提出了旋转感兴趣区域（<code>RRoI，Rotation Region-of-Interest</code>）池化层，将任意方向的区域建议先划分成子区域，然后对这些子区域分别做<code>max pooling</code>、并将结果投影到具有固定空间尺寸小特征图上。</p>
+<img src="/2019/01/05/深度学习-OCR/RRPN.png" title="RRPN">
+<hr>
+
+<h5 id="FTSN-2018"><a href="#FTSN-2018" class="headerlink" title="FTSN(2018)"></a><code>FTSN</code>(2018)</h5><p><a href="https://arxiv.org/pdf/1709.03272.pdf" target="_blank" rel="noopener">Fused Text Segmentation Networks for Multi-oriented Scene Text Detection</a></p>
+<p><code>FTSN（Fused Text Segmentation Networks）</code>模型使用<strong>分割网络支持倾斜文本检测</strong>。它使用<code>Resnet-101</code>做基础网络，使用了多尺度融合的特征图。标注数据包括文本实例的像素掩码和边框，使用像素预测与边框检测多目标联合训练。</p>
+<p>基于文本实例间像素级重合度的<code>Mask-NMS</code>， 替代了传统基于水平边框间重合度的<code>NMS</code>算法。下图左边子图是传统<code>NMS</code>算法执行结果，中间白色边框被错误地抑制掉了。下图右边子图是<code>Mask-NMS</code>算法执行结果， 三个边框都被成功保留下来。</p>
+<img src="/2019/01/05/深度学习-OCR/FTSN.png" title="FSTN">
+<hr>
+
+<h5 id="DMPNet-2017"><a href="#DMPNet-2017" class="headerlink" title="DMPNet(2017)"></a><code>DMPNet</code>(2017)</h5><p><a href="https://arxiv.org/pdf/1703.01425.pdf" target="_blank" rel="noopener">Deep Matching Prior Network: Toward Tighter Multi-oriented Text Detection</a></p>
+<p><code>DMPNet</code>（<code>Deep Matching Prior Network</code>）中，使用四边形（非矩形）来更紧凑地标注文本区域边界，其训练出的模型对倾斜文本块检测效果更好。</p>
+<p>如下图所示，它使用滑动窗口在特征图上获取文本区域候选框，候选框既有正方形的、也有倾斜四边形的。接着，使用基于像素点采样的<code>Monte-Carlo</code>方法，来快速计算四边形候选框与标注框间的面积重合度。然后，计算四个顶点坐标到四边形中心点的距离，将它们与标注值相比计算出目标<code>Loss</code>。文章中推荐用<code>LnLoss</code>来取代<code>L1</code>、<code>L2Loss</code>，从而对大小文本框都有较快的训练回归速度。</p>
+<img src="/2019/01/05/深度学习-OCR/DMPNet_anchors.png" title="DMPNet_anchors">
+<hr>
+
+<h5 id="EAST-2017"><a href="#EAST-2017" class="headerlink" title="EAST(2017)"></a><code>EAST</code>(2017)</h5><p><a href="https://arxiv.org/pdf/1704.03155.pdf" target="_blank" rel="noopener">An Efficient and Accurate Scene Text Detector</a></p>
+<p><code>EAST（An Efficient and Accurate Scene Text Detector）</code>模型中，首先使用全卷积网络（<code>FCN</code>）生成多尺度融合的特征图，作者使用了<code>PVANet</code>作为特征提取网络，然后在此基础上直接进行像素级的文本块预测。<strong>该模型中，支持旋转矩形框、任意四边形两种文本区域标注形式。</strong></p>
+<ul>
+<li>对应于四边形标注，模型执行时会对特征图中每个像素预测其到四个顶点的坐标差值。</li>
+<li>对应于旋转矩形框标注，模型执行时会对特征图中每个像素预测其到矩形框四边的距离、以及矩形框的方向角。</li>
+</ul>
+<p><strong>根据开源工程中预训练模型的测试，该模型检测英文单词效果较好、检测中文长文本行效果欠佳。或许，根据中文数据特点进行针对性训练后，检测效果还有提升空间</strong>。</p>
+<p>上述过程中，省略了其他模型中常见的区域建议、单词分割、子块合并等步骤，因此<strong>该模型的执行速度很快。</strong></p>
+<img src="/2019/01/05/深度学习-OCR/EAST.png" title="EAST">
+<hr>
+
+<h5 id="Textboxes-2016"><a href="#Textboxes-2016" class="headerlink" title="Textboxes(2016)"></a><code>Textboxes(2016)</code></h5><p><a href="https://arxiv.org/pdf/1611.06779.pdf" target="_blank" rel="noopener">TextBoxes: A Fast Text Detector with a Single Deep Neural Network</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/43545190" target="_blank" rel="noopener">文本检测之TextBoxes</a></p>
+<p><code>Textboxes</code>由华中科技大学的白翔组$2016$年提出。该模型是基于<code>SSD</code>框架的图文检测模型，训练方式是端到端的，运行速度也较快。在SSD基础上针对文字的形状做出了如下的改进，模型结构如下图所示</p>
+<ul>
+<li>为了适应文字行细长型的特点，候选框的长宽比增加了$1,2,3,5,7,10$这样初始值；</li>
+<li>为了适应文本行细长型特点，特征层也用<strong>长条形卷积核</strong>代替了其他模型中常见的正方形($1 \times 1, 3\times 3$)卷积核；</li>
+<li>为了防止漏检文本行，还在垂直方向增加了候选框数量；</li>
+<li>为了检测大小不同的字符块，在多个尺度的特征图上并行预测文本框， 然后对预测结果做<code>NMS</code>过滤；</li>
+<li>使用识别模型对文字进行过滤和判断，提出了一个实用的 “检测+识别”的框架。</li>
+</ul>
+<img src="/2019/01/05/深度学习-OCR/TextBoxes.png" title="TextBoxes">
+<hr>
+
+<h5 id="SegLink-2017"><a href="#SegLink-2017" class="headerlink" title="SegLink(2017)"></a><code>SegLink</code>(2017)</h5><p><a href="https://arxiv.org/pdf/1703.06520.pdf" target="_blank" rel="noopener">论文链接 Detecting Oriented Text in Natural Images by Linking Segments</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/37781277" target="_blank" rel="noopener">文本检测之SegLink</a></p>
+<p><a href="https://www.cnblogs.com/lillylin/p/6596731.html" target="_blank" rel="noopener">白翔论文分析</a></p>
+<p><code>SegLink</code>模型同样由白翔组提出，由<code>SSD</code>改进得来，<code>SegLink</code>模型的标注数据中，先将每个单词切割为更易检测的有方向的小文字块（<code>segment</code>），然后用邻近连接（<code>link</code> ）将各个小文字块连接成单词。这种方案方便于识别长度变化范围很大的、带方向的单           词和文本行，它不会像<code>FasterRCNN</code>等方案因为候选框长宽比例原因检测不出长文本行。<strong>相比于<code>CTPN</code>等文本检测模型，<code>SegLink</code>的图片处理速度快很多。</strong></p>
+<ol>
+<li>首先给定一个含有文本边界框（<code>bounding box</code>）的图片，先使用<code>CNN</code>提取图像的特征；</li>
+<li>然后用<code>BLSTM</code>学习文字的空间上下文信息；</li>
+<li>最后对特征进行编码并得到最终的预测结果。</li>
+</ol>
+<p>整个过程可以端到端（<code>end-to-end</code>）完成。<strong>提出的定位和识别模型结合之后能得到目前端到端模型中最好的文字检测结果。</strong></p>
+<img src="/2019/01/05/深度学习-OCR/SegLink.png" title="SegLink">
+<hr>
+
+<h5 id="TextBoxes-2018"><a href="#TextBoxes-2018" class="headerlink" title="TextBoxes++(2018)"></a><code>TextBoxes++</code>(2018)</h5><p><a href="https://arxiv.org/pdf/1801.02765.pdf" target="_blank" rel="noopener">TextBoxes++: A Single-Shot Oriented Scene Text Detector</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/33723456" target="_blank" rel="noopener">论文笔记：TextBoxes++</a></p>
+<p><a href="https://github.com/MhLiao/TextBoxes_plusplus" target="_blank" rel="noopener">Github: TextBoxes++</a></p>
+<p><code>Textboxes++</code>是<code>Textboxes</code>的升级版本，目的是增加对倾斜文本的支持。为此，将标注数据改为了旋转矩形框和不规则四边形的格式；对候选框的长宽比例、特征图层卷积核的形状都作了相应调整。·</p>
+<img src="/2019/01/05/深度学习-OCR/TextBoxes++.png" title="TextBoxes++">
+<hr>
+
+<h5 id="PixelLink-2018"><a href="#PixelLink-2018" class="headerlink" title="PixelLink(2018)"></a><code>PixelLink</code>(2018)</h5><p><a href="https://arxiv.org/pdf/1801.01315.pdf" target="_blank" rel="noopener">论文链接 Detecting Scene Text via Instance Segmentation</a></p>
+<p>自然场景图像中一组文字块经常紧挨在一起，通过语义分割方法很难将它们识别开来，所以阿里开发了<code>PixelLink</code>模型尝试用实例分割方法解决这个问题。</p>
+<p>该模型的特征提取部分，为<code>VGG16</code>基础上构建的<code>FCN</code>网络。模型执行流程如下图所示。首先，借助于<code>CNN</code> 模块执行两个像素级预测：一个文本二分类预测，一个链接二分类预测。接着，用正链接去连接邻居正文本像素，得到文字块实例分割结果。然后，由分割结果直接就获得文字块边框， 而且允许生成倾斜边框。</p>
+<p>上述过程中，<strong>省掉了其他模型中常见的边框回归步骤，因此训练收敛速度更快些</strong>。训练阶段，使用了平衡策略，使得每个文字块在总<code>LOSS</code>中的权值相同。训练过程中，<strong>通过预处理增加了各种方向角度的文字块实例。</strong></p>
+<img src="/2019/01/05/深度学习-OCR/PixelLink.png" title="PixelLink">
+<hr>
+
+<h5 id="WordSup-2017"><a href="#WordSup-2017" class="headerlink" title="WordSup(2017)"></a><code>WordSup</code>(2017)</h5><p><a href="https://arxiv.org/abs/1708.06720" target="_blank" rel="noopener">WordSup: Exploiting Word Annotations for Character based Text Detection</a></p>
+<p>在数学公式图文识别、不规则形变文本行识别等应用中，字符级检测模型是一个关键基础模块。由于字符级自然场景图文标注成本很高、相关公开数据集稀少，导致现在多数图文检测模型只能在文本行、单词级标注数据上做训练。<code>WordSup</code>提出了一种弱监督的训练框架， 可以文本行、单词级标注数据集上训练出字符级检测模型。</p>
+<p><code>WordSup</code>弱监督训练框架中，两个训练步骤被交替执行：给定当前字符检测模型，并结合单词级标注数据，计算出字符中心点掩码图； 给定字符中心点掩码图，有监督地训练字符级检测模型。</p>
+<p>训练好字符检测器后，可以在数据流水线中加入合适的文本结构分析模块，以输出符合应用场景格式要求的文本内容。该文作者例举了多种文本结构分析模块的实现方法。</p>
+<img src="/2019/01/05/深度学习-OCR/WordSup.png" title="WordSup">
+<hr>
+
+<h3 id="文本识别"><a href="#文本识别" class="headerlink" title="文本识别"></a><strong>文本识别</strong></h3><p>提取待识别图像之后就可以对图像进行识别了，和定位待识别图像相对应，同样是两种类型识别任务</p>
+<h4 id="单字符识别"><a href="#单字符识别" class="headerlink" title="单字符识别"></a><strong>单字符识别</strong></h4><h5 id="k近邻"><a href="#k近邻" class="headerlink" title="k近邻"></a><strong>k近邻</strong></h5><p>该方法很好理解，数据库中保存着已经标注好label的不同的字符的图像，对于新的图像，识别时，比较待识别的图像和数据库中图像的距离，选择距离最小的类别对应的label为当前图像的识别结果，但是该方法存在一个问题，那就是计算量太大了，要想提高识别的准确性，就需要数据库中存储的数据要足够多，与此同时，在识别时计算量也会增加，识别一个图像要跟整个数据库中的所有样本进行距离计算</p>
+<h5 id="图像分类模型"><a href="#图像分类模型" class="headerlink" title="图像分类模型"></a><strong>图像分类模型</strong></h5><p>借着深度学习的东风，使用图像识别算法进行单字符识别效果简直不要太好，相关的技术方法有很多，包括<code>VggNet</code>，<code>ResNet</code>，<code>InceptionNet</code>，<code>DenseNet</code>等，具体的可以参考本人的另一篇文字<a href="http://xiaofengshi.com/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%9B%BE%E5%83%8F%E8%AF%86%E5%88%AB/">深度学习-图像识别</a>。</p>
+<h4 id="不定长字符识别"><a href="#不定长字符识别" class="headerlink" title="不定长字符识别"></a><strong>不定长字符识别</strong></h4><p>目前基本都是使用的<code>CTC</code>策略(稍后详解)，对于特征提取的基础网络目前主要使用的是<code>CRNN</code>和<code>Densenet</code></p>
+<h5 id="CRNN-CTC-2015"><a href="#CRNN-CTC-2015" class="headerlink" title="CRNN+CTC(2015)"></a><code>CRNN+CTC</code>(2015)</h5><p><a href="https://arxiv.org/pdf/1507.05717.pdf" target="_blank" rel="noopener">An End-to-End Trainable Neural Network for Image-based Sequence Recognition and Its Application to Scene Text Recognition</a></p>
+<p><strong><code>CRNN</code>(<code>Convolutional Recurrent Neural Network</code>）是目前较为流行的图文识别模型，可识别较长的文本序列。</strong></p>
+<ul>
+<li><p>包含<code>CNN</code>特征提取层和<code>BLSTM</code>序列特征提取层，能够进行端到端的联合训练。 </p>
+</li>
+<li><p>利用<code>BLSTM</code>和<code>CTC</code>部件学习字符图像中的上下文关系， 从而有效提升文本识别准确率，使得模型更加鲁棒。</p>
+</li>
+</ul>
+<p>预测过程中，前端使用标准的<code>CNN</code>网络提取文本图像的特征，利用<code>BLSTM</code>将特征向量进行融合以提取字符序列的上下文特征，然后得到每列特征的概率分布，最后通过转录层(<code>CTC rule</code>)进行预测得到文本序列。</p>
+<img src="/2019/01/05/深度学习-OCR/CRNN.png" title="CRNN">
+<h5 id="DenseNet-CTC"><a href="#DenseNet-CTC" class="headerlink" title="DenseNet+CTC"></a><code>DenseNet+CTC</code></h5><p>该框架和<code>CRNN</code>相似，使用<code>DenseNet</code>替换了原来的<code>CNN+BLSM</code>，提升了模型的运行速度，但是DenseNet由于block层对特征图的重复利用会非常占显存。</p>
+<h5 id="RARE-2016"><a href="#RARE-2016" class="headerlink" title="RARE(2016)"></a><code>RARE</code>(2016)</h5><p><a href="https://arxiv.org/pdf/1603.03915.pdf" target="_blank" rel="noopener">Robust Scene Text Recognition with Automatic Rectification</a></p>
+<p><strong><code>RARE</code>模型在识别变形的图像文本时效果很好。</strong>模型预测过程中，输入图像首先要被送到一个空间变换网络(<code>Spatial Transformer Network</code>)中做处理，矫正过的图像然后被送入序列识别网络中得到文本预测结果。空间变换网络如下图所示。网络模型有<code>STN+SRN</code>组成。</p>
+<img src="/2019/01/05/深度学习-OCR/RARE_STN.png" title="STNet">
+<p><strong>空间变换网络内部包含定位网络(Localization Network)、网格生成器(Grid Generator)、采样器(Sampler)三个部件</strong>。经过训练后，它可以根据输入图像的特征图动态地产生空间变换网格，然后采样器根据变换网格核函数从原始图像中采样获得一个矩形的文本图像。<code>RARE</code>中支持一种称为<code>TPS（thin-plate splines）</code>的空间变换，从而能够比较准确地识别透视变换过的文本、以及弯曲的文本。</p>
+<p>经过矫正之后的图像送入序列识别网络(<code>Sequence Recognition Network</code>)，网络结构如下图所示，为一个<code>Encoder_Decoder</code>模型，结构为<code>CNN+BLSTM+ATT_GRU+Softmax</code>，使用极小化对数似然估计的方法，优化方法为<code>ADADELTA</code></p>
+<img src="/2019/01/05/深度学习-OCR/RARE_SRN.png" title="SRN">
+<hr>
+
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>目前主要的<code>OCR</code>项目使用的是如上的这些技术，比如<code>CTPN+CRNN</code>，<code>CTPN+DenseNet</code>，<code>YOLO+DenseNet</code>，<code>PixelLink+RARE</code>等，接下来针对上面这些技术点结合论文及代码进行一些个人的浅薄分析。</p>
+<h3 id="End2End"><a href="#End2End" class="headerlink" title="End2End"></a><code>End2End</code></h3><p>端对端模型，直接从图片中定位并识别出包含的文本内容</p>
+<h4 id="FOTS-2018"><a href="#FOTS-2018" class="headerlink" title="FOTS(2018)"></a><code>FOTS</code>(2018)</h4><p><a href="">FOTS: Fast Oriented Text Spotting with a Unified Network</a></p>
+<p><code>FOTS</code>是图像文本检测与识别同步训练、端到端可学习的网络模型。检测和识别任务共享卷积特征层，既节省了计算时间，也比两阶段训练方式学习到更多图像特征。引入了旋转感兴趣区域（<code>RoIRotate</code>）, 可以从卷积特征图中产生出定向的文本区域，从而支持倾斜文本的识别。</p>
+<img src="/2019/01/05/深度学习-OCR/FOTS.png" title="FOTS">
+<hr>
+
+<h4 id="STN-OCR-2017"><a href="#STN-OCR-2017" class="headerlink" title="STN-OCR(2017)"></a><code>STN-OCR</code>(2017)</h4><p><a href="">STN-OCR: A single Neural Network for Text Detection and Text Recognition</a></p>
+<p><code>STN-OCR</code>是集成了了图文检测和识别功能的端到端可学习模型。在它的检测部分嵌入了一个空间变换网络（<code>STN</code>）来对原始输入图像进行仿射（<code>affine</code>）变换，类似于<code>RARE</code>中的<code>STN</code>网络。利用这个空间变换网络，可以对检测到的多个文本块分别执行旋转、缩放和倾斜等图形矫正动作，从而在后续文本识别阶段得到更好的识别精度。在训练上<code>STN-OCR</code>属于<strong>半监督学习方法，只需要提供文本内容标注，而不要求文本定位信息</strong>。作者也提到，<strong>如果从头开始训练则网络收敛速度较慢，因此建议渐进地增加训练难度</strong>。<code>STN-OCR</code>已经开放了工程源代码和预训练模型。</p>
+<img src="/2019/01/05/深度学习-OCR/STN-OCR.png" title="STN-OCR">
+      
+    </div>
+    
+    
+    
+
+    <div>
+        
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>知识分享，方便你我-------------</div>
+    
+</div>
+
+        
+      </div>
+
+    
+    
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2019/01/05/深度学习-OCR/">深度学习-OCR</a></p>
+  <p><span>文章作者:</span><a href="/" title="访问 ShiXiaofeng 的个人博客">ShiXiaofeng</a></p>
+  <p><span>发布时间:</span>2019年01月05日 - 18:07</p>
+  <p><span>最后更新:</span>2019年01月07日 - 14:49</p>
+  <p><span>原始链接:</span><a href="/2019/01/05/深度学习-OCR/" title="深度学习-OCR">http://xiaofengshi.com/2019/01/05/深度学习-OCR/</a>
+    <span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://xiaofengshi.com/2019/01/05/深度学习-OCR/" aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+    $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	});
+    });  
+</script>
+
+
+    
+    
+
+    
+
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/深度学习/" rel="tag"><i class="fa fa-tag"></i> 深度学习</a>
+          
+            <a href="/tags/CV/" rel="tag"><i class="fa fa-tag"></i> CV</a>
+          
+            <a href="/tags/OCR/" rel="tag"><i class="fa fa-tag"></i> OCR</a>
+          
+            <a href="/tags/seq2seq/" rel="tag"><i class="fa fa-tag"></i> seq2seq</a>
+          
+            <a href="/tags/CTC/" rel="tag"><i class="fa fa-tag"></i> CTC</a>
+          
+        </div>
+      
+
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/12/AwsomeProcess/" rel="next" title="AwsomeProcess">
+                <i class="fa fa-chevron-left"></i> AwsomeProcess
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="ShiXiaofeng">
+            
+              <p class="site-author-name" itemprop="name">ShiXiaofeng</p>
+              <p class="site-description motion-element" itemprop="description">数据挖掘，机器学习，深度学习相关技术分享及记录</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/xiaofengShi" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:yourname@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#技术方案"><span class="nav-number">1.</span> <span class="nav-text">技术方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#图像预处理"><span class="nav-number">1.1.</span> <span class="nav-text">图像预处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定位待识别图像"><span class="nav-number">1.2.</span> <span class="nav-text">定位待识别图像</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#单字符提取"><span class="nav-number">1.2.1.</span> <span class="nav-text">单字符提取</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#文本行提取"><span class="nav-number">1.2.2.</span> <span class="nav-text">文本行提取</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#CTPN-2016年"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">CTPN(2016年)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#RRPN-ECCV2017"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">RRPN(ECCV2017)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#FTSN-2018"><span class="nav-number">1.2.2.3.</span> <span class="nav-text">FTSN(2018)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#DMPNet-2017"><span class="nav-number">1.2.2.4.</span> <span class="nav-text">DMPNet(2017)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#EAST-2017"><span class="nav-number">1.2.2.5.</span> <span class="nav-text">EAST(2017)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Textboxes-2016"><span class="nav-number">1.2.2.6.</span> <span class="nav-text">Textboxes(2016)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#SegLink-2017"><span class="nav-number">1.2.2.7.</span> <span class="nav-text">SegLink(2017)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#TextBoxes-2018"><span class="nav-number">1.2.2.8.</span> <span class="nav-text">TextBoxes++(2018)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#PixelLink-2018"><span class="nav-number">1.2.2.9.</span> <span class="nav-text">PixelLink(2018)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#WordSup-2017"><span class="nav-number">1.2.2.10.</span> <span class="nav-text">WordSup(2017)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文本识别"><span class="nav-number">1.3.</span> <span class="nav-text">文本识别</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#单字符识别"><span class="nav-number">1.3.1.</span> <span class="nav-text">单字符识别</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#k近邻"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">k近邻</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#图像分类模型"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">图像分类模型</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#不定长字符识别"><span class="nav-number">1.3.2.</span> <span class="nav-text">不定长字符识别</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#CRNN-CTC-2015"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">CRNN+CTC(2015)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#DenseNet-CTC"><span class="nav-number">1.3.2.2.</span> <span class="nav-text">DenseNet+CTC</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#RARE-2016"><span class="nav-number">1.3.2.3.</span> <span class="nav-text">RARE(2016)</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">1.3.3.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#End2End"><span class="nav-number">1.4.</span> <span class="nav-text">End2End</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#FOTS-2018"><span class="nav-number">1.4.1.</span> <span class="nav-text">FOTS(2018)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#STN-OCR-2017"><span class="nav-number">1.4.2.</span> <span class="nav-text">STN-OCR(2017)</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ShiXiaofeng</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="https://cdn.bootcss.com/velocity/1.2.1/velocity.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="https://cdn.bootcss.com/velocity/1.2.1/velocity.ui.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="https://cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz',
+        appKey: 'zJasiQnAqgUwf4kiHhHyXwOP',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz", "zJasiQnAqgUwf4kiHhHyXwOP");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+  <!-- 代码块复制功能 -->
+  <script type="text/javascript" src="/js/src/clipboard.min.js"></script>
+  <script type="text/javascript" src="/js/src/clipboard-use.js"></script>
+
+</body>
+</html>
