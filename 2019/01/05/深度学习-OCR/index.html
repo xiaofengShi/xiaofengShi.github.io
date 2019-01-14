@@ -106,6 +106,9 @@
 <meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR/WordSup.png">
 <meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR/corner_overview.png">
 <meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR/corner.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR/overview.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR/ICDAR2013.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR/ICDAR2015.png">
 <meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR/CRNN.png">
 <meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR/RARE_STN.png">
 <meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR/RARE_SRN.png">
@@ -114,7 +117,7 @@
 <meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR/ASTER_PARAMS.png">
 <meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR/FOTS.png">
 <meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR/STN-OCR.png">
-<meta property="og:updated_time" content="2019-01-07T11:15:20.368Z">
+<meta property="og:updated_time" content="2019-01-09T07:23:57.860Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深度学习-OCR">
 <meta name="twitter:description" content="本篇涉及使用深度学习的方法实现字符识别的任务，该任务与计算机视觉领域内的图像描述任务(ImageCaption)相似，对于图像描述任务，输入为图像，输出为对该图像的描述；而对于OCR任务，输入的图像为包含文字或字符的图片，而输出为这张图片中的文字或字符。">
@@ -460,7 +463,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  7.5k 字
+                  8.6k 字
                 </span>
               
 
@@ -476,7 +479,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  26 分钟
+                  31 分钟
                 </span>
               
             </div>
@@ -534,7 +537,6 @@
 <p>针对上述问题根因，近年来出现了各种基于深度学习的技术解决方案。它们从特征提取、区域建议网络(RPN)、多目标协同训练、Loss改进、非极大值抑制（NMS）、半监督学习等角度对常规物体检测方法进行改造，极大提升了自然场景图像中文本检测的准确率。例如：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">·CTPN方案中，用BLSTM模块提取字符所在图像上下文特征，以提高文本块识别精度。</span><br><span class="line">·RRPN等方案中，文本框标注采用BBOX +方向角度值的形式，模型中产生出可旋转的文字区域候选框，并	在边框回归计算过程中找到待测文本行的倾斜角度。</span><br><span class="line">·DMPNet等方案中，使用四边形（非矩形）标注文本框，来更紧凑的包围文本区域。</span><br><span class="line">·SegLink将单词切割为更易检测的小文字块，再预测邻近连接将小文字块连成词。</span><br><span class="line">·TextBoxes等方案中，调整了文字区域参考框的长宽比例，并将特征层卷积核调整为长方形，从而更适合检测出细长型的文本行。</span><br><span class="line">·FTSN方案中，作者使用Mask-NMS代替传统BBOX的NMS算法来过滤候选框。</span><br><span class="line">·WordSup方案中，采用半监督学习策略，用单词级标注数据来训练字符级文本检测模型。</span><br></pre></td></tr></table></figure>
 <h5 id="CTPN-2016年"><a href="#CTPN-2016年" class="headerlink" title="CTPN(2016年)"></a><code>CTPN</code>(2016年)</h5><p><a href="https://arxiv.org/abs/1609.03605" target="_blank" rel="noopener">论文链接Connectionist Text Proposal Network</a></p>
-<p><a href="https://github.com/eragonruan/text-detection-ctpn" target="_blank" rel="noopener">高星Repo</a></p>
 <p>该算法由华南理工大学金连文老师研究组提出，该算法脱胎于<code>FasterRcnn</code>，<code>CTPN</code>是目前流传最广、影响最大的开源文本检测模型，可以检测水平或微斜的文本行。在<code>FasterRcnn</code>基础上去掉了<code>ROI</code>层，引入了不同的<code>anchor</code>设置，<code>anchor</code>设置为固定宽度不同高度，来模拟不同高度的文本行，加入了<code>RNN</code>网络，使用<code>RNN</code>对目标的位置偏移和置信度得分的计算，具体的实现路径会在接下来进行详细的分析。该算法虽然很准，但是由于使用了<code>RNN</code>网络，拖慢了网络速度。</p>
 <p>在<code>CTPN</code>中文本行可以被看成一个字符<code>sequence</code>，而不是一般物体检测中单个独立的目标。同一文本行上各个字符图像间可以互为上下文，在训练阶段让检测模型学习图像中蕴含的这种上下文统计规律，可以使得预测阶段有效提升文本块预测准确率。<code>CTPN</code>模型的图像预测流程中，前端使用当时流行的<code>VGG16</code>做基础网络来提取各字符的局部图像特征，中间使用<code>BLSTM</code>层提取字符序列上下文特征，然后通过<code>FC</code>全连接层，末端经过预测分支输出各个文字块的坐标值和分类结果概率值。在数据后处理阶段，将合并相邻的小文字块为文本行。</p>
 <h5 id="RRPN-ECCV2017"><a href="#RRPN-ECCV2017" class="headerlink" title="RRPN(ECCV2017)"></a><code>RRPN</code>(ECCV2017)</h5><p><a href="https://arxiv.org/abs/1703.01086" target="_blank" rel="noopener">Arbitrary-Oriented Scene Text Detection via Rotation Proposals</a></p>
@@ -561,7 +563,6 @@
 <li>对应于四边形标注，模型执行时会对特征图中每个像素预测其到四个顶点的坐标差值。</li>
 <li>对应于旋转矩形框标注，模型执行时会对特征图中每个像素预测其到矩形框四边的距离、以及矩形框的方向角。</li>
 </ul>
-<p><strong>根据开源工程中预训练模型的测试，该模型检测英文单词效果较好、检测中文长文本行效果欠佳。或许，根据中文数据特点进行针对性训练后，检测效果还有提升空间</strong>。</p>
 <p>上述过程中，省略了其他模型中常见的区域建议、单词分割、子块合并等步骤，因此<strong>该模型的执行速度很快。</strong></p>
 <img src="/2019/01/05/深度学习-OCR/EAST.png" title="EAST">
 <hr>
@@ -613,7 +614,7 @@
 <ul>
 <li><p>与CTPN，EAST，SegLink相比，PixelLink放弃了边框回归方法来检测文本行的bbox，而是采用实例分割方法，直接从分割的文本行区域得到文本行的bbox．PixelLink可以以更少额数据和更快地速度进行训练。</p>
 </li>
-<li><p>假设提取特征的主干网络结构采用VGG16(当然你也可以采用其它主干网络结构)，PixelLink不需要在imagenet预训练的模型上进行fine-tuned（即直接从头开始训练），而CTPN，EAST，SegLink都需要在imagenet预训练的模型上进行fine-tuned；、</p>
+<li><p>假设提取特征的主干网络结构采用VGG16(当然也可以采用其它主干网络结构)，PixelLink不需要在imagenet预训练的模型上进行fine-tuned（即直接从头开始训练），而CTPN，EAST，SegLink都需要在imagenet预训练的模型上进行fine-tuned；、</p>
 </li>
 <li>与CTPN，EAST，SegLink相比，PixelLink对感受野的要求更少，因为每个神经元值只负责预测自己及其邻域内的状态</li>
 <li>与SegLink一样，不能检测很大的文本，这是因为link主要是用于连接相邻的segments，而不能用于检测相距较远的文本行</li>
@@ -632,7 +633,7 @@
 <h5 id="基于角定位与区域分割-2018"><a href="#基于角定位与区域分割-2018" class="headerlink" title="基于角定位与区域分割(2018)"></a>基于角定位与区域分割(2018)</h5><p><a href="https://arxiv.org/pdf/1802.08948.pdf" target="_blank" rel="noopener">Multi-Oriented Scene Text Detection via Corner Localization and Region Segmentation</a></p>
 <p><strong>主要是为了解决场景文本多方向，长宽比变化较大等场景文本检测中的难点问题。</strong></p>
 <p>该方法用一个端到端网络完成文字检测整个过程——除了基础卷积网络（<code>backbone</code>）外，包括两个并行分支和一个后处理。第一个分支是通过一个DSSD网络进行角点检测来提取候选文字区域，第二个分支是利用类似于<code>RFCN</code>进行网格划分的方式来做<code>position-sensitive</code>的<code>segmentation</code>。后处理是利用<code>segmentation</code>的<code>score map</code>的综合得分，过滤角点检测得到的候选区域中的噪声。</p>
-<p><strong>文章两点</strong></p>
+<p><strong>文章亮点</strong></p>
 <ul>
 <li>检测不是用一般的<code>object detection</code>的框架来做，而是用<code>corner point detection</code>来做。（可以更好解决文字方向任意、文字长宽比很大的文本，不会受到感受野的影响）</li>
 <li>分割用的是<code>position sensitive segmentation</code>，仿照<code>RFCN</code>划分网格的思路，把位置信息融合进去（对于检测单词这种细粒度的更有利）</li>
@@ -652,6 +653,19 @@
 </ul>
 <hr>
 
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><ul>
+<li>多个数据集中不同模型的表现</li>
+</ul>
+<img src="/2019/01/05/深度学习-OCR/overview.png" title="overview">
+<ul>
+<li>ICDAR2013数据集表现</li>
+</ul>
+<img src="/2019/01/05/深度学习-OCR/ICDAR2013.png" title="ICDAR2013">
+<ul>
+<li>ICDAR2015数据集表现</li>
+</ul>
+<img src="/2019/01/05/深度学习-OCR/ICDAR2015.png" title="ICDAR2015">
+<p>图中蓝色为召回率(实际为真的样本中预测为真的概率，衡量检索的覆盖率)，绿色为精确率(预测为真的样本中实际为真的概率，衡量检测的信噪比)，橙色为Fscore，图中显示$0.00$的数据表示论文中没有给出相应得分。具体可以参考另一篇文章<a href="http://xiaofengshi.com/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/">机器学习-常用知识点</a>[可以直观的看到各个模型的评价指标值，在IC2015数据集上，<code>PixelLink_vgg2</code>对应的模型效果是最好的</p>
 <h3 id="文本识别"><a href="#文本识别" class="headerlink" title="文本识别"></a><strong>文本识别</strong></h3><p>提取待识别图像之后就可以对图像进行识别了，和定位待识别图像相对应，同样是两种类型识别任务</p>
 <h4 id="单字符识别"><a href="#单字符识别" class="headerlink" title="单字符识别"></a><strong>单字符识别</strong></h4><h5 id="k近邻"><a href="#k近邻" class="headerlink" title="k近邻"></a><strong>k近邻</strong></h5><p>该方法很好理解，数据库中保存着已经标注好label的不同的字符的图像，对于新的图像，识别时，比较待识别的图像和数据库中图像的距离，选择距离最小的类别对应的label为当前图像的识别结果，但是该方法存在一个问题，那就是计算量太大了，要想提高识别的准确性，就需要数据库中存储的数据要足够多，与此同时，在识别时计算量也会增加，识别一个图像要跟整个数据库中的所有样本进行距离计算</p>
 <h5 id="图像分类模型"><a href="#图像分类模型" class="headerlink" title="图像分类模型"></a><strong>图像分类模型</strong></h5><p>借着深度学习的东风，使用图像识别算法进行单字符识别效果简直不要太好，相关的技术方法有很多，包括<code>VggNet</code>，<code>ResNet</code>，<code>InceptionNet</code>，<code>DenseNet</code>等，具体的可以参考本人的另一篇文字<a href="http://xiaofengshi.com/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%9B%BE%E5%83%8F%E8%AF%86%E5%88%AB/">深度学习-图像识别</a>。</p>
@@ -699,7 +713,7 @@
 <img src="/2019/01/05/深度学习-OCR/ASTER_PARAMS.png" title="ASTER网络参数">
 <hr>
 
-<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>目前主要的<code>OCR</code>项目使用的是如上的这些技术，比如<code>CTPN+CRNN</code>，<code>CTPN+DenseNet</code>，<code>YOLO+DenseNet</code>，<code>PixelLink+RARE</code>等，接下来针对上面这些技术点结合论文及代码进行一些个人的浅薄分析。</p>
+<h4 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h4><p>目前主要的<code>OCR</code>项目使用的是如上的这些技术，比如<code>CTPN+CRNN</code>，<code>CTPN+DenseNet</code>，<code>YOLO+DenseNet</code>，<code>PixelLink+RARE</code>等，接下来针对上面这些技术点结合论文及代码进行一些个人的浅薄分析。</p>
 <h3 id="End2End"><a href="#End2End" class="headerlink" title="End2End"></a><code>End2End</code></h3><p>端对端模型，直接从图片中定位并识别出包含的文本内容</p>
 <h4 id="FOTS-2018"><a href="#FOTS-2018" class="headerlink" title="FOTS(2018)"></a><code>FOTS</code>(2018)</h4><p><a href="https://arxiv.org/pdf/1801.01671.pdf" target="_blank" rel="noopener">FOTS: Fast Oriented Text Spotting with a Unified Network</a></p>
 <p><code>FOTS</code>是图像文本检测与识别同步训练、端到端可学习的网络模型。检测和识别任务共享卷积特征层，既节省了计算时间，也比两阶段训练方式学习到更多图像特征。引入了旋转感兴趣区域（<code>RoIRotate</code>）, 可以从卷积特征图中产生出定向的文本区域，从而支持倾斜文本的识别。</p>
@@ -712,20 +726,80 @@
 <hr>
 
 <h4 id="Mask-TextSpotter-2018"><a href="#Mask-TextSpotter-2018" class="headerlink" title="Mask TextSpotter(2018)"></a>Mask TextSpotter(2018)</h4><p>该文受到<code>MaskRCNN</code>的启发提出了一种用于场景text spotting的可端到端训练的神经网络模型：M<code>ask TextSpotter</code>。与以前使用端到端可训练深度神经网络完成text spotting的方法不同，Mask TextSpotter利用简单且平滑的端到端学习过程，通过语义分割获得精确的文本检测和识别。此外，它在处理不规则形状的文本实例（例如，弯曲文本）方面优于之前的方法。</p>
-<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p><a href="https://zhuanlan.zhihu.com/p/38655369" target="_blank" rel="noopener">自然场景文本检测识别技术综述</a></p>
+<h3 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h3><h2 id="训练数据集"><a href="#训练数据集" class="headerlink" title="训练数据集"></a><strong>训练数据集</strong></h2><p>本章将列举可用于文本检测和识别领域模型训练的一些大型公开数据集， 不涉及仅用于模型fine-tune任务的小型数据集。</p>
+<h4 id="Chinese-Text-in-the-Wild-CTW"><a href="#Chinese-Text-in-the-Wild-CTW" class="headerlink" title="Chinese Text in the Wild(CTW)"></a><strong>Chinese Text in the Wild(CTW)</strong></h4><p>该数据集包含32285张图像，1018402个中文字符(来自于腾讯街景), 包含平面文本，凸起文本，城市文本，农村文本，低亮度文本，远处文本，部分遮挡文本。图像大小2048*2048，数据集大小为31GB。以(8:1:1)的比例将数据集分为训练集(25887张图像，812872个汉字)，测试集(3269张图像，103519个汉字)，验证集(3129张图像，103519个汉字)。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">文献链接：https://arxiv.org/pdf/1803.00085.pdf </span><br><span class="line">数据集下载地址：https://ctwdataset.github.io/</span><br></pre></td></tr></table></figure>
+<h4 id="Reading-Chinese-Text-in-the-Wild-RCTW-17"><a href="#Reading-Chinese-Text-in-the-Wild-RCTW-17" class="headerlink" title="Reading Chinese Text in the Wild(RCTW-17)"></a><strong>Reading Chinese Text in the Wild(RCTW-17)</strong></h4><p>该数据集包含12263张图像，训练集8034张，测试集4229张，共11.4GB。大部分图像由手机相机拍摄，含有少量的屏幕截图，图像中包含中文文本与少量英文文本。图像分辨率大小不等。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">下载地址http://mclab.eic.hust.edu.cn/icdar2017chinese/dataset.html</span><br><span class="line">文献：http://arxiv.org/pdf/1708.09585v2</span><br></pre></td></tr></table></figure>
+<h4 id="ICPR-MWI-2018-挑战赛"><a href="#ICPR-MWI-2018-挑战赛" class="headerlink" title="ICPR MWI 2018 挑战赛"></a>ICPR MWI 2018 挑战赛</h4><p>大赛提供20000张图像作为数据集，其中50%作为训练集，50%作为测试集。主要由合成图像，产品描述，网络广告构成。该数据集数据量充分，中英文混合，涵盖数十种字体，字体大小不一，多种版式，背景复杂。文件大小为2GB。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">下载地址：</span><br><span class="line">https://tianchi.aliyun.com/competition/information.htm?raceId=231651&amp;_is_login_redirect=true&amp;accounttraceid=595a06c3-7530-4b8a-ad3d-40165e22dbfe</span><br></pre></td></tr></table></figure>
+<h4 id="Total-Text"><a href="#Total-Text" class="headerlink" title="Total-Text"></a><strong>Total-Text</strong></h4><p>该数据集共1555张图像，11459文本行，包含水平文本，倾斜文本，弯曲文本。文件大小441MB。大部分为英文文本，少量中文文本。训练集：1255张 测试集：300</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">下载地址：http://www.cs-chan.com/source/ICDAR2017/totaltext.zip</span><br><span class="line">文献：http:// arxiv.org/pdf/1710.10400v</span><br></pre></td></tr></table></figure>
+<h4 id="Google-FSNS-谷歌街景文本数据集"><a href="#Google-FSNS-谷歌街景文本数据集" class="headerlink" title="Google FSNS(谷歌街景文本数据集)"></a>Google FSNS(谷歌街景文本数据集)</h4><p>该数据集是从谷歌法国街景图片上获得的一百多万张街道名字标志，每一张包含同一街道标志牌的不同视角，图像大小为600*150，训练集1044868张，验证集16150张，测试集20404张。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">下载地址：http://rrc.cvc.uab.es/?ch=6&amp;com=downloads</span><br><span class="line">文献：http:// arxiv.org/pdf/1702.03970v1</span><br></pre></td></tr></table></figure>
+<h4 id="COCO-TEXT"><a href="#COCO-TEXT" class="headerlink" title="COCO-TEXT"></a><strong>COCO-TEXT</strong></h4><p>该数据集，包括63686幅图像，173589个文本实例，包括手写版和打印版，清晰版和非清晰版。文件大小12.58GB，训练集：43686张，测试集：10000张，验证集：10000张</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">文献: http://arxiv.org/pdf/1601.07140v2</span><br><span class="line">下载地址：https://vision.cornell.edu/se3/coco-text-2/</span><br></pre></td></tr></table></figure>
+<p><strong>Synthetic Data for Text Localisation</strong></p>
+<p>在复杂背景下人工合成的自然场景文本数据。包含858750张图像，共7266866个单词实例，28971487个字符，文件大小为41GB。该合成算法，不需要人工标注就可知道文字的label信息和位置信息，可得到大量自然场景文本标注数据。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">下载地址：http://www.robots.ox.ac.uk/~vgg/data/scenetext/</span><br><span class="line">文献：http://www.robots.ox.ac.uk/~ankush/textloc.pdf</span><br><span class="line">Code: https://github.com/ankush-me/SynthText (英文版)</span><br><span class="line">Code https://github.com/wang-tf/Chinese_OCR_synthetic_data(中文版)</span><br></pre></td></tr></table></figure>
+<h4 id="Synthetic-Word-Dataset"><a href="#Synthetic-Word-Dataset" class="headerlink" title="Synthetic Word Dataset"></a><strong>Synthetic Word Dataset</strong></h4><p>合成文本识别数据集，包含9百万张图像，涵盖了9万个英语单词。文件大小为10GB</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">下载地址：http://www.robots.ox.ac.uk/~vgg/data/text/</span><br></pre></td></tr></table></figure>
+<h4 id="Caffe-ocr中文合成数据"><a href="#Caffe-ocr中文合成数据" class="headerlink" title="Caffe-ocr中文合成数据"></a><strong>Caffe-ocr中文合成数据</strong></h4><p>数据利用中文语料库，通过字体、大小、灰度、模糊、透视、拉伸等变化随机生成，共360万张图片，图像分辨率为280x32，涵盖了汉字、标点、英文、数字共5990个字符。文件大小约为8.6GB</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">下载地址：https://pan.baidu.com/s/1dFda6R3</span><br></pre></td></tr></table></figure>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ul>
+<li><p>综述</p>
+<p><a href="https://zhuanlan.zhihu.com/p/38655369" target="_blank" rel="noopener">自然场景文本检测识别技术综述</a></p>
 <p><a href="https://www.jiqizhixin.com/articles/2018-06-20-16" target="_blank" rel="noopener">白翔:：图像OCR年度进展|VALSE2018之十一</a></p>
 <p><a href="https://zhuanlan.zhihu.com/p/29549641" target="_blank" rel="noopener">白翔：趣谈“捕文捉字”— 场景文字检测 | VALSE2017之十</a></p>
 <p><a href="https://blog.csdn.net/u013250416/article/details/79591263" target="_blank" rel="noopener">基于深度学习的目标检测及场景文字检测研究进展</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/52335619" target="_blank" rel="noopener">知乎文本检测综述</a></p>
+<p><a href="https://www.cnblogs.com/lillylin/" target="_blank" rel="noopener">优秀论文解读博客</a></p>
+<p><a href="https://zhuanlan.zhihu.com/burness-DL" target="_blank" rel="noopener">知乎专栏:小石头的码疯窝</a></p>
+</li>
+<li><p>文本检测</p>
+<ul>
+<li><p>CTPN</p>
 <p><a href="https://zhuanlan.zhihu.com/p/34757009" target="_blank" rel="noopener">场景文字检测—CTPN原理与实现</a></p>
-<p><a href="https://zhuanlan.zhihu.com/p/37781277" target="_blank" rel="noopener">文本检测之SegLink</a></p>
+<p><a href="https://github.com/eragonruan/text-detection-ctpn" target="_blank" rel="noopener">CTPN: Tensorflow</a></p>
+</li>
+<li><p>EAST</p>
+<p><a href="https://www.cnblogs.com/lillylin/p/9954981.html" target="_blank" rel="noopener">Bolg: EAST</a></p>
+<p><a href="https://github.com/argman/EAST" target="_blank" rel="noopener">EAST：tensorflow</a></p>
+<p><a href="https://github.com/kurapan/EAST" target="_blank" rel="noopener">EAST: Keras</a></p>
+<p><a href="https://github.com/huoyijie/AdvancedEAST" target="_blank" rel="noopener">EAST: Advanced keras</a></p>
+</li>
+<li><p>SegLink</p>
 <p><a href="https://www.cnblogs.com/lillylin/p/6596731.html" target="_blank" rel="noopener">SegLink_Blog</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/37781277" target="_blank" rel="noopener">文本检测之SegLink</a></p>
+</li>
+<li><p>PixelLink</p>
 <p><a href="https://zhuanlan.zhihu.com/p/38171172" target="_blank" rel="noopener">文本检测之PixelLink</a></p>
 <p><a href="https://github.com/ZJULearning/pixel_link" target="_blank" rel="noopener">Github: PixelLink </a></p>
+</li>
+<li><p>TextBoxes</p>
 <p><a href="https://zhuanlan.zhihu.com/p/33723456" target="_blank" rel="noopener">论文笔记：TextBoxes++: A Single-Shot Oriented Scene Text Detector</a></p>
 <p><a href="https://github.com/MhLiao/TextBoxes_plusplus" target="_blank" rel="noopener">Github: TextBoxes++</a></p>
+</li>
+<li><p>角定位</p>
+</li>
+</ul>
 <p><a href="https://www.cnblogs.com/lillylin/p/8495124.html" target="_blank" rel="noopener">基于角定位于区域分割</a></p>
-<p><a href="https://www.jiqizhixin.com/articles/2018-08-24-12" target="_blank" rel="noopener">华科白翔教授团队ECCV2018 OCR论文：Mask TextSpotter</a></p>
+</li>
+<li><p>文本识别</p>
+<ul>
+<li><p>ASTER</p>
 <p><a href="https://github.com/bgshih/aster" target="_blank" rel="noopener">Github: ASTER</a></p>
+</li>
+</ul>
+</li>
+<li><p>TextSpotter</p>
+<ul>
+<li><p>Mask TextSpotter</p>
+<p><a href="https://www.jiqizhixin.com/articles/2018-08-24-12" target="_blank" rel="noopener">华科白翔教授团队ECCV2018 OCR论文：Mask TextSpotter</a></p>
+</li>
+</ul>
+</li>
+</ul>
 
       
     </div>
@@ -756,7 +830,7 @@
   <p><span>本文标题:</span><a href="/2019/01/05/深度学习-OCR/">深度学习-OCR</a></p>
   <p><span>文章作者:</span><a href="/" title="访问 ShiXiaofeng 的个人博客">ShiXiaofeng</a></p>
   <p><span>发布时间:</span>2019年01月05日 - 18:07</p>
-  <p><span>最后更新:</span>2019年01月07日 - 19:15</p>
+  <p><span>最后更新:</span>2019年01月09日 - 15:23</p>
   <p><span>原始链接:</span><a href="/2019/01/05/深度学习-OCR/" title="深度学习-OCR">http://xiaofengshi.com/2019/01/05/深度学习-OCR/</a>
     <span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://xiaofengshi.com/2019/01/05/深度学习-OCR/" aria-label="复制成功！"></i></span>
   </p>
@@ -981,7 +1055,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#技术方案"><span class="nav-number">1.</span> <span class="nav-text">技术方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#图像预处理"><span class="nav-number">1.1.</span> <span class="nav-text">图像预处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定位待识别图像"><span class="nav-number">1.2.</span> <span class="nav-text">定位待识别图像</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#单字符提取"><span class="nav-number">1.2.1.</span> <span class="nav-text">单字符提取</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#文本行提取"><span class="nav-number">1.2.2.</span> <span class="nav-text">文本行提取</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#CTPN-2016年"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">CTPN(2016年)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#RRPN-ECCV2017"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">RRPN(ECCV2017)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#FTSN-2018"><span class="nav-number">1.2.2.3.</span> <span class="nav-text">FTSN(2018)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#DMPNet-2017"><span class="nav-number">1.2.2.4.</span> <span class="nav-text">DMPNet(2017)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#EAST-2017"><span class="nav-number">1.2.2.5.</span> <span class="nav-text">EAST(2017)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Textboxes-2016"><span class="nav-number">1.2.2.6.</span> <span class="nav-text">Textboxes(2016)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#SegLink-2017"><span class="nav-number">1.2.2.7.</span> <span class="nav-text">SegLink(2017)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#TextBoxes-2018"><span class="nav-number">1.2.2.8.</span> <span class="nav-text">TextBoxes++(2018)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#PixelLink-2018"><span class="nav-number">1.2.2.9.</span> <span class="nav-text">PixelLink(2018)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#WordSup-2017"><span class="nav-number">1.2.2.10.</span> <span class="nav-text">WordSup(2017)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#基于角定位与区域分割-2018"><span class="nav-number">1.2.2.11.</span> <span class="nav-text">基于角定位与区域分割(2018)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文本识别"><span class="nav-number">1.3.</span> <span class="nav-text">文本识别</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#单字符识别"><span class="nav-number">1.3.1.</span> <span class="nav-text">单字符识别</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#k近邻"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">k近邻</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#图像分类模型"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">图像分类模型</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#不定长字符识别"><span class="nav-number">1.3.2.</span> <span class="nav-text">不定长字符识别</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#CRNN-CTC-2015"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">CRNN+CTC(2015)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#DenseNet-CTC"><span class="nav-number">1.3.2.2.</span> <span class="nav-text">DenseNet+CTC</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#RARE-2016"><span class="nav-number">1.3.2.3.</span> <span class="nav-text">RARE(2016)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#FocusingAttention-2017"><span class="nav-number">1.3.2.4.</span> <span class="nav-text">FocusingAttention(2017)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#AON-2018"><span class="nav-number">1.3.2.5.</span> <span class="nav-text">AON (2018)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ASTER-2018"><span class="nav-number">1.3.2.6.</span> <span class="nav-text">ASTER(2018)</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">1.3.3.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#End2End"><span class="nav-number">1.4.</span> <span class="nav-text">End2End</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#FOTS-2018"><span class="nav-number">1.4.1.</span> <span class="nav-text">FOTS(2018)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#STN-OCR-2017"><span class="nav-number">1.4.2.</span> <span class="nav-text">STN-OCR(2017)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Mask-TextSpotter-2018"><span class="nav-number">1.4.3.</span> <span class="nav-text">Mask TextSpotter(2018)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reference"><span class="nav-number">2.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#技术方案"><span class="nav-number">1.</span> <span class="nav-text">技术方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#图像预处理"><span class="nav-number">1.1.</span> <span class="nav-text">图像预处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定位待识别图像"><span class="nav-number">1.2.</span> <span class="nav-text">定位待识别图像</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#单字符提取"><span class="nav-number">1.2.1.</span> <span class="nav-text">单字符提取</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#文本行提取"><span class="nav-number">1.2.2.</span> <span class="nav-text">文本行提取</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#CTPN-2016年"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">CTPN(2016年)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#RRPN-ECCV2017"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">RRPN(ECCV2017)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#FTSN-2018"><span class="nav-number">1.2.2.3.</span> <span class="nav-text">FTSN(2018)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#DMPNet-2017"><span class="nav-number">1.2.2.4.</span> <span class="nav-text">DMPNet(2017)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#EAST-2017"><span class="nav-number">1.2.2.5.</span> <span class="nav-text">EAST(2017)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Textboxes-2016"><span class="nav-number">1.2.2.6.</span> <span class="nav-text">Textboxes(2016)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#SegLink-2017"><span class="nav-number">1.2.2.7.</span> <span class="nav-text">SegLink(2017)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#TextBoxes-2018"><span class="nav-number">1.2.2.8.</span> <span class="nav-text">TextBoxes++(2018)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#PixelLink-2018"><span class="nav-number">1.2.2.9.</span> <span class="nav-text">PixelLink(2018)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#WordSup-2017"><span class="nav-number">1.2.2.10.</span> <span class="nav-text">WordSup(2017)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#基于角定位与区域分割-2018"><span class="nav-number">1.2.2.11.</span> <span class="nav-text">基于角定位与区域分割(2018)</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">1.2.3.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文本识别"><span class="nav-number">1.3.</span> <span class="nav-text">文本识别</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#单字符识别"><span class="nav-number">1.3.1.</span> <span class="nav-text">单字符识别</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#k近邻"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">k近邻</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#图像分类模型"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">图像分类模型</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#不定长字符识别"><span class="nav-number">1.3.2.</span> <span class="nav-text">不定长字符识别</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#CRNN-CTC-2015"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">CRNN+CTC(2015)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#DenseNet-CTC"><span class="nav-number">1.3.2.2.</span> <span class="nav-text">DenseNet+CTC</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#RARE-2016"><span class="nav-number">1.3.2.3.</span> <span class="nav-text">RARE(2016)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#FocusingAttention-2017"><span class="nav-number">1.3.2.4.</span> <span class="nav-text">FocusingAttention(2017)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#AON-2018"><span class="nav-number">1.3.2.5.</span> <span class="nav-text">AON (2018)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ASTER-2018"><span class="nav-number">1.3.2.6.</span> <span class="nav-text">ASTER(2018)</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结-1"><span class="nav-number">1.3.3.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#End2End"><span class="nav-number">1.4.</span> <span class="nav-text">End2End</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#FOTS-2018"><span class="nav-number">1.4.1.</span> <span class="nav-text">FOTS(2018)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#STN-OCR-2017"><span class="nav-number">1.4.2.</span> <span class="nav-text">STN-OCR(2017)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Mask-TextSpotter-2018"><span class="nav-number">1.4.3.</span> <span class="nav-text">Mask TextSpotter(2018)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据集"><span class="nav-number">1.5.</span> <span class="nav-text">数据集</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#训练数据集"><span class="nav-number">2.</span> <span class="nav-text">训练数据集</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Chinese-Text-in-the-Wild-CTW"><span class="nav-number">2.0.1.</span> <span class="nav-text">Chinese Text in the Wild(CTW)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Reading-Chinese-Text-in-the-Wild-RCTW-17"><span class="nav-number">2.0.2.</span> <span class="nav-text">Reading Chinese Text in the Wild(RCTW-17)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ICPR-MWI-2018-挑战赛"><span class="nav-number">2.0.3.</span> <span class="nav-text">ICPR MWI 2018 挑战赛</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Total-Text"><span class="nav-number">2.0.4.</span> <span class="nav-text">Total-Text</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Google-FSNS-谷歌街景文本数据集"><span class="nav-number">2.0.5.</span> <span class="nav-text">Google FSNS(谷歌街景文本数据集)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#COCO-TEXT"><span class="nav-number">2.0.6.</span> <span class="nav-text">COCO-TEXT</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Synthetic-Word-Dataset"><span class="nav-number">2.0.7.</span> <span class="nav-text">Synthetic Word Dataset</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Caffe-ocr中文合成数据"><span class="nav-number">2.0.8.</span> <span class="nav-text">Caffe-ocr中文合成数据</span></a></li></ol></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#Reference"><span class="nav-number">3.</span> <span class="nav-text">Reference</span></a></li></div>
             
 
           </div>
