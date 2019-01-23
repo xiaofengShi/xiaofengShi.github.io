@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>http://xiaofengshi.com/2019/01/05/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-OCR/</loc>
-    <lastmod>2019-01-17T11:11:08.932Z</lastmod>
+    <loc>http://xiaofengshi.com/2019/01/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-TextDetection/</loc>
+    <lastmod>2019-01-23T07:35:30.550Z</lastmod>
+  </url>  <url>
+    <loc>http://xiaofengshi.com/2019/01/05/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-OCR_Overview/</loc>
+    <lastmod>2019-01-23T06:29:49.155Z</lastmod>
+  </url>  <url>
+    <loc>http://xiaofengshi.com/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/</loc>
+    <lastmod>2019-01-23T04:15:21.161Z</lastmod>
   </url>  <url>
     <loc>http://xiaofengshi.com/2018/11/06/LeetCode/</loc>
-    <lastmod>2019-01-17T06:31:26.116Z</lastmod>
+    <lastmod>2019-01-21T12:24:28.105Z</lastmod>
+  </url>  <url>
+    <loc>http://xiaofengshi.com/2018/11/25/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-EM%E7%AE%97%E6%B3%95/</loc>
+    <lastmod>2019-01-18T06:11:24.140Z</lastmod>
   </url>  <url>
     <loc>http://xiaofengshi.com/2018/11/11/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-SVM/</loc>
     <lastmod>2019-01-11T03:02:13.094Z</lastmod>
@@ -16,14 +25,8 @@
     <loc>http://xiaofengshi.com/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/</loc>
     <lastmod>2019-01-09T15:21:54.000Z</lastmod>
   </url>  <url>
-    <loc>http://xiaofengshi.com/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/</loc>
-    <lastmod>2019-01-05T09:56:09.176Z</lastmod>
-  </url>  <url>
     <loc>http://xiaofengshi.com/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/</loc>
     <lastmod>2018-12-29T04:16:09.809Z</lastmod>
-  </url>  <url>
-    <loc>http://xiaofengshi.com/2018/11/25/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-EM%E7%AE%97%E6%B3%95/</loc>
-    <lastmod>2018-12-17T12:00:58.158Z</lastmod>
   </url>  <url>
     <loc>http://xiaofengshi.com/2018/12/12/AwsomeProcess/</loc>
     <lastmod>2018-12-12T09:26:54.569Z</lastmod>

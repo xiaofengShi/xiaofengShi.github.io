@@ -1,0 +1,1861 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="https://cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+  
+
+<link href="https://cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/panda_32px.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/panda_16px.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="深度学习,CV,OCR,seq2seq,CTC,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="挖掘机养成日记" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="本篇涉及使用深度学习的方法实现字符识别的任务，该任务与计算机视觉领域内的图像描述任务(ImageCaption)相似，对于图像描述任务，输入为图像，输出为对该图像的描述；而对于OCR任务，输入的图像为包含文字或字符的图片，而输出为这张图片中的文字或字符。">
+<meta name="keywords" content="深度学习,CV,OCR,seq2seq,CTC">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习-OCR">
+<meta property="og:url" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/index.html">
+<meta property="og:site_name" content="挖掘机养成日记">
+<meta property="og:description" content="本篇涉及使用深度学习的方法实现字符识别的任务，该任务与计算机视觉领域内的图像描述任务(ImageCaption)相似，对于图像描述任务，输入为图像，输出为对该图像的描述；而对于OCR任务，输入的图像为包含文字或字符的图片，而输出为这张图片中的文字或字符。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/imagecaption.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/ocr.jpg">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/RRPN.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/FTSN.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/DMPNet_anchors.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/EAST.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/TextBoxes.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/SegLink.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/TextBoxes++.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/PixelLink.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/WordSup.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/corner_overview.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/corner.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/overview.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/ICDAR2013.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/ICDAR2015.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/CRNN.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/RARE_STN.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/RARE_SRN.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/FocusingAttention.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/AON.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/ASTER_PARAMS.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/FOTS.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/STN-OCR.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/ctpn_model.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/ctpn_gen_anchor.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/ctpn_anchor_gt.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/ctpn_anchor_gen.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/east_model.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/PVAnet.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/PVAnetParam.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/PVAnet_crelu_inception.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/EAST_RRBX.png">
+<meta property="og:updated_time" content="2019-01-23T06:29:49.155Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深度学习-OCR">
+<meta name="twitter:description" content="本篇涉及使用深度学习的方法实现字符识别的任务，该任务与计算机视觉领域内的图像描述任务(ImageCaption)相似，对于图像描述任务，输入为图像，输出为对该图像的描述；而对于OCR任务，输入的图像为包含文字或字符的图片，而输出为这张图片中的文字或字符。">
+<meta name="twitter:image" content="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/imagecaption.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/">
+
+
+
+
+
+  <title>深度学习-OCR | 挖掘机养成日记</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <!-- add fork me on github -->
+    <a href="https://github.com/xiaofengShi"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">挖掘机养成日记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>
+            
+            日程表
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-guestbook">
+          <a href="/guestbook/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-commenting"></i> <br>
+            
+            留言板
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ShiXiaofeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="挖掘机养成日记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">深度学习-OCR</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-05T18:07:30+08:00">
+                2019-01-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/深度学习/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/深度学习/CV/" itemprop="url" rel="index">
+                    <span itemprop="name">CV</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/01/05/深度学习-OCR_Overview/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/01/05/深度学习-OCR_Overview/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2019/01/05/深度学习-OCR_Overview/" class="leancloud_visitors" data-flag-title="深度学习-OCR">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  14.1k 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  56 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本篇涉及使用深度学习的方法实现字符识别的任务，该任务与计算机视觉领域内的图像描述任务(<code>ImageCaption</code>)相似，对于图像描述任务，输入为图像，输出为对该图像的描述；而对于<code>OCR</code>任务，输入的图像为包含文字或字符的图片，而输出为这张图片中的文字或字符。</p>
+<a id="more"></a>
+<img src="/2019/01/05/深度学习-OCR_Overview/imagecaption.png" title="ImageCaption">
+<p>如图所示，对于<code>ImageCaption</code>任务来说，输入一张图片，输出对该图片的描述，简而言之就是看图说话。</p>
+<hr>
+
+<img src="/2019/01/05/深度学习-OCR_Overview/ocr.jpg" title="OCR">
+<p>如图所示，对于<code>OCR</code>任务，输入的是一张身份张照片，输出的就是该照片中包含的文字内容。</p>
+<hr>
+
+<p>下面结合自己的开发经验对<code>OCR</code>项目的一些相关技术思路进行一些记录说明。</p>
+<h2 id="技术方案"><a href="#技术方案" class="headerlink" title="技术方案"></a>技术方案</h2><h3 id="图像预处理"><a href="#图像预处理" class="headerlink" title="图像预处理"></a><strong>图像预处理</strong></h3><p>假如输入时一些扫描或相机拍摄的文档，首先第一点肯定是对图像进行一些预处理，比如灰度处理，二值化处理，仿射变换矫正等对图像进行预处理，使图像统一成设置好的规格。</p>
+<h3 id="定位待识别图像"><a href="#定位待识别图像" class="headerlink" title="定位待识别图像"></a><strong>定位待识别图像</strong></h3><p>对图像进行预处理之后，接下来就是要找到图像中包含待识别文本的图像，一般分为两种思路，单字符提取和文本行提取</p>
+<h4 id="单字符提取"><a href="#单字符提取" class="headerlink" title="单字符提取"></a><strong>单字符提取</strong></h4><p>这算是模式识别中比较常用的传统的方法，主要针对的印刷体文档图片，并且英文相比中文的提取效果很好(中文中包含很多左右文字结构，而不像英文都是使用空格进行各个字符分割)。具体的实现方法有如下几种：</p>
+<ul>
+<li>对图像进行二值化处理，仿射变换等预处理；对图像进行竖直方向投影，提取出文本行；对文本行在水平方向投影，提取出单个字符，以来设置的阈值进行字符提取，这里就可以看出对于中文来说，进行水平方向投影时，如果阈值设置的不合适，会存在将一个左右结构的汉字拆分成两个单独字符的风险，比如“从”可能会被提取成“人”“人”；</li>
+<li>假定字符本身是具有连通性的，然后通过连通区域的检测方法找到文字字符的候选。</li>
+<li>通过最大稳定极值区域（<code>MSER-Maximally Stable Extremal Regions</code>）得到字符的候选，并将这些字符候选看作连通图(graph)的顶点，此时就可以将文本行的寻找过程视为聚类（<code>clustering</code>）的过程，因为来自相同文本行的文本通常具有相同的方向、颜色、字体以及形状。最后使用一个文本分类器滤除非文本部分。</li>
+<li>北科大殷绪成教授研究组的一个工作对文本的信息进行了更加全面的考虑，使用了文本的颜色、笔画宽度、字符方向（<code>orientation</code>）以及投影的特征。</li>
+</ul>
+<h4 id="文本行提取"><a href="#文本行提取" class="headerlink" title="文本行提取"></a><strong>文本行提取</strong></h4><p>由于外部因素和内部因素，场景文本检测具有一定的挑战性。外部因素源自环境，例如噪声、模糊和遮挡，它们也是一般目标检测中存在的主要问题。内部因素是由场景文本的属性和变化引起的。与一般目标检测相比，场景文本检测更加复杂，因为：</p>
+<ol>
+<li><p>场景文本可能以任意方向存在于自然图像中，因此边界框可能是旋转的矩形或者四边形；</p>
+</li>
+<li><p>场景文本边界框的长宽比变化比较大；</p>
+</li>
+<li><p>因为场景文本的形式可能是字符、单词或者文本行的形式，所以在定位边界的时候算法可能会发生混淆。</p>
+</li>
+</ol>
+<p>基于一般目标检测和语义分割模型，几个精心设计的模型使得文本检测能够更加准确地进行。使用最广泛的是基于<code>RegionProposal</code>的方法，其次是基于图像分割的方法。文本检测模型的目标是从图片中尽可能准确地找出文字所在区域。</p>
+<p>一般目标检测器（<code>SSD</code>，<code>YOLO</code> 和 <code>DenseBox</code> ）为基础，例如 <code>TextBoxes</code>，<code>FCRN</code> 以及 <code>EAST</code>，<code>SegLink</code>等，它们直接预测候选的边界框。</p>
+<p>以语义分割为基础，例如<code>PixelLink</code>和<code>FTSN</code>，它们生成分割映射，然后通过后处理生成最终的文本边界框。</p>
+<p>视觉领域常规物体检测方法(<code>SSD</code>, <code>YOLO</code>, <code>FasterRCNN</code>等)直接套用于文字检测任务效果并不理想， 主要原因如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">·相比于常规物体，文字行长度、长宽比例变化范围很大。</span><br><span class="line">·文本行是有方向性的。常规物体边框BBox的四元组描述方式信息量不充足。</span><br><span class="line">·自然场景中某些物体局部图像与字母形状相似，如果不参考图像全局信息将有误报。</span><br><span class="line">·有些艺术字体使用了弯曲的文本行，而手写字体变化模式也很多。</span><br><span class="line">·由于丰富的背景图像干扰，手工设计特征在自然场景文本识别任务中不够鲁棒。</span><br></pre></td></tr></table></figure>
+<p>针对上述问题根因，近年来出现了各种基于深度学习的技术解决方案。它们从特征提取、区域建议网络(RPN)、多目标协同训练、Loss改进、非极大值抑制（NMS）、半监督学习等角度对常规物体检测方法进行改造，极大提升了自然场景图像中文本检测的准确率。例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">·CTPN方案中，用BLSTM模块提取字符所在图像上下文特征，以提高文本块识别精度。</span><br><span class="line">·RRPN等方案中，文本框标注采用BBOX +方向角度值的形式，模型中产生出可旋转的文字区域候选框，并	在边框回归计算过程中找到待测文本行的倾斜角度。</span><br><span class="line">·DMPNet等方案中，使用四边形（非矩形）标注文本框，来更紧凑的包围文本区域。</span><br><span class="line">·SegLink将单词切割为更易检测的小文字块，再预测邻近连接将小文字块连成词。</span><br><span class="line">·TextBoxes等方案中，调整了文字区域参考框的长宽比例，并将特征层卷积核调整为长方形，从而更适合检测出细长型的文本行。</span><br><span class="line">·FTSN方案中，作者使用Mask-NMS代替传统BBOX的NMS算法来过滤候选框。</span><br><span class="line">·WordSup方案中，采用半监督学习策略，用单词级标注数据来训练字符级文本检测模型。</span><br></pre></td></tr></table></figure>
+<h5 id="CTPN-2016年"><a href="#CTPN-2016年" class="headerlink" title="CTPN(2016年)"></a><code>CTPN</code>(2016年)</h5><p><a href="https://arxiv.org/abs/1609.03605" target="_blank" rel="noopener">论文链接Connectionist Text Proposal Network</a></p>
+<p>该算法由华南理工大学金连文老师研究组提出，该算法脱胎于<code>FasterRcnn</code>，<code>CTPN</code>是目前流传最广、影响最大的开源文本检测模型，可以检测水平或微斜的文本行。在<code>FasterRcnn</code>基础上去掉了<code>ROI</code>层，引入了不同的<code>anchor</code>设置，<code>anchor</code>设置为固定宽度不同高度，来模拟不同高度的文本行，加入了<code>RNN</code>网络，使用<code>RNN</code>对目标的位置偏移和置信度得分的计算，具体的实现路径会在接下来进行详细的分析。该算法虽然很准，但是由于使用了<code>RNN</code>网络，拖慢了网络速度。</p>
+<p>在<code>CTPN</code>中文本行可以被看成一个序列<code>sequence</code>，而不是一般物体检测中单个独立的目标。同一文本行上各个字符图像间可以互为上下文，在训练阶段让检测模型学习图像中蕴含的这种上下文统计规律，可以使得预测阶段有效提升文本块预测准确率。<code>CTPN</code>模型的图像预测流程中，basenet为<code>VGG16</code>做基础网络来提取各字符的局部图像特征，之后使用<code>BLSTM</code>层提取字符序列上下文特征，并根据<code>BLSTM</code>得到的feature为输入进行全连接输出，得到每个anchor的目标预测概率和预测的box，后续的处理部分和fasterRCNN网络的RPN网络相同，经过预测分支输出各个文字块的坐标值和分类结果概率值。在数据后处理阶段，将合并相邻的小文字块为文本行。</p>
+<h5 id="RRPN-ECCV2017"><a href="#RRPN-ECCV2017" class="headerlink" title="RRPN(ECCV2017)"></a><code>RRPN</code>(ECCV2017)</h5><p><a href="https://arxiv.org/abs/1703.01086" target="_blank" rel="noopener">Arbitrary-Oriented Scene Text Detection via Rotation Proposals</a></p>
+<p><strong>这是第一个在场景文字检测中使用RNN的方法，但其主要用于水平文字的场景</strong>。基于旋转区域候选网络（<code>RRPN, Rotation Region Proposal Networks</code>）的方案，将旋转因素并入经典区域候选网络（如<code>FasterRCNN</code>）。这种方案中，一个文本区域的<code>ground truth</code>被表示为具有$5$元组$(x,y,h,w,\theta)$的旋转边框, 坐标$(x,y)$表示边框的几何中心, 高度$h$设定为边框的短边，宽度$w$为长边，方向是长边的方向。训练时，首先生成含有文本方向角的倾斜候选框，然后在边框回归过程中学习文本方向角。</p>
+<p><code>RRPN</code>中方案中提出了旋转感兴趣区域（<code>RRoI，Rotation Region-of-Interest</code>）池化层，将任意方向的区域建议先划分成子区域，然后对这些子区域分别做<code>max pooling</code>、并将结果投影到具有固定空间尺寸小特征图上。</p>
+<img src="/2019/01/05/深度学习-OCR_Overview/RRPN.png" title="RRPN">
+<hr>
+
+<h5 id="FTSN-2018"><a href="#FTSN-2018" class="headerlink" title="FTSN(2018)"></a><code>FTSN</code>(2018)</h5><p><a href="https://arxiv.org/pdf/1709.03272.pdf" target="_blank" rel="noopener">Fused Text Segmentation Networks for Multi-oriented Scene Text Detection</a></p>
+<p><code>FTSN（Fused Text Segmentation Networks）</code>模型使用<strong>分割网络支持倾斜文本检测</strong>。它使用<code>Resnet-101</code>做基础网络，使用了多尺度融合的特征图。标注数据包括文本实例的像素掩码和边框，使用像素预测与边框检测多目标联合训练。</p>
+<p>基于文本实例间像素级重合度的<code>Mask-NMS</code>， 替代了传统基于水平边框间重合度的<code>NMS</code>算法。下图左边子图是传统<code>NMS</code>算法执行结果，中间白色边框被错误地抑制掉了。下图右边子图是<code>Mask-NMS</code>算法执行结果， 三个边框都被成功保留下来。</p>
+<img src="/2019/01/05/深度学习-OCR_Overview/FTSN.png" title="FSTN">
+<hr>
+
+<h5 id="DMPNet-2017"><a href="#DMPNet-2017" class="headerlink" title="DMPNet(2017)"></a><code>DMPNet</code>(2017)</h5><p><a href="https://arxiv.org/pdf/1703.01425.pdf" target="_blank" rel="noopener">Deep Matching Prior Network: Toward Tighter Multi-oriented Text Detection</a></p>
+<p><code>DMPNet</code>（<code>Deep Matching Prior Network</code>）中，使用四边形（非矩形）来更紧凑地标注文本区域边界，其训练出的模型对倾斜文本块检测效果更好。</p>
+<p>如下图所示，它使用滑动窗口在特征图上获取文本区域候选框，候选框既有正方形的、也有倾斜四边形的。接着，使用基于像素点采样的<code>Monte-Carlo</code>方法，来快速计算四边形候选框与标注框间的面积重合度。然后，计算四个顶点坐标到四边形中心点的距离，将它们与标注值相比计算出目标<code>Loss</code>。文章中推荐用<code>LnLoss</code>来取代<code>L1</code>、<code>L2Loss</code>，从而对大小文本框都有较快的训练回归速度。</p>
+<img src="/2019/01/05/深度学习-OCR_Overview/DMPNet_anchors.png" title="DMPNet_anchors">
+<hr>
+
+<h5 id="EAST-2017"><a href="#EAST-2017" class="headerlink" title="EAST(2017)"></a><code>EAST</code>(2017)</h5><p><a href="https://arxiv.org/pdf/1704.03155.pdf" target="_blank" rel="noopener">An Efficient and Accurate Scene Text Detector</a></p>
+<p><code>EAST（An Efficient and Accurate Scene Text Detector）</code>模型中，首先使用全卷积网络（<code>FCN</code>）生成多尺度融合的特征图，作者使用了<code>PVANet</code>作为特征提取网络，然后在此基础上直接进行像素级的文本块预测。<strong>该模型中，支持旋转矩形框、任意四边形两种文本区域标注形式。</strong></p>
+<ul>
+<li>对应于四边形标注，模型执行时会对特征图中每个像素预测其到四个顶点的坐标差值。</li>
+<li>对应于旋转矩形框标注，模型执行时会对特征图中每个像素预测其到矩形框四边的距离、以及矩形框的方向角。</li>
+</ul>
+<p>上述过程中，省略了其他模型中常见的区域建议、单词分割、子块合并等步骤，因此<strong>该模型的执行速度很快。</strong></p>
+<img src="/2019/01/05/深度学习-OCR_Overview/EAST.png" title="EAST">
+<hr>
+
+<h5 id="Textboxes-2016"><a href="#Textboxes-2016" class="headerlink" title="Textboxes(2016)"></a><code>Textboxes(2016)</code></h5><p><a href="https://arxiv.org/pdf/1611.06779.pdf" target="_blank" rel="noopener">TextBoxes: A Fast Text Detector with a Single Deep Neural Network</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/43545190" target="_blank" rel="noopener">文本检测之TextBoxes</a></p>
+<p><code>Textboxes</code>由华中科技大学的白翔组$2016$年提出。该模型是基于<code>SSD</code>框架的图文检测模型，训练方式是端到端的，运行速度也较快。在SSD基础上针对文字的形状做出了如下的改进，模型结构如下图所示</p>
+<ul>
+<li>为了适应文字行细长型的特点，候选框的长宽比增加了$1,2,3,5,7,10$这样初始值；</li>
+<li>为了适应文本行细长型特点，特征层也用<strong>长条形卷积核</strong>代替了其他模型中常见的正方形($1 \times 1, 3\times 3$)卷积核；</li>
+<li>为了防止漏检文本行，还在垂直方向增加了候选框数量；</li>
+<li>为了检测大小不同的字符块，在多个尺度的特征图上并行预测文本框， 然后对预测结果做<code>NMS</code>过滤；</li>
+<li>使用识别模型对文字进行过滤和判断，提出了一个实用的 “检测+识别”的框架。</li>
+</ul>
+<img src="/2019/01/05/深度学习-OCR_Overview/TextBoxes.png" title="TextBoxes">
+<hr>
+
+<h5 id="SegLink-2017"><a href="#SegLink-2017" class="headerlink" title="SegLink(2017)"></a><code>SegLink</code>(2017)</h5><p><a href="https://arxiv.org/pdf/1703.06520.pdf" target="_blank" rel="noopener">论文链接 Detecting Oriented Text in Natural Images by Linking Segments</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/37781277" target="_blank" rel="noopener">文本检测之SegLink</a></p>
+<p><a href="https://www.cnblogs.com/lillylin/p/6596731.html" target="_blank" rel="noopener">白翔论文分析</a></p>
+<p><code>SegLink</code>模型同样由白翔组提出，由<code>SSD</code>改进得来，<code>SegLink</code>模型的标注数据中，先将每个单词切割为更易检测的有方向的小文字块（$segment=(x, y, w, h, \theta)$），然后用邻近连接（<code>link</code> ）将各个小文字块连接成单词。这种方案方便于识别长度变化范围很大的、带方向的单词和文本行，它不会像<code>FasterRCNN</code>等方案因为候选框长宽比例原因检测不出长文本行。<strong>相比于<code>CTPN</code>等文本检测模型，<code>SegLink</code>的图片处理速度快很多。</strong></p>
+<ol>
+<li>首先给定一个含有文本边界框（<code>bounding box</code>）的图片，先使用<code>CNN</code>提取图像的特征；</li>
+<li>然后用<code>BLSTM</code>学习文字的空间上下文信息；</li>
+<li>最后对特征进行编码并得到最终的预测结果。</li>
+</ol>
+<blockquote>
+<p>与<code>CTPN</code>方法相比，<code>SegLink</code>引入了带方向的<code>bbox</code>(即文中说的<code>segment</code>$(x, y, w, h, \theta)$)，<strong>它可以检测任意方向的文本行，而<code>CTPN</code>主要用于检测水平的文本行，当然如果将垂直<code>anchor</code>改成水平<code>anchor</code>，也可以检测垂直方向的文本行</strong>；</p>
+<p>与<code>EAST</code>方法相比，<code>SegLink</code>利用不同的<code>feature map</code>分别进行预测，而<code>EAST</code>是将不同的<code>feature map</code>层先进行合并再预测；</p>
+<p>不能检测很大的文本，这是因为<code>link</code>主要是用于连接相邻的<code>segments</code>，而不能用于检测相距较远的文本行；</p>
+<p>不能检测形变或者曲线文本，这是因为<code>segments combining</code>算法在合并的时候采用的是直线拟合．这里可以通过修改合并算法，来检测变形或曲线文本</p>
+</blockquote>
+<p>整个过程可以端到端（<code>end-to-end</code>）完成。<strong>提出的定位和识别模型结合之后能得到目前端到端模型中最好的文字检测结果。</strong></p>
+<img src="/2019/01/05/深度学习-OCR_Overview/SegLink.png" title="SegLink">
+<hr>
+
+<h5 id="TextBoxes-2018"><a href="#TextBoxes-2018" class="headerlink" title="TextBoxes++(2018)"></a><code>TextBoxes++</code>(2018)</h5><p><a href="https://arxiv.org/pdf/1801.02765.pdf" target="_blank" rel="noopener">TextBoxes++: A Single-Shot Oriented Scene Text Detector</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/33723456" target="_blank" rel="noopener">论文笔记：TextBoxes++</a></p>
+<p><a href="https://github.com/MhLiao/TextBoxes_plusplus" target="_blank" rel="noopener">Github: TextBoxes++</a></p>
+<p><code>Textboxes++</code>是<code>Textboxes</code>的升级版本，目的是增加对倾斜文本的支持。为此，将标注数据改为了旋转矩形框和不规则四边形的格式；对候选框的长宽比例、特征图层卷积核的形状都作了相应调整。·</p>
+<img src="/2019/01/05/深度学习-OCR_Overview/TextBoxes++.png" title="TextBoxes++">
+<hr>
+
+<h5 id="PixelLink-2018"><a href="#PixelLink-2018" class="headerlink" title="PixelLink(2018)"></a><code>PixelLink</code>(2018)</h5><p><a href="https://arxiv.org/pdf/1801.01315.pdf" target="_blank" rel="noopener">论文链接 Detecting Scene Text via Instance Segmentation</a></p>
+<p>自然场景图像中一组文字块经常紧挨在一起，通过语义分割方法很难将它们识别开来，所以阿里开发了<code>PixelLink</code>模型尝试用<strong>实例分割</strong>方法解决这个问题。</p>
+<p>该模型的特征提取部分，为<code>VGG16</code>基础上构建的<code>FCN</code>网络。模型执行流程如下图所示。首先，借助于<code>CNN</code> 模块执行两个像素级预测：一个文本二分类预测，一个链接二分类预测。接着，用正链接去连接邻居正文本像素，得到文字块实例分割结果。然后，由分割结果直接就获得文字块边框， 而且允许生成倾斜边框。</p>
+<p>上述过程中，<strong>省掉了其他模型中常见的边框回归步骤，因此训练收敛速度更快些</strong>。训练阶段，使用了平衡策略，使得每个文字块在总<code>LOSS</code>中的权值相同。训练过程中，<strong>通过预处理增加了各种方向角度的文字块实例。</strong></p>
+<blockquote>
+<ul>
+<li><p>与CTPN，EAST，SegLink相比，PixelLink放弃了边框回归方法来检测文本行的bbox，而是采用实例分割方法，直接从分割的文本行区域得到文本行的bbox．PixelLink可以以更少额数据和更快地速度进行训练。</p>
+</li>
+<li><p>假设提取特征的主干网络结构采用VGG16(当然也可以采用其它主干网络结构)，PixelLink不需要在imagenet预训练的模型上进行fine-tuned（即直接从头开始训练），而CTPN，EAST，SegLink都需要在imagenet预训练的模型上进行fine-tuned；、</p>
+</li>
+<li>与CTPN，EAST，SegLink相比，PixelLink对感受野的要求更少，因为每个神经元值只负责预测自己及其邻域内的状态</li>
+<li>与SegLink一样，不能检测很大的文本，这是因为link主要是用于连接相邻的segments，而不能用于检测相距较远的文本行</li>
+</ul>
+</blockquote>
+<img src="/2019/01/05/深度学习-OCR_Overview/PixelLink.png" title="PixelLink">
+<hr>
+
+<h5 id="WordSup-2017"><a href="#WordSup-2017" class="headerlink" title="WordSup(2017)"></a><code>WordSup</code>(2017)</h5><p><a href="https://arxiv.org/abs/1708.06720" target="_blank" rel="noopener">WordSup: Exploiting Word Annotations for Character based Text Detection</a></p>
+<p>百度提出，在数学公式图文识别、不规则形变文本行识别等应用中，字符级检测模型是一个关键基础模块。由于字符级自然场景图文标注成本很高、相关公开数据集稀少，导致现在多数图文检测模型只能在文本行、单词级标注数据上做训练。<code>WordSup</code>提出了一种弱监督的训练框架， 可以文本行、单词级标注数据集上训练出字符级检测模型。</p>
+<p><code>WordSup</code>弱监督训练框架中，两个训练步骤被交替执行：给定当前字符检测模型，并结合单词级标注数据，计算出字符中心点掩码图； 给定字符中心点掩码图，有监督地训练字符级检测模型。</p>
+<p>训练好字符检测器后，可以在数据流水线中加入合适的文本结构分析模块，以输出符合应用场景格式要求的文本内容。该文作者例举了多种文本结构分析模块的实现方法。</p>
+<img src="/2019/01/05/深度学习-OCR_Overview/WordSup.png" title="WordSup">
+<hr>
+
+<h5 id="基于角定位与区域分割-2018"><a href="#基于角定位与区域分割-2018" class="headerlink" title="基于角定位与区域分割(2018)"></a>基于角定位与区域分割(2018)</h5><p><a href="https://arxiv.org/pdf/1802.08948.pdf" target="_blank" rel="noopener">Multi-Oriented Scene Text Detection via Corner Localization and Region Segmentation</a></p>
+<p><strong>主要是为了解决场景文本多方向，长宽比变化较大等场景文本检测中的难点问题。</strong></p>
+<p>该方法用一个端到端网络完成文字检测整个过程——除了基础卷积网络（<code>backbone</code>）外，包括两个并行分支和一个后处理。第一个分支是通过一个DSSD网络进行角点检测来提取候选文字区域，第二个分支是利用类似于<code>RFCN</code>进行网格划分的方式来做<code>position-sensitive</code>的<code>segmentation</code>。后处理是利用<code>segmentation</code>的<code>score map</code>的综合得分，过滤角点检测得到的候选区域中的噪声。</p>
+<p><strong>文章亮点</strong></p>
+<ul>
+<li>检测不是用一般的<code>object detection</code>的框架来做，而是用<code>corner point detection</code>来做。（可以更好解决文字方向任意、文字长宽比很大的文本，不会受到感受野的影响）</li>
+<li>分割用的是<code>position sensitive segmentation</code>，仿照<code>RFCN</code>划分网格的思路，把位置信息融合进去（对于检测单词这种细粒度的更有利）</li>
+<li>把检测+分割两大类的方法整合起来，进行综合打分的<code>pipeline</code>（可以使得检测精度更高）</li>
+</ul>
+<img src="/2019/01/05/深度学习-OCR_Overview/corner_overview.png" title="Overview of our method. Given an image, the network outputs corner points and segmentation maps by corner detection and position-sensitive segmentation. Then candidate boxes are generated by sampling and grouping corner points. Finally, those candidate boxes are scored by segmentation maps and suppressed by NMS">
+<ul>
+<li><strong>backbone</strong>：<strong>基础网络，用来特征提取（不同分支特征共享）</strong></li>
+<li><strong>corner detection：</strong>用来生成候选检测框，是一个独立的检测模块，类似于RPN的功能</li>
+<li><strong>Position Sensitive Segmentation：</strong>整张图逐像素的打分，和一般分割不同的是输出4个score map，分别对应左上、左下、右上、右下不同位置的得分</li>
+<li><strong>Scoring + NMS：</strong>综合打分，利用（2）的框和（3）的score map再综合打分，去掉非文字框，最后再接一个NMS</li>
+</ul>
+<img src="/2019/01/05/深度学习-OCR_Overview/corner.png" title="Network Architecture">
+<ul>
+<li><code>Backbone</code>取自DSSD = VGG16(pool5) + conv6(fc6) + conv7(fc7) + 4conv + 6 deconv (with 6 residual block)</li>
+<li><code>Corner Point Detection</code>是类似于<code>SSD</code>，从多个deconv的feature map上单独做detection得到候选框，然后多层的检测结果串起来nms后为最后的结果</li>
+</ul>
+<hr>
+
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><ul>
+<li>多个数据集中不同模型的表现</li>
+</ul>
+<img src="/2019/01/05/深度学习-OCR_Overview/overview.png" title="overview">
+<ul>
+<li>ICDAR2013数据集表现</li>
+</ul>
+<img src="/2019/01/05/深度学习-OCR_Overview/ICDAR2013.png" title="ICDAR2013">
+<ul>
+<li>ICDAR2015数据集表现</li>
+</ul>
+<img src="/2019/01/05/深度学习-OCR_Overview/ICDAR2015.png" title="ICDAR2015">
+<p>图中蓝色为召回率(实际为真的样本中预测为真的概率，衡量检索的覆盖率)，绿色为精确率(预测为真的样本中实际为真的概率，衡量检测的信噪比)，橙色为Fscore，图中显示$0.00$的数据表示论文中没有给出相应得分。具体可以参考另一篇文章<a href="http://xiaofengshi.com/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/">机器学习-常用知识点</a>[可以直观的看到各个模型的评价指标值，在IC2015数据集上，<code>PixelLink_vgg2</code>对应的模型效果是最好的</p>
+<h3 id="文本识别"><a href="#文本识别" class="headerlink" title="文本识别"></a><strong>文本识别</strong></h3><p>提取待识别图像之后就可以对图像进行识别了，和定位待识别图像相对应，同样是两种类型识别任务</p>
+<h4 id="单字符识别"><a href="#单字符识别" class="headerlink" title="单字符识别"></a><strong>单字符识别</strong></h4><h5 id="k近邻"><a href="#k近邻" class="headerlink" title="k近邻"></a><strong>k近邻</strong></h5><p>该方法很好理解，数据库中保存着已经标注好label的不同的字符的图像，对于新的图像，识别时，比较待识别的图像和数据库中图像的距离，选择距离最小的类别对应的label为当前图像的识别结果，但是该方法存在一个问题，那就是计算量太大了，要想提高识别的准确性，就需要数据库中存储的数据要足够多，与此同时，在识别时计算量也会增加，识别一个图像要跟整个数据库中的所有样本进行距离计算</p>
+<h5 id="图像分类模型"><a href="#图像分类模型" class="headerlink" title="图像分类模型"></a><strong>图像分类模型</strong></h5><p>借着深度学习的东风，使用图像识别算法进行单字符识别效果简直不要太好，相关的技术方法有很多，包括<code>VggNet</code>，<code>ResNet</code>，<code>InceptionNet</code>，<code>DenseNet</code>等，具体的可以参考本人的另一篇文字<a href="http://xiaofengshi.com/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%9B%BE%E5%83%8F%E8%AF%86%E5%88%AB/">深度学习-图像识别</a>。</p>
+<h4 id="不定长字符识别"><a href="#不定长字符识别" class="headerlink" title="不定长字符识别"></a><strong>不定长字符识别</strong></h4><p>目前基本都是使用的<code>CTC</code>策略(稍后详解)，对于特征提取的基础网络目前主要使用的是<code>CRNN</code>和<code>Densenet</code></p>
+<h5 id="CRNN-CTC-2015"><a href="#CRNN-CTC-2015" class="headerlink" title="CRNN+CTC(2015)"></a><code>CRNN+CTC</code>(2015)</h5><p><a href="https://arxiv.org/pdf/1507.05717.pdf" target="_blank" rel="noopener">An End-to-End Trainable Neural Network for Image-based Sequence Recognition and Its Application to Scene Text Recognition</a></p>
+<p><strong><code>CRNN</code>(<code>Convolutional Recurrent Neural Network</code>）是目前较为流行的图文识别模型，可识别较长的文本序列。</strong></p>
+<ul>
+<li><p>包含<code>CNN</code>特征提取层和<code>BLSTM</code>序列特征提取层，能够进行端到端的联合训练。 </p>
+</li>
+<li><p>利用<code>BLSTM</code>和<code>CTC</code>部件学习字符图像中的上下文关系， 从而有效提升文本识别准确率，使得模型更加鲁棒。</p>
+</li>
+</ul>
+<p>预测过程中，前端使用标准的<code>CNN</code>网络提取文本图像的特征，利用<code>BLSTM</code>将特征向量进行融合以提取字符序列的上下文特征，然后得到每列特征的概率分布，最后通过转录层(<code>CTC rule</code>)进行预测得到文本序列。</p>
+<img src="/2019/01/05/深度学习-OCR_Overview/CRNN.png" title="CRNN">
+<h5 id="DenseNet-CTC"><a href="#DenseNet-CTC" class="headerlink" title="DenseNet+CTC"></a><code>DenseNet+CTC</code></h5><p>该框架和<code>CRNN</code>相似，使用<code>DenseNet</code>替换了原来的<code>CNN+BLSM</code>，提升了模型的运行速度，但是DenseNet由于block层对特征图的重复利用会非常占显存。</p>
+<h5 id="RARE-2016"><a href="#RARE-2016" class="headerlink" title="RARE(2016)"></a><code>RARE</code>(2016)</h5><p><a href="https://arxiv.org/pdf/1603.03915.pdf" target="_blank" rel="noopener">Robust Scene Text Recognition with Automatic Rectification</a></p>
+<p><strong><code>RARE</code>模型在识别变形的图像文本时效果很好。</strong>模型预测过程中，输入图像首先要被送到一个空间变换网络(<code>Spatial Transformer Network</code>)中做处理，矫正过的图像然后被送入序列识别网络中得到文本预测结果。空间变换网络如下图所示。网络模型有<code>STN+SRN</code>组成。</p>
+<img src="/2019/01/05/深度学习-OCR_Overview/RARE_STN.png" title="STNet">
+<p><strong>空间变换网络内部包含定位网络(Localization Network)、网格生成器(Grid Generator)、采样器(Sampler)三个部件</strong>。经过训练后，它可以根据输入图像的特征图动态地产生空间变换网格，然后采样器根据变换网格核函数从原始图像中采样获得一个矩形的文本图像。<code>RARE</code>中支持一种称为<code>TPS（thin-plate splines）</code>的空间变换，从而能够比较准确地识别透视变换过的文本、以及弯曲的文本。</p>
+<p>经过矫正之后的图像送入序列识别网络(<code>Sequence Recognition Network</code>)，网络结构如下图所示，为一个<code>Encoder_Decoder</code>模型，结构为<code>CNN+BLSTM+ATT_GRU+Softmax</code>，使用极小化对数似然估计的方法，优化方法为<code>ADADELTA</code></p>
+<img src="/2019/01/05/深度学习-OCR_Overview/RARE_SRN.png" title="SRN">
+<hr>
+
+<h5 id="FocusingAttention-2017"><a href="#FocusingAttention-2017" class="headerlink" title="FocusingAttention(2017)"></a><code>FocusingAttention</code>(2017)</h5><p><a href="https://arxiv.org/pdf/1709.02054.pdf" target="_blank" rel="noopener">Focusing Attention: Towards Accurate Text Recognition in Natural Images</a></p>
+<p><strong>利用<code>attention model</code>去做序列文字识别，可能会因为图像分辨率较低、遮挡、文字间间隔较大等问题而导致<code>attention</code>位置并不是很准，从而造成字符的错误识别</strong>。<strong>海康威视</strong>在ICCV2017上提出使用字符像素级别的监督信息使<code>attention</code>更加准确地聚焦在文字区域，从而使识别变得更精准。他们用了部分像素级别的标注，有了类别信息以后做多任务，结果较为精准。并且只要部分字符的标注就可以带来网络性能的一定提升。</p>
+<img src="/2019/01/05/深度学习-OCR_Overview/FocusingAttention.png" title="FocusingAttention">
+<hr>
+
+<h5 id="AON-2018"><a href="#AON-2018" class="headerlink" title="AON (2018)"></a>AON (2018)</h5><p><a href="https://arxiv.org/pdf/1711.04226.pdf" target="_blank" rel="noopener">AON: Towards Arbitrarily-Oriented Text Recognition</a></p>
+<p><strong>针对有形变或者任意方向文字的识别问题</strong>，Cheng等人在CVPR2018上提出了该模型。他们在水平方向之外加了一个竖直方向的双向LSTM，这样的话就有从上到下，从下到上，从左到右，从右到左四个方向序列的特征建模。接下来引入一个权重，该权重用来表示来自不同方向的特征在识别任务中发挥作用的重要性。这对性能有一定提升，尤其是对任意排列的文字识别。</p>
+<img src="/2019/01/05/深度学习-OCR_Overview/AON.png" title="AON">
+<h5 id="ASTER-2018"><a href="#ASTER-2018" class="headerlink" title="ASTER(2018)"></a>ASTER(2018)</h5><p><a href="https://www.researchgate.net/publication/325993414_ASTER_An_Attentional_Scene_Text_Recognizer_with_Flexible_Rectification" target="_blank" rel="noopener">ASTER_An Attentional Scene Text Recognizer with Flexible Rectification</a></p>
+<p>主要解决<strong>不规则排列文字</strong>的<strong>文字识别</strong>问题，论文为之前一篇<code>RARE</code>的改进版（journal版）</p>
+<p><strong>主要思路</strong>：</p>
+<ul>
+<li>针对不规则文字，先矫正成正常线性排列的文字，再识别；</li>
+<li>整合矫正网络和识别网络成为一个端到端网络来训练；</li>
+<li>矫正网络使用STN，识别网络用经典的<code>seq2seq+attention</code></li>
+</ul>
+<p><strong>和<code>STN</code>的不同点</strong></p>
+<p>本文在输入网络前将原图resize成小的图，然后在该小图上预测control point，而输入到Grid Generator或Sample计算的时候又映射回原图大小。这样的目的是<strong>为了减小网络参数，降低计算量</strong>（但有没有可能小图对于control point的prediction会不准？对于识别来讲，每个word的patch块本身就比较小了，而且小图映射回大图的点位置这个误差比例就会放大？）</p>
+<p><strong>和<code>RARE</code>的不同点</strong></p>
+<p>网络最后fc层的激活函数不是用tanh，而是直接对值进行clipping（具体怎么clip论文没说），这样做的目的是<strong>为了解决采样点可能落到图外面的问题，以及加快了网络训练的收敛速度</strong>，论文中对此没有解释本质原因，只是说明实验证明如此。</p>
+<p>按照论文所述，ASTER和RARE之间的网络结构基本没有大幅度的变化，仍然是先矫正后识别，并且矫正模型和识别模型基本相同，但是效果相比RARE好了太多，不知为何。ASTER的网络参数配置如下所示</p>
+<img src="/2019/01/05/深度学习-OCR_Overview/ASTER_PARAMS.png" title="ASTER网络参数">
+<hr>
+
+<h4 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h4><p>目前主要的<code>OCR</code>项目使用的是如上的这些技术，比如<code>CTPN+CRNN</code>，<code>CTPN+DenseNet</code>，<code>YOLO+DenseNet</code>，<code>PixelLink+RARE</code>等，接下来针对上面这些技术点结合论文及代码进行一些个人的浅薄分析。</p>
+<h3 id="End2End"><a href="#End2End" class="headerlink" title="End2End"></a><code>End2End</code></h3><p>端对端模型，直接从图片中定位并识别出包含的文本内容</p>
+<h4 id="FOTS-2018"><a href="#FOTS-2018" class="headerlink" title="FOTS(2018)"></a><code>FOTS</code>(2018)</h4><p><a href="https://arxiv.org/pdf/1801.01671.pdf" target="_blank" rel="noopener">FOTS: Fast Oriented Text Spotting with a Unified Network</a></p>
+<p><code>FOTS</code>是图像文本检测与识别同步训练、端到端可学习的网络模型。检测和识别任务共享卷积特征层，既节省了计算时间，也比两阶段训练方式学习到更多图像特征。引入了旋转感兴趣区域（<code>RoIRotate</code>）, 可以从卷积特征图中产生出定向的文本区域，从而支持倾斜文本的识别。</p>
+<img src="/2019/01/05/深度学习-OCR_Overview/FOTS.png" title="FOTS">
+<hr>
+
+<h4 id="STN-OCR-2017"><a href="#STN-OCR-2017" class="headerlink" title="STN-OCR(2017)"></a><code>STN-OCR</code>(2017)</h4><p><a href="https://arxiv.org/pdf/1707.08831.pdf" target="_blank" rel="noopener">STN-OCR: A single Neural Network for Text Detection and Text Recognition</a></p>
+<p><code>STN-OCR</code>是集成了了图文检测和识别功能的端到端可学习模型。在它的检测部分嵌入了一个空间变换网络（<code>STN</code>）来对原始输入图像进行仿射（<code>affine</code>）变换，类似于<code>RARE</code>中的<code>STN</code>网络。利用这个空间变换网络，可以对检测到的多个文本块分别执行旋转、缩放和倾斜等图形矫正动作，从而在后续文本识别阶段得到更好的识别精度。在训练上<code>STN-OCR</code>属于<strong>半监督学习方法，只需要提供文本内容标注，而不要求文本定位信息</strong>。作者也提到，<strong>如果从头开始训练则网络收敛速度较慢，因此建议渐进地增加训练难度</strong>。<code>STN-OCR</code>已经开放了工程源代码和预训练模型。</p>
+<img src="/2019/01/05/深度学习-OCR_Overview/STN-OCR.png" title="STN-OCR">
+<hr>
+
+<h4 id="Mask-TextSpotter-2018"><a href="#Mask-TextSpotter-2018" class="headerlink" title="Mask TextSpotter(2018)"></a>Mask TextSpotter(2018)</h4><p>该文受到<code>MaskRCNN</code>的启发提出了一种用于场景text spotting的可端到端训练的神经网络模型：M<code>ask TextSpotter</code>。与以前使用端到端可训练深度神经网络完成text spotting的方法不同，Mask TextSpotter利用简单且平滑的端到端学习过程，通过语义分割获得精确的文本检测和识别。此外，它在处理不规则形状的文本实例（例如，弯曲文本）方面优于之前的方法。</p>
+<h3 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h3><h2 id="训练数据集"><a href="#训练数据集" class="headerlink" title="训练数据集"></a><strong>训练数据集</strong></h2><p>本章将列举可用于文本检测和识别领域模型训练的一些大型公开数据集， 不涉及仅用于模型fine-tune任务的小型数据集。</p>
+<h3 id="Chinese-Text-in-the-Wild-CTW"><a href="#Chinese-Text-in-the-Wild-CTW" class="headerlink" title="Chinese Text in the Wild(CTW)"></a><strong>Chinese Text in the Wild(CTW)</strong></h3><p>该数据集包含32285张图像，1018402个中文字符(来自于腾讯街景), 包含平面文本，凸起文本，城市文本，农村文本，低亮度文本，远处文本，部分遮挡文本。图像大小2048*2048，数据集大小为31GB。以(8:1:1)的比例将数据集分为训练集(25887张图像，812872个汉字)，测试集(3269张图像，103519个汉字)，验证集(3129张图像，103519个汉字)。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">文献链接：https://arxiv.org/pdf/1803.00085.pdf </span><br><span class="line">数据集下载地址：https://ctwdataset.github.io/</span><br></pre></td></tr></table></figure>
+<h3 id="Reading-Chinese-Text-in-the-Wild-RCTW-17"><a href="#Reading-Chinese-Text-in-the-Wild-RCTW-17" class="headerlink" title="Reading Chinese Text in the Wild(RCTW-17)"></a><strong>Reading Chinese Text in the Wild(RCTW-17)</strong></h3><p>该数据集包含12263张图像，训练集8034张，测试集4229张，共11.4GB。大部分图像由手机相机拍摄，含有少量的屏幕截图，图像中包含中文文本与少量英文文本。图像分辨率大小不等。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">下载地址http://mclab.eic.hust.edu.cn/icdar2017chinese/dataset.html</span><br><span class="line">文献：http://arxiv.org/pdf/1708.09585v2</span><br></pre></td></tr></table></figure>
+<h3 id="ICPR-MWI-2018-挑战赛"><a href="#ICPR-MWI-2018-挑战赛" class="headerlink" title="ICPR MWI 2018 挑战赛"></a>ICPR MWI 2018 挑战赛</h3><p>大赛提供20000张图像作为数据集，其中50%作为训练集，50%作为测试集。主要由合成图像，产品描述，网络广告构成。该数据集数据量充分，中英文混合，涵盖数十种字体，字体大小不一，多种版式，背景复杂。文件大小为2GB。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">下载地址：</span><br><span class="line">https://tianchi.aliyun.com/competition/information.htm?raceId=231651&amp;_is_login_redirect=true&amp;accounttraceid=595a06c3-7530-4b8a-ad3d-40165e22dbfe</span><br></pre></td></tr></table></figure>
+<h3 id="Total-Text"><a href="#Total-Text" class="headerlink" title="Total-Text"></a><strong>Total-Text</strong></h3><p>该数据集共1555张图像，11459文本行，包含水平文本，倾斜文本，弯曲文本。文件大小441MB。大部分为英文文本，少量中文文本。训练集：1255张 测试集：300</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">下载地址：http://www.cs-chan.com/source/ICDAR2017/totaltext.zip</span><br><span class="line">文献：http:// arxiv.org/pdf/1710.10400v</span><br></pre></td></tr></table></figure>
+<h3 id="Google-FSNS-谷歌街景文本数据集"><a href="#Google-FSNS-谷歌街景文本数据集" class="headerlink" title="Google FSNS(谷歌街景文本数据集)"></a>Google FSNS(谷歌街景文本数据集)</h3><p>该数据集是从谷歌法国街景图片上获得的一百多万张街道名字标志，每一张包含同一街道标志牌的不同视角，图像大小为600*150，训练集1044868张，验证集16150张，测试集20404张。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">下载地址：http://rrc.cvc.uab.es/?ch=6&amp;com=downloads</span><br><span class="line">文献：http:// arxiv.org/pdf/1702.03970v1</span><br></pre></td></tr></table></figure>
+<h3 id="COCO-TEXT"><a href="#COCO-TEXT" class="headerlink" title="COCO-TEXT"></a><strong>COCO-TEXT</strong></h3><p>该数据集，包括63686幅图像，173589个文本实例，包括手写版和打印版，清晰版和非清晰版。文件大小12.58GB，训练集：43686张，测试集：10000张，验证集：10000张</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">文献: http://arxiv.org/pdf/1601.07140v2</span><br><span class="line">下载地址：https://vision.cornell.edu/se3/coco-text-2/</span><br></pre></td></tr></table></figure>
+<h3 id="Synthetic-Data-for-Text-Localisation"><a href="#Synthetic-Data-for-Text-Localisation" class="headerlink" title="Synthetic Data for Text Localisation"></a><strong>Synthetic Data for Text Localisation</strong></h3><p>在复杂背景下人工合成的自然场景文本数据。包含858750张图像，共7266866个单词实例，28971487个字符，文件大小为41GB。该合成算法，不需要人工标注就可知道文字的label信息和位置信息，可得到大量自然场景文本标注数据。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">下载地址：http://www.robots.ox.ac.uk/~vgg/data/scenetext/</span><br><span class="line">文献：http://www.robots.ox.ac.uk/~ankush/textloc.pdf</span><br><span class="line">Code: https://github.com/ankush-me/SynthText (英文版)</span><br><span class="line">Code https://github.com/wang-tf/Chinese_OCR_synthetic_data(中文版)</span><br></pre></td></tr></table></figure>
+<h3 id="Synthetic-Word-Dataset"><a href="#Synthetic-Word-Dataset" class="headerlink" title="Synthetic Word Dataset"></a><strong>Synthetic Word Dataset</strong></h3><p>合成文本识别数据集，包含9百万张图像，涵盖了9万个英语单词。文件大小为10GB</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">下载地址：http://www.robots.ox.ac.uk/~vgg/data/text/</span><br></pre></td></tr></table></figure>
+<h3 id="Caffe-ocr中文合成数据"><a href="#Caffe-ocr中文合成数据" class="headerlink" title="Caffe-ocr中文合成数据"></a><strong>Caffe-ocr中文合成数据</strong></h3><p>数据利用中文语料库，通过字体、大小、灰度、模糊、透视、拉伸等变化随机生成，共360万张图片，图像分辨率为280x32，涵盖了汉字、标点、英文、数字共5990个字符。文件大小约为8.6GB</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">下载地址：https://pan.baidu.com/s/1dFda6R3</span><br></pre></td></tr></table></figure>
+<h2 id="模型详解"><a href="#模型详解" class="headerlink" title="模型详解"></a>模型详解</h2><h3 id="CTPN-详解"><a href="#CTPN-详解" class="headerlink" title="CTPN 详解"></a>CTPN 详解</h3><p>代码链接：<a href="https://github.com/xiaofengShi/CHINESE-OCR" target="_blank" rel="noopener">https://github.com/xiaofengShi/CHINESE-OCR</a></p>
+<p>CTPN由fasterrcnn改进而来，可以看下二者的异同</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">网络结构</th>
+<th style="text-align:center">FasterRcnn</th>
+<th style="text-align:center">CTPN</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">basenet</td>
+<td style="text-align:center">Vgg16 ,Vgg19,resnet</td>
+<td style="text-align:center">Vgg16,也可以使用其他CNN结构</td>
+</tr>
+<tr>
+<td style="text-align:center">RPN预测</td>
+<td style="text-align:center">basenet的predict layer使用CNN生成</td>
+<td style="text-align:center">basenet之后使用双向RNN使用FC生成</td>
+</tr>
+<tr>
+<td style="text-align:center">ROI</td>
+<td style="text-align:center">模型适用于目标检测，为多分类任务，包含ROI及类别损失和BOX回归</td>
+<td style="text-align:center">文本提取为二分类任务，不包含ROI及类别损失，只在RPN层计算目标损失及BOX回归</td>
+</tr>
+<tr>
+<td style="text-align:center">Anchor</td>
+<td style="text-align:center">一共9种anchor尺寸,3比例，3尺寸</td>
+<td style="text-align:center">固定anchor宽度，高度为10种</td>
+</tr>
+<tr>
+<td style="text-align:center">batch</td>
+<td style="text-align:center">每次只能训练一个样本</td>
+<td style="text-align:center">每次只能训练一个样本</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>根据ctpn的网络设计，可以看到看到ctpn一般使用预训练的vggnet，并且只用来检测水平文本，一般可以用来进行标准格式印刷体的检测，在目标框回归预测时，加上回归框的角度信息，就可以用来检测旋转文本，比如EAST模型。</p>
+<h4 id="代码分析"><a href="#代码分析" class="headerlink" title="代码分析"></a>代码分析</h4><h5 id="网络模型"><a href="#网络模型" class="headerlink" title="网络模型"></a>网络模型</h5><p>直接看<code>CTPN</code>的网络代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">VGGnet_train</span><span class="params">(Network)</span>:</span></span><br><span class="line">    <span class="comment"># 继承自NetWork,关与NetWork可以看这里：https://github.com/xiaofengShi/CHINESE-OCR/blob/master/ctpn/lib/networks/network.py</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, trainable=True)</span>:</span></span><br><span class="line">        self.inputs = []</span><br><span class="line">        self.data = tf.placeholder(tf.float32, shape=[<span class="keyword">None</span>, <span class="keyword">None</span>, <span class="keyword">None</span>, <span class="number">3</span>], name=<span class="string">'data'</span>)</span><br><span class="line">        self.im_info = tf.placeholder(tf.float32, shape=[<span class="keyword">None</span>, <span class="number">3</span>], name=<span class="string">'im_info'</span>)</span><br><span class="line">        self.gt_boxes = tf.placeholder(tf.float32, shape=[<span class="keyword">None</span>, <span class="number">5</span>], name=<span class="string">'gt_boxes'</span>)</span><br><span class="line">        self.gt_ishard = tf.placeholder(tf.int32, shape=[<span class="keyword">None</span>], name=<span class="string">'gt_ishard'</span>)</span><br><span class="line">        self.dontcare_areas = tf.placeholder(tf.float32, shape=[<span class="keyword">None</span>, <span class="number">4</span>], name=<span class="string">'dontcare_areas'</span>)</span><br><span class="line">        self.keep_prob = tf.placeholder(tf.float32)</span><br><span class="line">        self.layers = dict(&#123;<span class="string">'data'</span>: self.data, <span class="string">'im_info'</span>: self.im_info, <span class="string">'gt_boxes'</span>: self.gt_boxes,<span class="string">'gt_ishard'</span>: self.gt_ishard, <span class="string">'dontcare_areas'</span>: self.dontcare_areas&#125;)</span><br><span class="line">        self.trainable = trainable</span><br><span class="line">        self.setup()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">setup</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="comment"># 对于文本提议来说，类别为2，一类为为文字部分，另一类为背景</span></span><br><span class="line">        n_classes = cfg.NCLASSES</span><br><span class="line">        <span class="comment"># anchor的初始尺寸，论文中使用的是16</span></span><br><span class="line">        anchor_scales = cfg.ANCHOR_SCALES</span><br><span class="line">        _feat_stride = [<span class="number">16</span>, ]</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># base net is vgg16</span></span><br><span class="line">        <span class="comment"># 内部使用的函数</span></span><br><span class="line">        (self.feed(<span class="string">'data'</span>)</span><br><span class="line">            .conv(<span class="number">3</span>, <span class="number">3</span>, <span class="number">64</span>, <span class="number">1</span>, <span class="number">1</span>, name=<span class="string">'conv1_1'</span>)</span><br><span class="line">            .conv(<span class="number">3</span>, <span class="number">3</span>, <span class="number">64</span>, <span class="number">1</span>, <span class="number">1</span>, name=<span class="string">'conv1_2'</span>)</span><br><span class="line">            .max_pool(<span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, padding=<span class="string">'VALID'</span>, name=<span class="string">'pool1'</span>)</span><br><span class="line">            .conv(<span class="number">3</span>, <span class="number">3</span>, <span class="number">128</span>, <span class="number">1</span>, <span class="number">1</span>, name=<span class="string">'conv2_1'</span>)</span><br><span class="line">            .conv(<span class="number">3</span>, <span class="number">3</span>, <span class="number">128</span>, <span class="number">1</span>, <span class="number">1</span>, name=<span class="string">'conv2_2'</span>)</span><br><span class="line">            .max_pool(<span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, padding=<span class="string">'VALID'</span>, name=<span class="string">'pool2'</span>)</span><br><span class="line">            .conv(<span class="number">3</span>, <span class="number">3</span>, <span class="number">256</span>, <span class="number">1</span>, <span class="number">1</span>, name=<span class="string">'conv3_1'</span>)</span><br><span class="line">            .conv(<span class="number">3</span>, <span class="number">3</span>, <span class="number">256</span>, <span class="number">1</span>, <span class="number">1</span>, name=<span class="string">'conv3_2'</span>)</span><br><span class="line">            .conv(<span class="number">3</span>, <span class="number">3</span>, <span class="number">256</span>, <span class="number">1</span>, <span class="number">1</span>, name=<span class="string">'conv3_3'</span>)</span><br><span class="line">            .max_pool(<span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, padding=<span class="string">'VALID'</span>, name=<span class="string">'pool3'</span>)</span><br><span class="line">            .conv(<span class="number">3</span>, <span class="number">3</span>, <span class="number">512</span>, <span class="number">1</span>, <span class="number">1</span>, name=<span class="string">'conv4_1'</span>)</span><br><span class="line">            .conv(<span class="number">3</span>, <span class="number">3</span>, <span class="number">512</span>, <span class="number">1</span>, <span class="number">1</span>, name=<span class="string">'conv4_2'</span>)</span><br><span class="line">            .conv(<span class="number">3</span>, <span class="number">3</span>, <span class="number">512</span>, <span class="number">1</span>, <span class="number">1</span>, name=<span class="string">'conv4_3'</span>)</span><br><span class="line">            .max_pool(<span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, padding=<span class="string">'VALID'</span>, name=<span class="string">'pool4'</span>)</span><br><span class="line">            .conv(<span class="number">3</span>, <span class="number">3</span>, <span class="number">512</span>, <span class="number">1</span>, <span class="number">1</span>, name=<span class="string">'conv5_1'</span>)</span><br><span class="line">            .conv(<span class="number">3</span>, <span class="number">3</span>, <span class="number">512</span>, <span class="number">1</span>, <span class="number">1</span>, name=<span class="string">'conv5_2'</span>)</span><br><span class="line">            .conv(<span class="number">3</span>, <span class="number">3</span>, <span class="number">512</span>, <span class="number">1</span>, <span class="number">1</span>, name=<span class="string">'conv5_3'</span>))</span><br><span class="line">        <span class="comment"># RPN </span></span><br><span class="line">        <span class="comment"># 该层对上层的feature map进行卷积，生成512通道的的feature map</span></span><br><span class="line">        (self.feed(<span class="string">'conv5_3'</span>).conv(<span class="number">3</span>, <span class="number">3</span>, <span class="number">512</span>, <span class="number">1</span>, <span class="number">1</span>, name=<span class="string">'rpn_conv/3x3'</span>))</span><br><span class="line">        <span class="comment"># 卷积最后一层的的feature_map尺寸为batch*h*w*512</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 原来的单层双向LSTM</span></span><br><span class="line">        (self.feed(<span class="string">'rpn_conv/3x3'</span>).Bilstm(<span class="number">512</span>, <span class="number">128</span>, <span class="number">512</span>, name=<span class="string">'lstm_o'</span>))</span><br><span class="line">        <span class="comment"># bilstm之后输出的尺寸为(N, H, W, 512)</span></span><br><span class="line"></span><br><span class="line">        <span class="string">""" </span></span><br><span class="line"><span class="string">        和faster—rcnn相似，在ctpn的rpn网络中，使用双向lstm和全连接得到预测的</span></span><br><span class="line"><span class="string">        目标概率和回归框，在faster-rcnn中使用的是卷积的方式从basenet的最后一层生成</span></span><br><span class="line"><span class="string">        使用LSTM的输出来计算位置偏移和类别概率（判断是否是物体，不判断类别的种类）</span></span><br><span class="line"><span class="string">        输入尺寸为(N, H, W, 512)  输出尺寸（N, H, W, int(d_o)）</span></span><br><span class="line"><span class="string">        可以将这一层当做目标检测中的最后一层feature_map</span></span><br><span class="line"><span class="string">        rpn_bbox_pred--对于h*w的尺寸上，每一anchor上生成4个位置偏移量</span></span><br><span class="line"><span class="string">        rpn_cls_score--对于h*w的尺寸上，每一anchor上生成2个置信度得分，判断是否为物体</span></span><br><span class="line"><span class="string">            </span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        (self.feed(<span class="string">'lstm_o'</span>).lstm_fc(<span class="number">512</span>, len(anchor_scales) * <span class="number">10</span> * <span class="number">4</span>, name=<span class="string">'rpn_bbox_pred'</span>))</span><br><span class="line">        (self.feed(<span class="string">'lstm_o'</span>).lstm_fc(<span class="number">512</span>, len(anchor_scales) * <span class="number">10</span> * <span class="number">2</span>, name=<span class="string">'rpn_cls_score'</span>))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># generating training labels on the fly</span></span><br><span class="line">        <span class="comment"># output: rpn_labels(HxWxA, 2) rpn_bbox_targets(HxWxA, 4) rpn_bbox_inside_weights rpn_bbox_outside_weights</span></span><br><span class="line">        <span class="comment"># 给每个anchor上标签，并计算真值（也是delta的形式），以及内部权重和外部权重</span></span><br><span class="line">        (self.feed(<span class="string">'rpn_cls_score'</span>, <span class="string">'gt_boxes'</span>, <span class="string">'gt_ishard'</span>, <span class="string">'dontcare_areas'</span>, <span class="string">'im_info'</span>)</span><br><span class="line">            .anchor_target_layer(_feat_stride, anchor_scales, name=<span class="string">'rpn-data'</span>))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># shape is (1, H, W, Ax2) -&gt; (1, H, WxA, 2)</span></span><br><span class="line">        <span class="comment"># 给之前得到的score进行softmax，得到0-1之间的得分</span></span><br><span class="line">        (self.feed(<span class="string">'rpn_cls_score'</span>)</span><br><span class="line">            .spatial_reshape_layer(<span class="number">2</span>, name=<span class="string">'rpn_cls_score_reshape'</span>)</span><br><span class="line">            .spatial_softmax(name=<span class="string">'rpn_cls_prob'</span>))</span><br><span class="line">        <span class="string">'''</span></span><br><span class="line"><span class="string">        # the below is the rcnn net model from faster_rcnn</span></span><br><span class="line"><span class="string">        # 后面的部分是fasterrcnn之后的ROIPooling部分</span></span><br><span class="line"><span class="string">        (self.feed('rpn_cls_prob').spatial_reshape_layer(len(anchor_scales) * 10 * 2, name='rpn_cls_prob_reshape'))</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        self.feed('rpn_cls_prob_reshape', 'rpn_bbox_pred', 'im_info').proposal_layer(</span></span><br><span class="line"><span class="string">            _feat_stride, anchor_scales, 'TRAIN', name='rpn_rois')</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        (self.feed('rpn_rois', 'gt_boxes').proposal_target_layer(n_classes, name='roi-data'))</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        # ========= RCNN ============</span></span><br><span class="line"><span class="string">        (self.feed('conv5_3', 'roi-data').roi_pool(7, 7, 1.0/16, name='pool_5')</span></span><br><span class="line"><span class="string">             .fc(4096, name='fc6').dropout(0.5, name='drop6')</span></span><br><span class="line"><span class="string">             .fc(4096, name='fc7').dropout(0.5, name='drop7')</span></span><br><span class="line"><span class="string">             .fc(n_classes, relu=False, name='cls_score').softmax(name='cls_prob'))</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        (self.feed('drop7').fc(n_classes*4, relu=False, name='bbox_pred'))</span></span><br><span class="line"><span class="string">        '''</span></span><br></pre></td></tr></table></figure>
+<p>可以看到<code>CTPN</code>的网络结构有<code>FasterRcnn</code>改变而来，使用<code>vggnet</code>进行图像的特征提取，对得到的最后一层<code>featuremap</code>的尺寸为$[N,H,W,C]$，进行维度变换为$[NH,W,C]$成为序列，使用<code>BLSTM</code>得到的维度为$[NH,W,2D]$其中$D$为单向<code>RNN</code>的隐藏层节点数，转换维度为$[NHW,2D]$，使用全连接进行维度转换为$[NHW,C]$，最后再reshape成$[N,H,W,C]​$，在这一步中，使用<code>RNN</code>对<code>CNN</code>之后的特征图进行特征图长度方向上的连接；接下来使用<code>lstm_fc</code>函数对<code>anchor</code>进行目标类别预测和边界回归框预测，在这一层的特征图上，每个点生成A个<code>anchor</code>，每个<code>anchor</code>存在目标类别预测和边界回归预测：对于回归预测，每个格点生成<code>2A</code>个目标预测；对于边界回归预测，每个格点生成<code>4A</code>个边界预测。</p>
+<p>网络模型结构如下所示</p>
+<img src="/2019/01/05/深度学习-OCR_Overview/ctpn_model.png" title="CTPN MODEL STRUCTURE">
+<h5 id="anchor生成及筛选"><a href="#anchor生成及筛选" class="headerlink" title="anchor生成及筛选"></a>anchor生成及筛选</h5><p>在整个模型中，<code>AnchorGen</code>处需要详细说明，这就是大名鼎鼎的RPN，下面结合代码说明：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding:utf-8 -*-</span></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> numpy.random <span class="keyword">as</span> npr</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> ..fast_rcnn.config <span class="keyword">import</span> cfg</span><br><span class="line"><span class="keyword">from</span> bbox <span class="keyword">import</span> bbox_overlaps, bbox_intersections</span><br><span class="line"></span><br><span class="line">DEBUG = <span class="keyword">False</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 生成基础anchor box</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_basic_anchors</span><span class="params">(sizes, base_size=<span class="number">16</span>)</span>:</span></span><br><span class="line">    base_anchor = np.array([<span class="number">0</span>, <span class="number">0</span>, base_size - <span class="number">1</span>, base_size - <span class="number">1</span>], np.int32)</span><br><span class="line">    anchors = np.zeros((len(sizes), <span class="number">4</span>), np.int32)</span><br><span class="line">    index = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> h, w <span class="keyword">in</span> sizes:</span><br><span class="line">        anchors[index] = scale_anchor(base_anchor, h, w)</span><br><span class="line">        index += <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> anchors</span><br><span class="line"></span><br><span class="line"><span class="comment"># 根据baseanchor和设定的anchor的高度和宽度进行设定的anchor生成</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scale_anchor</span><span class="params">(anchor, h, w)</span>:</span></span><br><span class="line">    x_ctr = (anchor[<span class="number">0</span>] + anchor[<span class="number">2</span>]) * <span class="number">0.5</span></span><br><span class="line">    y_ctr = (anchor[<span class="number">1</span>] + anchor[<span class="number">3</span>]) * <span class="number">0.5</span></span><br><span class="line">    scaled_anchor = anchor.copy()</span><br><span class="line">    scaled_anchor[<span class="number">0</span>] = x_ctr - w / <span class="number">2</span>  <span class="comment"># xmin</span></span><br><span class="line">    scaled_anchor[<span class="number">2</span>] = x_ctr + w / <span class="number">2</span>  <span class="comment"># xmax</span></span><br><span class="line">    scaled_anchor[<span class="number">1</span>] = y_ctr - h / <span class="number">2</span>  <span class="comment"># ymin</span></span><br><span class="line">    scaled_anchor[<span class="number">3</span>] = y_ctr + h / <span class="number">2</span>  <span class="comment"># ymax</span></span><br><span class="line">    <span class="keyword">return</span> scaled_anchor</span><br><span class="line"></span><br><span class="line"><span class="comment"># 生成anchor box</span></span><br><span class="line"><span class="comment"># 此处使用的是宽度固定，高度不同的anchor设置</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_anchors</span><span class="params">(base_size=<span class="number">16</span>, ratios=[<span class="number">0.5</span>, <span class="number">1</span>, <span class="number">2</span>],</span></span></span><br><span class="line"><span class="function"><span class="params">                     scales=<span class="number">2</span> ** np.arange<span class="params">(<span class="number">3</span>, <span class="number">6</span>)</span>)</span>:</span></span><br><span class="line">    heights = [<span class="number">11</span>, <span class="number">16</span>, <span class="number">23</span>, <span class="number">33</span>, <span class="number">48</span>, <span class="number">68</span>, <span class="number">97</span>, <span class="number">139</span>, <span class="number">198</span>, <span class="number">283</span>]</span><br><span class="line">    widths = [<span class="number">16</span>]</span><br><span class="line">    sizes = []</span><br><span class="line">    <span class="keyword">for</span> h <span class="keyword">in</span> heights:</span><br><span class="line">        <span class="keyword">for</span> w <span class="keyword">in</span> widths:</span><br><span class="line">            sizes.append((h, w))</span><br><span class="line">    <span class="keyword">return</span> generate_basic_anchors(sizes)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 生成的anchor和groundtruth之间进行转换，转换方式和论文一致</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bbox_transform</span><span class="params">(ex_rois, gt_rois)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    computes the distance from ground-truth boxes to the given boxes, normed by their size</span></span><br><span class="line"><span class="string">    :param ex_rois: n * 4 numpy array, anchor boxes</span></span><br><span class="line"><span class="string">    :param gt_rois: n * 4 numpy array, ground-truth boxes</span></span><br><span class="line"><span class="string">    :return: deltas: n * 4 numpy array, ground-truth boxes</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    ex_widths = ex_rois[:, <span class="number">2</span>] - ex_rois[:, <span class="number">0</span>] + <span class="number">1.0</span> <span class="comment"># anchor width </span></span><br><span class="line">    ex_heights = ex_rois[:, <span class="number">3</span>] - ex_rois[:, <span class="number">1</span>] + <span class="number">1.0</span> <span class="comment"># anchor height</span></span><br><span class="line">    ex_ctr_x = ex_rois[:, <span class="number">0</span>] + <span class="number">0.5</span> * ex_widths <span class="comment"># anchor center x</span></span><br><span class="line">    ex_ctr_y = ex_rois[:, <span class="number">1</span>] + <span class="number">0.5</span> * ex_heights <span class="comment"># anchor center y</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">assert</span> np.min(ex_widths) &gt; <span class="number">0.1</span> <span class="keyword">and</span> np.min(ex_heights) &gt; <span class="number">0.1</span>, \</span><br><span class="line">        <span class="string">'Invalid boxes found: &#123;&#125; &#123;&#125;'</span>. \</span><br><span class="line">        format(ex_rois[np.argmin(ex_widths), :], ex_rois[np.argmin(ex_heights), :])</span><br><span class="line"></span><br><span class="line">    gt_widths = gt_rois[:, <span class="number">2</span>] - gt_rois[:, <span class="number">0</span>] + <span class="number">1.0</span> <span class="comment"># gt_box width</span></span><br><span class="line">    gt_heights = gt_rois[:, <span class="number">3</span>] - gt_rois[:, <span class="number">1</span>] + <span class="number">1.0</span> <span class="comment"># gt_box height</span></span><br><span class="line">    gt_ctr_x = gt_rois[:, <span class="number">0</span>] + <span class="number">0.5</span> * gt_widths <span class="comment"># gt_box center x</span></span><br><span class="line">    gt_ctr_y = gt_rois[:, <span class="number">1</span>] + <span class="number">0.5</span> * gt_heights <span class="comment"># gt_box center y</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># warnings.catch_warnings()</span></span><br><span class="line">    <span class="comment"># warnings.filterwarnings('error')</span></span><br><span class="line">    targets_dx = (gt_ctr_x - ex_ctr_x) / ex_widths  <span class="comment"># (gt_c_x-a_c_x)</span></span><br><span class="line">    targets_dy = (gt_ctr_y - ex_ctr_y) / ex_heights</span><br><span class="line">    targets_dw = np.log(gt_widths / ex_widths)</span><br><span class="line">    targets_dh = np.log(gt_heights / ex_heights)</span><br><span class="line"></span><br><span class="line">    targets = np.vstack(</span><br><span class="line">        (targets_dx, targets_dy, targets_dw, targets_dh)).transpose()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> targets</span><br><span class="line"></span><br><span class="line"><span class="comment"># 生成anchors</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">anchor_target_layer</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">        rpn_cls_score, gt_boxes, gt_ishard, dontcare_areas, im_info, _feat_stride=[<span class="number">16</span>, ],</span></span></span><br><span class="line"><span class="function"><span class="params">        anchor_scales=[<span class="number">16</span>, ])</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Assign anchors to ground-truth targets. Produces anchor classification</span></span><br><span class="line"><span class="string">    labels and bounding-box regression targets.</span></span><br><span class="line"><span class="string">    Parameters</span></span><br><span class="line"><span class="string">    ----------</span></span><br><span class="line"><span class="string">    rpn_cls_score: (1, H, W, Ax2) bg/fg scores of previous conv layer</span></span><br><span class="line"><span class="string">    gt_boxes: (G, 5) vstack of [x1, y1, x2, y2, class]</span></span><br><span class="line"><span class="string">    gt_ishard: (G, 1), 1 or 0 indicates difficult or not</span></span><br><span class="line"><span class="string">    dontcare_areas: (D, 4), some areas may contains small objs but no labelling. D may be 0</span></span><br><span class="line"><span class="string">    im_info: a list of [image_height, image_width, scale_ratios]</span></span><br><span class="line"><span class="string">    _feat_stride: the downsampling ratio of feature map to the original input image</span></span><br><span class="line"><span class="string">    anchor_scales: the scales to the basic_anchor (basic anchor is [16, 16])</span></span><br><span class="line"><span class="string">    ----------</span></span><br><span class="line"><span class="string">    Returns</span></span><br><span class="line"><span class="string">    ----------</span></span><br><span class="line"><span class="string">    rpn_labels : (HxWxA, 1), for each anchor, 0 denotes bg, 1 fg, -1 dontcare</span></span><br><span class="line"><span class="string">    rpn_bbox_targets: (HxWxA, 4), distances of the anchors to the gt_boxes(may contains some transform)</span></span><br><span class="line"><span class="string">                            that are the regression objectives</span></span><br><span class="line"><span class="string">    rpn_bbox_inside_weights: (HxWxA, 4) weights of each boxes, mainly accepts hyper param in cfg</span></span><br><span class="line"><span class="string">    rpn_bbox_outside_weights: (HxWxA, 4) used to balance the fg/bg,</span></span><br><span class="line"><span class="string">                            beacuse the numbers of bgs and fgs mays significiantly different</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="comment"># anchors is the [x_min,y_min,x_max,y_max]</span></span><br><span class="line">    <span class="comment"># 生成基本的anchor,一共10个</span></span><br><span class="line">    _anchors = generate_anchors(scales=np.array(anchor_scales))  </span><br><span class="line">    _num_anchors = _anchors.shape[<span class="number">0</span>]  <span class="comment"># 10个anchor</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># allow boxes to sit over the edge by a small amount</span></span><br><span class="line">    _allowed_border = <span class="number">0</span></span><br><span class="line">    <span class="comment"># 原始图像的信息，图像的高宽及通道数</span></span><br><span class="line">    im_info = im_info[<span class="number">0</span>]  </span><br><span class="line"></span><br><span class="line">    <span class="comment"># 在feature-map上定位anchor，并加上delta，得到在实际图像中anchor的真实坐标</span></span><br><span class="line">    <span class="string">""" </span></span><br><span class="line"><span class="string">    Algorithm:</span></span><br><span class="line"><span class="string">        for each (H, W) location i</span></span><br><span class="line"><span class="string">            generate 9 anchor boxes centered on cell i</span></span><br><span class="line"><span class="string">            apply predicted bbox deltas at cell i to each of the 9 anchors</span></span><br><span class="line"><span class="string">            filter out-of-image anchors</span></span><br><span class="line"><span class="string">        measure GT overlap </span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="keyword">assert</span> rpn_cls_score.shape[<span class="number">0</span>] == <span class="number">1</span>, \</span><br><span class="line">        <span class="string">'Only single item batches are supported'</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># map of shape (..., H, W)</span></span><br><span class="line">    height, width = rpn_cls_score.shape[<span class="number">1</span>:<span class="number">3</span>]  <span class="comment"># feature-map的高宽</span></span><br><span class="line">    <span class="comment"># 1. Generate proposals from bbox deltas and shifted anchors</span></span><br><span class="line">    shift_x = np.arange(<span class="number">0</span>, width) * _feat_stride</span><br><span class="line">    shift_y = np.arange(<span class="number">0</span>, height) * _feat_stride</span><br><span class="line">    shift_x, shift_y = np.meshgrid(shift_x, shift_y)  <span class="comment"># in W H order</span></span><br><span class="line">    <span class="comment"># 生成feature-map和真实图像上anchor之间的偏移量</span></span><br><span class="line">    <span class="comment"># shifts构建网格结构，shape [height*width,4]</span></span><br><span class="line">    shifts = np.vstack((shift_x.ravel(), shift_y.ravel(),</span><br><span class="line">                        shift_x.ravel(), shift_y.ravel())).transpose()  </span><br><span class="line">    A = _num_anchors  <span class="comment"># 10个anchor</span></span><br><span class="line">    K = shifts.shape[<span class="number">0</span>]  <span class="comment"># feature-map的宽乘高的大小</span></span><br><span class="line">    <span class="comment"># 为当前的featuremap每个点生成A个anchor，shape is [K,A,4]</span></span><br><span class="line">    all_anchors = (_anchors.reshape((<span class="number">1</span>, A, <span class="number">4</span>)) +</span><br><span class="line">                   shifts.reshape((<span class="number">1</span>, K, <span class="number">4</span>)).transpose((<span class="number">1</span>, <span class="number">0</span>, <span class="number">2</span>)))  </span><br><span class="line">    all_anchors = all_anchors.reshape((K * A, <span class="number">4</span>))  <span class="comment"># shape is (K*A,4)</span></span><br><span class="line">    <span class="comment"># 在featuremap上每个点生成A个anchor</span></span><br><span class="line">    total_anchors = int(K * A)</span><br><span class="line">    <span class="comment"># only keep anchors inside the image</span></span><br><span class="line">    <span class="comment"># 因为生成的anchor尺寸有大有小，因此在边缘处生成的anchor有可能会超过原始图像的边界，</span></span><br><span class="line">    <span class="comment"># 将这些超过边界的anchor去掉,得到的是这些anchor的在all_anchors中的索引</span></span><br><span class="line">    <span class="comment"># 仅保留那些还在图像内部的anchor，超出图像的都删掉</span></span><br><span class="line">    <span class="comment"># anchors[:]=[x_min,y_min,x_max,y_max]</span></span><br><span class="line">    inds_inside = np.where(</span><br><span class="line">        (all_anchors[:, <span class="number">0</span>] &gt;= -_allowed_border) &amp;</span><br><span class="line">        (all_anchors[:, <span class="number">1</span>] &gt;= -_allowed_border) &amp;</span><br><span class="line">        (all_anchors[:, <span class="number">2</span>] &lt; im_info[<span class="number">1</span>] + _allowed_border) &amp;  <span class="comment"># width</span></span><br><span class="line">        (all_anchors[:, <span class="number">3</span>] &lt; im_info[<span class="number">0</span>] + _allowed_border)  <span class="comment"># height</span></span><br><span class="line">    )[<span class="number">0</span>]</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># keep only inside anchors</span></span><br><span class="line">    anchors = all_anchors[inds_inside, :]  <span class="comment"># 保留那些在图像内的anchor</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 至此，anchor准备好了</span></span><br><span class="line">    <span class="comment"># --------------------------------------------------------------</span></span><br><span class="line">    <span class="comment"># label: 1 is positive, 0 is negative, -1 is dont care</span></span><br><span class="line">    <span class="comment"># (A)</span></span><br><span class="line">    labels = np.empty((len(inds_inside),), dtype=np.float32)</span><br><span class="line">    labels.fill(<span class="number">-1</span>)  <span class="comment"># 初始化label，均为-1</span></span><br><span class="line">    <span class="comment"># overlaps between the anchors and the gt boxes</span></span><br><span class="line">    <span class="comment"># overlaps (ex, gt), shape is A x G</span></span><br><span class="line">    <span class="comment"># 计算anchor和gt-box的overlap，用来给anchor上标签</span></span><br><span class="line">    <span class="comment"># anchor box and groundtruth box 交集面积/并集面积</span></span><br><span class="line">    <span class="comment"># 通过IOU的得分来确定anchor为正样本与否</span></span><br><span class="line">    <span class="comment"># overlaps shape is [anchor.shape[0],gt_box.shape[0]]</span></span><br><span class="line">    overlaps = bbox_overlaps(</span><br><span class="line">        np.ascontiguousarray(anchors, dtype=np.float),</span><br><span class="line">        np.ascontiguousarray(gt_boxes, dtype=np.float))  </span><br><span class="line">    <span class="comment"># 存放每一个anchor和每一个gtbox之间的overlap</span></span><br><span class="line">    <span class="comment"># 找到和每一个gtbox，overlap最大的那个anchor</span></span><br><span class="line">    argmax_overlaps = overlaps.argmax(axis=<span class="number">1</span>) </span><br><span class="line">    max_overlaps = overlaps[np.arange(len(inds_inside)), argmax_overlaps]</span><br><span class="line">    <span class="comment"># 找到每个位置上10个anchor中与gtbox，overlap最大的那个</span></span><br><span class="line">    gt_argmax_overlaps = overlaps.argmax(axis=<span class="number">0</span>)  </span><br><span class="line">    gt_max_overlaps = overlaps[gt_argmax_overlaps,</span><br><span class="line">                               np.arange(overlaps.shape[<span class="number">1</span>])]</span><br><span class="line">    gt_argmax_overlaps = np.where(overlaps == gt_max_overlaps)[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> cfg.TRAIN.RPN_CLOBBER_POSITIVES:</span><br><span class="line">        <span class="comment"># assign bg labels first so that positive labels can clobber them</span></span><br><span class="line">        <span class="comment"># 先给背景上标签，小于0.3overlap的为负样本label为0</span></span><br><span class="line">        labels[max_overlaps &lt; cfg.TRAIN.RPN_NEGATIVE_OVERLAP] = <span class="number">0</span>  </span><br><span class="line"></span><br><span class="line">    <span class="comment"># -----------------------------------#</span></span><br><span class="line">    <span class="comment"># 正样本的确定，iou得分大于0.7和每个位置上具有最大IOU得分的anchor</span></span><br><span class="line">    <span class="comment"># fg label: for each gt, anchor with highest overlap</span></span><br><span class="line">    <span class="comment"># 每个位置上的10个个anchor中overlap最大的认为是前景</span></span><br><span class="line">    labels[gt_argmax_overlaps] = <span class="number">1</span>  </span><br><span class="line">    <span class="comment"># fg label: above threshold IOU</span></span><br><span class="line">    <span class="comment"># overlap大于0.7的认为是前景</span></span><br><span class="line">    labels[max_overlaps &gt;= cfg.TRAIN.RPN_POSITIVE_OVERLAP] = <span class="number">1</span>  </span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> cfg.TRAIN.RPN_CLOBBER_POSITIVES:</span><br><span class="line">        <span class="comment"># assign bg labels last so that negative labels can clobber positives</span></span><br><span class="line">        labels[max_overlaps &lt; cfg.TRAIN.RPN_NEGATIVE_OVERLAP] = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># preclude dontcare areas</span></span><br><span class="line">    <span class="comment"># 这里我们暂时不考虑有doncare_area的存在</span></span><br><span class="line">    <span class="keyword">if</span> dontcare_areas <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span> <span class="keyword">and</span> dontcare_areas.shape[<span class="number">0</span>] &gt; <span class="number">0</span>:  </span><br><span class="line">        <span class="comment"># intersec shape is D x A</span></span><br><span class="line">        intersecs = bbox_intersections(</span><br><span class="line">            np.ascontiguousarray(dontcare_areas, dtype=np.float),  <span class="comment"># D x 4</span></span><br><span class="line">            np.ascontiguousarray(anchors, dtype=np.float)  <span class="comment"># A x 4</span></span><br><span class="line">        )</span><br><span class="line">        intersecs_ = intersecs.sum(axis=<span class="number">0</span>)  <span class="comment"># A x 1</span></span><br><span class="line">        labels[intersecs_ &gt; cfg.TRAIN.DONTCARE_AREA_INTERSECTION_HI] = <span class="number">-1</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 这里我们暂时不考虑难样本的问题</span></span><br><span class="line">    <span class="comment"># preclude hard samples that are highly occlusioned, truncated or difficult to see</span></span><br><span class="line">    <span class="keyword">if</span> cfg.TRAIN.PRECLUDE_HARD_SAMPLES <span class="keyword">and</span> gt_ishard <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span> <span class="keyword">and</span> gt_ishard.shape[<span class="number">0</span>] &gt; <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">assert</span> gt_ishard.shape[<span class="number">0</span>] == gt_boxes.shape[<span class="number">0</span>]</span><br><span class="line">        gt_ishard = gt_ishard.astype(int)</span><br><span class="line">        gt_hardboxes = gt_boxes[gt_ishard == <span class="number">1</span>, :]</span><br><span class="line">        <span class="keyword">if</span> gt_hardboxes.shape[<span class="number">0</span>] &gt; <span class="number">0</span>:</span><br><span class="line">            <span class="comment"># H x A</span></span><br><span class="line">            hard_overlaps = bbox_overlaps(</span><br><span class="line">                np.ascontiguousarray(gt_hardboxes, dtype=np.float),  <span class="comment"># H x 4</span></span><br><span class="line">                np.ascontiguousarray(anchors, dtype=np.float))  <span class="comment"># A x 4</span></span><br><span class="line">            hard_max_overlaps = hard_overlaps.max(axis=<span class="number">0</span>)  <span class="comment"># (A)</span></span><br><span class="line">            labels[hard_max_overlaps &gt;= cfg.TRAIN.RPN_POSITIVE_OVERLAP] = <span class="number">-1</span></span><br><span class="line">            max_intersec_label_inds = hard_overlaps.argmax(axis=<span class="number">1</span>)  <span class="comment"># H x 1</span></span><br><span class="line">            labels[max_intersec_label_inds] = <span class="number">-1</span>  <span class="comment">#</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># subsample positive labels if we have too many</span></span><br><span class="line">    <span class="comment"># 对正样本进行采样，如果正样本的数量太多的话</span></span><br><span class="line">    <span class="comment"># 限制正样本的数量不超过128个，排除的置位dont_Care类</span></span><br><span class="line">    <span class="comment"># TODO 这个后期可能还需要修改，毕竟如果使用的是字符的片段，那个正样本的数量是很多的。</span></span><br><span class="line">    num_fg = int(cfg.TRAIN.RPN_FG_FRACTION * cfg.TRAIN.RPN_BATCHSIZE)</span><br><span class="line">    fg_inds = np.where(labels == <span class="number">1</span>)[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">if</span> len(fg_inds) &gt; num_fg:</span><br><span class="line">        disable_inds = npr.choice(</span><br><span class="line">            fg_inds, size=(len(fg_inds) - num_fg), replace=<span class="keyword">False</span>)  <span class="comment"># 随机去除掉一些正样本</span></span><br><span class="line">        labels[disable_inds] = <span class="number">-1</span>  <span class="comment"># 变为-1</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># subsample negative labels if we have too many</span></span><br><span class="line">    <span class="comment"># 对负样本进行采样，如果负样本的数量太多的话</span></span><br><span class="line">    <span class="comment"># 正负样本总数是256，限制正样本数目最多128，</span></span><br><span class="line">    <span class="comment"># 如果正样本数量小于128，差的那些就用负样本补上，凑齐256个样本</span></span><br><span class="line">    num_bg = cfg.TRAIN.RPN_BATCHSIZE - np.sum(labels == <span class="number">1</span>)</span><br><span class="line">    bg_inds = np.where(labels == <span class="number">0</span>)[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">if</span> len(bg_inds) &gt; num_bg:</span><br><span class="line">        disable_inds = npr.choice(</span><br><span class="line">            bg_inds, size=(len(bg_inds) - num_bg), replace=<span class="keyword">False</span>)</span><br><span class="line">        labels[disable_inds] = <span class="number">-1</span></span><br><span class="line">        <span class="comment"># print "was %s inds, disabling %s, now %s inds" % (</span></span><br><span class="line">        <span class="comment"># len(bg_inds), len(disable_inds), np.sum(labels == 0))</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 至此， 上好标签，开始计算rpn-box的真值</span></span><br><span class="line">    <span class="comment"># --------------------------------------------------------------</span></span><br><span class="line">    bbox_targets = np.zeros((len(inds_inside), <span class="number">4</span>), dtype=np.float32)</span><br><span class="line">    <span class="comment"># 根据anchor和gtbox计算得真值（anchor和gtbox之间的偏差）</span></span><br><span class="line">    bbox_targets = _compute_targets(anchors, gt_boxes[argmax_overlaps, :])</span><br><span class="line">	<span class="comment"># 内部权重，前景就给1，其他是0</span></span><br><span class="line">    bbox_inside_weights = np.zeros((len(inds_inside), <span class="number">4</span>), dtype=np.float32)</span><br><span class="line">    bbox_inside_weights[labels == <span class="number">1</span>, :] = np.array(</span><br><span class="line">        cfg.TRAIN.RPN_BBOX_INSIDE_WEIGHTS)  </span><br><span class="line"></span><br><span class="line">    bbox_outside_weights = np.zeros((len(inds_inside), <span class="number">4</span>), dtype=np.float32)</span><br><span class="line">    <span class="keyword">if</span> cfg.TRAIN.RPN_POSITIVE_WEIGHT &lt; <span class="number">0</span>: </span><br><span class="line">        <span class="comment"># 此处使用uniform权重，也就是正样本是1，负样本是0</span></span><br><span class="line">        <span class="comment"># uniform weighting of examples (given non-uniform sampling)</span></span><br><span class="line">        <span class="comment"># num_examples = np.sum(labels &gt;= 0) + 1</span></span><br><span class="line">        <span class="comment"># positive_weights = np.ones((1, 4)) * 1.0 / num_examples</span></span><br><span class="line">        <span class="comment"># negative_weights = np.ones((1, 4)) * 1.0 / num_examples</span></span><br><span class="line">        positive_weights = np.ones((<span class="number">1</span>, <span class="number">4</span>))  <span class="comment"># 前景为1</span></span><br><span class="line">        negative_weights = np.zeros((<span class="number">1</span>, <span class="number">4</span>))  <span class="comment"># 背景为0</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">assert</span> ((cfg.TRAIN.RPN_POSITIVE_WEIGHT &gt; <span class="number">0</span>) &amp;</span><br><span class="line">                (cfg.TRAIN.RPN_POSITIVE_WEIGHT &lt; <span class="number">1</span>))</span><br><span class="line">        positive_weights = (cfg.TRAIN.RPN_POSITIVE_WEIGHT /</span><br><span class="line">                            (np.sum(labels == <span class="number">1</span>)) + <span class="number">1</span>)</span><br><span class="line">        negative_weights = ((<span class="number">1.0</span> - cfg.TRAIN.RPN_POSITIVE_WEIGHT) /</span><br><span class="line">                            (np.sum(labels == <span class="number">0</span>)) + <span class="number">1</span>)</span><br><span class="line">    <span class="comment"># 外部权重，前景是1，背景是0</span></span><br><span class="line">    <span class="comment"># bbox_outside_weights初始化为0，将label中为0的位置赋值bbox_outside_weights为0,labels为1的位置赋值为1</span></span><br><span class="line">    bbox_outside_weights[labels == <span class="number">1</span>, :] = positive_weights</span><br><span class="line">    bbox_outside_weights[labels == <span class="number">0</span>, :] = negative_weights</span><br><span class="line"></span><br><span class="line">    <span class="comment"># map up to original set of anchors</span></span><br><span class="line">    <span class="comment"># 一开始是将超出图像范围的anchor直接丢掉的，现在在加回来</span></span><br><span class="line">    <span class="comment"># inds_inside 是原始anchor中的索引</span></span><br><span class="line">    labels = _unmap(labels, total_anchors, inds_inside, fill=<span class="number">-1</span>)  <span class="comment"># 这些anchor的label是-1，也即dontcare</span></span><br><span class="line">    bbox_targets = _unmap(bbox_targets, total_anchors, inds_inside, fill=<span class="number">0</span>)  <span class="comment"># 这些anchor的真值是0，也即没有值</span></span><br><span class="line">    bbox_inside_weights = _unmap(bbox_inside_weights, total_anchors,</span><br><span class="line">                                 inds_inside, fill=<span class="number">0</span>)  <span class="comment"># 内部权重以0填充</span></span><br><span class="line">    bbox_outside_weights = _unmap(bbox_outside_weights, total_anchors,</span><br><span class="line">                                  inds_inside, fill=<span class="number">0</span>)  <span class="comment"># 外部权重以0填充</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># labels</span></span><br><span class="line">    labels = labels.reshape((<span class="number">1</span>, height, width, A))  <span class="comment"># reshap一下label</span></span><br><span class="line">    rpn_labels = labels</span><br><span class="line"></span><br><span class="line">    <span class="comment"># bbox_targets</span></span><br><span class="line">    bbox_targets = bbox_targets.reshape((<span class="number">1</span>, height, width, A * <span class="number">4</span>))  <span class="comment"># reshape</span></span><br><span class="line">    rpn_bbox_targets = bbox_targets</span><br><span class="line"></span><br><span class="line">    <span class="comment"># bbox_inside_weights</span></span><br><span class="line">    bbox_inside_weights = bbox_inside_weights.reshape((<span class="number">1</span>, height, width, A * <span class="number">4</span>))</span><br><span class="line">    rpn_bbox_inside_weights = bbox_inside_weights</span><br><span class="line"></span><br><span class="line">    <span class="comment"># bbox_outside_weights</span></span><br><span class="line">    bbox_outside_weights = bbox_outside_weights.reshape((<span class="number">1</span>, height, width, A * <span class="number">4</span>))</span><br><span class="line">    rpn_bbox_outside_weights = bbox_outside_weights</span><br><span class="line">    </span><br><span class="line">	rpn_data=(rpn_labels, rpn_bbox_targets, rpn_bbox_inside_weights, rpn_bbox_outside_weights)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> rpn_data</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将排除掉边界之外的anchors之后的anchor补全回来</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_unmap</span><span class="params">(data, count, inds, fill=<span class="number">0</span>)</span>:</span></span><br><span class="line">    <span class="string">""" Unmap a subset of item (data) back to the original set of items (of</span></span><br><span class="line"><span class="string">    size count) """</span></span><br><span class="line">    <span class="keyword">if</span> len(data.shape) == <span class="number">1</span>:</span><br><span class="line">        ret = np.empty((count,), dtype=np.float32)</span><br><span class="line">        ret.fill(fill)</span><br><span class="line">        ret[inds] = data</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        ret = np.empty((count,) + data.shape[<span class="number">1</span>:], dtype=np.float32)</span><br><span class="line">        ret.fill(fill)</span><br><span class="line">        ret[inds, :] = data</span><br><span class="line">    <span class="keyword">return</span> ret</span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算anchor和gt之间的矩形框的偏差</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_compute_targets</span><span class="params">(ex_rois, gt_rois)</span>:</span></span><br><span class="line">    <span class="string">"""Compute bounding-box regression targets for an image."""</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">assert</span> ex_rois.shape[<span class="number">0</span>] == gt_rois.shape[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">assert</span> ex_rois.shape[<span class="number">1</span>] == <span class="number">4</span></span><br><span class="line">    <span class="keyword">assert</span> gt_rois.shape[<span class="number">1</span>] == <span class="number">5</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> bbox_transform(ex_rois, gt_rois[:, :<span class="number">4</span>]).astype(np.float32, copy=<span class="keyword">False</span>)</span><br></pre></td></tr></table></figure>
+<p>对于bbox使用cpython写成(.pyx文件)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">cimport numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">DTYPE = np.float</span><br><span class="line">ctypedef np.float_t DTYPE_t</span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算IOU</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bbox_overlaps</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">        np.ndarray[DTYPE_t, ndim=<span class="number">2</span>] boxes,</span></span></span><br><span class="line"><span class="function"><span class="params">        np.ndarray[DTYPE_t, ndim=<span class="number">2</span>] query_boxes)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Parameters</span></span><br><span class="line"><span class="string">    ----------</span></span><br><span class="line"><span class="string">    boxes: (N, 4) ndarray of float, anchor box nums</span></span><br><span class="line"><span class="string">    query_boxes: (K, 4) ndarray of float, groud_truth object nums,[x_min,y_min,x_max,y_max,class]</span></span><br><span class="line"><span class="string">    Returns</span></span><br><span class="line"><span class="string">    -------</span></span><br><span class="line"><span class="string">    overlaps: (N, K) ndarray of overlap between boxes and query_boxes</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    cdef unsigned int N = boxes.shape[<span class="number">0</span>]</span><br><span class="line">    cdef unsigned int K = query_boxes.shape[<span class="number">0</span>]</span><br><span class="line">    cdef np.ndarray[DTYPE_t, ndim=<span class="number">2</span>] overlaps = np.zeros((N, K), dtype=DTYPE)</span><br><span class="line">    cdef DTYPE_t iw, ih, box_area</span><br><span class="line">    cdef DTYPE_t ua</span><br><span class="line">    cdef unsigned int k, n</span><br><span class="line">    <span class="keyword">for</span> k <span class="keyword">in</span> range(K):</span><br><span class="line">        box_area = (</span><br><span class="line">            (query_boxes[k, <span class="number">2</span>] - query_boxes[k, <span class="number">0</span>] + <span class="number">1</span>) *</span><br><span class="line">            (query_boxes[k, <span class="number">3</span>] - query_boxes[k, <span class="number">1</span>] + <span class="number">1</span>)</span><br><span class="line">        )</span><br><span class="line">        <span class="keyword">for</span> n <span class="keyword">in</span> range(N):</span><br><span class="line">            <span class="comment"># 水平方向上的交集，如果存在那么iw为正</span></span><br><span class="line">            iw = (</span><br><span class="line">                min(boxes[n, <span class="number">2</span>], query_boxes[k, <span class="number">2</span>]) -</span><br><span class="line">                max(boxes[n, <span class="number">0</span>], query_boxes[k, <span class="number">0</span>]) + <span class="number">1</span></span><br><span class="line">            )</span><br><span class="line">            <span class="keyword">if</span> iw &gt; <span class="number">0</span>:</span><br><span class="line">                <span class="comment"># 竖直方向上的交集</span></span><br><span class="line">                ih = (</span><br><span class="line">                    min(boxes[n, <span class="number">3</span>], query_boxes[k, <span class="number">3</span>]) -</span><br><span class="line">                    max(boxes[n, <span class="number">1</span>], query_boxes[k, <span class="number">1</span>]) + <span class="number">1</span></span><br><span class="line">                )</span><br><span class="line">                <span class="keyword">if</span> ih &gt; <span class="number">0</span>:</span><br><span class="line">                    <span class="comment"># 如果存在交集，计算并集的面积</span></span><br><span class="line">                    <span class="comment"># union area</span></span><br><span class="line">                    ua = float(</span><br><span class="line">                        (boxes[n, <span class="number">2</span>] - boxes[n, <span class="number">0</span>] + <span class="number">1</span>) *</span><br><span class="line">                        (boxes[n, <span class="number">3</span>] - boxes[n, <span class="number">1</span>] + <span class="number">1</span>) +</span><br><span class="line">                        box_area - iw * ih</span><br><span class="line">                    )</span><br><span class="line">                    <span class="comment"># 交集面积/并集面积</span></span><br><span class="line">                    overlaps[n, k] = iw * ih / ua</span><br><span class="line">    <span class="keyword">return</span> overlaps</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># anchor与gt交集面积相对于gt面积的比例</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bbox_intersections</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">        np.ndarray[DTYPE_t, ndim=<span class="number">2</span>] boxes,</span></span></span><br><span class="line"><span class="function"><span class="params">        np.ndarray[DTYPE_t, ndim=<span class="number">2</span>] query_boxes)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    For each query box compute the intersection ratio covered by boxes</span></span><br><span class="line"><span class="string">    ----------</span></span><br><span class="line"><span class="string">    Parameters</span></span><br><span class="line"><span class="string">    ----------</span></span><br><span class="line"><span class="string">    boxes: (N, 4) ndarray of float</span></span><br><span class="line"><span class="string">    query_boxes: (K, 4) ndarray of float</span></span><br><span class="line"><span class="string">    Returns</span></span><br><span class="line"><span class="string">    -------</span></span><br><span class="line"><span class="string">    overlaps: (N, K) ndarray of intersec between boxes and query_boxes</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    cdef unsigned int N = boxes.shape[<span class="number">0</span>]</span><br><span class="line">    cdef unsigned int K = query_boxes.shape[<span class="number">0</span>]</span><br><span class="line">    cdef np.ndarray[DTYPE_t, ndim=<span class="number">2</span>] intersec = np.zeros((N, K), dtype=DTYPE)</span><br><span class="line">    cdef DTYPE_t iw, ih, box_area</span><br><span class="line">    cdef DTYPE_t ua</span><br><span class="line">    cdef unsigned int k, n</span><br><span class="line">    <span class="keyword">for</span> k <span class="keyword">in</span> range(K):</span><br><span class="line">        box_area = (</span><br><span class="line">            (query_boxes[k, <span class="number">2</span>] - query_boxes[k, <span class="number">0</span>] + <span class="number">1</span>) *</span><br><span class="line">            (query_boxes[k, <span class="number">3</span>] - query_boxes[k, <span class="number">1</span>] + <span class="number">1</span>)</span><br><span class="line">        )</span><br><span class="line">        <span class="keyword">for</span> n <span class="keyword">in</span> range(N):</span><br><span class="line">            iw = (</span><br><span class="line">                min(boxes[n, <span class="number">2</span>], query_boxes[k, <span class="number">2</span>]) -</span><br><span class="line">                max(boxes[n, <span class="number">0</span>], query_boxes[k, <span class="number">0</span>]) + <span class="number">1</span></span><br><span class="line">            )</span><br><span class="line">            <span class="keyword">if</span> iw &gt; <span class="number">0</span>:</span><br><span class="line">                ih = (</span><br><span class="line">                    min(boxes[n, <span class="number">3</span>], query_boxes[k, <span class="number">3</span>]) -</span><br><span class="line">                    max(boxes[n, <span class="number">1</span>], query_boxes[k, <span class="number">1</span>]) + <span class="number">1</span></span><br><span class="line">                )</span><br><span class="line">                <span class="keyword">if</span> ih &gt; <span class="number">0</span>:</span><br><span class="line">                    intersec[n, k] = iw * ih / box_area</span><br><span class="line">    <span class="keyword">return</span> intersec</span><br></pre></td></tr></table></figure>
+<p>代码中的注释已经写得明明白白了。anchor生成函数为<code>anchor_target_layer.py</code></p>
+<img src="/2019/01/05/深度学习-OCR_Overview/ctpn_gen_anchor.png" title="Anchors">
+<p>首先根据设定的anchor高度和宽度在特征图上每个cell生成A个anchors，这些anchors有的会超过原始图像的边界，如上图所示，将这些超出边界的anchors先删除，并记录保留的anchor在原始所有anchors中的索引值，使用内部的anchor和groundtruth进行IOU计算(anchor和gt之间如果存在交集，则使用交集面积和二者并集的面积进行IOU计算)，使用两个原则进行anchor正样本的认定：如果anchor和gt之间的IOU大于设定的阈值0.7则认定该anchor为正样本；将具有和任意gt最大的IOU的anchor为正样本，也就是和gt最大的几个anchor最为正样本，这一步选择的anchor数量和gt的数量相同。至此就确定了正样本的anchor和剩余的负样本anchor，使用设定的正负样本数量，来控制正负样本的数量，将正负样本和和gt之间计算偏移量并作为目标框的label。对于anchor和gt之间的偏移量计算如下图所示</p>
+<img src="/2019/01/05/深度学习-OCR_Overview/ctpn_anchor_gt.png" title="Anchor_groudtruth">
+<p>图中红色表示groundtruth，黑色表示anchor box，首先计算两个矩形框的中心坐标和宽度高度，计算公式为</p>
+<script type="math/tex; mode=display">
+\begin{align}
+target_{x} &=(GT_x-AN_x)/AN_{width} \\
+traget_y &=(GT_y-an_y)/AN_{height} \\
+traget_w &= \log (GT_{width}/AN_{width}) \\
+traget_h &= \log (GT_{height}/AN_{height})
+\end{align}</script><p>整个流程如下图所示</p>
+<img src="/2019/01/05/深度学习-OCR_Overview/ctpn_anchor_gen.png" title="ctpn_anchor_gen">
+<h4 id="总结-2"><a href="#总结-2" class="headerlink" title="总结"></a>总结</h4><p>至此，对CTPN网络结构结合代码进行了一些跟人理解的解读，该模型与2016年提出，可以看到收到很多的fastercnn的影响，可以看到CTPN具有如下的一些特点</p>
+<ul>
+<li>基础VGG网络的使用，因此一般需要ImageNet数据集的预训练权重会使得训练更快速和平稳</li>
+<li>Bilstm的使用使得模型无法向CNN那样并行运算，影响了模型的速度</li>
+<li>Anchor的设定为等宽度变高度，因此这种anchor只能适用于水平方向文本的检测，也可以通过更改anchor使得anchor兼容竖直方向的文本检测</li>
+<li>模型中anchor的宽度为15，因此模型的检测粒度收到该设置的影响，有可能存在边界不明确的状况</li>
+<li>因为使用的是和fasterrcnn相同的anchor生成及预测方法，因此在inference阶段需要对预测的值进行反向变换得到目标框</li>
+</ul>
+<h3 id="EAST"><a href="#EAST" class="headerlink" title="EAST"></a>EAST</h3><h4 id="论文关键idea"><a href="#论文关键idea" class="headerlink" title="论文关键idea"></a>论文关键idea</h4><ul>
+<li>提出了两段式的文本检测方法，FCN+NMS，消除多过程造成的中间误差累计，减少了检测时间</li>
+<li>模型可以进行单词级别检测，又可以进行文本行检测，检测的形状可以是任意形状的四边形也可以是普通的四边形</li>
+<li>采用了<code>Locality-Aware NMS</code>的预测框过滤</li>
+</ul>
+<p>网络结构如下所示</p>
+<img src="/2019/01/05/深度学习-OCR_Overview/east_model.png" title="EAST Model">
+<hr>
+
+<h4 id="Pipeline"><a href="#Pipeline" class="headerlink" title="Pipeline"></a>Pipeline</h4><ul>
+<li><p>先用一个通用的网络(论文中采用的是PVAnet，实际在使用的时候可以采用VGG16，Resnet等)作为base net ，用于特征提取</p>
+<blockquote>
+<p>此处对PAVnet进行一些说明，PAVnet主要是对VGG进行了改进并应用于目标检测任务，主要针对FasterRcnn的基础网络进行了改进，包含<code>mCReLU,Inception,Hyper-feature</code>各个结构</p>
+<img src="/2019/01/05/深度学习-OCR_Overview/PVAnet.png" title="PVAnet">
+<p>在论文总的基础网络用的是<code>PVAnet</code>的基础网络，具体参数如下所示</p>
+<img src="/2019/01/05/深度学习-OCR_Overview/PVAnetParam.png" title="PVAnetParam">
+<p>对于mCReLU结构和Inception结构如下所示</p>
+<img src="/2019/01/05/深度学习-OCR_Overview/PVAnet_crelu_inception.png" title="PVAnet mCReLU Inception">
+</blockquote>
+</li>
+<li><p>基于上述主干特征提取网络，抽取不同层的<code>featuremap</code>（它们的尺寸分别是inuput-image的$\frac{1}{32},\frac{1}{16},\frac{1}{8},\frac{1}{4}​$，这样可以得到不同尺度的特征图．目的是解决文本行尺度变换剧烈的问题，ealy-stage可用于预测小的文本行(较大的特征图)，late-stage可用于预测大的文本行(较小的特征图)。</p>
+</li>
+<li><p>特征合并层，将抽取的特征进行merge．这里合并的规则采用了Unet的方法，合并规则：从特征提取网络的顶部特征按照相应的规则向下进行合并。</p>
+</li>
+<li><p>网络输出层，包含文本得分和文本形状．根据不同文本形状(可分为RBOX和QUAD，对于RROX预测的是当前点距离gtbox的四个边的距离以及gtbox的相对图像的x正方向的角度$\theta$，也就是总共为5个值分别对应着$(d_1,d_2,d_3,d_4,\theta)​$，而对于QUAD来说预测对应的gtbox的四个交点的坐标，一共8个值)，对于RBOX对应的示意图如下所示</p>
+<img src="/2019/01/05/深度学习-OCR_Overview/EAST_RRBX.png" title="EAST_RBOX">
+<p>图中的$d_{i}$对应的是当前点到gt</p>
+</li>
+</ul>
+<p>对于层g和h的计算方式如图中公式所示。</p>
+<ul>
+<li>对于g为uppooling层，每次操作将featuremap放大到原来的2倍，主要进行特征图的上采样，论文中采取的双线性插值的方法进行上采样，没有使用反卷积的方式，减少了模型的计算量但是有可能降低模型的表达能力</li>
+<li>上采样之后的featuremap和下采样同样尺寸的f层进行merge并使用conv1x1降低合并后的模型的通道数</li>
+<li><p>之后使用conv3x3卷积，输出该阶段的featuremap</p>
+</li>
+<li><p>上述操作重复3次最终模型输出的通道数为32</p>
+</li>
+</ul>
+<h4 id="预测层"><a href="#预测层" class="headerlink" title="预测层"></a>预测层</h4><h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ul>
+<li><p>综述</p>
+<p><a href="https://zhuanlan.zhihu.com/p/38655369" target="_blank" rel="noopener">自然场景文本检测识别技术综述</a></p>
+<p><a href="https://www.jiqizhixin.com/articles/2018-06-20-16" target="_blank" rel="noopener">白翔:：图像OCR年度进展|VALSE2018之十一</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/29549641" target="_blank" rel="noopener">白翔：趣谈“捕文捉字”— 场景文字检测 | VALSE2017之十</a></p>
+<p><a href="https://blog.csdn.net/u013250416/article/details/79591263" target="_blank" rel="noopener">基于深度学习的目标检测及场景文字检测研究进展</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/52335619" target="_blank" rel="noopener">知乎文本检测综述</a></p>
+<p><a href="https://www.cnblogs.com/lillylin/" target="_blank" rel="noopener">优秀论文解读博客</a></p>
+<p><a href="https://zhuanlan.zhihu.com/burness-DL" target="_blank" rel="noopener">知乎专栏:小石头的码疯窝</a></p>
+</li>
+<li><p>文本检测</p>
+<ul>
+<li><p>CTPN</p>
+<p><a href="https://zhuanlan.zhihu.com/p/34757009" target="_blank" rel="noopener">场景文字检测—CTPN原理与实现</a></p>
+<p><a href="https://github.com/eragonruan/text-detection-ctpn" target="_blank" rel="noopener">CTPN: Tensorflow</a></p>
+</li>
+<li><p>EAST</p>
+<p><a href="https://www.cnblogs.com/lillylin/p/9954981.html" target="_blank" rel="noopener">Bolg: EAST</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/37504120" target="_blank" rel="noopener">知乎：文本检测之EAST</a></p>
+<p><a href="https://github.com/argman/EAST" target="_blank" rel="noopener">EAST：tensorflow</a></p>
+<p><a href="https://github.com/kurapan/EAST" target="_blank" rel="noopener">EAST: Keras</a></p>
+<p><a href="https://github.com/huoyijie/AdvancedEAST" target="_blank" rel="noopener">EAST: Advanced keras</a></p>
+</li>
+<li><p>SegLink</p>
+<p><a href="https://www.cnblogs.com/lillylin/p/6596731.html" target="_blank" rel="noopener">SegLink_Blog</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/37781277" target="_blank" rel="noopener">文本检测之SegLink</a></p>
+</li>
+<li><p>PixelLink</p>
+<p><a href="https://zhuanlan.zhihu.com/p/38171172" target="_blank" rel="noopener">文本检测之PixelLink</a></p>
+<p><a href="https://github.com/ZJULearning/pixel_link" target="_blank" rel="noopener">Github: PixelLink </a></p>
+</li>
+<li><p>TextBoxes</p>
+<p><a href="https://zhuanlan.zhihu.com/p/33723456" target="_blank" rel="noopener">论文笔记：TextBoxes++: A Single-Shot Oriented Scene Text Detector</a></p>
+<p><a href="https://github.com/MhLiao/TextBoxes_plusplus" target="_blank" rel="noopener">Github: TextBoxes++</a></p>
+</li>
+<li><p>角定位</p>
+</li>
+</ul>
+<p><a href="https://www.cnblogs.com/lillylin/p/8495124.html" target="_blank" rel="noopener">基于角定位于区域分割</a></p>
+</li>
+<li><p>文本识别</p>
+<ul>
+<li><p>ASTER</p>
+<p><a href="https://github.com/bgshih/aster" target="_blank" rel="noopener">Github: ASTER</a></p>
+</li>
+</ul>
+</li>
+<li><p>TextSpotter</p>
+<ul>
+<li><p>Mask TextSpotter</p>
+<p><a href="https://www.jiqizhixin.com/articles/2018-08-24-12" target="_blank" rel="noopener">华科白翔教授团队ECCV2018 OCR论文：Mask TextSpotter</a></p>
+</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+        
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>知识分享，方便你我-------------</div>
+    
+</div>
+
+        
+      </div>
+
+    
+    
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2019/01/05/深度学习-OCR_Overview/">深度学习-OCR</a></p>
+  <p><span>文章作者:</span><a href="/" title="访问 ShiXiaofeng 的个人博客">ShiXiaofeng</a></p>
+  <p><span>发布时间:</span>2019年01月05日 - 18:07</p>
+  <p><span>最后更新:</span>2019年01月23日 - 14:29</p>
+  <p><span>原始链接:</span><a href="/2019/01/05/深度学习-OCR_Overview/" title="深度学习-OCR">http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/</a>
+    <span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/" aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+    $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	});
+    });  
+</script>
+
+
+    
+    
+
+    
+
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/深度学习/" rel="tag"><i class="fa fa-tag"></i> 深度学习</a>
+          
+            <a href="/tags/CV/" rel="tag"><i class="fa fa-tag"></i> CV</a>
+          
+            <a href="/tags/OCR/" rel="tag"><i class="fa fa-tag"></i> OCR</a>
+          
+            <a href="/tags/seq2seq/" rel="tag"><i class="fa fa-tag"></i> seq2seq</a>
+          
+            <a href="/tags/CTC/" rel="tag"><i class="fa fa-tag"></i> CTC</a>
+          
+        </div>
+      
+
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/12/AwsomeProcess/" rel="next" title="AwsomeProcess">
+                <i class="fa fa-chevron-left"></i> AwsomeProcess
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/23/深度学习-TextDetection/" rel="prev" title="深度学习-TextDetection">
+                深度学习-TextDetection <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="ShiXiaofeng">
+            
+              <p class="site-author-name" itemprop="name">ShiXiaofeng</p>
+              <p class="site-description motion-element" itemprop="description">数据挖掘，机器学习，深度学习相关技术分享及记录</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/xiaofengShi" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:yourname@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#技术方案"><span class="nav-number">1.</span> <span class="nav-text">技术方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#图像预处理"><span class="nav-number">1.1.</span> <span class="nav-text">图像预处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定位待识别图像"><span class="nav-number">1.2.</span> <span class="nav-text">定位待识别图像</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#单字符提取"><span class="nav-number">1.2.1.</span> <span class="nav-text">单字符提取</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#文本行提取"><span class="nav-number">1.2.2.</span> <span class="nav-text">文本行提取</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#CTPN-2016年"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">CTPN(2016年)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#RRPN-ECCV2017"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">RRPN(ECCV2017)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#FTSN-2018"><span class="nav-number">1.2.2.3.</span> <span class="nav-text">FTSN(2018)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#DMPNet-2017"><span class="nav-number">1.2.2.4.</span> <span class="nav-text">DMPNet(2017)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#EAST-2017"><span class="nav-number">1.2.2.5.</span> <span class="nav-text">EAST(2017)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Textboxes-2016"><span class="nav-number">1.2.2.6.</span> <span class="nav-text">Textboxes(2016)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#SegLink-2017"><span class="nav-number">1.2.2.7.</span> <span class="nav-text">SegLink(2017)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#TextBoxes-2018"><span class="nav-number">1.2.2.8.</span> <span class="nav-text">TextBoxes++(2018)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#PixelLink-2018"><span class="nav-number">1.2.2.9.</span> <span class="nav-text">PixelLink(2018)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#WordSup-2017"><span class="nav-number">1.2.2.10.</span> <span class="nav-text">WordSup(2017)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#基于角定位与区域分割-2018"><span class="nav-number">1.2.2.11.</span> <span class="nav-text">基于角定位与区域分割(2018)</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">1.2.3.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文本识别"><span class="nav-number">1.3.</span> <span class="nav-text">文本识别</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#单字符识别"><span class="nav-number">1.3.1.</span> <span class="nav-text">单字符识别</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#k近邻"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">k近邻</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#图像分类模型"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">图像分类模型</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#不定长字符识别"><span class="nav-number">1.3.2.</span> <span class="nav-text">不定长字符识别</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#CRNN-CTC-2015"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">CRNN+CTC(2015)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#DenseNet-CTC"><span class="nav-number">1.3.2.2.</span> <span class="nav-text">DenseNet+CTC</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#RARE-2016"><span class="nav-number">1.3.2.3.</span> <span class="nav-text">RARE(2016)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#FocusingAttention-2017"><span class="nav-number">1.3.2.4.</span> <span class="nav-text">FocusingAttention(2017)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#AON-2018"><span class="nav-number">1.3.2.5.</span> <span class="nav-text">AON (2018)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ASTER-2018"><span class="nav-number">1.3.2.6.</span> <span class="nav-text">ASTER(2018)</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结-1"><span class="nav-number">1.3.3.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#End2End"><span class="nav-number">1.4.</span> <span class="nav-text">End2End</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#FOTS-2018"><span class="nav-number">1.4.1.</span> <span class="nav-text">FOTS(2018)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#STN-OCR-2017"><span class="nav-number">1.4.2.</span> <span class="nav-text">STN-OCR(2017)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Mask-TextSpotter-2018"><span class="nav-number">1.4.3.</span> <span class="nav-text">Mask TextSpotter(2018)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据集"><span class="nav-number">1.5.</span> <span class="nav-text">数据集</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#训练数据集"><span class="nav-number">2.</span> <span class="nav-text">训练数据集</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Chinese-Text-in-the-Wild-CTW"><span class="nav-number">2.1.</span> <span class="nav-text">Chinese Text in the Wild(CTW)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Reading-Chinese-Text-in-the-Wild-RCTW-17"><span class="nav-number">2.2.</span> <span class="nav-text">Reading Chinese Text in the Wild(RCTW-17)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ICPR-MWI-2018-挑战赛"><span class="nav-number">2.3.</span> <span class="nav-text">ICPR MWI 2018 挑战赛</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Total-Text"><span class="nav-number">2.4.</span> <span class="nav-text">Total-Text</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Google-FSNS-谷歌街景文本数据集"><span class="nav-number">2.5.</span> <span class="nav-text">Google FSNS(谷歌街景文本数据集)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#COCO-TEXT"><span class="nav-number">2.6.</span> <span class="nav-text">COCO-TEXT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Synthetic-Data-for-Text-Localisation"><span class="nav-number">2.7.</span> <span class="nav-text">Synthetic Data for Text Localisation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Synthetic-Word-Dataset"><span class="nav-number">2.8.</span> <span class="nav-text">Synthetic Word Dataset</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Caffe-ocr中文合成数据"><span class="nav-number">2.9.</span> <span class="nav-text">Caffe-ocr中文合成数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模型详解"><span class="nav-number">3.</span> <span class="nav-text">模型详解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CTPN-详解"><span class="nav-number">3.1.</span> <span class="nav-text">CTPN 详解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#代码分析"><span class="nav-number">3.1.1.</span> <span class="nav-text">代码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#网络模型"><span class="nav-number">3.1.1.1.</span> <span class="nav-text">网络模型</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#anchor生成及筛选"><span class="nav-number">3.1.1.2.</span> <span class="nav-text">anchor生成及筛选</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结-2"><span class="nav-number">3.1.2.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EAST"><span class="nav-number">3.2.</span> <span class="nav-text">EAST</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#论文关键idea"><span class="nav-number">3.2.1.</span> <span class="nav-text">论文关键idea</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Pipeline"><span class="nav-number">3.2.2.</span> <span class="nav-text">Pipeline</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#预测层"><span class="nav-number">3.2.3.</span> <span class="nav-text">预测层</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reference"><span class="nav-number">4.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ShiXiaofeng</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="https://cdn.bootcss.com/velocity/1.2.1/velocity.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="https://cdn.bootcss.com/velocity/1.2.1/velocity.ui.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="https://cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz',
+        appKey: 'zJasiQnAqgUwf4kiHhHyXwOP',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz", "zJasiQnAqgUwf4kiHhHyXwOP");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+  <!-- 代码块复制功能 -->
+  <script type="text/javascript" src="/js/src/clipboard.min.js"></script>
+  <script type="text/javascript" src="/js/src/clipboard-use.js"></script>
+
+</body>
+</html>
