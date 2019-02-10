@@ -115,8 +115,10 @@
 <meta property="og:image" content="http://xiaofengshi.com/2018/11/12/深度学习-目标检测/yolov2_darknet19.png">
 <meta property="og:image" content="http://xiaofengshi.com/2018/11/12/深度学习-目标检测/yolov2v3.jpg">
 <meta property="og:image" content="http://xiaofengshi.com/2018/11/12/深度学习-目标检测/yolov2_v3_over.jpg">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/12/深度学习-目标检测/yolov3_graphic.png">
 <meta property="og:image" content="http://xiaofengshi.com/2018/11/12/深度学习-目标检测/yolov3_model.jpg">
-<meta property="og:updated_time" content="2019-01-23T04:15:21.161Z">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/12/深度学习-目标检测/Yolov3ImageGrid.png">
+<meta property="og:updated_time" content="2019-01-28T04:26:12.758Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深度学习-目标检测">
 <meta name="twitter:description" content="目标检测为计算机视觉领域内的相关任务，输入一张图片，输出图片中物体所在位置及物体的名称。是一个典型的多任务模型。">
@@ -1001,13 +1003,31 @@ b_h&=(p_h \exp (t_h))/H
 </li>
 </ul>
 <h3 id="YOLOv3"><a href="#YOLOv3" class="headerlink" title="YOLOv3"></a>YOLOv3</h3><h4 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h4><ul>
-<li><p>Train:PYTORCH_YOLO_V3](<a href="https://github.com/eriklindernoren/PyTorch-YOLOv3" target="_blank" rel="noopener">https://github.com/eriklindernoren/PyTorch-YOLOv3</a>)</p>
+<li><p>Official</p>
 <ul>
-<li>原理讲解博客<a href="https://blog.paperspace.com/how-to-implement-a-yolo-v3-object-detector-from-scratch-in-pytorch-part-3/" target="_blank" rel="noopener">here</a></li>
-<li>blog对应repop,只能检测无法训练<a href="https://github.com/ayooshkathuria/YOLO_v3_tutorial_from_scratch" target="_blank" rel="noopener">here</a></li>
+<li><a href="https://pjreddie.com/media/files/papers/YOLOv3.pdf" target="_blank" rel="noopener">Paper:YOLOv3: An Incremental Improvement</a></li>
+<li><a href="https://github.com/pjreddie/darknet" target="_blank" rel="noopener">official: darknet</a></li>
 </ul>
 </li>
-<li><p><a href="https://github.com/qqwweee/keras-yolo3" target="_blank" rel="noopener">Keras_yolo_v3</a></p>
+<li><p>Blog</p>
+<ul>
+<li><a href="https://blog.paperspace.com/how-to-implement-a-yolo-object-detector-in-pytorch/" target="_blank" rel="noopener">How to implement a YOLO (v3) object detector from scratch in PyTorch</a></li>
+<li><a href="https://towardsdatascience.com/yolo-v3-object-detection-53fb7d3bfe6b" target="_blank" rel="noopener">What’s new in YOLO v3?</a></li>
+</ul>
+</li>
+<li>Code<ul>
+<li>Detect<ul>
+<li><a href="https://github.com/ayooshkathuria/YOLO_v3_tutorial_from_scratch" target="_blank" rel="noopener">YOLO_v3_tutorial_from_scratch</a></li>
+<li><a href="https://github.com/ayooshkathuria/pytorch-yolo-v3" target="_blank" rel="noopener">A PyTorch implementation of a YOLO v3 Object Detector</a></li>
+</ul>
+</li>
+<li>Train<ul>
+<li><a href="https://github.com/eriklindernoren/PyTorch-YOLOv3" target="_blank" rel="noopener">PyTorch-YOLOv3</a></li>
+<li><a href="https://github.com/maiminh1996/YOLOv3-tensorflow" target="_blank" rel="noopener">Yolov3-tensorflow</a></li>
+<li><a href="https://github.com/qqwweee/keras-yolo3" target="_blank" rel="noopener">Keras_yolo_v3</a></li>
+</ul>
+</li>
+</ul>
 </li>
 </ul>
 <p>终于来到了<code>YOLOv3</code>，在<code>YOLOv3</code>中对于小目标的识别，提升是非常明显的，在此处盗图一张，来对比<code>YOLOv2</code>和<code>YOLOv3</code>，可以明显的看到，<code>YOLOv3</code>对小物体的识别提升</p>
@@ -1029,8 +1049,10 @@ b_h&=(p_h \exp (t_h))/H
 <li>多尺度特征使用的是FPN的思想；</li>
 <li>锚点聚类成了9类。</li>
 </ol>
-<hr>
-
+<p><hr><br><code>Yolov3</code>模型结构如下所示</p>
+<img src="/2018/11/12/深度学习-目标检测/yolov3_graphic.png" title="Yolov3 Graphic">
+<p>对应的模型参数如下所示</p>
+<img src="/2018/11/12/深度学习-目标检测/yolov3_model.jpg" title="YOLOv3_predict">
 <p>下面进行分点说明：</p>
 <ul>
 <li><p><strong>多标签任务</strong></p>
@@ -1047,20 +1069,21 @@ b_h&=(p_h \exp (t_h))/H
 <ul>
 <li><p><strong>多尺度检测</strong></p>
 <p>在<code>YOLOv2</code>中，使用了一个<code>passthrough</code>层来实现小目标检测，在<code>YOLOv3</code>中，受<code>FPN</code>的启发，使用了多尺度预测，使用最后三个尺寸的<code>feature layer</code>层进行预测，并且每个<code>cell</code>预测三个<code>boundingbox</code>。</p>
-<p>初始图片输出尺寸为$416 \times 416$，用于预测的<code>feature layer</code>的尺寸为$[13 \times 13, 26 \times 26, 52 \times 52]$，首先在$13 \times 13$尺寸上使用<code>conv1x1</code>进行预测，在每个<code>cell</code>上预测三个<code>boundingbox</code>，之后使用$13 \times 13$上采样值尺寸$26 \times 26$并与下采样的$26 \times 26$的<code>feature layer</code>进行<code>merge</code>，作为预测层，同样使用<code>conv1x1</code>预测，之后再对该层进行上采样并与下采样的$52 \times 52$的<code>feature layer</code>进行<code>merge</code>之后预测。整个网络的<code>boundingbox</code>的数量为</p>
+<p>初始图片输出尺寸为$416 \times 416$，用于预测的<code>feature layer</code>的尺寸为$[13 \times 13, 26 \times 26, 52 \times 52]$，首先在$13 \times 13$尺寸上使用<code>conv1x1</code>进行预测，在每个<code>cell</code>上预测3个<code>boundingbox</code>，之后使用$13 \times 13$上采样至尺寸$26 \times 26$并与下采样的$26 \times 26$的<code>feature layer</code>进行<code>merge</code>，作为预测层，同样使用<code>conv1x1</code>预测，之后再对该层进行上采样并与下采样的$52 \times 52​$的<code>feature layer</code>进行<code>merge</code>之后预测。整个网络的<code>boundingbox</code>的数量为</p>
 <script type="math/tex; mode=display">
-(13 \times 13+26 \times 26+52 \times 52) \times 3=10647</script><p>每一个<code>boundingbox</code>的向量为$[center_{x},center_{y},width,height,object_{score},cls_{1},cls_{2},…cls_{C}]$。</p>
-</li>
+(13 \times 13+26 \times 26+52 \times 52) \times 3=10647</script></li>
 </ul>
-<img src="/2018/11/12/深度学习-目标检测/yolov3_model.jpg" title="YOLOv3_predict">
+<p>  在每层的检测数量为$1 \times 1 \times (B \times (5 +C))$,其中$B$对应着每个cell上的预测框的数量，“5”对应着4个预测框和1个目标置信度得分，$C$为检测任务对应的目标种类。每个cell的预测输出的维度中的排列顺序如下所示</p>
+  <img src="/2018/11/12/深度学习-目标检测/Yolov3ImageGrid.png" title="Yolov3ImageGrid">
+<p>  每一个<code>boundingbox</code>的向量信息为$[center_{x},center_{y},width,height,object_{score},cls_{1},cls_{2},…cls_{C}]$</p>
 <hr>
 
 <ul>
 <li><p><strong>锚点聚类</strong></p>
-<p>在<code>YOLOv2</code>中使用的是聚类的方法得到5个<code>anchor</code>，在<code>YOLOv3</code>中使用了9组锚点</p>
+<p>在<code>YOLOv2</code>中使用的是聚类的方法得到5个<code>anchor</code>，在<code>YOLOv3</code>中使用了9组锚点，模型中的输入尺寸为$416 \times 416$，经过下采样之后，对应的图像尺寸被缩小的幅度为$32,16,8$，也就是下采样至的图像尺寸为$13\times 13$,$26 \times 26$,$52 \times 52​$，对应的anchor的尺寸为</p>
 <ul>
-<li>$13 \times 13$ 尺寸：$116 \times 90,\:\:\: 156 \times 198, \:\:\: 373 \times 326 $</li>
-<li>$26 \times 26 $ 尺寸：$30  \times 61 ,\:\:\: 62 \times 45, \:\:\: 59 \times 119 $</li>
+<li>$13 \times 13​$ 尺寸：$116 \times 90,\:\:\: 156 \times 198, \:\:\: 373 \times 326 ​$</li>
+<li>$26 \times 26 ​$ 尺寸：$30  \times 61 ,\:\:\: 62 \times 45, \:\:\: 59 \times 119 ​$</li>
 <li>$52 \times 52$ 尺寸：$10 \times 13,\:\:\: 16 \times 30, \:\:\: 33 \times 23 $</li>
 </ul>
 <p>可以看到，在大的<code>featurelayer</code>检测设置的<code>anchor</code>较小，用来对小目标进行检测。</p>
@@ -1097,7 +1120,7 @@ b_h&=(p_h \exp (t_h))/H
   <p><span>本文标题:</span><a href="/2018/11/12/深度学习-目标检测/">深度学习-目标检测</a></p>
   <p><span>文章作者:</span><a href="/" title="访问 ShiXiaofeng 的个人博客">ShiXiaofeng</a></p>
   <p><span>发布时间:</span>2018年11月12日 - 17:27</p>
-  <p><span>最后更新:</span>2019年01月23日 - 12:15</p>
+  <p><span>最后更新:</span>2019年01月28日 - 12:26</p>
   <p><span>原始链接:</span><a href="/2018/11/12/深度学习-目标检测/" title="深度学习-目标检测">http://xiaofengshi.com/2018/11/12/深度学习-目标检测/</a>
     <span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://xiaofengshi.com/2018/11/12/深度学习-目标检测/" aria-label="复制成功！"></i></span>
   </p>

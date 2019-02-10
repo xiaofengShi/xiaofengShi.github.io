@@ -103,7 +103,8 @@
 <meta property="og:image" content="http://xiaofengshi.com/2019/01/23/深度学习-TextDetection/PVAnet_crelu_inception.png">
 <meta property="og:image" content="http://xiaofengshi.com/2019/01/23/深度学习-TextDetection/EAST_RRBX.png">
 <meta property="og:image" content="http://xiaofengshi.com/2019/01/23/深度学习-TextDetection/east_rbox_quad.png">
-<meta property="og:updated_time" content="2019-01-24T05:10:47.132Z">
+<meta property="og:image" content="http://xiaofengshi.com/2019/01/23/深度学习-TextDetection/east_iou.png">
+<meta property="og:updated_time" content="2019-01-27T14:01:11.450Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深度学习-TextDetection">
 <meta name="twitter:description" content="本文主要对常用的文本检测模型算法进行总结及分析，有的模型笔者切实run过，有的是通过论文及相关代码的分析，如有错误，请不吝指正。">
@@ -449,7 +450,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  5.7k 字
+                  6.1k 字
                 </span>
               
 
@@ -465,7 +466,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  26 分钟
+                  28 分钟
                 </span>
               
             </div>
@@ -585,7 +586,7 @@ traget_h &= \log (GT_{height}/AN_{height})
 </li>
 <li><p>特征合并层，将抽取的特征进行merge．这里合并的规则采用了Unet的方法，合并规则：从特征提取网络的顶部特征按照相应的规则向上进行合并，不断增大featuremap的尺寸。</p>
 </li>
-<li><p>网络输出层，包含文本得分和文本形状．根据不同文本形状(可分为RBOX和QUAD，对于RROX预测的是当前点距离gtbox的四个边的距离以及gtbox的相对图像的x正方向的角度$\theta$，也就是总共为5个值分别对应着$(d_1,d_2,d_3,d_4,\theta)​$，而对于QUAD来说预测对应的gtbox的四个交点的坐标，一共8个值)，对于RBOX对应的示意图如下所示</p>
+<li><p>网络输出层，包含文本得分和文本形状．根据不同文本形状(可分为RBOX和QUAD，对于RROX预测的是当前点距离gtbox的四个边的距离以及gtbox的相对图像的x正方向的角度$\theta​$，也就是总共为5个值分别对应着$(d_1,d_2,d_3,d_4,\theta)​$，而对于QUAD来说预测对应的gtbox的四个交点的坐标，一共8个值)，对于RBOX对应的示意图如下所示</p>
 <img src="/2019/01/23/深度学习-TextDetection/EAST_RRBX.png" title="EAST_RBOX">
 <p>图中的$d_{i}$对应的是当前点到gt的距离，知道了一个固定点到矩形的四条边的距离，就可以的知道这个矩形所在的位置和大小，即确定这个矩形。</p>
 <img src="/2019/01/23/深度学习-TextDetection/east_rbox_quad.png" title="EAST_RBOX_QUAD">
@@ -610,7 +611,78 @@ L_S&=\ {balanced-xent}(\dot Y,Y)\\
 \\
 & where \:\:\:\:\: \beta=1-\frac{\sum_{ y \in  Y}y }{|Y|}
 
-\end{align}</script><p>其中$\dot Y$为预测值，$Y$为label值。相比普通的交叉熵损失，平衡交叉熵损失对正负样本进行了平衡。</p>
+\end{align}</script><p>其中$\dot Y​$为预测值，$Y​$为label值。相比普通的交叉熵损失，平衡交叉熵损失对正负样本进行了平衡。</p>
+<p>对于$L_g$损失，由于在对于RBOX信息中包含的是5个预测值即$(d_1,d_2,d_3,d_4,\theta)$，那么就可以得到损失为</p>
+<script type="math/tex; mode=display">
+\begin{align}
+& L_g=L_{AABB}+\lambda_{\theta}L_{\theta} \\
+where \:\:\:\:\:\:& L_{AABB}=-\log IoU (\dot R,R^*)=-\log \frac{|\dot R \cap R^* |}{|\dot R \cup R^*|} \\
+& L_{\theta}=1-\cos (\dot {\theta}-\theta^*)
+\end{align}</script><p>对于IOU损失的计算是，论文中对交集区域面积的计算方式为</p>
+<script type="math/tex; mode=display">
+\begin{align} 
+&w_i=\min(\dot d_2,d_2^*)+\min(\dot d_4,d_4^*) \\
+&h_i=\min(\dot d_1,d_1^*)+\min(\dot d_3,d_3^*)
+\end{align}</script><p><strong>实际上这种计算方式是存在问题的</strong>，分析如下</p>
+<img src="/2019/01/23/深度学习-TextDetection/east_iou.png" title="east_iou">
+<p>如上图所示，红色对应gt，蓝色对应predict，如果不考虑角度，那么按照公式所述是正确的，但是考虑角度信息之后就会发现iou的交集面积计算公式存在错误。</p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ul>
+<li></li>
+<li><p>综述</p>
+<p><a href="https://zhuanlan.zhihu.com/p/38655369" target="_blank" rel="noopener">自然场景文本检测识别技术综述</a></p>
+<p><a href="https://www.jiqizhixin.com/articles/2018-06-20-16" target="_blank" rel="noopener">白翔:：图像OCR年度进展|VALSE2018之十一</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/29549641" target="_blank" rel="noopener">白翔：趣谈“捕文捉字”— 场景文字检测 | VALSE2017之十</a></p>
+<p><a href="https://blog.csdn.net/u013250416/article/details/79591263" target="_blank" rel="noopener">基于深度学习的目标检测及场景文字检测研究进展</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/52335619" target="_blank" rel="noopener">知乎文本检测综述</a></p>
+<p><a href="https://www.cnblogs.com/lillylin/" target="_blank" rel="noopener">优秀论文解读博客</a></p>
+<p><a href="https://zhuanlan.zhihu.com/burness-DL" target="_blank" rel="noopener">知乎专栏:小石头的码疯窝</a></p>
+<p><a href="https://www.cnblogs.com/skyfsm/category/1123384.html" target="_blank" rel="noopener">OCR_Overview_冠军试炼</a></p>
+</li>
+<li><p>文本检测</p>
+<ul>
+<li><p>CTPN</p>
+<p><a href="https://zhuanlan.zhihu.com/p/34757009" target="_blank" rel="noopener">场景文字检测—CTPN原理与实现</a></p>
+<p><a href="https://github.com/eragonruan/text-detection-ctpn" target="_blank" rel="noopener">CTPN: Tensorflow</a></p>
+</li>
+<li><p>EAST</p>
+<p><a href="https://www.cnblogs.com/lillylin/p/9954981.html" target="_blank" rel="noopener">Bolg: EAST</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/37504120" target="_blank" rel="noopener">知乎：文本检测之EAST</a></p>
+<p><a href="https://github.com/argman/EAST" target="_blank" rel="noopener">EAST：tensorflow</a></p>
+<p><a href="https://github.com/kurapan/EAST" target="_blank" rel="noopener">EAST: Keras</a></p>
+<p><a href="https://github.com/huoyijie/AdvancedEAST" target="_blank" rel="noopener">EAST: Advanced keras</a></p>
+</li>
+<li><p>SegLink</p>
+<p><a href="https://www.cnblogs.com/lillylin/p/6596731.html" target="_blank" rel="noopener">SegLink_Blog</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/37781277" target="_blank" rel="noopener">文本检测之SegLink</a></p>
+</li>
+<li><p>PixelLink</p>
+<p><a href="https://zhuanlan.zhihu.com/p/38171172" target="_blank" rel="noopener">文本检测之PixelLink</a></p>
+<p><a href="https://github.com/ZJULearning/pixel_link" target="_blank" rel="noopener">Github: PixelLink </a></p>
+</li>
+<li><p>TextBoxes</p>
+<p><a href="https://zhuanlan.zhihu.com/p/33723456" target="_blank" rel="noopener">论文笔记：TextBoxes++: A Single-Shot Oriented Scene Text Detector</a></p>
+<p><a href="https://github.com/MhLiao/TextBoxes_plusplus" target="_blank" rel="noopener">Github: TextBoxes++</a></p>
+</li>
+<li><p>角定位</p>
+</li>
+</ul>
+<p><a href="https://www.cnblogs.com/lillylin/p/8495124.html" target="_blank" rel="noopener">基于角定位于区域分割</a></p>
+</li>
+<li><p>文本识别</p>
+<ul>
+<li><p>ASTER</p>
+<p><a href="https://github.com/bgshih/aster" target="_blank" rel="noopener">Github: ASTER</a></p>
+</li>
+</ul>
+</li>
+<li><p>TextSpotter</p>
+<ul>
+<li><p>Mask TextSpotter</p>
+<p><a href="https://www.jiqizhixin.com/articles/2018-08-24-12" target="_blank" rel="noopener">华科白翔教授团队ECCV2018 OCR论文：Mask TextSpotter</a></p>
+</li>
+</ul>
+</li>
+</ul>
 
       
     </div>
@@ -641,7 +713,7 @@ L_S&=\ {balanced-xent}(\dot Y,Y)\\
   <p><span>本文标题:</span><a href="/2019/01/23/深度学习-TextDetection/">深度学习-TextDetection</a></p>
   <p><span>文章作者:</span><a href="/" title="访问 ShiXiaofeng 的个人博客">ShiXiaofeng</a></p>
   <p><span>发布时间:</span>2019年01月23日 - 15:35</p>
-  <p><span>最后更新:</span>2019年01月24日 - 13:10</p>
+  <p><span>最后更新:</span>2019年01月27日 - 22:01</p>
   <p><span>原始链接:</span><a href="/2019/01/23/深度学习-TextDetection/" title="深度学习-TextDetection">http://xiaofengshi.com/2019/01/23/深度学习-TextDetection/</a>
     <span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://xiaofengshi.com/2019/01/23/深度学习-TextDetection/" aria-label="复制成功！"></i></span>
   </p>
@@ -866,7 +938,7 @@ L_S&=\ {balanced-xent}(\dot Y,Y)\\
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#CTPN-详解"><span class="nav-number">1.</span> <span class="nav-text">CTPN 详解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#代码分析"><span class="nav-number">1.1.</span> <span class="nav-text">代码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#网络模型"><span class="nav-number">1.1.1.</span> <span class="nav-text">网络模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#anchor生成及筛选"><span class="nav-number">1.1.2.</span> <span class="nav-text">anchor生成及筛选</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">1.2.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EAST"><span class="nav-number">2.</span> <span class="nav-text">EAST</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#论文关键idea"><span class="nav-number">2.1.</span> <span class="nav-text">论文关键idea</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pipeline"><span class="nav-number">2.2.</span> <span class="nav-text">Pipeline</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Loss计算"><span class="nav-number">2.3.</span> <span class="nav-text">Loss计算</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#CTPN-详解"><span class="nav-number">1.</span> <span class="nav-text">CTPN 详解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#代码分析"><span class="nav-number">1.1.</span> <span class="nav-text">代码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#网络模型"><span class="nav-number">1.1.1.</span> <span class="nav-text">网络模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#anchor生成及筛选"><span class="nav-number">1.1.2.</span> <span class="nav-text">anchor生成及筛选</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">1.2.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EAST"><span class="nav-number">2.</span> <span class="nav-text">EAST</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#论文关键idea"><span class="nav-number">2.1.</span> <span class="nav-text">论文关键idea</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pipeline"><span class="nav-number">2.2.</span> <span class="nav-text">Pipeline</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Loss计算"><span class="nav-number">2.3.</span> <span class="nav-text">Loss计算</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reference"><span class="nav-number">3.</span> <span class="nav-text">Reference</span></a></li></ol></div>
             
 
           </div>
