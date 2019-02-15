@@ -118,7 +118,7 @@
 <meta property="og:image" content="http://xiaofengshi.com/2018/11/12/深度学习-目标检测/yolov3_graphic.png">
 <meta property="og:image" content="http://xiaofengshi.com/2018/11/12/深度学习-目标检测/yolov3_model.jpg">
 <meta property="og:image" content="http://xiaofengshi.com/2018/11/12/深度学习-目标检测/Yolov3ImageGrid.png">
-<meta property="og:updated_time" content="2019-01-28T04:26:12.758Z">
+<meta property="og:updated_time" content="2019-01-28T04:26:12.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深度学习-目标检测">
 <meta name="twitter:description" content="目标检测为计算机视觉领域内的相关任务，输入一张图片，输出图片中物体所在位置及物体的名称。是一个典型的多任务模型。">
@@ -1003,32 +1003,16 @@ b_h&=(p_h \exp (t_h))/H
 </li>
 </ul>
 <h3 id="YOLOv3"><a href="#YOLOv3" class="headerlink" title="YOLOv3"></a>YOLOv3</h3><h4 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h4><ul>
-<li><p>Official</p>
-<ul>
-<li><a href="https://pjreddie.com/media/files/papers/YOLOv3.pdf" target="_blank" rel="noopener">Paper:YOLOv3: An Incremental Improvement</a></li>
-<li><a href="https://github.com/pjreddie/darknet" target="_blank" rel="noopener">official: darknet</a></li>
-</ul>
-</li>
-<li><p>Blog</p>
+<li><p>Train:PYTORCH_YOLO_V3](<a href="https://github.com/eriklindernoren/PyTorch-YOLOv3" target="_blank" rel="noopener">https://github.com/eriklindernoren/PyTorch-YOLOv3</a>)</p>
 <ul>
 <li><a href="https://blog.paperspace.com/how-to-implement-a-yolo-object-detector-in-pytorch/" target="_blank" rel="noopener">How to implement a YOLO (v3) object detector from scratch in PyTorch</a></li>
-<li><a href="https://towardsdatascience.com/yolo-v3-object-detection-53fb7d3bfe6b" target="_blank" rel="noopener">What’s new in YOLO v3?</a></li>
-</ul>
-</li>
-<li>Code<ul>
-<li>Detect<ul>
 <li><a href="https://github.com/ayooshkathuria/YOLO_v3_tutorial_from_scratch" target="_blank" rel="noopener">YOLO_v3_tutorial_from_scratch</a></li>
-<li><a href="https://github.com/ayooshkathuria/pytorch-yolo-v3" target="_blank" rel="noopener">A PyTorch implementation of a YOLO v3 Object Detector</a></li>
 </ul>
 </li>
-<li>Train<ul>
-<li><a href="https://github.com/eriklindernoren/PyTorch-YOLOv3" target="_blank" rel="noopener">PyTorch-YOLOv3</a></li>
 <li><a href="https://github.com/maiminh1996/YOLOv3-tensorflow" target="_blank" rel="noopener">Yolov3-tensorflow</a></li>
+<li><a href="https://towardsdatascience.com/yolo-v3-object-detection-53fb7d3bfe6b" target="_blank" rel="noopener">What’s new in YOLO v3?</a></li>
+<li><a href="https://github.com/ayooshkathuria/pytorch-yolo-v3" target="_blank" rel="noopener">A PyTorch implementation of a YOLO v3 Object Detector</a></li>
 <li><a href="https://github.com/qqwweee/keras-yolo3" target="_blank" rel="noopener">Keras_yolo_v3</a></li>
-</ul>
-</li>
-</ul>
-</li>
 </ul>
 <p>终于来到了<code>YOLOv3</code>，在<code>YOLOv3</code>中对于小目标的识别，提升是非常明显的，在此处盗图一张，来对比<code>YOLOv2</code>和<code>YOLOv3</code>，可以明显的看到，<code>YOLOv3</code>对小物体的识别提升</p>
 <hr>
@@ -1049,9 +1033,9 @@ b_h&=(p_h \exp (t_h))/H
 <li>多尺度特征使用的是FPN的思想；</li>
 <li>锚点聚类成了9类。</li>
 </ol>
-<p><hr><br><code>Yolov3</code>模型结构如下所示</p>
+<p><hr><br>yolov3模型结构如下所示</p>
 <img src="/2018/11/12/深度学习-目标检测/yolov3_graphic.png" title="Yolov3 Graphic">
-<p>对应的模型参数如下所示</p>
+<p>对应的模型参数如下</p>
 <img src="/2018/11/12/深度学习-目标检测/yolov3_model.jpg" title="YOLOv3_predict">
 <p>下面进行分点说明：</p>
 <ul>
@@ -1273,7 +1257,7 @@ b_h&=(p_h \exp (t_h))/H
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">15</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1295,7 +1279,7 @@ b_h&=(p_h \exp (t_h))/H
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-count">30</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

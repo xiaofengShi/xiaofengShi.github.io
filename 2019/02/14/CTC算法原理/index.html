@@ -1,0 +1,1571 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="https://cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+  
+
+<link href="https://cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/panda_32px.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/panda_16px.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="语音识别,不定长字符识别,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="挖掘机养成日记" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="本来以前深入看过CTC的相关论文，前段时间有人问我相关算法原理，瞬间懵逼，以前看过的东西愣是一点没记起来，这就很尴尬了，本人在ocr任务的文字识别中还用过相关的解码方式，一定要搞明白为什么这种方法是可行的。在这里对CTC进行分析和总结，还是验证是否掌握的最好方法就是看能否做到有效的输出，主要参考论文和相关讲解博客。 先上图">
+<meta name="keywords" content="语音识别,不定长字符识别">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CTC算法原理">
+<meta property="og:url" content="http://xiaofengshi.com/2019/02/14/CTC算法原理/index.html">
+<meta property="og:site_name" content="挖掘机养成日记">
+<meta property="og:description" content="本来以前深入看过CTC的相关论文，前段时间有人问我相关算法原理，瞬间懵逼，以前看过的东西愣是一点没记起来，这就很尴尬了，本人在ocr任务的文字识别中还用过相关的解码方式，一定要搞明白为什么这种方法是可行的。在这里对CTC进行分析和总结，还是验证是否掌握的最好方法就是看能否做到有效的输出，主要参考论文和相关讲解博客。 先上图">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://xiaofengshi.com/2019/02/14/CTC算法原理/CTC.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/02/14/CTC算法原理/nmt-model-fast.gif">
+<meta property="og:image" content="http://xiaofengshi.com/2019/02/14/CTC算法原理/mfcc_dnn_ctc.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/02/14/CTC算法原理/ctc_forward.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/02/14/CTC算法原理/recurrent_ctc_forward.jpg">
+<meta property="og:updated_time" content="2019-02-15T08:04:16.184Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CTC算法原理">
+<meta name="twitter:description" content="本来以前深入看过CTC的相关论文，前段时间有人问我相关算法原理，瞬间懵逼，以前看过的东西愣是一点没记起来，这就很尴尬了，本人在ocr任务的文字识别中还用过相关的解码方式，一定要搞明白为什么这种方法是可行的。在这里对CTC进行分析和总结，还是验证是否掌握的最好方法就是看能否做到有效的输出，主要参考论文和相关讲解博客。 先上图">
+<meta name="twitter:image" content="http://xiaofengshi.com/2019/02/14/CTC算法原理/CTC.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://xiaofengshi.com/2019/02/14/CTC算法原理/">
+
+
+
+
+
+  <title>CTC算法原理 | 挖掘机养成日记</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <!-- add fork me on github -->
+    <a href="https://github.com/xiaofengShi"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">挖掘机养成日记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>
+            
+            日程表
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-guestbook">
+          <a href="/guestbook/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-commenting"></i> <br>
+            
+            留言板
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2019/02/14/CTC算法原理/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ShiXiaofeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="挖掘机养成日记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">CTC算法原理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-14T10:47:32+08:00">
+                2019-02-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/深度学习/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/02/14/CTC算法原理/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/02/14/CTC算法原理/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2019/02/14/CTC算法原理/" class="leancloud_visitors" data-flag-title="CTC算法原理">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3k 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  11 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本来以前深入看过CTC的相关论文，前段时间有人问我相关算法原理，瞬间懵逼，以前看过的东西愣是一点没记起来，这就很尴尬了，本人在ocr任务的文字识别中还用过相关的解码方式，一定要搞明白为什么这种方法是可行的。在这里对CTC进行分析和总结，还是验证是否掌握的最好方法就是看能否做到有效的输出，主要参考论文和相关讲解博客。</p>
+<p>先上图</p>
+<img src="/2019/02/14/CTC算法原理/CTC.png" title="CTC对语音进行对齐与文本对齐方式比较">
+<a id="more"></a>
+<h2 id="NLP解码方式"><a href="#NLP解码方式" class="headerlink" title="NLP解码方式"></a>NLP解码方式</h2><p>在NLP相关任务中，如机器翻译，语音识别中，输入和输出均为序列，目前主要存在着两种模型架构方式，<strong>一种是基于seq2seq的模型框架（目前的主流方式），另一种是基于CTC的解码方式(方法更老一些，在一些任务重仍然在使用，语音识别，不定长文字识别等)。</strong></p>
+<hr>
+
+<ul>
+<li>Seq2seq</li>
+</ul>
+<img src="/2019/02/14/CTC算法原理/nmt-model-fast.gif" title="nmt-model">
+<p>如图中所示，对于seq2seq框架分为encoder和decoder，encoder部分对输入序列进行编码，decoder部分对编码之后的序列进行解码输出。使用seq2seq的方式可以解码输入序列和输出序列不一致的任务，并且不需要对训练数据的label进行对于，只需要保证长度一致即可，例如，输入的是一段语音，输出的是对应的文字，一般情况下输入的序列长度和输出的序列长度是不一样的，在seq2seq模型中，首先将输入的语音序列进行mfcc提取因素，之后进行编码，编码之后的序列长度和输入的序列长度相同；在传统的seq2seq中使用编码之后的最后一个时间步的隐藏层输出(认为该隐藏层中保存着输入序列的全部信息，显然对序列较长的情况下，会造成大量的信息丢失，因此也就有了之后的attention机制)作为decoder的初始输入，输出的序列长度由数据中的label的序列长度决定，这样就可以解决输入输出序列长度不同的情况，并且不需要对数据进行对齐，只需要知道输入的语音中对应的文字是什么，而不需要具体知道每个音节是什么。</p>
+<hr>
+
+<ul>
+<li>CTC</li>
+</ul>
+<p>另一种解码方式是基于CTC的解码策略，在没有提出CTC策略之前，对于语音识别任务，要对输入的语音和目标文本进行对齐，这就需要繁琐的特征工程。而CTC策略就是针对该任务提出的，不需要对输入的序列进行label对齐，将原来的单音节的正确率的计算转义到输出序列的正确率计算上，比较的是输入的序列数据经过神经网络之后得到的预测输出和真实的输出之间的差距。</p>
+<p><strong>此外有一点需要格外明确，CTC只能处理输出序列比输入序列短的任务</strong></p>
+<h2 id="CTC详解"><a href="#CTC详解" class="headerlink" title="CTC详解"></a>CTC详解</h2><h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><p>如下这些参数会在下面介绍中出现，再次先进行一下声明，本文中所用参数符号和论文一致。</p>
+<ul>
+<li><p>输入</p>
+<p>输入样本数据$x$</p>
+<p>输入样本数据$T$</p>
+</li>
+<li><p>输出集合</p>
+<p>$L​$正常的label</p>
+<p>$LL=L \cup \{blank \}$CTC输出的label全集</p>
+</li>
+<li><p>输出序列</p>
+<p>$\pi$输出的序列路径</p>
+<p>$I$输出的label序列</p>
+<p>$B$路径多对一映射关系，将不同的路径去除空格去除重复字符</p>
+</li>
+<li><p>概率说明</p>
+<p>$y_k^t$在时间步t输出k的概率</p>
+<p>$u_k^t$在时间步t的在节点k上神经网络的输出，满足关系式$y_k^t=\exp u_k^t$</p>
+<p>$p(\pi|x)= \prod_{t=1}^{T}y_{pi_t}^t$表示在输入数据为x的情况下输出路径$\pi$的概率</p>
+<p>$p(I|x)= \sum_{ \pi \in B^{-1}(I)} p(\pi |x)$表示输出label序列的概率是满足$B$变换条件的多条路径的概率之和</p>
+</li>
+<li><p>前向传播和后向传播</p>
+<p>$\alpha _t(s)$表示时刻t在节点s的前向概率值</p>
+<p>$\beta_t(s)$表示时刻t在节点s的后向概率值</p>
+</li>
+</ul>
+<p>在语音识别任务中，加入输入的序列为$x​$，对应的长度为$T​$，定义一个神经网络$N_\omega(x)​$来代表对输入数据的处理过程，实现对输入序列的特征提取和非线性变换，使用$y=N_\omega(x)​$表示神经网络经过softmax标准化之后的输出，认为$y_k^t​$表示在时间步t输出为$k​$的概率，对于$k​$属于整个字表和观察字符的并集中，使用$L​$表示整个字表，那么在CTC中在原字表基础上加入一个空格字符表示观察字符，由此，模型的字表为$LL=L \cup \{blank \}​$，满足关系式$k \in LL​$。</p>
+<p>对于输出的$y_k^t​$满足关系式$\sum _{t-1}^T y_k^t=1$，实际上此处使用的是softmax进行处理，由此可以认为$y_k^t​$表示的$k​$的概率，如下图所示。</p>
+<img src="/2019/02/14/CTC算法原理/mfcc_dnn_ctc.png" title="mfcc_dnn_ctc">
+<p>给定数据$x$，预测的序列为$\pi$，也就是在每个时间步预测的结果的连乘</p>
+<script type="math/tex; mode=display">
+p(\pi |x)= \prod_{t=1}^{T}y_{\pi_t}^t, \:\:\forall \pi \in LL^{T}</script><h3 id="路径-pi-和-B-变换"><a href="#路径-pi-和-B-变换" class="headerlink" title="路径$\pi$和$B$变换"></a>路径$\pi$和$B$变换</h3><p>使用$\pi$表示经过预测输出的序列，表示一条由$LL$中的元素组成的长度为$T$的路径，而对于$B$变换为一个多对一的映射函数，满足</p>
+<script type="math/tex; mode=display">
+B(a-ab-)=B(-aa--abb)=aab</script><p>将输入的字符串中的空格和重复字符删除来实现对输入数据的压缩，使用$I \in L^{\leq T}​$表示给定序列的label，<strong>对于模型的预测输出有很多种，同样输出路径经过B变换之后与给定label的路径同样很多，由此可以得到给定输入数据$x​$之后模型的预测输出与label一致的概率就等于所有满足经过B变换之后与给定label相同的可能路径的总和，</strong>满足如下关系式</p>
+<script type="math/tex; mode=display">
+p(I|x)=\sum_{\pi \in B^{-1}(I)}p(\pi |x)</script><p>其中$B^{-1}(I)$表示路径经过变化之后和给定的label一致，也就是满足$B(\pi)=I$</p>
+<p>假如给定的label为“nihao”,那么可能的路径为“nniihhaaaaaoooo”或者“nnnnniiiihhhaaaooo”路径的长度均为$T​$，这些路径经过$B​$变换之后都能变为给定的label也就是等于输入序列的长度。因此目标函数就应该是在给定输入序列的情况下输出满足B变换之后与给定的label相同所有序列的概率之和的最大值</p>
+<script type="math/tex; mode=display">
+\arg \max_{I \in L^{\leq T}}p(I|x)=\max \sum_{B( \pi)==label}p(\pi |x)</script><p>但是这里存在一个问题，那就是对于给定的label，那么满足B变换之后和给定label相同的可能的序列的数量实在是太多。输入序列的长度为$T​$，整个词表的大小为$L​$，当前label中包含的的label的数量为$n​$，那么可能的序列数量为$C_{T-1}^{n}​$，这么多的数量显然是无法计算的，并且随着输入序列的长度的增加，计算量指数级增加。</p>
+<h3 id="CTC模型的训练"><a href="#CTC模型的训练" class="headerlink" title="CTC模型的训练"></a>CTC模型的训练</h3><h4 id="forward前向预测过程"><a href="#forward前向预测过程" class="headerlink" title="forward前向预测过程"></a>forward前向预测过程</h4><p>为了保证模型能够进行训练，使用了动态规划的方法。引入一个变量$\alpha_{t}(s)​$表示从初始时刻到当前时刻$t​$所有可能的正向路径的概率之和(到当前时刻之前输出的序列经过B变换之后和给定的label之间是相同的)，公式如下</p>
+<script type="math/tex; mode=display">
+\alpha_{t}(s)=\sum_{\pi \in N^T，B(\pi _{1:t})=I_{1:s}} \prod _{t^{*}=1}^t y_{\pi _{t^*}}^{t^*}</script><p>这显然就是一个动态规划的问题，如果在时刻t的预测的字符为$s​$，那么在上一个时刻可能也是字符$s​$或者可能是$s-1​$的，也就是满足递归关系式，其中$s​$表示在label中的第$s​$个字符</p>
+<script type="math/tex; mode=display">
+\alpha_{t}(s)=\alpha_{t-1}(s)+\alpha_{t-1}(s-1)</script><p>在<code>CTC</code>处理中，对<code>label</code>进行了插入空格符的处理，在给定的<code>label</code>的前后及相邻字符之间插入空格符，新的label变为$\widetilde {I}​$，那么新的label为$\widetilde {I}​$的长度变为$2|I|+1​$。在预测阶段最先生成的字符只允许为空格(使用b表示)或者为原来label中的第一个字符，也就是</p>
+<script type="math/tex; mode=display">
+\begin{align}
+& \alpha_{1}(1)=y_b^1 \\
+& \alpha_{1}(2)=y_{I_{1}}^1 \\
+& \alpha_{1}(s)=0,\:\:\forall s>2
+\end{align}</script><p>整个生成过程为从左向右生成，最开始生成的字符是空格或者label的第一个字符，在其他时刻满足如下关系式</p>
+<script type="math/tex; mode=display">
+\begin{equation}
+
+\alpha_{t}(s)= \left\{
+\begin{array}{}
+& [{\alpha}_{t-1}(s)+\alpha_{t-1}(s-1)] y_{\widetilde {I}_s}^t  & if \:\:\:\widetilde {I}_s=blank \:\:\: or \:\:\: \widetilde {I}_{s-2}=\widetilde {I}_s  \\
+& [({\alpha}_{t-1}(s)+\alpha_{t-1}(s-1)+\alpha_{t-1}(s-2)]y_{\widetilde {I}_s}^t & otherwise
+\end{array}
+\right. 
+
+\end{equation}</script><img src="/2019/02/14/CTC算法原理/ctc_forward.png" title="CTC_FORWARD">
+<p>对上面的公式进行说明：</p>
+<p>由于对原始的label进行了插入空格的处理，例如原始为“abbd”，经过处理之后变成了“-a-b-b-d-”，label发生了变化，在计算$\alpha_t(s)$时，对于时刻$t$取到新的label中第s个字符的计算要进行特殊处理，如果第s个字符是空格，或者当前字符s和s-2字符相等，那么当前$t$取到字符s，以为这上一个时刻只能取到字符s或者s-1，也就对应着方程组中第一个式子，比如对于例子中的字符，当在时刻t取到字符第二个b的时候，那么上个时刻可能取到b之前的一个空格，或者当前的第2个b，只有这样，经过B变换，才能得到“bb”这样的输出；如果t时刻取到了空格字符，那么上一个时刻只能取到前一个字符或者当前同样位置的空格；</p>
+<p>当然也存在另外的情况，那就是当前时刻取到的不是空格字符并且当前字符s也不和s-2相同，那么在时刻$t$取到字符$s$,在上一个时刻可能取到$s,s-1,s-2$中的三种可能，同样根据例子说明，如果当前时刻取到的既不是空格字符，也不满足$I_s==I_{S-2}$，在例子中，可以看成在时刻t取到字符“d”那么上一课时刻可能取到的是当前位置的“d”，也有可能是上一位的空格字符，也有可能是再上一位的“b”，也就是对应着公式中的第二种情况</p>
+<p>在前向过程中，传播过程如图所示</p>
+<img src="/2019/02/14/CTC算法原理/recurrent_ctc_forward.jpg" title="ctc_forward_recurrent">
+<p>红色线所示为第一种的情况，黑色线所示为第二种情况。经过上面所述的前向传播迭代，最终可以得到在给定输入数据x的情况下得到目标label序列的概率，也就是</p>
+<script type="math/tex; mode=display">
+p(I|x)=\alpha_T(|\widetilde{I}|)+\alpha_T(|\widetilde{I}|-1)</script><p>也就是在最后的时间步$T$，预测的只能是$\widetilde {I}$中的最后一个字符（空格符）或倒数第二个字符（真实字符）。</p>
+<h4 id="反向传播"><a href="#反向传播" class="headerlink" title="反向传播"></a>反向传播</h4><p>和前向传播过程相同，将箭头反转就可以得到ctc的反向传播过程，同样定义$\beta_t(s)$表示在时刻$t​$，预测序列取到的字符为label中第s个字符的概率</p>
+<script type="math/tex; mode=display">
+\beta_{t}(s)=\sum_{\pi \in N^T，B(\pi _{t:T})=I_{s:|I|}} \prod _{t^{*}=t}^T y_{\pi _{t^*}}^{t^*}</script><p>那么存在的递归关系式实际上和前向过程相同，就是讲$t-1$改变成$t+1$即可。公式如下所示</p>
+<script type="math/tex; mode=display">
+\begin{align}
+& \beta_{T}(|\widetilde {I}|)=y_b^T \\
+& \beta_{T}(|\widetilde {I}|-1)=y_{I_{|I|}}^T \\
+& \beta_{T}(s)=0,\:\:\forall s<|\widetilde {I}|-1
+\end{align}</script><script type="math/tex; mode=display">
+\begin{equation}
+
+\beta_{t}(s)= \left\{
+\begin{array}{}
+& [{\beta}_{t+1}(s)+\beta_{t+1}(s+1)] y_{\widetilde {I}_s}^t  & if \:\:\:\widetilde {I}_s=blank \:\:\: or \:\:\: \widetilde {I}_{s+2}=\widetilde {I}_s  \\
+& [({\beta}_{t+1}(s)+\beta_{t+1}(s+1)+\beta_{t+1}(s+2)]y_{\widetilde {I}_s}^t & otherwise
+\end{array}
+\right. 
+
+\end{equation}</script><h4 id="存在的问题"><a href="#存在的问题" class="headerlink" title="存在的问题"></a>存在的问题</h4><p>由于序列预测过程中，按照上述的递归过程，每个时间步上对结果的预测时基于上一步预测的结果，<strong>为了求得序列的概率，因此这就是一个概率连乘的情形，非常多个小于1的数相乘，在计算时很容易造成数据下溢，导致无法计算。</strong>在论文中提出的解决方式是，在每个时刻t预测得到$\alpha_t(s)$之后进行尺度缩放，将当前时刻能够取到的所有$\alpha_t(s)$求和作为当前时刻取得的所有序列的概率之和，之后再当前时刻得到的每个$\alpha_t(s)$与和概率作比作为下一层的概率进行写一个时刻的迭代</p>
+<script type="math/tex; mode=display">
+\begin{align}
+&\C_t=\sum_s\alpha_t(s)\\
+& \hat {\alpha}_t(s)=\frac{\alpha_t(s)}{\C_t}
+\end{align}</script><p>其中$\hat {\alpha}_t(s)$代表经过缩放之后进行下一时刻传递计算的概率</p>
+<p>加入在时间步t预测的字符包含$s,s-1,s-2$三种</p>
+<script type="math/tex; mode=display">
+\begin{align}
+& \alpha_t(s)=0.05 \\
+& \alpha_t(s-1)=0.03 \\
+& \alpha_t(s-2)=0.08 \\
+\end{align}</script><p>因为概率是从上一步基于上面所述的正向传播的传递方式传递过来的，因此概率值会非常小，在此处对得到的概率进行缩放，但是并不影响当前时间步预测的不同字符之间的相对概率的大小（因为在此处的概率的变化是线性的），因此对后续时间步的计算不会产生负面影响。</p>
+<p>对反向传播进行同样的缩放</p>
+<script type="math/tex; mode=display">
+\begin{align}
+& D_t=\sum_{s}\beta_t(s) \\
+& \hat{\beta}_{t}(s)=\frac{\beta_t(s)}{D_t}
+\end{align}</script><h3 id="优化目标"><a href="#优化目标" class="headerlink" title="优化目标"></a>优化目标</h3><p>在训练的过程的优化目标就是最大化似然估计，对于给定的输入数据为$x$，得到的预测序列经过B变换之后与标准label相同的概率，使用最大似然估计的方法得到优化目标</p>
+<script type="math/tex; mode=display">
+L(S)=\sum_{(x,z) \in S}L(x,z)</script><p>其中$S$对应着整个训练集，$x$输入的样本，$z$为对应的label</p>
+<p>针对每个样本，对于给定样本$x$，输出数据与label相等的概率为</p>
+<script type="math/tex; mode=display">
+L(x,z)=- \ln p(z|x)</script><p>使用对数似然是为了将概率连乘变为连加。</p>
+<p>在分析前向传播和后向传播是，定义了两个表示在时间步序列概率的式子$\alpha_{t}(s)$和$\beta_{t}(s)$，对两个式子进行相乘即可表示整个序列的概率</p>
+<script type="math/tex; mode=display">
+\alpha_{t}(s)\beta_{t}(s)=\sum_{\pi \in N^T，B(\pi)=I} y_{\widetilde{I}_{s}}^t \prod _{t=1}^T y_{\pi _{t}}^{t}</script><p>表示预测的输出序列经过B变换之后和给定的label相同的概率之和</p>
+<p>由于存在关系式</p>
+<script type="math/tex; mode=display">
+p(\pi |x)= \prod_{t=1}^{T}y_{\pi_t}^t, \:\:\forall \pi \in LL^{T}</script><p>因此对上面的式子进行整理可以得到如下</p>
+<script type="math/tex; mode=display">
+\begin{align}
+& \alpha_{t}(s)\beta_{t}(s) = & \sum_{\pi \in N^T，B(\pi)=I} y_{\widetilde{I}_{s}}^t \prod _{t=1}^T y_{\pi _{t}}^{t} \\
+& \frac{\alpha_{t}(s)\beta_{t}(s)}{y_{\widetilde{I}_{s}}^t}  = &\sum_{\pi \in N^T，B(\pi)=I}  \prod _{t=1}^T y_{\pi _{t}}^{t} \\
+\because & & p(\pi |x)= \prod_{t=1}^{T}y_{\pi_t}^t \\
+\therefore  &\frac{\alpha_{t}(s)\beta_{t}(s)}{y_{\widetilde{I}_{s}}^t} =  & \sum_{\pi \in N^T，B(\pi)=I} p(\pi |x) 
+\end{align}</script><p>有因为存在着</p>
+<script type="math/tex; mode=display">
+p(I|x)=\sum_{\pi \in B^{-1}(I)}p(\pi |x)</script><p>可以得到</p>
+<script type="math/tex; mode=display">
+p(I|x)=\sum_{s=1}^{|\widetilde {I}|}\frac{\alpha_{t}(s)\beta_{t}(s)}{y_{\widetilde{I}_{s}}^t}</script><p>上式就对应着优化目标，只考虑在时刻t经过节点k的路径，对上式求偏导</p>
+<script type="math/tex; mode=display">
+\frac{\partial p(I|x)}{\partial y_k^t}=\frac{1}{(y_k^t)^2} \sum _{s \in label(1,k)} \alpha_t(s)\beta_t(s)</script><h3 id="误差反向传播"><a href="#误差反向传播" class="headerlink" title="误差反向传播"></a>误差反向传播</h3><p>整理前面部分的优化目标</p>
+<script type="math/tex; mode=display">
+\begin{align}
+& L(S)=\sum_{(x,z) \in S}L(x,z)= \sum_{(x,z) \in S} - \ln p(z|x) \\
+\Rightarrow & \frac{\partial L(S)}{\partial y_k^t} = -\frac{\partial \ln(p(z|x))}{\partial y_k^t}=-\frac{1}{p(I|x)} \frac{\partial p(I|x)}{\partial y_k^t} \\
+& =-\frac{1}{p(I|x)} \frac{1}{(y_k^t)^2} \sum _{s \in label(1,k)} \alpha_t(s)\beta_t(s) \\
+& = -\frac{1}{\sum_{s=1}^{|\widetilde {I}|}\frac{\alpha_{t}(s)\beta_{t}(s)}{y_{\widetilde{I}_{s}}^t}} \frac{1}{(y_k^t)^2} \sum _{s \in label(1,k)} \alpha_t(s)\beta_t(s) 
+
+\end{align}</script><p>因为在此处$y_k^t$对应的是在时刻t输出为k的概率，是根据神经网络的输出经过softmax变换之后得到的概率值，这是一个固定变换，没有学习参数需要反向更新，假设神经网络的输出为$u_k^t$，则存在着变换关系式</p>
+<script type="math/tex; mode=display">
+y_k^t=\exp {u_k^t}</script><p>因此对上面的优化目标进行再次整理为</p>
+<script type="math/tex; mode=display">
+\begin{align}
+\frac{\partial L(S)}{\partial u_k^t} & =\frac{\partial L(S)}{\partial y_k^t}  \frac{\partial y_k^t}{\partial u_k^t} =y_k^t \frac{\partial L(S)}{\partial y_k^t} \\
+&= - y_k^t \frac{1}{\sum_{s=1}^{|\widetilde {I}|}\frac{\alpha_{t}(s)\beta_{t}(s)}{y_{\widetilde{I}_{s}}^t}} \frac{1}{(y_k^t)^2} \sum _{s \in label(1,k)} \alpha_t(s)\beta_t(s)  \\
+& = -\frac{1}{\sum_{s=1}^{|\widetilde {I}|}\frac{\alpha_{t}(s)\beta_{t}(s)}{y_{\widetilde{I}_{s}}^t}} \frac{1}{y_k^t} \sum _{s \in label(1,k)} \alpha_t(s)\beta_t(s) 
+\end{align}</script><p>由此得到在训练的时候每一步对参数的更新，此时的$u_k^t$对应着神经网络的输出，对于之后的网络使用BPTT或者BP进行更新</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
+<li><a href="https://distill.pub/2017/ctc/" target="_blank" rel="noopener">Sequence ModelingWith CTC</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+        
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>知识分享，方便你我-------------</div>
+    
+</div>
+
+        
+      </div>
+
+    
+    
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2019/02/14/CTC算法原理/">CTC算法原理</a></p>
+  <p><span>文章作者:</span><a href="/" title="访问 ShiXiaofeng 的个人博客">ShiXiaofeng</a></p>
+  <p><span>发布时间:</span>2019年02月14日 - 10:47</p>
+  <p><span>最后更新:</span>2019年02月15日 - 16:04</p>
+  <p><span>原始链接:</span><a href="/2019/02/14/CTC算法原理/" title="CTC算法原理">http://xiaofengshi.com/2019/02/14/CTC算法原理/</a>
+    <span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://xiaofengshi.com/2019/02/14/CTC算法原理/" aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+    $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	});
+    });  
+</script>
+
+
+    
+    
+
+    
+
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/语音识别/" rel="tag"><i class="fa fa-tag"></i> 语音识别</a>
+          
+            <a href="/tags/不定长字符识别/" rel="tag"><i class="fa fa-tag"></i> 不定长字符识别</a>
+          
+        </div>
+      
+
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/25/Boosting-And-Bagging/" rel="next" title="Boosting_And_Bagging">
+                <i class="fa fa-chevron-left"></i> Boosting_And_Bagging
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="ShiXiaofeng">
+            
+              <p class="site-author-name" itemprop="name">ShiXiaofeng</p>
+              <p class="site-description motion-element" itemprop="description">数据挖掘，机器学习，深度学习相关技术分享及记录</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/xiaofengShi" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:yourname@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#NLP解码方式"><span class="nav-number">1.</span> <span class="nav-text">NLP解码方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CTC详解"><span class="nav-number">2.</span> <span class="nav-text">CTC详解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参数说明"><span class="nav-number">2.1.</span> <span class="nav-text">参数说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#路径-pi-和-B-变换"><span class="nav-number">2.2.</span> <span class="nav-text">路径$\pi$和$B$变换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CTC模型的训练"><span class="nav-number">2.3.</span> <span class="nav-text">CTC模型的训练</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#forward前向预测过程"><span class="nav-number">2.3.1.</span> <span class="nav-text">forward前向预测过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#反向传播"><span class="nav-number">2.3.2.</span> <span class="nav-text">反向传播</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#存在的问题"><span class="nav-number">2.3.3.</span> <span class="nav-text">存在的问题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优化目标"><span class="nav-number">2.4.</span> <span class="nav-text">优化目标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#误差反向传播"><span class="nav-number">2.5.</span> <span class="nav-text">误差反向传播</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">3.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ShiXiaofeng</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="https://cdn.bootcss.com/velocity/1.2.1/velocity.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="https://cdn.bootcss.com/velocity/1.2.1/velocity.ui.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="https://cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz',
+        appKey: 'zJasiQnAqgUwf4kiHhHyXwOP',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz", "zJasiQnAqgUwf4kiHhHyXwOP");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+  <!-- 代码块复制功能 -->
+  <script type="text/javascript" src="/js/src/clipboard.min.js"></script>
+  <script type="text/javascript" src="/js/src/clipboard-use.js"></script>
+
+</body>
+</html>
