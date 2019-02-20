@@ -2,7 +2,10 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>http://xiaofengshi.com/2019/02/15/Transformer-Attention_is_all_you_need/</loc>
-    <lastmod>2019-02-20T05:09:37.348Z</lastmod>
+    <lastmod>2019-02-20T06:23:52.657Z</lastmod>
+  </url>  <url>
+    <loc>http://xiaofengshi.com/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/</loc>
+    <lastmod>2019-02-20T06:04:35.830Z</lastmod>
   </url>  <url>
     <loc>http://xiaofengshi.com/2019/02/14/CTC%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/</loc>
     <lastmod>2019-02-20T04:20:46.611Z</lastmod>
@@ -36,9 +39,6 @@
   </url>  <url>
     <loc>http://xiaofengshi.com/2018/11/11/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-SVM/</loc>
     <lastmod>2019-01-11T03:02:13.094Z</lastmod>
-  </url>  <url>
-    <loc>http://xiaofengshi.com/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/</loc>
-    <lastmod>2018-12-29T04:16:09.809Z</lastmod>
   </url>  <url>
     <loc>http://xiaofengshi.com/2018/11/09/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%81%9A%E7%B1%BB/</loc>
     <lastmod>2018-11-25T13:19:25.000Z</lastmod>
