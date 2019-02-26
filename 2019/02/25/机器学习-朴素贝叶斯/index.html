@@ -85,20 +85,21 @@
 
 
 
-<meta name="description" content="朴素贝叶斯从是基于贝叶斯定理和条件独立性假设的一种分类器，对于给定的数据，基于条件独立性假设学习输入和输出的联合概率分布，然后根据给定的输入数据利用贝叶斯定理求解最大的后验概率的的输出类别，是一种非常常见的分类算法。 对于贝叶斯定理，实际上就是求解条件概率的方法  P(A | B)=\frac{P(B | A)P(A)}{P(B)}$P(A)$就是先验概率，是事件A发生之前事件B发生的概率 $P(">
+<meta name="description" content="朴素贝叶斯从是基于贝叶斯定理和条件独立性假设的一种分类器，是一种基于概率统计的分类方法。对于给定的数据，基于条件独立性假设学习输入和输出的联合概率分布，然后根据给定的输入数据利用贝叶斯定理求解最大的后验概率的的输出类别，是一种非常常见的分类算法。 对于贝叶斯定理，实际上就是求解条件概率的方法  P(A | B)=\frac{P(B | A)P(A)}{P(B)}$P(A)​$就是先验概率，是事件A">
 <meta name="keywords" content="机器学习,朴素贝叶斯">
 <meta property="og:type" content="article">
 <meta property="og:title" content="机器学习-朴素贝叶斯">
 <meta property="og:url" content="http://xiaofengshi.com/2019/02/25/机器学习-朴素贝叶斯/index.html">
 <meta property="og:site_name" content="挖掘机养成日记">
-<meta property="og:description" content="朴素贝叶斯从是基于贝叶斯定理和条件独立性假设的一种分类器，对于给定的数据，基于条件独立性假设学习输入和输出的联合概率分布，然后根据给定的输入数据利用贝叶斯定理求解最大的后验概率的的输出类别，是一种非常常见的分类算法。 对于贝叶斯定理，实际上就是求解条件概率的方法  P(A | B)=\frac{P(B | A)P(A)}{P(B)}$P(A)$就是先验概率，是事件A发生之前事件B发生的概率 $P(">
+<meta property="og:description" content="朴素贝叶斯从是基于贝叶斯定理和条件独立性假设的一种分类器，是一种基于概率统计的分类方法。对于给定的数据，基于条件独立性假设学习输入和输出的联合概率分布，然后根据给定的输入数据利用贝叶斯定理求解最大的后验概率的的输出类别，是一种非常常见的分类算法。 对于贝叶斯定理，实际上就是求解条件概率的方法  P(A | B)=\frac{P(B | A)P(A)}{P(B)}$P(A)​$就是先验概率，是事件A">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://xiaofengshi.com/2019/02/25/机器学习-朴素贝叶斯/Probability_distributions.png">
 <meta property="og:image" content="http://xiaofengshi.com/2019/02/25/机器学习-朴素贝叶斯/bayes_example.png">
-<meta property="og:updated_time" content="2019-02-25T10:08:30.698Z">
+<meta property="og:image" content="http://xiaofengshi.com/2019/02/25/机器学习-朴素贝叶斯/curves.png">
+<meta property="og:updated_time" content="2019-02-26T03:29:14.251Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="机器学习-朴素贝叶斯">
-<meta name="twitter:description" content="朴素贝叶斯从是基于贝叶斯定理和条件独立性假设的一种分类器，对于给定的数据，基于条件独立性假设学习输入和输出的联合概率分布，然后根据给定的输入数据利用贝叶斯定理求解最大的后验概率的的输出类别，是一种非常常见的分类算法。 对于贝叶斯定理，实际上就是求解条件概率的方法  P(A | B)=\frac{P(B | A)P(A)}{P(B)}$P(A)$就是先验概率，是事件A发生之前事件B发生的概率 $P(">
+<meta name="twitter:description" content="朴素贝叶斯从是基于贝叶斯定理和条件独立性假设的一种分类器，是一种基于概率统计的分类方法。对于给定的数据，基于条件独立性假设学习输入和输出的联合概率分布，然后根据给定的输入数据利用贝叶斯定理求解最大的后验概率的的输出类别，是一种非常常见的分类算法。 对于贝叶斯定理，实际上就是求解条件概率的方法  P(A | B)=\frac{P(B | A)P(A)}{P(B)}$P(A)​$就是先验概率，是事件A">
 <meta name="twitter:image" content="http://xiaofengshi.com/2019/02/25/机器学习-朴素贝叶斯/Probability_distributions.png">
 
 
@@ -441,7 +442,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  2.5k 字
+                  3.2k 字
                 </span>
               
 
@@ -457,7 +458,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  11 分钟
+                  13 分钟
                 </span>
               
             </div>
@@ -478,11 +479,11 @@
       
 
       
-        <p>朴素贝叶斯从是基于贝叶斯定理和条件独立性假设的一种分类器，对于给定的数据，基于条件独立性假设学习输入和输出的联合概率分布，然后根据给定的输入数据利用贝叶斯定理求解最大的后验概率的的输出类别，是一种非常常见的分类算法。</p>
+        <p>朴素贝叶斯从是基于贝叶斯定理和条件独立性假设的一种分类器，是一种基于概率统计的分类方法。对于给定的数据，基于条件独立性假设学习输入和输出的联合概率分布，然后根据给定的输入数据利用贝叶斯定理求解最大的后验概率的的输出类别，是一种非常常见的分类算法。</p>
 <p>对于贝叶斯定理，实际上就是求解条件概率的方法</p>
 <script type="math/tex; mode=display">
-P(A | B)=\frac{P(B | A)P(A)}{P(B)}</script><p>$P(A)$就是先验概率，是事件A发生之前事件B发生的概率</p>
-<p>$P(A|B)​$是后验概率，是事件B发生以后发生事件A的概率，也是条件概率</p>
+P(A | B)=\frac{P(B | A)P(A)}{P(B)}</script><p>$P(A)​$就是先验概率，是事件A发生之前事件B发生的概率</p>
+<p>$P(A|B)$是后验概率，是事件B发生以后发生事件A的概率，也是条件概率</p>
 <a id="more"></a>
 <h2 id="概率论相关知识"><a href="#概率论相关知识" class="headerlink" title="概率论相关知识"></a>概率论相关知识</h2><p>$P(A)​$事件A发生的概率</p>
 <p>$P(B)​$事件B发生的概率</p>
@@ -575,6 +576,50 @@ P\left(Y=c_{k} | X=x\right)=\arg \max _{c_{k}} P\left(Y=c_{k}\right) \prod_{j} P
 P(Y=-1) P\left(X^{(1)}=2 | Y=-1\right) P\left(X^{(2)}=S | Y=-1\right)=\frac{6}{15} \cdot \frac{2}{6} \cdot \frac{3}{6}=\frac{1}{15}</script><p>给定样本属于$1$的概率</p>
 <script type="math/tex; mode=display">
 P(Y=1) P\left(X^{(1)}=2 | Y=1\right) P\left(X^{(2)}=S | Y=1\right)=\frac{9}{15} \cdot \frac{3}{9} \cdot \frac{1}{9}=\frac{1}{45}</script><p>取最大的后验概率作为当前样本类别的输出，也就是$y=-1$。</p>
+<h2 id="朴素贝叶斯处理离散数据"><a href="#朴素贝叶斯处理离散数据" class="headerlink" title="朴素贝叶斯处理离散数据"></a>朴素贝叶斯处理离散数据</h2><p>对于朴素贝叶斯，一般处理的是离散数据，就想上述例子所示，或者文本分类中将句子转化成词语，也是离散值。但是如果数据中给定的数据是一种连续值，有两种方法将数据转化为离散值，以便使用朴素贝叶斯分类器。</p>
+<ul>
+<li>设置阈值范围，将不同范围内的连续值划分为不同的类别</li>
+<li>使用连续随机变量的概率密度函数，将数值转换为概率</li>
+</ul>
+<h3 id="概率密度函数，概率质量函数"><a href="#概率密度函数，概率质量函数" class="headerlink" title="概率密度函数，概率质量函数"></a>概率密度函数，概率质量函数</h3><p>概率分布（probability distribution）用来描述随机变量或一簇随机变量在每一个可能取到的状态的可能性大小。描述概率分布的方式取决于随机变量是离散的还是连续的。</p>
+<ul>
+<li><p>概率质量函数</p>
+<p>对于离散型随机变量，使用概率质量函数(probability mass function, PMF)来描述，必须满足以下条件</p>
+<ul>
+<li>函数的定义域必须是随机变量所有可能状态的集合</li>
+<li>满足条件$\forall x \in \mathrm{x}, 0 \leq P(x) \leq 1​$</li>
+<li>归一化要求$\sum_{x \in \mathrm{x}} P(x)=1$</li>
+</ul>
+</li>
+<li><p>概率密度函数</p>
+<p>对于连续随机变量，使用概率密度函数(probability density function, PDF)来描述，必须满足一下条件</p>
+<ul>
+<li>函数的定义域必须是随机变量所有可能状态的集合</li>
+<li>满足条件$\forall x \in \mathrm{x}, p(x) \geq 0$，并不要求$p(x) \leq 1$</li>
+<li>归一化要求$\int p(x) d x=1$</li>
+</ul>
+</li>
+</ul>
+<h3 id="常用分布函数"><a href="#常用分布函数" class="headerlink" title="常用分布函数"></a>常用分布函数</h3><ul>
+<li><p>Bernoulli分布</p>
+<script type="math/tex; mode=display">
+\begin{array}{c}{P(\mathrm{x}=1)=\phi} \\ {P(\mathrm{x}=0)=1-\phi} \\ {P(\mathrm{x}=x)=\phi^{x}(1-\phi)^{1-x}} \\ {\mathbb{E}_{\mathrm{x}}[\mathrm{x}]=\phi} \\ {\operatorname{Var}_{\mathrm{x}}(\mathrm{x})=\phi(1-\phi)}\end{array}</script></li>
+<li><p>高斯分布/正态分布</p>
+<script type="math/tex; mode=display">
+\mathcal{N}\left(x ; \mu, \sigma^{2}\right)=\sqrt{\frac{1}{2 \pi \sigma^{2}}} \exp \left(-\frac{1}{2 \sigma^{2}}(x-\mu)^{2}\right)</script></li>
+<li><p>指数分布</p>
+<script type="math/tex; mode=display">
+p(x ; \lambda)=\lambda \mathbf{1}_{x \geq 0} \exp (-\lambda x)</script><p>$\mathbf{1}_{x \geq 0}$用来指示当$x&lt;0$时概率为零</p>
+</li>
+<li><p>Laplace分布</p>
+<script type="math/tex; mode=display">
+\operatorname{Laplace}(x ; \mu, \gamma)=\frac{1}{2 \gamma} \exp \left(-\frac{|x-\mu|}{\gamma}\right)</script></li>
+</ul>
+<img src="/2019/02/25/机器学习-朴素贝叶斯/curves.png" title="概率分布曲线指数分布和laplace分布">
+<h3 id="高斯分布"><a href="#高斯分布" class="headerlink" title="高斯分布"></a>高斯分布</h3><p>承接上文，如果数据是连续的，那么使用概率密度函数，将数值转换为概率，高斯分布是在自然场景中最常用的分布，比如人的身高，学习成绩排名等等</p>
+<script type="math/tex; mode=display">
+\mathcal{N}\left(x ; \mu, \sigma^{2}\right)=\sqrt{\frac{1}{2 \pi \sigma^{2}}} \exp \left(-\frac{1}{2 \sigma^{2}}(x-\mu)^{2}\right)</script><p>其中$\mu$为数据的期望，$\sigma$为数据的标准差。</p>
+<p>可以先统计数据数据得到高斯分布的函数的参数，之后将要求解的概率带入概率密度函数中，计算其相对概率。</p>
 
       
     </div>
@@ -605,7 +650,7 @@ P(Y=1) P\left(X^{(1)}=2 | Y=1\right) P\left(X^{(2)}=S | Y=1\right)=\frac{9}{15} 
   <p><span>本文标题:</span><a href="/2019/02/25/机器学习-朴素贝叶斯/">机器学习-朴素贝叶斯</a></p>
   <p><span>文章作者:</span><a href="/" title="访问 ShiXiaofeng 的个人博客">ShiXiaofeng</a></p>
   <p><span>发布时间:</span>2019年02月25日 - 15:22</p>
-  <p><span>最后更新:</span>2019年02月25日 - 18:08</p>
+  <p><span>最后更新:</span>2019年02月26日 - 11:29</p>
   <p><span>原始链接:</span><a href="/2019/02/25/机器学习-朴素贝叶斯/" title="机器学习-朴素贝叶斯">http://xiaofengshi.com/2019/02/25/机器学习-朴素贝叶斯/</a>
     <span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://xiaofengshi.com/2019/02/25/机器学习-朴素贝叶斯/" aria-label="复制成功！"></i></span>
   </p>
@@ -824,7 +869,7 @@ P(Y=1) P\left(X^{(1)}=2 | Y=1\right) P\left(X^{(2)}=S | Y=1\right)=\frac{9}{15} 
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概率论相关知识"><span class="nav-number">1.</span> <span class="nav-text">概率论相关知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#朴素贝叶斯分类器的推导"><span class="nav-number">2.</span> <span class="nav-text">朴素贝叶斯分类器的推导</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#贝叶斯定理及分类器优化目标"><span class="nav-number">2.1.</span> <span class="nav-text">贝叶斯定理及分类器优化目标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最大化后验概率"><span class="nav-number">2.2.</span> <span class="nav-text">最大化后验概率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#贝叶斯估计的参数求解"><span class="nav-number">2.3.</span> <span class="nav-text">贝叶斯估计的参数求解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#贝叶斯估计示例"><span class="nav-number">3.</span> <span class="nav-text">贝叶斯估计示例</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概率论相关知识"><span class="nav-number">1.</span> <span class="nav-text">概率论相关知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#朴素贝叶斯分类器的推导"><span class="nav-number">2.</span> <span class="nav-text">朴素贝叶斯分类器的推导</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#贝叶斯定理及分类器优化目标"><span class="nav-number">2.1.</span> <span class="nav-text">贝叶斯定理及分类器优化目标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最大化后验概率"><span class="nav-number">2.2.</span> <span class="nav-text">最大化后验概率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#贝叶斯估计的参数求解"><span class="nav-number">2.3.</span> <span class="nav-text">贝叶斯估计的参数求解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#贝叶斯估计示例"><span class="nav-number">3.</span> <span class="nav-text">贝叶斯估计示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#朴素贝叶斯处理离散数据"><span class="nav-number">4.</span> <span class="nav-text">朴素贝叶斯处理离散数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#概率密度函数，概率质量函数"><span class="nav-number">4.1.</span> <span class="nav-text">概率密度函数，概率质量函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常用分布函数"><span class="nav-number">4.2.</span> <span class="nav-text">常用分布函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#高斯分布"><span class="nav-number">4.3.</span> <span class="nav-text">高斯分布</span></a></li></ol></li></ol></div>
             
 
           </div>

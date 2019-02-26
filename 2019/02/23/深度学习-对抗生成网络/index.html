@@ -1,48 +1,1099 @@
-<!DOCTYPE html><html class="theme-next pisces use-motion" lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta name="theme-color" content="#222"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link href="https://cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css"><link href="https://cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css"><link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css"><link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4"><link rel="icon" type="image/png" sizes="32x32" href="/images/panda_32px.png?v=5.1.4"><link rel="icon" type="image/png" sizes="16x16" href="/images/panda_16px.png?v=5.1.4"><link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222"><meta name="keywords" content="深度学习,Gan,"><link rel="alternate" href="/atom.xml" title="挖掘机养成日记" type="application/atom+xml"><meta name="description" content="GAN的思想是是一种二人零和博弈思想（two-player game），博弈双方的利益之和是一个常数，比如两个人掰手腕，假设总的空间是一定的，你的力气大一点，那你就得到的空间多一点，相应的我的空间就少一点，相反我力气大我就得到的多一点，但有一点是确定的就是，我两的总空间是一定的，这就是二人博弈，但是总利益是一定的。 引申到GAN里面就是可以看成，GAN中有两个这样的博弈者，一个人名字是生成模型（G"><meta name="keywords" content="深度学习,Gan"><meta property="og:type" content="article"><meta property="og:title" content="深度学习-对抗生成网络"><meta property="og:url" content="http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/index.html"><meta property="og:site_name" content="挖掘机养成日记"><meta property="og:description" content="GAN的思想是是一种二人零和博弈思想（two-player game），博弈双方的利益之和是一个常数，比如两个人掰手腕，假设总的空间是一定的，你的力气大一点，那你就得到的空间多一点，相应的我的空间就少一点，相反我力气大我就得到的多一点，但有一点是确定的就是，我两的总空间是一定的，这就是二人博弈，但是总利益是一定的。 引申到GAN里面就是可以看成，GAN中有两个这样的博弈者，一个人名字是生成模型（G"><meta property="og:locale" content="zh-Hans"><meta property="og:image" content="http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/gans.jpg"><meta property="og:image" content="http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/dis_curve.png"><meta property="og:image" content="http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/unet.png"><meta property="og:updated_time" content="2019-02-25T07:22:22.086Z"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="深度学习-对抗生成网络"><meta name="twitter:description" content="GAN的思想是是一种二人零和博弈思想（two-player game），博弈双方的利益之和是一个常数，比如两个人掰手腕，假设总的空间是一定的，你的力气大一点，那你就得到的空间多一点，相应的我的空间就少一点，相反我力气大我就得到的多一点，但有一点是确定的就是，我两的总空间是一定的，这就是二人博弈，但是总利益是一定的。 引申到GAN里面就是可以看成，GAN中有两个这样的博弈者，一个人名字是生成模型（G"><meta name="twitter:image" content="http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/gans.jpg"><script type="text/javascript" id="hexo.configurations">var NexT=window.NexT||{},CONFIG={root:"/",scheme:"Pisces",version:"5.1.4",sidebar:{position:"left",display:"post",offset:12,b2t:!1,scrollpercent:!0,onmobile:!1},fancybox:!0,tabs:!0,motion:{enable:!0,async:!1,transition:{post_block:"fadeIn",post_header:"slideDownIn",post_body:"slideDownIn",coll_header:"slideLeftIn",sidebar:"slideUpIn"}},duoshuo:{userId:"0",author:"博主"},algolia:{applicationID:"",apiKey:"",indexName:"",hits:{per_page:10},labels:{input_placeholder:"Search for Posts",hits_empty:"We didn't find any results for the search: ${query}",hits_stats:"${hits} results found in ${time} ms"}}}</script><link rel="canonical" href="http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/"><title>深度学习-对抗生成网络 | 挖掘机养成日记</title></head><body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans"><div class="container sidebar-position-left page-post-detail"><div class="headband"></div> <a href="https://github.com/xiaofengShi"><img style="position:absolute;top:0;right:0;border:0" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a><header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader"><div class="header-inner"><div class="site-brand-wrapper"><div class="site-meta"><div class="custom-logo-site-title"><a href="/" class="brand" rel="start"><span class="logo-line-before"><i></i></span> <span class="site-title">挖掘机养成日记</span><span class="logo-line-after"><i></i></span></a></div><p class="site-subtitle"></p></div><div class="site-nav-toggle"> <button><span class="btn-bar"></span><span class="btn-bar"></span><span class="btn-bar"></span></button></div></div><nav class="site-nav"><ul id="menu" class="menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br> 首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i><br> 关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i><br> 标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br> 分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i><br> 归档</a></li><li class="menu-item menu-item-schedule"><a href="/schedule/" rel="section"><i class="menu-item-icon fa fa-fw fa-calendar"></i><br> 日程表</a></li><li class="menu-item menu-item-guestbook"><a href="/guestbook/" rel="section"><i class="menu-item-icon fa fa-fw fa-commenting"></i><br> 留言板</a></li><li class="menu-item menu-item-search"><a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i><br> 搜索</a></li></ul><div class="site-search"><div class="popup search-popup local-search-popup"><div class="local-search-header clearfix"><span class="search-icon"><i class="fa fa-search"></i></span><span class="popup-btn-close"><i class="fa fa-times-circle"></i></span><div class="local-search-input-wrapper"> <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input"></div></div><div id="local-search-result"></div></div></div></nav></div></header><main id="main" class="main"><div class="main-inner"><div class="content-wrap"><div id="content" class="content"><div id="posts" class="posts-expand"><article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article"><div class="post-block"><link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/"><span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person"><meta itemprop="name" content="ShiXiaofeng"><meta itemprop="description" content=""><meta itemprop="image" content="/images/avatar.gif"></span><span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization"><meta itemprop="name" content="挖掘机养成日记"></span><header class="post-header"><h1 class="post-title" itemprop="name headline">深度学习-对抗生成网络</h1><div class="post-meta"><span class="post-time"><span class="post-meta-item-icon"><i class="fa fa-calendar-o"></i></span> <span class="post-meta-item-text">发表于</span> <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-23T20:23:04+08:00">2019-02-23</time></span> <span class="post-category"><span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-folder-o"></i></span> <span class="post-meta-item-text">分类于</span> <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/深度学习/" itemprop="url" rel="index"><span itemprop="name">深度学习</span></a></span> ， <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/深度学习/Gan/" itemprop="url" rel="index"><span itemprop="name">Gan</span></a></span></span> <span class="post-comments-count"><span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-comment-o"></i></span><a href="/2019/02/23/深度学习-对抗生成网络/#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/2019/02/23/深度学习-对抗生成网络/" itemprop="commentCount"></span></a></span> <span id="/2019/02/23/深度学习-对抗生成网络/" class="leancloud_visitors" data-flag-title="深度学习-对抗生成网络"><span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-eye"></i></span> <span class="post-meta-item-text">阅读次数&#58;</span><span class="leancloud-visitors-count"></span></span><div class="post-wordcount"><span class="post-meta-item-icon"><i class="fa fa-file-word-o"></i></span> <span class="post-meta-item-text">字数统计&#58;</span> <span title="字数统计">6.3k 字</span> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-clock-o"></i></span> <span class="post-meta-item-text">阅读时长 &asymp;</span> <span title="阅读时长">26 分钟</span></div></div></header><div class="post-body" itemprop="articleBody"><p>GAN的思想是是一种二人零和博弈思想（two-player game），博弈双方的利益之和是一个常数，比如两个人掰手腕，假设总的空间是一定的，你的力气大一点，那你就得到的空间多一点，相应的我的空间就少一点，相反我力气大我就得到的多一点，但有一点是确定的就是，我两的总空间是一定的，这就是二人博弈，但是总利益是一定的。</p><p>引申到GAN里面就是可以看成，GAN中有两个这样的博弈者，一个人名字是生成模型（G），另一个人名字是判别模型（D）。他们各自有各自的功能。</p> <img src="/2019/02/23/深度学习-对抗生成网络/gans.jpg" title="Gan"><a id="more"></a><p>首次说明什么是生成模型：</p><ul><li>密度估计：在事先不了解事件概率分布的情况下，先假设随机分布，然后用过数据观测来确定真实的概率密度</li><li>样本生成：手上存在一个训练样本集，通过训练之后生成类似的样本</li></ul><p>对于对抗生成网络主要是解决生成类型的任务，比如风格迁移任务，将黑白图像生成彩色图像；修复破损的图片，生成超分辨率图像，性别转变，表情转变，发型转变等等。在对抗生成网络中包含生成器和判别器，生成器用于生成任务需要的数据，而判别器用于判断生成的样本是否为真，两个网络使用的是博弈论的思想，<strong>一般情况下，我们的目的是得到一个认为最有的生成器，判别器是用来辅助我们得到该生成器的手段</strong></p><h2 id="生成网络基本原理"><a href="#生成网络基本原理" class="headerlink" title="生成网络基本原理"></a>生成网络基本原理</h2><p>使用生成网络主要针对生成类型的任务，对于最初始的Gan，输入一个噪声，模拟得到一个人的图像，并且希望这个图像足以以假乱真。针对这样的任务，设计一个生成器和一个判别器，使用生成器，输入噪声数据输出一个生成的图像，而判别器用来判断生成的图像是否是一张人像，判别器是一个二分类网络。</p><ul><li><p>判别网络的目的：就是能判别出来属于的一张图它是来自真实样本集还是假样本集。假如输入的是真样本，网络输出就接近1，输入的是假样本，网络输出接近0，那么很完美，达到了很好判别的目的。</p></li><li><p>生成网络的目的：生成网络是造样本的，它的目的就是使得自己造样本的能力尽可能强，强到什么程度呢，你判别网络没法判断我是真样本还是假样本。</p></li></ul><p>通俗理解对抗生成网络就是，判别器会说，我很强，来一个样本我就会知道这个样本是真是假(来源于数据集的数据认为是真的，生成器生成的任务是假的)，但是生成器也很不服气，他也认为自己很强，我能生成一个假样本，虽然我知道是真的，但是你判别器判断不出来。</p><p>总地来说，Goodfellow 等人提出来的 GAN 是通过对抗过程估计生成模型的新框架。在这种框架下，我们需要同时训练两个模型，即一个能捕获数据分布的生成模型 G 和一个能估计数据来源于真实样本概率的判别模型 D。生成器 G 的训练过程是最大化判别器犯错误的概率，即判别器误以为数据是真实样本而不是生成器生成的假样本。因此，这一框架就对应于两个参与者的极小极大博弈（minimax game）。在所有可能的函数 G 和 D 中，我们可以求出唯一均衡解，即 G 可以生成与训练样本相同的分布，而 D 判断的概率处处为 1/2，这一过程的推导与证明将在后文详细解释。</p><p>目前对于生成器G和判别器D使用的是神经网络的方式。为了学习到生成器在输入数据x上的分布$p_G​$，对于生成器来说，最初的框架中输入的是噪声信号，假设分布为$p_z(t)​$，然后根据$G(z;\theta_g)​$将其映射到数据空间中，对于$G(z;\theta_g)​$表示生成器所表征的函数变换。同理，定义判别器的函数为$D(s,\theta_d)​$它的输出是单个标量，$D(x)​$表示数据来源于真实数据而不是生成器生成的假数据的概率。我们训练 D 以最大化正确分配真实样本和生成样本的概率，因此我们就可以通过最小化$ log(1-D(G(z)))​$ 而同时训练 G。也就是说判别器 D 和生成器对价值函数 V(G,D) 进行了极小极大化博弈。</p><p>判别器D会判断数据是否为真实数据的概率，那么我们可以认为数据分为两类，一类是真实样本的数据x，另一类是生成器生成的数据$G(x)$，对于一个最优的判别器来说，肯定是能够争取分辨出数据的真假，对于分类任务我们一般使用交叉熵作为优化目标，对于真实数据，判别器会给出1的评价，对于生成器的数据，判别器会给出0的评价，那么参考交叉熵的损失函数</p><blockquote><p>假设y表示真实类别为(0,1)，a为模型的预测值，那么交叉熵可以表述为</p><script type="math/tex;mode=display">
-Crossentropy(a)=-\frac{1}{n}\sum [yln(a)+(1-y)ln(1-a)]</script></blockquote><p>交叉熵表述从极大似然估计而来，表述的是预测值和真实值之间的差距，训练的过程是最小化损失函数的过程。</p><p>在生成对抗的网络框架中，对于判别器的训练，可以认为是真实数据的判别结果逼近于1，而生成数据的判别结果逼近于0，由此可以得到</p><script type="math/tex;mode=display">
-V ( G , D ) : = E _ { x \sim p _ { d a t a } ( x ) } \log ( D ( x ) ) + E _ { z \sim p _ { z } ( z ) } \log ( 1 - D ( G ( z ) ) )</script><p>式子中的$E_{p_{data}}$和$E_{P_{generate}}$表示的是x期望，期望的定义告诉我们上面的式子和交叉熵是等价的，对于对抗生成网络的判别器的优化目标就是最大化目标函数</p><script type="math/tex;mode=display">
-D _ { G } ^ { * } = \operatorname { argmax } _ { D } V ( G , D )</script><p>最优的判别器通过最大化目标函数得到。</p><p>当得到最优的判别器之后，来对生成器进行优化，生成器的目的是生成和真实数据相似的样本，相似到让判别器难分真假，对于上面的目标函数最小化，就可以得到最优的生成器。在目标函数$V(G,D)$的第二项，当$D(G(x))$接近于1时，表示判别器会判断$D(G(x))$为真，也就是得到了最优的生成器，此时的整个优化目标函数为0，即最小化优化目标得到最优的生成器</p><script type="math/tex;mode=display">
-G^{*}=argmin_G \:\: E_{p_{data}}\log D(x)+E_{P_{generate}}\log(1-D(G(x)))</script><p>进行联立，可以得到论文中的公式</p><script type="math/tex;mode=display">
-\min _ { G } \max _ { D } V ( D , G ) = \mathbb { E } _ { \boldsymbol { x } \sim p _ { \mathrm { data } } ( \boldsymbol { x } ) } [ \log D ( \boldsymbol { x } ) ] + \mathbb { E } _ { \boldsymbol { z } \sim p _ { \boldsymbol { z } } ( \boldsymbol { z } ) } [ \log ( 1 - D ( G ( \boldsymbol { z } ) ) ) ]</script><h2 id="原始GAN详细理论推导"><a href="#原始GAN详细理论推导" class="headerlink" title="原始GAN详细理论推导"></a>原始GAN详细理论推导</h2><h3 id="KL散度"><a href="#KL散度" class="headerlink" title="KL散度"></a>KL散度</h3><p>KL散度有信息熵引入，在学习决策树的时候已经知道，信息熵的定义为</p><script type="math/tex;mode=display">
-H(x)=- \mathbb { E } _ { \mathbf { x } \sim P } [ \log P ( x ) ]</script><p>KL散度衡量不同分布之间的差异</p><script type="math/tex;mode=display">
-D _ { \mathrm { KL } } ( P \| Q ) = \mathbb { E } _ { \mathrm { x } \sim P } \left[ \log \frac { P ( x ) } { Q ( x ) } \right] = \mathbb { E } _ { \mathrm { x } \sim P } [ \log P ( x ) - \log Q ( x ) ]</script><p>式子中的$P(x)$和$Q(x)​$表示不同的分布。</p><p><strong>KL散度最重要的性质是它是非负的，当且仅当两个分布相等或者非常接近的时候对应的KL散度为0。这个性质可以用来在当做不同分布之间的距离。但是，KL散度不是严格对称的，对于某些P和Q分布存在$D_{-} K L(P | Q) \neq D_{-} K L(Q| | P)​$，因此KL不是真正的距离。</strong></p><p>KL 散度可以从极大似然估计中推导而出。若给定一个样本数据的分布 $P_{data}(x) ​$和生成的数据分布$ <span class="md-search-hit">P_G</span>(x;\theta)​$，那么 GAN 希望能找到一组参数$\theta​$使分布 $p_G(x;\theta)​$ 和$ P_{data}(x)​$ 之间的距离最短，也就是找到一组生成器参数而使得生成器能生成十分逼真的图片。</p><h3 id="极大似然估计"><a href="#极大似然估计" class="headerlink" title="极大似然估计"></a>极大似然估计</h3><p>从极大似然估计的角度来解释对抗生成网络的优化目标。</p><p>数据样本的分布为$P_{data}(x) ​$那么从该分布中抽取m个真实的样本$\{𝑥^1,𝑥^2,…,𝑥^𝑚\}​$，那么这m个真实的样本在生成数据分布$ P_G(x;\theta)​$中全部出现的概率为</p><script type="math/tex;mode=display">
-L = \prod _ { i = 1 } ^ { m } P _ { G } \left( x ^ { i } ; \theta \right)</script><p>上述的概率被称为似然函数。</p><p>如果生成数据分布$ P_G(x;\theta)$和数据样本的分布$P_{data}(x) $相同，那么真实的数据就有极大的可能性出现在生成数据分布中，也就是$m$个数据出现在生成数据分布中的概率非常大。这样，就可以通过极大化似然函数得到离真实数据分布最近的分布，也就是最优的参数$\theta​$，由此得到生成数据分布的参数</p><script type="math/tex;mode=display">
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="https://cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+  
+
+<link href="https://cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/panda_32px.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/panda_16px.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="深度学习,Gan,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="挖掘机养成日记" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="GAN(Generative Adversary Networks)的思想是是一种二人零和博弈思想（two-player game），博弈双方的利益之和是一个常数，比如两个人掰手腕，假设总的空间是一定的，你的力气大一点，那你就得到的空间多一点，相应的我的空间就少一点，相反我力气大我就得到的多一点，但有一点是确定的就是，我两的总空间是一定的，这就是二人博弈，但是总利益是一定的。 引申到GAN里面就是">
+<meta name="keywords" content="深度学习,Gan">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习-对抗生成网络">
+<meta property="og:url" content="http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/index.html">
+<meta property="og:site_name" content="挖掘机养成日记">
+<meta property="og:description" content="GAN(Generative Adversary Networks)的思想是是一种二人零和博弈思想（two-player game），博弈双方的利益之和是一个常数，比如两个人掰手腕，假设总的空间是一定的，你的力气大一点，那你就得到的空间多一点，相应的我的空间就少一点，相反我力气大我就得到的多一点，但有一点是确定的就是，我两的总空间是一定的，这就是二人博弈，但是总利益是一定的。 引申到GAN里面就是">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/gans.jpg">
+<meta property="og:image" content="http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/dis_curve.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/pix2pix.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/unet.png">
+<meta property="og:updated_time" content="2019-02-26T02:43:51.305Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深度学习-对抗生成网络">
+<meta name="twitter:description" content="GAN(Generative Adversary Networks)的思想是是一种二人零和博弈思想（two-player game），博弈双方的利益之和是一个常数，比如两个人掰手腕，假设总的空间是一定的，你的力气大一点，那你就得到的空间多一点，相应的我的空间就少一点，相反我力气大我就得到的多一点，但有一点是确定的就是，我两的总空间是一定的，这就是二人博弈，但是总利益是一定的。 引申到GAN里面就是">
+<meta name="twitter:image" content="http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/gans.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/">
+
+
+
+
+
+  <title>深度学习-对抗生成网络 | 挖掘机养成日记</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <!-- add fork me on github -->
+    <a href="https://github.com/xiaofengShi"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">挖掘机养成日记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>
+            
+            日程表
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-guestbook">
+          <a href="/guestbook/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-commenting"></i> <br>
+            
+            留言板
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ShiXiaofeng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="挖掘机养成日记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">深度学习-对抗生成网络</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-23T20:23:04+08:00">
+                2019-02-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/深度学习/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/深度学习/Gan/" itemprop="url" rel="index">
+                    <span itemprop="name">Gan</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/02/23/深度学习-对抗生成网络/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/02/23/深度学习-对抗生成网络/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2019/02/23/深度学习-对抗生成网络/" class="leancloud_visitors" data-flag-title="深度学习-对抗生成网络">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  7.1k 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  29 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>GAN(Generative Adversary Networks)的思想是是一种二人零和博弈思想（two-player game），博弈双方的利益之和是一个常数，比如两个人掰手腕，假设总的空间是一定的，你的力气大一点，那你就得到的空间多一点，相应的我的空间就少一点，相反我力气大我就得到的多一点，但有一点是确定的就是，我两的总空间是一定的，这就是二人博弈，但是总利益是一定的。</p>
+<p>引申到GAN里面就是可以看成，GAN中有两个这样的博弈者，一个人名字是生成模型(G)，另一个人名字是判别模型(D)。他们各自有各自的功能。</p>
+<img src="/2019/02/23/深度学习-对抗生成网络/gans.jpg" title="Gan">
+<a id="more"></a>
+<p>首先说明什么是生成模型：</p>
+<ul>
+<li>密度估计：在事先不了解事件概率分布的情况下，先假设随机分布，然后用过数据观测来确定真实的概率密度，就想极大似然估计。</li>
+<li>样本生成：手上存在一个训练样本集，通过训练之后生成类似的样本</li>
+</ul>
+<p>对抗生成网络主要是解决生成类型的任务，比如风格迁移任务，将黑白图像生成彩色图像；修复破损的图片，生成超分辨率图像，性别转变，表情转变，发型转变等等。在对抗生成网络中包含生成器和判别器，生成器用于生成任务需要的数据，而判别器用于判断生成的样本是否为真，两个网络使用的是博弈论的思想，<strong>一般情况下，我们的目的是得到一个最优的生成器，判别器是用来辅助我们得到该生成器的手段。</strong></p>
+<h2 id="生成网络基本原理"><a href="#生成网络基本原理" class="headerlink" title="生成网络基本原理"></a>生成网络基本原理</h2><p>生成网络主要针对生成类型的任务，对于最初始的Gan，输入一个噪声，模拟得到一个人的图像，并且希望这个图像足以以假乱真。针对这样的任务，设计一个生成器和一个判别器，使用生成器，输入噪声数据输出一个生成的图像，而判别器用来判断生成的图像是否是一张人像，判别器是一个二分类网络。</p>
+<ul>
+<li><p>判别网络的目的：就是能判别出来属于的一张图它是来自真实样本集还是假样本集。假如输入的是真样本，网络输出就接近1，输入的是假样本，网络输出接近0，那么很完美，达到了很好判别的目的。</p>
+</li>
+<li><p>生成网络的目的：生成网络是造样本的，它的目的就是使得自己造样本的能力尽可能强，强到什么程度呢，判别网络没法判断我是真样本还是假样本。</p>
+</li>
+</ul>
+<p>通俗理解对抗生成网络就是，判别器会说，我很强，来一个样本我就会知道这个样本是真是假(来源于数据集的数据认为是真的，生成器生成的任务是假的)，但是生成器也很不服气，他也认为自己很强，我能生成一个假样本，虽然我知道是真的，但是你判别器判断不出来。Gan的目的就是通过这种博弈的思想得到最优的生成器。</p>
+<p>总地来说，Goodfellow 等人提出来的 GAN 是通过对抗过程估计生成模型的新框架。在这种框架下，我们需要同时训练两个模型，即一个能捕获数据分布的生成模型G 和一个能估计数据来源于真实样本概率的判别模型D。生成器G的训练过程是最大化判别器犯错误的概率，即判别器误以为数据是真实样本而不是生成器生成的假样本。因此，这一框架就对应于两个参与者的极小极大博弈（minimax game）。在所有可能的函数G和D中，我们可以求出唯一均衡解，即G可以生成与训练样本相同的分布，而D判断的概率处处为 1/2，无法分辨数据是来源于真实样本还是生成器生成的数据，这一过程的推导与证明将在后文详细解释。</p>
+<p>目前对于生成器G和判别器D使用的是神经网络的方式。为了学习到生成器在输入数据x上的分布$p_G$，对于生成器来说，最初的框架中输入的是噪声信号，假设分布为$p_z(t)$，然后根据$G(z;\theta_g)$将其映射到数据空间中，对于$G(z;\theta_g)$表示生成器所表征的函数变换。同理，定义判别器的函数为$D(s,\theta_d)$它的输出是单个标量，$D(x)$表示数据来源于真实数据而不是生成器生成的假数据的概率。我们训练D以最大化正确分配真实样本和生成样本的概率，因此我们就可以通过最小化$ log(1-D(G(z)))$而同时训练G，也就是说判别器D和生成器对价值函数V(G,D)进行了极小极大化博弈。</p>
+<p>判别器D会判断数据是否为真实数据的概率，那么我们可以认为数据分为两类，一类是真实样本的数据$x$，另一类是生成器生成的数据$G(x)​$，对于一个最优的判别器来说，肯定是能够争取分辨出数据的真假，对于分类任务我们一般使用交叉熵作为优化目标，对于真实数据，判别器会给出1的评价，对于生成器的数据，判别器会给出0的评价，那么参考交叉熵的损失函数</p>
+<blockquote>
+<p>假设$y$表示真实类别为$(0,1)$，$a$为模型的预测值，那么交叉熵可以表述为</p>
+<script type="math/tex; mode=display">
+Crossentropy(a)=-\frac{1}{n}\sum [yln(a)+(1-y)ln(1-a)]</script></blockquote>
+<p>交叉熵表述从极大似然估计而来，表述的是预测值和真实值之间的差距，训练的过程是最小化损失函数的过程。</p>
+<p>在生成对抗的网络框架中，对于判别器的训练，可以认为是真实数据的判别结果逼近于1，而生成数据的判别结果逼近于0，由此可以得到</p>
+<script type="math/tex; mode=display">
+V ( G , D ) : = E _ { x \sim p _ { d a t a } ( x ) } \log ( D ( x ) ) + E _ { z \sim p _ { z } ( z ) } \log ( 1 - D ( G ( z ) ) )</script><p>式子中的$E_{p_{data}}$和$E_{P_{generate}}$表示的是$x​$期望，</p>
+<p>期望的定义为，对于离散变量</p>
+<script type="math/tex; mode=display">
+\mathbb{E}_{\mathrm{x} \sim P}[f(x)]=\sum_{x} P(x) f(x)</script><p>对于连续变量</p>
+<script type="math/tex; mode=display">
+\mathbb{E}_{\mathbf{x} \sim p}[f(x)]=\int p(x) f(x) d x</script><p>期望的定义告诉我们上面的式子和交叉熵是等价的，对于对抗生成网络的判别器的优化目标就是最大化目标函数</p>
+<script type="math/tex; mode=display">
+D _ { G } ^ { * } = \operatorname { argmax } _ { D } V ( G , D )</script><p>最优的判别器通过最大化目标函数得到。</p>
+<p>当得到最优的判别器之后，来对生成器进行优化，生成器的目的是生成和真实数据相似的样本，相似到让判别器难分真假，对于上面的目标函数最小化，就可以得到最优的生成器。在目标函数$V(G,D)$的第二项，当$D(G(x))$接近于1时，表示判别器会判断$D(G(x))$为真，也就是得到了最优的生成器，此时的整个优化目标函数为0，即最小化优化目标得到最优的生成器</p>
+<script type="math/tex; mode=display">
+G^{*}=argmin_G \:\: E_{p_{data}}\log D(x)+E_{P_{generate}}\log(1-D(G(x)))</script><p>进行联立，可以得到论文中的公式</p>
+<script type="math/tex; mode=display">
+\min _ { G } \max _ { D } V ( D , G ) = \mathbb { E } _ { \boldsymbol { x } \sim p _ { \mathrm { data } } ( \boldsymbol { x } ) } [ \log D ( \boldsymbol { x } ) ] + \mathbb { E } _ { \boldsymbol { z } \sim p _ { \boldsymbol { z } } ( \boldsymbol { z } ) } [ \log ( 1 - D ( G ( \boldsymbol { z } ) ) ) ]</script><h2 id="原始GAN详细理论推导"><a href="#原始GAN详细理论推导" class="headerlink" title="原始GAN详细理论推导"></a>原始GAN详细理论推导</h2><h3 id="KL散度"><a href="#KL散度" class="headerlink" title="KL散度"></a>KL散度</h3><p>引用《深度学习》对KL散度的说明</p>
+<blockquote>
+<p>KL散度是信息论中的概念，定义一个数据的自信息$\mathrm{x}=x$为$I(x)=-\log P(x)$，单位为奈特。使用信息熵对整个概率分布中的不确定性进行量化，信息熵的定义为</p>
+<script type="math/tex; mode=display">
+H(x)=- \mathbb { E } _ { \mathbf { x } \sim P } [ \log P ( x ) ]</script><p>KL散度衡量不同分布之间的差异</p>
+<script type="math/tex; mode=display">
+D _ { \mathrm { KL } } ( P \| Q ) = \mathbb { E } _ { \mathrm { x } \sim P } \left[ \log \frac { P ( x ) } { Q ( x ) } \right] = \mathbb { E } _ { \mathrm { x } \sim P } [ \log P ( x ) - \log Q ( x ) ]</script><p>式子中的$P(x)$和$Q(x)$表示不同的分布。</p>
+<p><strong>KL散度最重要的性质是它是非负的，当且仅当两个分布相等或者非常接近的时候对应的KL散度为0。这个性质可以用来在当做不同分布之间的距离。但是，KL散度不是严格对称的，对于某些P和Q分布存在$D_{-} K L(P | Q)  \neq D_{-} K L(Q| | P)$，因此KL不是真正的距离。</strong></p>
+<p>和KL散度关系紧密的量是交叉熵，$H(P, Q)=-\mathbb{E}_{\mathrm{x} \sim P} \log Q(x)$和KL散度相比，交叉熵为最小化Q进行最小化，等价于最小化$D _ { \mathrm { KL } } ( P | Q )$，因为在计算交叉熵时Q并不会参与被省略的一项。</p>
+</blockquote>
+<p>KL散度可以从极大似然估计中推导而出。若给定一个样本数据的分布 $P_{data}(x) $和生成的数据分布$P_{G}(x;\theta)$，那么 GAN 希望能找到一组参数$\theta$使分布 $p_G(x;\theta)$ 和$ P_{data}(x)$ 之间的距离最短，也就是找到一组生成器参数而使得生成器能生成十分逼真的图片。</p>
+<h3 id="极大似然估计"><a href="#极大似然估计" class="headerlink" title="极大似然估计"></a>极大似然估计</h3><p>从极大似然估计的角度来解释对抗生成网络的优化目标。</p>
+<p>数据样本的分布为$P_{data}(x) ​$那么从该分布中抽取m个真实的样本$\{𝑥^1,𝑥^2,…,𝑥^𝑚\}​$，那么这m个真实的样本在生成数据分布$ P_G(x;\theta)​$中全部出现的概率为</p>
+<script type="math/tex; mode=display">
+L = \prod _ { i = 1 } ^ { m } P _ { G } \left( x ^ { i } ; \theta \right)</script><p>上述的概率被称为似然函数。</p>
+<p>如果生成数据分布$ P_G(x;\theta)$和数据样本的分布$P_{data}(x) $相同，那么真实的数据就有极大的可能性出现在生成数据分布中，也就是$m$个数据出现在生成数据分布中的概率非常大。这样，就可以通过极大化似然函数得到离真实数据分布最近的分布，也就是最优的参数$\theta​$，由此得到生成数据分布的参数</p>
+<script type="math/tex; mode=display">
 \begin{aligned} \theta ^ { * } & = \arg \max _ { \theta } \prod _ { i = 1 } ^ { m } P _ { G } \left( x ^ { i } ; \theta \right) = \arg \max _ { \theta } \log \prod _ { i = 1 } ^ { m } P _ { G } \left( x ^ { i } ; \theta \right) \\ & = \arg \max _ { \theta } \sum _ { i = 1 } ^ { m } \log P _ { G } \left( x ^ { i } ; \theta \right) \quad \left\{ x ^ { 1 } , x ^ { 2 } , \ldots , x ^ { m } \right\} \text { from } P _ { d a t a } ( x ) \\ & \approx \arg \max _ { \theta } E _ { x \sim P _ { d a t a } } \left[ \log P _ { G } ( x ; \theta ) \right] \\
 
-\end{aligned}</script><p>上式就是极大似然的过程，将似然函数变为对数似然函数，这样原来似然函数中的连乘就变成了求和。对于期望的计算方式可以在维基百科中找到，对于离散型随机变量，期望为$E(X)=\sum_{i}x_{i}p_{i}$，其中$p_i$为对应的概率，那么对于上述的极大似然的过程，可以将近似为求解期望。</p><p>因为上述的过程的目的是为了查找最优的参数$\theta$，因此可以对上述公式修改</p><script type="math/tex;mode=display">
+\end{aligned}</script><p>上式就是极大似然的过程，将似然函数变为对数似然函数，这样原来似然函数中的连乘就变成了求和。对于期望的计算方式上文已经进行了说明 ，对于离散型随机变量，期望为$E(X)=\sum_{i}x_{i}p_{i}$，其中$p_i$为对应的概率，那么对于上述的极大似然的过程，可以将近似为求解期望，这就是求解交叉熵的过程。</p>
+<p>因为上述的过程的目的是为了查找最优的参数$\theta$，因此可以对上述公式进一步推导</p>
+<script type="math/tex; mode=display">
 \begin{aligned} \theta ^ { * } &=\arg \max _ { \theta } E _ { x \sim P _ { d a t a } } \left[ \log P _ { G } ( x ; \theta ) \right] \\
 & =\arg \max _{\theta} \int P_{d a t a}(x) \log P_{G}(x ; \theta) d x-\int P_{d a t a}(x) \log P_{d a t a}(x) d x \\
 &=\arg \min \int_{x} P_{d a t a}(x) \log \frac{P_{G}(x, \theta)}{P_{d a t a}(x)} dx\\
 
 &=\arg \min _{\theta} K L\left(P_{d a t a}(x)| | P_{G}(x ; \theta)\right) 
 
-\end{aligned}</script><p>对上述的期望公式添加不包含$\theta$的一项，这一项的添加并不会改变最优$\theta$的求解，合并这两个积分就可以得到$KL​$的形式。</p><p>求取最优的参数$\theta$就可以使得生成数据分布$P _ { G } ( x ; \theta )$和数据样本$P_{d a t a}(x) $相似或接近，也就是令KL散度取得最小的参数$\theta$，在得到最优参数$\theta$时，就意味着生成器生成的数据和原始数据非常接近。</p><p>上述部分就从极大似然估计的角度对优化目标进行了分析，在深度学习领域，很多的优化目标都可以从极大似然估计的角度进行分析得到最终的优化目标。</p><h3 id="最优的判别器"><a href="#最优的判别器" class="headerlink" title="最优的判别器"></a>最优的判别器</h3><p>正如上文所述，判别器用来判断输入样本的真假，对于最优的判别器应该能够有效的判别出输入的样本为真或为假，我们认为来源于数据样本的数据为真，来源于生成器的生成数据为假。不论是从极大似然估计的角度还是从KL散度的角度，可以得到判别器的优化目标，最大化优化目标对应着判别器对样本分布$p_G​$和分布$p_{data}​$之间的差异或距离的评判能力。</p><p>按照原论文所述，价值函数可写成在x上的积分方式，对数学期望进行展开，可以得到</p><script type="math/tex;mode=display">
-V(G, D)=\int_{x} p_{\text { data }}(x) \log (D(x))+p_{G}(x) \log (1-D(x)) d x</script><p>求解积分的最大值可以转换为被积分函数的最大值，而求解被积分函数的最大值是为了得到最优判别器D，由此，不涉及判别器的项就可以看成是常数项，在被积分函数中$p_{ data }(x) \log (D(x))+p_{G}(x) \log (1-D(x))$，$p_{data}$和$p_G(x)$都可以看作是常数项，由此被积分函数可以看做</p><script type="math/tex;mode=display">
-p_{\text { data }}(x) \log (D(x))+p_{g}(x) \log (1-D(x))=a^{*} \log (D(x))+b^{*} \log (1-D(x))</script><p>对于式子中的常数项为<script type="math/tex">a^*=p_{data}(x)​</script>和$b^{*}=p_{G}(x)​$。</p><p>令式中$y=D(x)​$，可以得到</p><script type="math/tex;mode=display">
-f(y)=a^{*} \log y+b^{*} \log (1-y)</script><p>可以查看$f(y)​$的曲线</p> <img src="/2019/02/23/深度学习-对抗生成网络/dis_curve.png" title="Dis_curve"><p>为了找到使得$f(y)​$得到最大值的y，对$f(y)​$求偏导，得到其极值点</p><script type="math/tex;mode=display">
-f^{\prime}(y)=0 \Rightarrow \frac{a}{y}-\frac{b}{1-y}=0 \Rightarrow y=\frac{a}{a+b}</script><p>由此可以得到最优的判别器为</p><script type="math/tex;mode=display">
-D(x)=P_{data}(x) /\left(P_{data}(x)+P_G(x)\right)</script><p>这是从理论上对最优解进行的推导，实际上该最优解是无法计算得到的，因为一开始我们并不知道数据样本分布$p_{data}(x)​$，但是该理论证明了最优的生成器$G​$是存在的，因此在实际的训练过程中我们只需要逼近最优的判别器D。</p><h3 id="最优的生成器"><a href="#最优的生成器" class="headerlink" title="最优的生成器"></a>最优的生成器</h3><p>对于对抗生成网络，目的就是得到最优的生成器，用来生成和数据样本数据相似的数据。这就意味着最优的生成器会满足</p><script type="math/tex;mode=display">
-p_{G}(x)=p_{data}(x)</script><p>如此，最优的判别器为</p><script type="math/tex;mode=display">
-D(x)=\frac{P_{data}(x)}{P_{data}(x)+P_G(x)} =\frac{1}{2}</script><p>这种情况意味着判别器已经无法分别何为真实的数据何为生成器生成的数据，对于来源于生成器的数据何数据样本的数据，判别器都会给出概率为$\frac{1}{2}​$，实际上这就体现了对抗生成网络中的极大极小博弈，<strong>当且仅当$p_{G}(x)=p_{data}(x)​$时，优化目标$V ( G , D )​$达到全局最优点。</strong></p><p>当$p_{G}(x)=p_{data}(x)​$时，就是使优化目标$V ( G , D ^{*})​$取得最小值的生成器，在这个时候$p_{G}(x)​$和$p_{data}(x)​$的JS散度为零。</p><p>将上一步得到的最优的判别器带入到优化目标中，进行整理可以得到如下公式条推导</p><script type="math/tex;mode=display">
+\end{aligned}</script><p>对上述的期望公式添加不包含$\theta$的一项，这一项的添加并不会改变最优$\theta$的求解，合并这两个积分就可以得到$KL​$的形式。</p>
+<p>求取最优的参数$\theta$就可以使得生成数据分布$P _ { G } ( x ; \theta )$和数据样本$P_{d a t a}(x) $相似或接近，也就是令KL散度取得最小的参数$\theta$，在得到最优参数$\theta$时，就意味着生成器生成的数据和原始数据非常接近。</p>
+<p>上述部分就从极大似然估计的角度对优化目标进行了分析，在深度学习领域，很多的优化目标都可以从极大似然估计的角度进行分析得到最终的优化目标。</p>
+<h3 id="最优的判别器"><a href="#最优的判别器" class="headerlink" title="最优的判别器"></a>最优的判别器</h3><p>正如上文所述，判别器用来判断输入样本的真假，对于最优的判别器应该能够有效的判别出输入的样本为真或为假，我们认为来源于数据样本的数据为真，来源于生成器的生成数据为假。不论是从极大似然估计的角度还是从KL散度的角度，可以得到判别器的优化目标，最大化优化目标对应着判别器对样本分布$p_G​$和分布$p_{data}​$之间的差异或距离的评判能力。</p>
+<p>按照原论文所述，价值函数可写成在$x$上的积分方式，对数学期望进行展开，可以得到</p>
+<script type="math/tex; mode=display">
+V(G, D)=\int_{x} p_{\text { data }}(x) \log (D(x))+p_{G}(x) \log (1-D(x)) d x</script><p>求解积分的最大值可以转换为被积分函数的最大值，而求解被积分函数的最大值是为了得到最优判别器D，由此，不涉及判别器的项就可以看成是常数项，在被积分函数中$p_{ data }(x) \log (D(x))+p_{G}(x) \log (1-D(x))$，$p_{data}$和$p_G(x)$都可以看作是常数项，由此被积分函数可以看做</p>
+<script type="math/tex; mode=display">
+p_{\text { data }}(x) \log (D(x))+p_{g}(x) \log (1-D(x))=a^{*} \log (D(x))+b^{*} \log (1-D(x))</script><p>对于式子中的常数项为<script type="math/tex">a^*=p_{data}(x)​</script>和$b^{*}=p_{G}(x)​$。</p>
+<p>令式中$y=D(x)​$，可以得到</p>
+<script type="math/tex; mode=display">
+f(y)=a^{*} \log y+b^{*} \log (1-y)</script><p>可以查看$f(y)​$的曲线</p>
+<img src="/2019/02/23/深度学习-对抗生成网络/dis_curve.png" title="Dis_curve">
+<p>为了找到使得$f(y)​$得到最大值的y，对$f(y)​$求偏导，得到其极值点</p>
+<script type="math/tex; mode=display">
+f^{\prime}(y)=0 \Rightarrow \frac{a}{y}-\frac{b}{1-y}=0 \Rightarrow y=\frac{a}{a+b}</script><p>由此可以得到最优的判别器为</p>
+<script type="math/tex; mode=display">
+D(x)=\frac{P_{data}(x)}{P_{data}(x)+P_G(x)}</script><p>这是从理论上对最优解进行的推导，实际上该最优解是无法计算得到的，因为一开始我们并不知道数据样本分布$p_{data}(x)​$，但是该理论证明了最优的生成器$G​$是存在的，因此在实际的训练过程中我们只需要逼近最优的判别器D。</p>
+<h3 id="最优的生成器"><a href="#最优的生成器" class="headerlink" title="最优的生成器"></a>最优的生成器</h3><p>对于对抗生成网络，目的就是得到最优的生成器，用来生成和数据样本数据相似的数据。这就意味着最优的生成器会满足</p>
+<script type="math/tex; mode=display">
+p_{G}(x)=p_{data}(x)</script><p>如此，最优的判别器为</p>
+<script type="math/tex; mode=display">
+D(x)=\frac{P_{data}(x)}{P_{data}(x)+P_G(x)} =\frac{1}{2}</script><p>这种情况意味着判别器已经无法分别何为真实的数据何为生成器生成的数据，对于来源于生成器的数据何数据样本的数据，判别器都会给出概率为$\frac{1}{2}​$，实际上这就体现了对抗生成网络中的极大极小博弈，<strong>当且仅当$p_{G}(x)=p_{data}(x)​$时，优化目标$V ( G , D )​$达到全局最优点。</strong></p>
+<p>当$p_{G}(x)=p_{data}(x)​$时，就是使优化目标$V ( G , D ^{*})​$取得最小值的生成器，在这个时候$p_{G}(x)​$和$p_{data}(x)​$的JS散度为零。</p>
+<p>将上一步得到的最优的判别器带入到优化目标中，进行整理可以得到如下公式条推导</p>
+<script type="math/tex; mode=display">
 \begin{align}
 V(G, D^{*})
-&=\int_{x} p_{\text { data }}(x) \log (D(x))+p_{g}(x) \log (1-D(x)) d x \\
+&=\int_{x} p_{\text { data }}(x) \log (D(x))+p_{G}(x) \log (1-D(x)) d x \\
 &=\int_{x} p_{d a t a}(x) \log \left(\frac{p_{\text {data}}(x)}{p_{G}(x)+p_{\text {data}}(x)}\right)+p_{G}(x) \log \left(\frac{p_{G}(x)}{p_{G}(x)+p_{\text {data}}(x)}\right) \mathrm{d} x \\
 &=\int_{x}(\log 2-\log 2) p_{d a t a}(x)+p_{d a t a}(x) \log \left(\frac{p_{d a t a}(x)}{p_{G}(x)+p_{d a t a}(x)}\right) \\
 &\:\:\:\:\:+(\log 2-\log 2) p_{G}(x)+p_{G}(x) \log \left(\frac{p_{G}(x)}{p_{G}(x)+p_{d a t a}(x)}\right) \mathrm{d} x \\
 & =-\log 2[\int_{x}P_G(x)dx+\int_{x}p_{data}(x)dx]+\int_{x}p_{data}(x)[\log2+\log \left(\frac{p_{d a t a}(x)}{p_{G}(x)+p_{d a t a}(x)}\right) ]dx\\
-&\:\:\:\:\:+\int_{x}p_G(x)[\log2+\log \left(\frac{p_{d a t a}(x)}{p_{G}(x)+p_{d a t a}(x)}\right)]dx \\
+&\:\:\:\:\:+\int_{x}p_G(x)[\log2+\log \left(\frac{p_{G}(x)}{p_{G}(x)+p_{d a t a}(x)}\right)]dx \\
 &=-\log2(1+1)+\int_{x}p_{data}(x)\log \left(\frac{p_{d a t a}(x)}{[p_{G}(x)+p_{d a t a}(x)]/2}\right)dx\\
-&\:\:\:\:\:+\int_{x}p_{G}(x)\log \left(\frac{p_{d a t a}(x)}{[p_{G}(x)+p_{d a t a}(x)]/2}\right)dx \\
+&\:\:\:\:\:+\int_{x}p_{G}(x)\log \left(\frac{p_{G}(x)}{[p_{G}(x)+p_{d a t a}(x)]/2}\right)dx \\
 &=-\log 4+K L\left(p_{\text {data}} | \frac{p_{\text {data}}+p_{G}}{2}\right)+K L\left(p_{G} | \frac{p_{\text {data}}+p_{G}}{2}\right)
-\end{align}</script><p>上述的推导清晰的显示了在得到最优的判别器之后求解最优的生成器的过程。</p><p>因为KL散度是非负的，可以得到最优的生成器可以使优化目标取得的全局最优值为$-\log 4​$。接下来推导证明$p_{G}(x)=p_{data}(x)​$是优化目标取得最优解的唯一解，就可以证明，$p_{G}(x)=p_{data}(x)​$是优化目标取得最小值的充分必要条件。</p><blockquote><p>根据JS散度的定义，可以得到</p><script type="math/tex;mode=display">
-\begin{array}{r}{\mathrm{JSD}(P \| Q)=\frac{1}{2} KL(P \| M)+\frac{1}{2} KL(Q \| M)} \\  where \:\:\:{M=\frac{1}{2}(P+Q)}\end{array}</script><p>假设存在两个分布 P 和 Q，且这两个分布的平均分布 M=(P+Q)/2，那么这两个分布之间的 JS 散度为 P 与 M 之间的 KL 散度加上 Q 与 M 之间的 KL 散度再除以 2。</p><p>JS散度的值的范围为$0-\log 2$，如果两个分布完全没有关系，那么JS散度取得最大值$\log2$，如果两个分布完全相同，那么JS散度取得最大值0。</p></blockquote><p>根据JS散度的性质，可以对上述的最优目标进一步优化</p><script type="math/tex;mode=display">
+\end{align}</script><p>上述的推导清晰的显示了在得到最优的判别器之后求解最优的生成器的过程。</p>
+<p>因为KL散度是非负的，可以得到最优的生成器可以使优化目标取得的全局最优值为$-\log 4​$。接下来推导证明$p_{G}(x)=p_{data}(x)​$是优化目标取得最优解的唯一解，就可以证明，$p_{G}(x)=p_{data}(x)​$是优化目标取得最小值的充分必要条件。</p>
+<blockquote>
+<p>根据JS散度的定义，可以得到</p>
+<script type="math/tex; mode=display">
+\begin{array}{r}{\mathrm{JSD}(P \| Q)=\frac{1}{2} KL(P \| M)+\frac{1}{2} KL(Q \| M)} \\  where \:\:\:{M=\frac{1}{2}(P+Q)}\end{array}</script><p>假设存在两个分布 P 和 Q，且这两个分布的平均分布 M=(P+Q)/2，那么这两个分布之间的 JS 散度为 P 与 M 之间的 KL 散度加上 Q 与 M 之间的 KL 散度再除以 2。</p>
+<p>JS散度的值的范围为$0-\log 2$，如果两个分布完全没有关系，那么JS散度取得最大值$\log2$，如果两个分布完全相同，那么JS散度取得最大值0。</p>
+</blockquote>
+<p>根据JS散度的性质，可以对上述的最优目标进一步优化</p>
+<script type="math/tex; mode=display">
 \begin{align}
 V(G, D^{*})&=-\log 4+K L\left(p_{\text {data}} | \frac{p_{\text {data}}+p_{G}}{2}\right)+K L\left(p_{G} | \frac{p_{\text {data}}+p_{G}}{2}\right)\\
 &=-\log4+2JS(p_{data}|p_G)
 
-\end{align}</script><p>当分布满足$p_{G}(x)=p_{data}(x)$的条件下$JS(p_{data}|p_G)=0$。</p><p>综上可以得到，当且仅当生成数据分布和数据样本分布相等时，可以得到最优的生成器。</p><h3 id="网络训练过程"><a href="#网络训练过程" class="headerlink" title="网络训练过程"></a>网络训练过程</h3><p>上述是从理论的角度进行最优生成器和最优判别器的推导，先求出最优判别器，再使用最优判别器计算最优的生成器。优化目标如下</p><script type="math/tex;mode=display">
-V(G, D)=E _ { x \sim p _ { d a t a } ( x ) } \log ( D ( x ) ) + E _ { z \sim p _ { z } ( z ) } \log ( 1 - D ( G ( z ) ) ) \\</script><p>这是在最开始的时候提出的优化目标，其中涉及两个求解期望的过程，在实际训练中使用SGD的方法，针对每个batch的数据，假设存在数据数量为m。</p><ul><li>从真实数据$p_{data}$中采样m个样本，$\left\{x^{1}, x^{2}, \ldots, x^{m}\right\}$为正样本</li><li>从先验分布$p_{prior}​$噪声样本中抽取m个噪声样本</li><li>将噪声样本输入生成器G中，生成数据$\left\{\tilde{x}^{1}, \widetilde{x}^{2}, \ldots, \tilde{x}^{m}\right\}, \widetilde{x}^{i}=G\left(z^{i}\right)$，通过最大化目标函数<script type="math/tex">\tilde{V}=\frac{1}{m} \sum_{i=1}^{m} \log D\left(x^{i}\right)+\frac{1}{m} \sum_{i=1}^{m} \log \left(1-D\left(\tilde{x}^{i}\right)\right)</script>更新判别器D的参数<script type="math/tex">\theta_d</script>，参数的更新方式为$\theta_{d} \leftarrow \theta_{d}+\eta \nabla \widetilde{V}\left(\theta_{d}\right)$</li></ul><p>上述为判别器的更新方式，我们希望最大化目标函数，因此这个步骤会重复k次，之后对生成器G进行更新。</p><ul><li>从先验分布$p_{prior}$中采样每个噪声样本</li><li>通过极小化目标函数$\widetilde{V}=\frac{1}{m} \sum_{i=1}^{m} \log \left(1-D\left(G\left(z^{i}\right)\right)\right)$更新生成器G的参数$\theta_g$，生成器参数的更新方式为$\theta_{g} \leftarrow \theta_{g}-\eta \nabla \tilde{V}\left(\theta_{g}\right)$</li></ul><p>以上是生成器的训练过程，该过程 在一次迭代中只进行一次更新，可以避免更新太多使JS散度上升。</p><h3 id="代码说明"><a href="#代码说明" class="headerlink" title="代码说明"></a>代码说明</h3><p>代码地址<a href="https://github.com/jiqizhixin/ML-Tutorial-Experiment" target="_blank" rel="noopener">https://github.com/jiqizhixin/ML-Tutorial-Experiment</a></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#下面在满足epoch条件下进行训练</span></span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> range(<span class="number">30</span>):</span><br><span class="line"></span><br><span class="line">    <span class="comment">#计算一个epoch所需要的迭代数量，即训练样本数除批量大小数的值取整；其中shape[0]就是读取矩阵第一维度的长度</span></span><br><span class="line">    print(<span class="string">"Number of batches"</span>, int(X_train.shape[<span class="number">0</span>]/BATCH_SIZE))</span><br><span class="line"></span><br><span class="line">    <span class="comment">#在一个epoch内进行迭代训练</span></span><br><span class="line">    <span class="keyword">for</span> index <span class="keyword">in</span> range(int(X_train.shape[<span class="number">0</span>]/BATCH_SIZE)):</span><br><span class="line"></span><br><span class="line">        <span class="comment">#随机生成的噪声服从均匀分布，且采样下界为-1、采样上界为1，输出BATCH_SIZE×100个样本；即抽取一个批量的随机样本</span></span><br><span class="line">        noise = np.random.uniform(<span class="number">-1</span>, <span class="number">1</span>, size=(BATCH_SIZE, <span class="number">100</span>))</span><br><span class="line"></span><br><span class="line">        <span class="comment">#抽取一个批量的真实图片</span></span><br><span class="line">        image_batch = X_train[index*BATCH_SIZE:(index+<span class="number">1</span>)*BATCH_SIZE]</span><br><span class="line"></span><br><span class="line">        <span class="comment">#生成的图片使用生成器对随机噪声进行推断；verbose为日志显示，0为不在标准输出流输出日志信息，1为输出进度条记录</span></span><br><span class="line">        <span class="comment"># 使用噪声数据生成图片,g为生成器</span></span><br><span class="line">        generated_images = g.predict(noise, verbose=<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment">#每经过100次迭代输出一张生成的图片</span></span><br><span class="line">        <span class="keyword">if</span> index % <span class="number">100</span> == <span class="number">0</span>:</span><br><span class="line">            image = combine_images(generated_images)</span><br><span class="line">            image = image*<span class="number">127.5</span>+<span class="number">127.5</span></span><br><span class="line">            Image.fromarray(image.astype(np.uint8)).save(</span><br><span class="line">                <span class="string">"./GAN/"</span>+str(epoch)+<span class="string">"_"</span>+str(index)+<span class="string">".png"</span>)</span><br><span class="line"></span><br><span class="line">            <span class="comment">#将真实的图片和生成的图片以多维数组的形式拼接在一起，真实图片在上，生成图片在下</span></span><br><span class="line">            X = np.concatenate((image_batch, generated_images))</span><br><span class="line"></span><br><span class="line">            <span class="comment">#生成图片真假标签，即一个包含两倍批量大小的列表；前一个批量大小都是1，代表真实图片，后一个批量大小都是0，代表伪造图片</span></span><br><span class="line">            y = [<span class="number">1</span>] * BATCH_SIZE + [<span class="number">0</span>] * BATCH_SIZE</span><br><span class="line"></span><br><span class="line">            <span class="comment">#判别器的损失；在一个batch的数据上进行一次参数更新</span></span><br><span class="line">            d_loss = d.train_on_batch(X, y)</span><br><span class="line">            print(<span class="string">"batch %d d_loss : %f"</span> % (index, d_loss))</span><br><span class="line"></span><br><span class="line">            <span class="comment">#随机生成的噪声服从均匀分布</span></span><br><span class="line">            noise = np.random.uniform(<span class="number">-1</span>, <span class="number">1</span>, (BATCH_SIZE, <span class="number">100</span>))</span><br><span class="line"></span><br><span class="line">            <span class="comment">#固定判别器，此时判别器参数被固定不再更新</span></span><br><span class="line">            d.trainable = <span class="keyword">False</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">#计算生成器损失；在一个batch的数据上进行一次参数更新</span></span><br><span class="line">            g_loss = d_on_g.train_on_batch(noise, [<span class="number">1</span>] * BATCH_SIZE)</span><br><span class="line"></span><br><span class="line">            <span class="comment">#令判别器可训练</span></span><br><span class="line">            d.trainable = <span class="keyword">True</span></span><br><span class="line">            print(<span class="string">"batch %d g_loss : %f"</span> % (index, g_loss))</span><br><span class="line"></span><br><span class="line">            <span class="comment">#每100次迭代保存一次生成器和判别器的权重</span></span><br><span class="line">            <span class="keyword">if</span> index % <span class="number">100</span> == <span class="number">9</span>:</span><br><span class="line">                g.save_weights(<span class="string">'generator'</span>, <span class="keyword">True</span>)</span><br><span class="line">                d.save_weights(<span class="string">'discriminator'</span>, <span class="keyword">True</span>)</span><br></pre></td></tr></table></figure><p>查看上述的代码可以看出，在每个batch中，选择一个批次的数据和同样数量的噪声数据，认为真实数据标签为1，生成器生成的噪声数据标签为0，使用交叉熵损失来训练判别器；之后固定判别器参数，再次选择一个批次数量的噪声，此时认为生成器生成的噪声数据标签为1，同样通过交叉熵损失来更新生成器参数。由此反复，不断更新判别器和生成器的参数。</p><h2 id="pix2pix"><a href="#pix2pix" class="headerlink" title="pix2pix"></a>pix2pix</h2><h3 id="Unet"><a href="#Unet" class="headerlink" title="Unet"></a>Unet</h3><p>Unet最初被提出是用来解决图像分割任务，相关论文可以点击参考文献查看。在对抗生成网络中Unet一般被用来作为生成器，网络结构图如下所示</p> <img src="/2019/02/23/深度学习-对抗生成网络/unet.png" title="Unet"><p>Unet有一个很显著的特点，输入的数据尺寸和输出的数据尺寸相等，对于输入输入首先进行下采样，之后进行反卷积上采样，并且连接下采样过程中相等的block的尺寸，直至整个网络输出。</p><h4 id="Keras-implement"><a href="#Keras-implement" class="headerlink" title="Keras implement"></a>Keras implement</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> skimage.io <span class="keyword">as</span> io</span><br><span class="line"><span class="keyword">import</span> skimage.transform <span class="keyword">as</span> trans</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> keras.models <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> keras.optimizers <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> keras.callbacks <span class="keyword">import</span> ModelCheckpoint, LearningRateScheduler</span><br><span class="line"><span class="keyword">from</span> keras <span class="keyword">import</span> backend <span class="keyword">as</span> keras</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unet</span><span class="params">(pretrained_weights = None,input_size = <span class="params">(<span class="number">256</span>,<span class="number">256</span>,<span class="number">1</span>)</span>)</span>:</span></span><br><span class="line">    inputs = Input(input_size)</span><br><span class="line">    conv1 = Conv2D(<span class="number">64</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(inputs)</span><br><span class="line">    conv1 = Conv2D(<span class="number">64</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(conv1)</span><br><span class="line">    pool1 = MaxPooling2D(pool_size=(<span class="number">2</span>, <span class="number">2</span>))(conv1)</span><br><span class="line">    conv2 = Conv2D(<span class="number">128</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(pool1)</span><br><span class="line">    conv2 = Conv2D(<span class="number">128</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(conv2)</span><br><span class="line">    pool2 = MaxPooling2D(pool_size=(<span class="number">2</span>, <span class="number">2</span>))(conv2)</span><br><span class="line">    conv3 = Conv2D(<span class="number">256</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(pool2)</span><br><span class="line">    conv3 = Conv2D(<span class="number">256</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(conv3)</span><br><span class="line">    pool3 = MaxPooling2D(pool_size=(<span class="number">2</span>, <span class="number">2</span>))(conv3)</span><br><span class="line">    conv4 = Conv2D(<span class="number">512</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(pool3)</span><br><span class="line">    conv4 = Conv2D(<span class="number">512</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(conv4)</span><br><span class="line">    drop4 = Dropout(<span class="number">0.5</span>)(conv4)</span><br><span class="line">    pool4 = MaxPooling2D(pool_size=(<span class="number">2</span>, <span class="number">2</span>))(drop4)</span><br><span class="line"></span><br><span class="line">    conv5 = Conv2D(<span class="number">1024</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(pool4)</span><br><span class="line">    conv5 = Conv2D(<span class="number">1024</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(conv5)</span><br><span class="line">    drop5 = Dropout(<span class="number">0.5</span>)(conv5)</span><br><span class="line"></span><br><span class="line">    up6 = Conv2D(<span class="number">512</span>, <span class="number">2</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(UpSampling2D(size = (<span class="number">2</span>,<span class="number">2</span>))(drop5))</span><br><span class="line">    merge6 = concatenate([drop4,up6], axis = <span class="number">3</span>)</span><br><span class="line">    conv6 = Conv2D(<span class="number">512</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(merge6)</span><br><span class="line">    conv6 = Conv2D(<span class="number">512</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(conv6)</span><br><span class="line"></span><br><span class="line">    up7 = Conv2D(<span class="number">256</span>, <span class="number">2</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(UpSampling2D(size = (<span class="number">2</span>,<span class="number">2</span>))(conv6))</span><br><span class="line">    merge7 = concatenate([conv3,up7], axis = <span class="number">3</span>)</span><br><span class="line">    conv7 = Conv2D(<span class="number">256</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(merge7)</span><br><span class="line">    conv7 = Conv2D(<span class="number">256</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(conv7)</span><br><span class="line"></span><br><span class="line">    up8 = Conv2D(<span class="number">128</span>, <span class="number">2</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(UpSampling2D(size = (<span class="number">2</span>,<span class="number">2</span>))(conv7))</span><br><span class="line">    merge8 = concatenate([conv2,up8], axis = <span class="number">3</span>)</span><br><span class="line">    conv8 = Conv2D(<span class="number">128</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(merge8)</span><br><span class="line">    conv8 = Conv2D(<span class="number">128</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(conv8)</span><br><span class="line"></span><br><span class="line">    up9 = Conv2D(<span class="number">64</span>, <span class="number">2</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(UpSampling2D(size = (<span class="number">2</span>,<span class="number">2</span>))(conv8))</span><br><span class="line">    merge9 = concatenate([conv1,up9], axis = <span class="number">3</span>)</span><br><span class="line">    conv9 = Conv2D(<span class="number">64</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(merge9)</span><br><span class="line">    conv9 = Conv2D(<span class="number">64</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(conv9)</span><br><span class="line">    conv9 = Conv2D(<span class="number">2</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(conv9)</span><br><span class="line">    conv10 = Conv2D(<span class="number">1</span>, <span class="number">1</span>, activation = <span class="string">'sigmoid'</span>)(conv9)</span><br><span class="line"></span><br><span class="line">    model = Model(input = inputs, output = conv10)</span><br><span class="line"></span><br><span class="line">    model.compile(optimizer = Adam(lr = <span class="number">1e-4</span>), loss = <span class="string">'binary_crossentropy'</span>, metrics = [<span class="string">'accuracy'</span>])</span><br><span class="line">    </span><br><span class="line">    <span class="comment">#model.summary()</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(pretrained_weights):</span><br><span class="line">    	model.load_weights(pretrained_weights)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> model</span><br><span class="line">model=unet()</span><br></pre></td></tr></table></figure><h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ul><li><a href="https://zh.wikipedia.org/wiki/%E7%94%9F%E6%88%90%E5%AF%B9%E6%8A%97%E7%BD%91%E7%BB%9C" target="_blank" rel="noopener">wiki: 对抗生成网络</a></li><li><a href="https://www.jiqizhixin.com/articles/2017-10-1-1" target="_blank" rel="noopener">机器之心GitHub项目：GAN完整理论推导与实现，Perfect！</a></li><li><a href="https://arxiv.org/abs/1505.04597" target="_blank" rel="noopener">U-Net: Convolutional Networks for Biomedical Image Segmentation</a></li></ul></div><div><div><div style="text-align:center;color:#ccc;font-size:14px">-------------本文结束<i class="fa fa-paw"></i>知识分享，方便你我-------------</div></div></div><div class="my_post_copyright"><script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script><script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script><script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script><p><span>本文标题:</span><a href="/2019/02/23/深度学习-对抗生成网络/">深度学习-对抗生成网络</a></p><p><span>文章作者:</span><a href="/" title="访问 ShiXiaofeng 的个人博客">ShiXiaofeng</a></p><p><span>发布时间:</span>2019年02月23日 - 20:23</p><p><span>最后更新:</span>2019年02月25日 - 15:22</p><p><span>原始链接:</span><a href="/2019/02/23/深度学习-对抗生成网络/" title="深度学习-对抗生成网络">http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/</a><span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/" aria-label="复制成功！"></i></span></p><p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p></div><script>var clipboard=new Clipboard(".fa-clipboard");$(".fa-clipboard").click(function(){clipboard.on("success",function(){swal({title:"",text:"复制成功",icon:"success",showConfirmButton:!0})})})</script><footer class="post-footer"><div class="post-tags"><a href="/tags/深度学习/" rel="tag"><i class="fa fa-tag"></i> 深度学习</a><a href="/tags/Gan/" rel="tag"><i class="fa fa-tag"></i> Gan</a></div><div class="post-nav"><div class="post-nav-next post-nav-item"><a href="/2019/02/15/Transformer-Attention_is_all_you_need/" rel="next" title="Transformer-Attention_is_all_you_need"><i class="fa fa-chevron-left"></i> Transformer-Attention_is_all_you_need</a></div><span class="post-nav-divider"></span><div class="post-nav-prev post-nav-item"> <a href="/2019/02/25/机器学习-朴素贝叶斯/" rel="prev" title="机器学习-朴素贝叶斯">机器学习-朴素贝叶斯<i class="fa fa-chevron-right"></i></a></div></div></footer></div></article><div class="post-spread"></div></div></div><div class="comments" id="comments"></div></div><div class="sidebar-toggle"><div class="sidebar-toggle-line-wrap"><span class="sidebar-toggle-line sidebar-toggle-line-first"></span><span class="sidebar-toggle-line sidebar-toggle-line-middle"></span><span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id="sidebar" class="sidebar"><div class="sidebar-inner"><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap"> 文章目录</li><li class="sidebar-nav-overview" data-target="site-overview-wrap"> 站点概览</li></ul><section class="site-overview-wrap sidebar-panel"><div class="site-overview"><div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person"> <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="ShiXiaofeng"><p class="site-author-name" itemprop="name">ShiXiaofeng</p><p class="site-description motion-element" itemprop="description">数据挖掘，机器学习，深度学习相关技术分享及记录</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"> <a href="/archives/"><span class="site-state-item-count">18</span> <span class="site-state-item-name">日志</span></a></div><div class="site-state-item site-state-categories"> <a href="/categories/index.html"><span class="site-state-item-count">17</span> <span class="site-state-item-name">分类</span></a></div><div class="site-state-item site-state-tags"> <a href="/tags/index.html"><span class="site-state-item-count">34</span> <span class="site-state-item-name">标签</span></a></div></nav><div class="feed-link motion-element"><a href="/atom.xml" rel="alternate"><i class="fa fa-rss"></i> RSS</a></div><div class="links-of-author motion-element"><span class="links-of-author-item"><a href="https://github.com/xiaofengShi" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i> GitHub</a></span><span class="links-of-author-item"><a href="mailto:yourname@gmail.com" target="_blank" title="E-Mail"><i class="fa fa-fw fa-envelope"></i> E-Mail</a></span></div></div></section><section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active"><div class="post-toc"><div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#生成网络基本原理"><span class="nav-number">1.</span> <span class="nav-text">生成网络基本原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#原始GAN详细理论推导"><span class="nav-number">2.</span> <span class="nav-text">原始GAN详细理论推导</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#KL散度"><span class="nav-number">2.1.</span> <span class="nav-text">KL散度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#极大似然估计"><span class="nav-number">2.2.</span> <span class="nav-text">极大似然估计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最优的判别器"><span class="nav-number">2.3.</span> <span class="nav-text">最优的判别器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最优的生成器"><span class="nav-number">2.4.</span> <span class="nav-text">最优的生成器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网络训练过程"><span class="nav-number">2.5.</span> <span class="nav-text">网络训练过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码说明"><span class="nav-number">2.6.</span> <span class="nav-text">代码说明</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pix2pix"><span class="nav-number">3.</span> <span class="nav-text">pix2pix</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Unet"><span class="nav-number">3.1.</span> <span class="nav-text">Unet</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Keras-implement"><span class="nav-number">3.1.1.</span> <span class="nav-text">Keras implement</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reference"><span class="nav-number">4.</span> <span class="nav-text">Reference</span></a></li></ol></div></div></section></div></aside></div></main><footer id="footer" class="footer"><div class="footer-inner"><div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2019</span><span class="with-love"><i class="fa fa-user"></i></span> <span class="author" itemprop="copyrightHolder">ShiXiaofeng</span></div></div></footer><div class="back-to-top"><i class="fa fa-arrow-up"></i> <span id="scrollpercent"><span>0</span>%</span></div></div><script type="text/javascript">"[object Function]"!==Object.prototype.toString.call(window.Promise)&&(window.Promise=null)</script><script type="text/javascript" src="https://cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script><script type="text/javascript" src="https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script><script type="text/javascript" src="https://cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script><script type="text/javascript" src="https://cdn.bootcss.com/velocity/1.2.1/velocity.min.js"></script><script type="text/javascript" src="https://cdn.bootcss.com/velocity/1.2.1/velocity.ui.min.js"></script><script type="text/javascript" src="https://cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script><script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script><script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script><script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script><script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script><script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script><script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script><script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine/dist/Valine.min.js"></script><script type="text/javascript">
+\end{align}</script><p>当分布满足$p_{G}(x)=p_{data}(x)$的条件下$JS(p_{data}|p_G)=0$。</p>
+<p>综上可以得到，当且仅当生成数据分布和数据样本分布相等时，可以得到最优的生成器。</p>
+<h3 id="网络训练过程"><a href="#网络训练过程" class="headerlink" title="网络训练过程"></a>网络训练过程</h3><p>上述是从理论的角度进行最优生成器和最优判别器的推导，先求出最优判别器，再使用最优判别器计算最优的生成器。优化目标如下</p>
+<script type="math/tex; mode=display">
+V(G, D)=E _ { x \sim p _ { d a t a } ( x ) } \log ( D ( x ) ) + E _ { z \sim p _ { z } ( z ) } \log ( 1 - D ( G ( z ) ) ) \\</script><p>这是在最开始的时候提出的优化目标，其中涉及两个求解期望的过程，在实际训练中使用SGD的方法，针对每个batch的数据，假设存在数据数量为m。</p>
+<ul>
+<li><p>从真实数据$p_{data}​$中采样$m​$个样本，$\left\{x^{1}, x^{2}, \ldots, x^{m}\right\}​$为正样本</p>
+</li>
+<li><p>从先验分布$p_{prior}$噪声样本中抽取$m$个噪声样本$\left\{z^{1}, z^{2}, \ldots, z^{m}\right\}$</p>
+</li>
+<li><p>将噪声样本输入生成器G中，生成数据$\left\{\tilde{x}^{1}, \widetilde{x}^{2}, \ldots, \tilde{x}^{m}\right\}, \widetilde{x}^{i}=G\left(z^{i}\right)$，通过最大化目标函数</p>
+<script type="math/tex; mode=display">
+\tilde{V}=\frac{1}{m} \sum_{i=1}^{m} \log D\left(x^{i}\right)+\frac{1}{m} \sum_{i=1}^{m} \log \left(1-D\left(\tilde{x}^{i}\right)\right)</script><p>更新判别器D的参数<script type="math/tex">\theta_d</script>，参数的更新方式为$\theta_{d} \leftarrow \theta_{d}+\eta \nabla \widetilde{V}\left(\theta_{d}\right)$</p>
+</li>
+</ul>
+<p>上述为判别器的更新方式，我们希望最大化目标函数，因此这个步骤会重复k次，之后对生成器G进行更新。</p>
+<ul>
+<li><p>从先验分布$p_{prior}$中采样个$m$噪声样本$\left\{\tilde{z}^{1}, \widetilde{z}^{2}, \ldots, \tilde{z}^{m}\right\}$</p>
+</li>
+<li><p>通过极小化目标函数</p>
+<script type="math/tex; mode=display">
+\widetilde{V}=\frac{1}{m} \sum_{i=1}^{m} \log \left(1-D\left(G\left(z^{i}\right)\right)\right)</script><p>更新生成器G的参数$\theta_g$，生成器参数的更新方式为$\theta_{g} \leftarrow \theta_{g}-\eta \nabla \tilde{V}\left(\theta_{g}\right)$</p>
+</li>
+</ul>
+<p>以上是生成器的训练过程，该过程 在一次迭代中只进行一次更新，可以避免更新太多使JS散度上升。</p>
+<p><strong>NOTE</strong>:</p>
+<ul>
+<li><u><strong>在进行判别器参数更新时，因为是最大化优化目标，更新方式为</strong></u>$\theta_{d} \leftarrow \theta_{d}+\eta \nabla \widetilde{V}\left(\theta_{d}\right)​$</li>
+<li><strong><u>在进行生成器参数更新时，因为是最小化优化目标，更新方式为</u></strong>$\theta_{g} \leftarrow \theta_{g}-\eta \nabla \tilde{V}\left(\theta_{g}\right)​$</li>
+</ul>
+<h3 id="代码说明"><a href="#代码说明" class="headerlink" title="代码说明"></a>代码说明</h3><p>代码地址<a href="https://github.com/jiqizhixin/ML-Tutorial-Experiment" target="_blank" rel="noopener">https://github.com/jiqizhixin/ML-Tutorial-Experiment</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#下面在满足epoch条件下进行训练</span></span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> range(<span class="number">30</span>):</span><br><span class="line"></span><br><span class="line">    <span class="comment">#计算一个epoch所需要的迭代数量，即训练样本数除批量大小数的值取整；其中shape[0]就是读取矩阵第一维度的长度</span></span><br><span class="line">    print(<span class="string">"Number of batches"</span>, int(X_train.shape[<span class="number">0</span>]/BATCH_SIZE))</span><br><span class="line"></span><br><span class="line">    <span class="comment">#在一个epoch内进行迭代训练</span></span><br><span class="line">    <span class="keyword">for</span> index <span class="keyword">in</span> range(int(X_train.shape[<span class="number">0</span>]/BATCH_SIZE)):</span><br><span class="line"></span><br><span class="line">        <span class="comment">#随机生成的噪声服从均匀分布，且采样下界为-1、采样上界为1，输出BATCH_SIZE×100个样本；即抽取一个批量的随机样本</span></span><br><span class="line">        noise = np.random.uniform(<span class="number">-1</span>, <span class="number">1</span>, size=(BATCH_SIZE, <span class="number">100</span>))</span><br><span class="line"></span><br><span class="line">        <span class="comment">#抽取一个批量的真实图片</span></span><br><span class="line">        image_batch = X_train[index*BATCH_SIZE:(index+<span class="number">1</span>)*BATCH_SIZE]</span><br><span class="line"></span><br><span class="line">        <span class="comment">#生成的图片使用生成器对随机噪声进行推断；verbose为日志显示，0为不在标准输出流输出日志信息，1为输出进度条记录</span></span><br><span class="line">        <span class="comment"># 使用噪声数据生成图片,g为生成器</span></span><br><span class="line">        generated_images = g.predict(noise, verbose=<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment">#每经过100次迭代输出一张生成的图片</span></span><br><span class="line">        <span class="keyword">if</span> index % <span class="number">100</span> == <span class="number">0</span>:</span><br><span class="line">            image = combine_images(generated_images)</span><br><span class="line">            image = image*<span class="number">127.5</span>+<span class="number">127.5</span></span><br><span class="line">            Image.fromarray(image.astype(np.uint8)).save(</span><br><span class="line">                <span class="string">"./GAN/"</span>+str(epoch)+<span class="string">"_"</span>+str(index)+<span class="string">".png"</span>)</span><br><span class="line"></span><br><span class="line">            <span class="comment">#将真实的图片和生成的图片以多维数组的形式拼接在一起，真实图片在上，生成图片在下</span></span><br><span class="line">            X = np.concatenate((image_batch, generated_images))</span><br><span class="line"></span><br><span class="line">            <span class="comment">#生成图片真假标签，即一个包含两倍批量大小的列表；前一个批量大小都是1，代表真实图片，后一个批量大小都是0，代表伪造图片</span></span><br><span class="line">            y = [<span class="number">1</span>] * BATCH_SIZE + [<span class="number">0</span>] * BATCH_SIZE</span><br><span class="line"></span><br><span class="line">            <span class="comment">#判别器的损失；在一个batch的数据上进行一次参数更新</span></span><br><span class="line">            d_loss = d.train_on_batch(X, y)</span><br><span class="line">            print(<span class="string">"batch %d d_loss : %f"</span> % (index, d_loss))</span><br><span class="line"></span><br><span class="line">            <span class="comment">#随机生成的噪声服从均匀分布</span></span><br><span class="line">            noise = np.random.uniform(<span class="number">-1</span>, <span class="number">1</span>, (BATCH_SIZE, <span class="number">100</span>))</span><br><span class="line"></span><br><span class="line">            <span class="comment">#固定判别器，此时判别器参数被固定不再更新</span></span><br><span class="line">            d.trainable = <span class="keyword">False</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">#计算生成器损失；在一个batch的数据上进行一次参数更新</span></span><br><span class="line">            g_loss = d_on_g.train_on_batch(noise, [<span class="number">1</span>] * BATCH_SIZE)</span><br><span class="line"></span><br><span class="line">            <span class="comment">#令判别器可训练</span></span><br><span class="line">            d.trainable = <span class="keyword">True</span></span><br><span class="line">            print(<span class="string">"batch %d g_loss : %f"</span> % (index, g_loss))</span><br><span class="line"></span><br><span class="line">            <span class="comment">#每100次迭代保存一次生成器和判别器的权重</span></span><br><span class="line">            <span class="keyword">if</span> index % <span class="number">100</span> == <span class="number">9</span>:</span><br><span class="line">                g.save_weights(<span class="string">'generator'</span>, <span class="keyword">True</span>)</span><br><span class="line">                d.save_weights(<span class="string">'discriminator'</span>, <span class="keyword">True</span>)</span><br></pre></td></tr></table></figure>
+<p>查看上述的代码可以看出，在每个Batch中，选择一个批次的数据和同样数量的噪声数据，认为真实数据标签为1，生成器生成的噪声数据标签为0，使用交叉熵损失来训练判别器；之后固定判别器参数，再次选择一个批次数量的噪声，此时认为生成器生成的噪声数据标签为1，同样通过交叉熵损失来更新生成器参数。由此反复，不断更新判别器和生成器的参数。</p>
+<h2 id="pix2pix"><a href="#pix2pix" class="headerlink" title="pix2pix"></a>pix2pix</h2><p>上面部分是对原始的Gan进行了推导和说明，输入的数据是噪声数据，这显然会带来一个问题，给定一个噪声我们无法控制生成的具体图像，以minist举例，使用噪声数据训练，只能得到类似于minist相似的数据，但是无法控制具体是实现哪个数字，整个数据的生成过程的是随机的。</p>
+<p>针对上面所述的问题，引入了条件对抗生成网络，Pix2Pix就是这种网络架构。pix2pix可以用来为线稿图上色，表情转换，性别转换等任务。</p>
+<img src="/2019/02/23/深度学习-对抗生成网络/pix2pix.png" title="pix2pix">
+<p>正如图中所示，整个数据集中存在着成对的图像，分别为线稿的形式和上色的形式，线稿图输入生成网络生成假的彩色图，判别器判别该生成数据为假，判别真实的上色图为真来优判别器，使用真实的上色图和生成网络生成的彩色图之间的的差距来优化生成器。</p>
+<p>和传统的使用对抗生成网络不同，对于pix2pix使用了两个优化目标，一个为Gan优化目标</p>
+<script type="math/tex; mode=display">
+\begin{aligned} \mathcal{L}_{c G A N}(G, D)=& \mathbb{E}_{x, y}[\log D(x, y)]+\\ & \mathbb{E}_{x, z}[\log (1-D(x, G(x, z))]\end{aligned}</script><p>该优化目标和传统的损失函数略有不同，其中$x$为观察数据，$y$为对应的上色图，也就是label，$z$为噪声数据。</p>
+<script type="math/tex; mode=display">
+\mathcal{L}_{L 1}(G)=\mathbb{E}_{x, y, z}\left[\|y-G(x, z)\|_{1}\right]</script><p>判别器的优化目标还是尽可能的对数据进行划分，而生成器的优化目标不仅仅是欺骗判别器，而且还加入了和数据集中样本的差距，并且经过衡量之后L1损失相比L1损失更能生成边缘清晰的图像。</p>
+<p>整个模型的优化目标就是</p>
+<script type="math/tex; mode=display">
+G^{*}=\arg \min _{G} \max _{D} \mathcal{L}_{c G A N}(G, D)+\lambda \mathcal{L}_{L 1}(G)</script><h3 id="Unet"><a href="#Unet" class="headerlink" title="Unet"></a>Unet</h3><p>Unet最初被提出是用来解决图像分割任务，相关论文可以点击参考文献查看。在对抗生成网络中Unet一般被用来作为生成器，网络结构图如下所示</p>
+<img src="/2019/02/23/深度学习-对抗生成网络/unet.png" title="Unet">
+<p>Unet有一个很显著的特点，输入的数据尺寸和输出的数据尺寸相等，对于输入输入首先进行下采样，之后进行反卷积上采样，并且连接下采样过程中相等的block的尺寸，直至整个网络输出。</p>
+<h4 id="Keras-implement"><a href="#Keras-implement" class="headerlink" title="Keras implement"></a>Keras implement</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> skimage.io <span class="keyword">as</span> io</span><br><span class="line"><span class="keyword">import</span> skimage.transform <span class="keyword">as</span> trans</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> keras.models <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> keras.optimizers <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> keras.callbacks <span class="keyword">import</span> ModelCheckpoint, LearningRateScheduler</span><br><span class="line"><span class="keyword">from</span> keras <span class="keyword">import</span> backend <span class="keyword">as</span> keras</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unet</span><span class="params">(pretrained_weights = None,input_size = <span class="params">(<span class="number">256</span>,<span class="number">256</span>,<span class="number">1</span>)</span>)</span>:</span></span><br><span class="line">    inputs = Input(input_size)</span><br><span class="line">    conv1 = Conv2D(<span class="number">64</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(inputs)</span><br><span class="line">    conv1 = Conv2D(<span class="number">64</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(conv1)</span><br><span class="line">    pool1 = MaxPooling2D(pool_size=(<span class="number">2</span>, <span class="number">2</span>))(conv1)</span><br><span class="line">    conv2 = Conv2D(<span class="number">128</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(pool1)</span><br><span class="line">    conv2 = Conv2D(<span class="number">128</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(conv2)</span><br><span class="line">    pool2 = MaxPooling2D(pool_size=(<span class="number">2</span>, <span class="number">2</span>))(conv2)</span><br><span class="line">    conv3 = Conv2D(<span class="number">256</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(pool2)</span><br><span class="line">    conv3 = Conv2D(<span class="number">256</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(conv3)</span><br><span class="line">    pool3 = MaxPooling2D(pool_size=(<span class="number">2</span>, <span class="number">2</span>))(conv3)</span><br><span class="line">    conv4 = Conv2D(<span class="number">512</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(pool3)</span><br><span class="line">    conv4 = Conv2D(<span class="number">512</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(conv4)</span><br><span class="line">    drop4 = Dropout(<span class="number">0.5</span>)(conv4)</span><br><span class="line">    pool4 = MaxPooling2D(pool_size=(<span class="number">2</span>, <span class="number">2</span>))(drop4)</span><br><span class="line"></span><br><span class="line">    conv5 = Conv2D(<span class="number">1024</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(pool4)</span><br><span class="line">    conv5 = Conv2D(<span class="number">1024</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(conv5)</span><br><span class="line">    drop5 = Dropout(<span class="number">0.5</span>)(conv5)</span><br><span class="line"></span><br><span class="line">    up6 = Conv2D(<span class="number">512</span>, <span class="number">2</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(UpSampling2D(size = (<span class="number">2</span>,<span class="number">2</span>))(drop5))</span><br><span class="line">    merge6 = concatenate([drop4,up6], axis = <span class="number">3</span>)</span><br><span class="line">    conv6 = Conv2D(<span class="number">512</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(merge6)</span><br><span class="line">    conv6 = Conv2D(<span class="number">512</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(conv6)</span><br><span class="line"></span><br><span class="line">    up7 = Conv2D(<span class="number">256</span>, <span class="number">2</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(UpSampling2D(size = (<span class="number">2</span>,<span class="number">2</span>))(conv6))</span><br><span class="line">    merge7 = concatenate([conv3,up7], axis = <span class="number">3</span>)</span><br><span class="line">    conv7 = Conv2D(<span class="number">256</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(merge7)</span><br><span class="line">    conv7 = Conv2D(<span class="number">256</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(conv7)</span><br><span class="line"></span><br><span class="line">    up8 = Conv2D(<span class="number">128</span>, <span class="number">2</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(UpSampling2D(size = (<span class="number">2</span>,<span class="number">2</span>))(conv7))</span><br><span class="line">    merge8 = concatenate([conv2,up8], axis = <span class="number">3</span>)</span><br><span class="line">    conv8 = Conv2D(<span class="number">128</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(merge8)</span><br><span class="line">    conv8 = Conv2D(<span class="number">128</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(conv8)</span><br><span class="line"></span><br><span class="line">    up9 = Conv2D(<span class="number">64</span>, <span class="number">2</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(UpSampling2D(size = (<span class="number">2</span>,<span class="number">2</span>))(conv8))</span><br><span class="line">    merge9 = concatenate([conv1,up9], axis = <span class="number">3</span>)</span><br><span class="line">    conv9 = Conv2D(<span class="number">64</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(merge9)</span><br><span class="line">    conv9 = Conv2D(<span class="number">64</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(conv9)</span><br><span class="line">    conv9 = Conv2D(<span class="number">2</span>, <span class="number">3</span>, activation = <span class="string">'relu'</span>, padding = <span class="string">'same'</span>, kernel_initializer = <span class="string">'he_normal'</span>)(conv9)</span><br><span class="line">    conv10 = Conv2D(<span class="number">1</span>, <span class="number">1</span>, activation = <span class="string">'sigmoid'</span>)(conv9)</span><br><span class="line"></span><br><span class="line">    model = Model(input = inputs, output = conv10)</span><br><span class="line"></span><br><span class="line">    model.compile(optimizer = Adam(lr = <span class="number">1e-4</span>), loss = <span class="string">'binary_crossentropy'</span>, metrics = [<span class="string">'accuracy'</span>])</span><br><span class="line">    </span><br><span class="line">    <span class="comment">#model.summary()</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(pretrained_weights):</span><br><span class="line">    	model.load_weights(pretrained_weights)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> model</span><br><span class="line">model=unet()</span><br></pre></td></tr></table></figure>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ul>
+<li><a href="https://zh.wikipedia.org/wiki/%E7%94%9F%E6%88%90%E5%AF%B9%E6%8A%97%E7%BD%91%E7%BB%9C" target="_blank" rel="noopener">wiki: 对抗生成网络</a></li>
+<li><a href="https://www.jiqizhixin.com/articles/2017-10-1-1" target="_blank" rel="noopener">机器之心GitHub项目：GAN完整理论推导与实现，Perfect！</a></li>
+<li><a href="https://arxiv.org/abs/1505.04597" target="_blank" rel="noopener">U-Net: Convolutional Networks for Biomedical Image Segmentation</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+        
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>知识分享，方便你我-------------</div>
+    
+</div>
+
+        
+      </div>
+
+    
+    
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2019/02/23/深度学习-对抗生成网络/">深度学习-对抗生成网络</a></p>
+  <p><span>文章作者:</span><a href="/" title="访问 ShiXiaofeng 的个人博客">ShiXiaofeng</a></p>
+  <p><span>发布时间:</span>2019年02月23日 - 20:23</p>
+  <p><span>最后更新:</span>2019年02月26日 - 10:43</p>
+  <p><span>原始链接:</span><a href="/2019/02/23/深度学习-对抗生成网络/" title="深度学习-对抗生成网络">http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/</a>
+    <span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/" aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+    $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	});
+    });  
+</script>
+
+
+    
+    
+
+    
+
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/深度学习/" rel="tag"><i class="fa fa-tag"></i> 深度学习</a>
+          
+            <a href="/tags/Gan/" rel="tag"><i class="fa fa-tag"></i> Gan</a>
+          
+        </div>
+      
+
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/15/Transformer-Attention_is_all_you_need/" rel="next" title="Transformer-Attention_is_all_you_need">
+                <i class="fa fa-chevron-left"></i> Transformer-Attention_is_all_you_need
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/02/25/机器学习-朴素贝叶斯/" rel="prev" title="机器学习-朴素贝叶斯">
+                机器学习-朴素贝叶斯 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="ShiXiaofeng">
+            
+              <p class="site-author-name" itemprop="name">ShiXiaofeng</p>
+              <p class="site-description motion-element" itemprop="description">数据挖掘，机器学习，深度学习相关技术分享及记录</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/xiaofengShi" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:yourname@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#生成网络基本原理"><span class="nav-number">1.</span> <span class="nav-text">生成网络基本原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#原始GAN详细理论推导"><span class="nav-number">2.</span> <span class="nav-text">原始GAN详细理论推导</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#KL散度"><span class="nav-number">2.1.</span> <span class="nav-text">KL散度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#极大似然估计"><span class="nav-number">2.2.</span> <span class="nav-text">极大似然估计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最优的判别器"><span class="nav-number">2.3.</span> <span class="nav-text">最优的判别器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最优的生成器"><span class="nav-number">2.4.</span> <span class="nav-text">最优的生成器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网络训练过程"><span class="nav-number">2.5.</span> <span class="nav-text">网络训练过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码说明"><span class="nav-number">2.6.</span> <span class="nav-text">代码说明</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pix2pix"><span class="nav-number">3.</span> <span class="nav-text">pix2pix</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Unet"><span class="nav-number">3.1.</span> <span class="nav-text">Unet</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Keras-implement"><span class="nav-number">3.1.1.</span> <span class="nav-text">Keras implement</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reference"><span class="nav-number">4.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ShiXiaofeng</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="https://cdn.bootcss.com/velocity/1.2.1/velocity.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="https://cdn.bootcss.com/velocity/1.2.1/velocity.ui.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="https://cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
     var GUEST = ['nick','mail','link'];
     var guest = 'nick,mail,link';
     guest = guest.split(',').filter(item=>{
@@ -59,7 +1110,13 @@ V(G, D)=E _ { x \sim p _ { d a t a } ( x ) } \log ( D ( x ) ) + E _ { z \sim p _
         guest_info:guest,
         pageSize:'10' || 10,
     });
-  </script><script type="text/javascript">
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
     // Popup Window;
     var isfetched = false;
     var isXml = true;
@@ -374,7 +1431,131 @@ V(G, D)=E _ { x \sim p _ { d a t a } ( x ) } \log ( D ( x ) ) + E _ { z \sim p _
         onPopupClose();
       }
     });
-  </script><script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script><script>AV.initialize("rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz","zJasiQnAqgUwf4kiHhHyXwOP")</script><script>function showTime(e){var t=new AV.Query(e),c=[],u=$(".leancloud_visitors");u.each(function(){c.push($(this).attr("id").trim())}),t.containedIn("url",c),t.find().done(function(e){var t=".leancloud-visitors-count";if(0!==e.length){for(var n=0;n<e.length;n++){var o=e[n],i=o.get("url"),s=o.get("time"),r=document.getElementById(i);$(r).find(t).text(s)}for(n=0;n<c.length;n++){i=c[n],r=document.getElementById(i);var l=$(r).find(t);""==l.text()&&l.text(0)}}else u.find(t).text(0)}).fail(function(e,t){console.log("Error: "+t.code+" "+t.message)})}function addCount(i){var e=$(".leancloud_visitors"),s=e.attr("id").trim(),r=e.attr("data-flag-title").trim(),t=new AV.Query(i);t.equalTo("url",s),t.find({success:function(e){if(0<e.length){var t=e[0];t.fetchWhenSave(!0),t.increment("time"),t.save(null,{success:function(e){$(document.getElementById(s)).find(".leancloud-visitors-count").text(e.get("time"))},error:function(e,t){console.log("Failed to save Visitor num, with error message: "+t.message)}})}else{var n=new i,o=new AV.ACL;o.setPublicReadAccess(!0),o.setPublicWriteAccess(!0),n.setACL(o),n.set("title",r),n.set("url",s),n.set("time",1),n.save(null,{success:function(e){$(document.getElementById(s)).find(".leancloud-visitors-count").text(e.get("time"))},error:function(e,t){console.log("Failed to create")}})}},error:function(e){console.log("Error:"+e.code+" "+e.message)}})}$(function(){var e=AV.Object.extend("Counter");1==$(".leancloud_visitors").length?addCount(e):1<$(".post-title-link").length&&showTime(e)})</script><script type="text/x-mathjax-config">
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz", "zJasiQnAqgUwf4kiHhHyXwOP");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
       MathJax.Hub.Config({
         tex2jax: {
           inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
@@ -382,11 +1563,27 @@ V(G, D)=E _ { x \sim p _ { d a t a } ( x ) } \log ( D ( x ) ) + E _ { z \sim p _
           skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
         }
       });
-    </script><script type="text/x-mathjax-config">
+    </script>
+
+    <script type="text/x-mathjax-config">
       MathJax.Hub.Queue(function() {
         var all = MathJax.Hub.getAllJax(), i;
         for (i=0; i < all.length; i += 1) {
           all[i].SourceElement().parentNode.className += ' has-jax';
         }
       });
-    </script><script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/javascript" src="/js/src/clipboard.min.js"></script><script type="text/javascript" src="/js/src/clipboard-use.js"></script></body></html>
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+  <!-- 代码块复制功能 -->
+  <script type="text/javascript" src="/js/src/clipboard.min.js"></script>
+  <script type="text/javascript" src="/js/src/clipboard-use.js"></script>
+
+</body>
+</html>
