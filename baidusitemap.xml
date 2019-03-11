@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://xiaofengshi.com/2019/03/06/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Normalization/</loc>
+    <lastmod>2019-03-11T04:28:21.124Z</lastmod>
+  </url>  <url>
+    <loc>http://xiaofengshi.com/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/</loc>
+    <lastmod>2019-03-05T09:02:38.048Z</lastmod>
+  </url>  <url>
     <loc>http://xiaofengshi.com/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/</loc>
     <lastmod>2019-03-05T07:55:17.323Z</lastmod>
   </url>  <url>
@@ -9,9 +15,6 @@
   </url>  <url>
     <loc>http://xiaofengshi.com/2019/02/15/Transformer-Attention_is_all_you_need/</loc>
     <lastmod>2019-03-04T07:25:27.495Z</lastmod>
-  </url>  <url>
-    <loc>http://xiaofengshi.com/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/</loc>
-    <lastmod>2019-03-04T07:08:55.318Z</lastmod>
   </url>  <url>
     <loc>http://xiaofengshi.com/2018/11/06/LeetCode/</loc>
     <lastmod>2019-02-28T07:48:35.942Z</lastmod>

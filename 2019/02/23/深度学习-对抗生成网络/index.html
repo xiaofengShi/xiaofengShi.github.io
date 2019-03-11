@@ -106,7 +106,8 @@
 <meta property="og:image" content="http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/pix2pix_train_gen.png">
 <meta property="og:image" content="http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/cyclegan.png">
 <meta property="og:image" content="http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/noise_cube.png">
-<meta property="og:updated_time" content="2019-03-04T07:08:55.318Z">
+<meta property="og:image" content="http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/gans_sphere.png">
+<meta property="og:updated_time" content="2019-03-05T09:02:38.048Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深度学习-对抗生成网络">
 <meta name="twitter:description" content="GAN(Generative Adversary Networks)的思想是是一种二人零和博弈思想（two-player game），博弈双方的利益之和是一个常数，比如两个人掰手腕，假设总的空间是一定的，你的力气大一点，那你就得到的空间多一点，相应的我的空间就少一点，相反我力气大我就得到的多一点，但有一点是确定的就是，我两的总空间是一定的，这就是二人博弈，但是总利益是一定的。 引申到GAN里面就是">
@@ -750,8 +751,8 @@ G^{*}=\arg \min _{G} \max _{D} \mathcal{L}_{c G A N}(G, D)+\lambda \mathcal{L}_{
 </li>
 </ul>
 <h3 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h3><ul>
-<li>对于生成器的损失，论文中一般使用$\min log(1-D)$，使生成器的生成数据被判别器判定为真，但是这种方式会使得造成梯度消失</li>
-<li>实际中一般使用$\max log(d)$来优化生成器。</li>
+<li>对于生成器的损失，论文中一般使用$\min \log(1-D)​$，使生成器的生成数据被判别器判定为真，但是这种方式会使得造成梯度消失</li>
+<li>实际中一般使用$\max \log(d(x))​$来优化生成器。</li>
 </ul>
 <h3 id="噪声数据的采样"><a href="#噪声数据的采样" class="headerlink" title="噪声数据的采样"></a>噪声数据的采样</h3><ul>
 <li>不要从标准分布中进行噪声的采样</li>
@@ -760,6 +761,8 @@ G^{*}=\arg \min _{G} \max _{D} \mathcal{L}_{c G A N}(G, D)+\lambda \mathcal{L}_{
 <ul>
 <li>使用高斯分布进行采样</li>
 </ul>
+<img src="/2019/02/23/深度学习-对抗生成网络/gans_sphere.png" title="sphere">
+<p>在进行插值操作时，使用大圆上的数据分布进行插值操作，而不是使用小圆的连接直线上进行插值。</p>
 <h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ul>
 <li><a href="https://zh.wikipedia.org/wiki/%E7%94%9F%E6%88%90%E5%AF%B9%E6%8A%97%E7%BD%91%E7%BB%9C" target="_blank" rel="noopener">wiki: 对抗生成网络</a></li>
 <li><a href="https://www.jiqizhixin.com/articles/2017-10-1-1" target="_blank" rel="noopener">机器之心GitHub项目：GAN完整理论推导与实现，Perfect！</a></li>
@@ -769,6 +772,7 @@ G^{*}=\arg \min _{G} \max _{D} \mathcal{L}_{c G A N}(G, D)+\lambda \mathcal{L}_{
 <li><a href="https://affinelayer.com/pixsrv/" target="_blank" rel="noopener">pix2pix_project</a></li>
 <li><a href="https://affinelayer.com/pix2pix/" target="_blank" rel="noopener">blog: pix2pix</a></li>
 <li><a href="https://medium.com/@ManishChablani/cyclegans-and-pix2pix-5e6a5f0159c4" target="_blank" rel="noopener">blog: CycleGANS and Pix2Pix </a></li>
+<li><a href="https://github.com/soumith/ganhacks" target="_blank" rel="noopener">Gans trick</a></li>
 </ul>
 
       
@@ -800,7 +804,7 @@ G^{*}=\arg \min _{G} \max _{D} \mathcal{L}_{c G A N}(G, D)+\lambda \mathcal{L}_{
   <p><span>本文标题:</span><a href="/2019/02/23/深度学习-对抗生成网络/">深度学习-对抗生成网络</a></p>
   <p><span>文章作者:</span><a href="/" title="访问 ShiXiaofeng 的个人博客">ShiXiaofeng</a></p>
   <p><span>发布时间:</span>2019年02月23日 - 20:23</p>
-  <p><span>最后更新:</span>2019年03月04日 - 15:08</p>
+  <p><span>最后更新:</span>2019年03月05日 - 17:02</p>
   <p><span>原始链接:</span><a href="/2019/02/23/深度学习-对抗生成网络/" title="深度学习-对抗生成网络">http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/</a>
     <span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/" aria-label="复制成功！"></i></span>
   </p>
@@ -945,7 +949,7 @@ G^{*}=\arg \min _{G} \max _{D} \mathcal{L}_{c G A N}(G, D)+\lambda \mathcal{L}_{
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-count">19</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -956,7 +960,7 @@ G^{*}=\arg \min _{G} \max _{D} \mathcal{L}_{c G A N}(G, D)+\lambda \mathcal{L}_{
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">17</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -967,7 +971,7 @@ G^{*}=\arg \min _{G} \max _{D} \mathcal{L}_{c G A N}(G, D)+\lambda \mathcal{L}_{
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-count">35</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
