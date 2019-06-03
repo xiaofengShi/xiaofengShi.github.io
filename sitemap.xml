@@ -2,9 +2,44 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://xiaofengshi.com/2018/12/12/AwsomeProcess/</loc>
+    
+    <lastmod>2019-06-03T02:12:08.609Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaofengshi.com/2019/03/19/DeepLearning_Tensorflow/</loc>
+    
+    <lastmod>2019-04-20T08:16:24.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaofengshi.com/2019/03/19/CV%E6%95%B0%E6%8D%AE%E9%9B%86/</loc>
+    
+    <lastmod>2019-04-04T07:04:30.242Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaofengshi.com/2019/03/19/%E7%99%BD%E8%AF%9D%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/</loc>
+    
+    <lastmod>2019-03-28T07:08:31.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaofengshi.com/2019/03/13/OCR-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B/</loc>
+    
+    <lastmod>2019-03-18T08:11:01.937Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://xiaofengshi.com/2019/03/06/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Normalization/</loc>
     
-    <lastmod>2019-03-11T11:11:48.760Z</lastmod>
+    <lastmod>2019-03-12T05:54:09.004Z</lastmod>
     
   </url>
   
@@ -75,13 +110,6 @@
     <loc>http://xiaofengshi.com/2019/02/14/CTC%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/</loc>
     
     <lastmod>2019-02-20T04:20:46.611Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://xiaofengshi.com/2018/12/12/AwsomeProcess/</loc>
-    
-    <lastmod>2019-01-30T07:09:52.433Z</lastmod>
     
   </url>
   
