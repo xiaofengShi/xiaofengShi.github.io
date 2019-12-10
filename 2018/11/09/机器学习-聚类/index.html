@@ -6,7 +6,7 @@
 
 
 <html class="theme-next pisces use-motion" lang="zh-Hans">
-<head><meta name="generator" content="Hexo 3.8.0">
+<head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -72,7 +72,7 @@
 
 
 
-  <meta name="keywords" content="机器学习,聚类,EM,高斯混合分布,">
+  <meta name="keywords" content="机器学习,EM,聚类,高斯混合分布,">
 
 
 
@@ -86,7 +86,7 @@
 
 
 <meta name="description" content="聚类是一种主要用于处理分类的无监督任务。给出一组无标记的数据，目标是找到这组数据的模式特征，例如哪些数据是同一类型的，哪些数据是另外的类型。聚类与分类的最大区别就是分类的目标实现已知，例如我们熟知的猫狗大战，在进行分类之前我们就已经知道给定的样本非猫即狗，但是在聚类的时候，对目标是未知的，只能根据给定的数据的特征，按照自己设定的划分标准将样本进行划分">
-<meta name="keywords" content="机器学习,聚类,EM,高斯混合分布">
+<meta name="keywords" content="机器学习,EM,聚类,高斯混合分布">
 <meta property="og:type" content="article">
 <meta property="og:title" content="机器学习-聚类">
 <meta property="og:url" content="http://xiaofengshi.com/2018/11/09/机器学习-聚类/index.html">
@@ -146,7 +146,7 @@
 
 </head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
   
   
@@ -158,7 +158,7 @@
     <!-- add fork me on github -->
     <a href="https://github.com/xiaofengShi"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
 
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
   <div class="site-meta ">
     
@@ -320,20 +320,20 @@
   
   
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
   
   
   <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2018/11/09/机器学习-聚类/">
 
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="ShiXiaofeng">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="挖掘机养成日记">
     </span>
 
@@ -376,7 +376,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/机器学习/" itemprop="url" rel="index">
                     <span itemprop="name">机器学习</span>
                   </a>
@@ -387,7 +387,7 @@
                   ， 
                 
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/机器学习/无监督/" itemprop="url" rel="index">
                     <span itemprop="name">无监督</span>
                   </a>
@@ -636,9 +636,9 @@ p(x)=\sum_{i=1}^{K}\pi_{i}N(x|\mu_{i}, \sigma_{i})</script><p>每次循环时，
           
             <a href="/tags/机器学习/" rel="tag"><i class="fa fa-tag"></i> 机器学习</a>
           
-            <a href="/tags/聚类/" rel="tag"><i class="fa fa-tag"></i> 聚类</a>
-          
             <a href="/tags/EM/" rel="tag"><i class="fa fa-tag"></i> EM</a>
+          
+            <a href="/tags/聚类/" rel="tag"><i class="fa fa-tag"></i> 聚类</a>
           
             <a href="/tags/高斯混合分布/" rel="tag"><i class="fa fa-tag"></i> 高斯混合分布</a>
           
@@ -733,7 +733,7 @@ p(x)=\sum_{i=1}^{K}\pi_{i}N(x|\mu_{i}, \sigma_{i})</script><p>每次循环时，
 
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
               <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="ShiXiaofeng">
             
@@ -748,7 +748,7 @@ p(x)=\sum_{i=1}^{K}\pi_{i}N(x|\mu_{i}, \sigma_{i})</script><p>每次循环时，
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -759,7 +759,7 @@ p(x)=\sum_{i=1}^{K}\pi_{i}N(x|\mu_{i}, \sigma_{i})</script><p>每次循环时，
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -770,7 +770,7 @@ p(x)=\sum_{i=1}^{K}\pi_{i}N(x|\mu_{i}, \sigma_{i})</script><p>每次循环时，
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-count">37</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

@@ -2,28 +2,49 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://xiaofengshi.com/2018/12/12/AwsomeProcess/</loc>
+    <loc>http://xiaofengshi.com/2018/11/04/blog-make/</loc>
     
-    <lastmod>2019-06-03T02:12:08.609Z</lastmod>
+    <lastmod>2019-12-10T05:12:44.794Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaofengshi.com/2019/08/06/AwesomesMac/</loc>
+    
+    <lastmod>2019-12-10T03:16:58.126Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://xiaofengshi.com/2019/03/19/DeepLearning_Tensorflow/</loc>
     
-    <lastmod>2019-04-20T08:16:24.000Z</lastmod>
+    <lastmod>2019-11-29T10:32:26.502Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaofengshi.com/2018/12/12/AwsomeProcess/</loc>
+    
+    <lastmod>2019-11-14T10:58:05.261Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaofengshi.com/2018/11/09/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%86%B3%E7%AD%96%E6%A0%91/</loc>
+    
+    <lastmod>2019-04-20T09:53:11.000Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://xiaofengshi.com/2019/03/19/CV%E6%95%B0%E6%8D%AE%E9%9B%86/</loc>
     
-    <lastmod>2019-04-04T07:04:30.242Z</lastmod>
+    <lastmod>2019-04-04T07:04:30.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://xiaofengshi.com/2019/03/19/%E7%99%BD%E8%AF%9D%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/</loc>
+    <loc>http://xiaofengshi.com/2019/03/19/assets/%E7%99%BD%E8%AF%9D%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/</loc>
     
     <lastmod>2019-03-28T07:08:31.000Z</lastmod>
     
@@ -32,119 +53,112 @@
   <url>
     <loc>http://xiaofengshi.com/2019/03/13/OCR-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B/</loc>
     
-    <lastmod>2019-03-18T08:11:01.937Z</lastmod>
+    <lastmod>2019-03-18T08:11:01.000Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://xiaofengshi.com/2019/03/06/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Normalization/</loc>
     
-    <lastmod>2019-03-12T05:54:09.004Z</lastmod>
+    <lastmod>2019-03-12T05:54:09.000Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://xiaofengshi.com/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/</loc>
     
-    <lastmod>2019-03-05T09:02:38.048Z</lastmod>
+    <lastmod>2019-03-05T09:02:38.000Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://xiaofengshi.com/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/</loc>
     
-    <lastmod>2019-03-05T07:55:17.323Z</lastmod>
+    <lastmod>2019-03-05T07:55:17.000Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://xiaofengshi.com/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%9B%BE%E5%83%8F%E8%AF%86%E5%88%AB/</loc>
     
-    <lastmod>2019-03-05T07:54:16.858Z</lastmod>
+    <lastmod>2019-03-05T07:54:16.000Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://xiaofengshi.com/2019/02/15/Transformer-Attention_is_all_you_need/</loc>
     
-    <lastmod>2019-03-04T07:25:27.495Z</lastmod>
+    <lastmod>2019-03-04T07:25:27.000Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://xiaofengshi.com/2018/11/06/LeetCode/</loc>
     
-    <lastmod>2019-02-28T07:48:35.942Z</lastmod>
+    <lastmod>2019-02-28T07:48:35.000Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://xiaofengshi.com/2019/02/25/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF/</loc>
     
-    <lastmod>2019-02-26T03:29:14.251Z</lastmod>
+    <lastmod>2019-02-26T03:29:14.000Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://xiaofengshi.com/2018/11/25/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-EM%E7%AE%97%E6%B3%95/</loc>
     
-    <lastmod>2019-02-25T02:53:47.657Z</lastmod>
+    <lastmod>2019-02-25T02:53:47.000Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://xiaofengshi.com/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/</loc>
     
-    <lastmod>2019-02-24T02:50:15.429Z</lastmod>
+    <lastmod>2019-02-24T02:50:15.000Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://xiaofengshi.com/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/</loc>
     
-    <lastmod>2019-02-20T06:04:35.830Z</lastmod>
+    <lastmod>2019-02-20T06:04:35.000Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://xiaofengshi.com/2019/02/14/CTC%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/</loc>
     
-    <lastmod>2019-02-20T04:20:46.611Z</lastmod>
+    <lastmod>2019-02-20T04:20:46.000Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://xiaofengshi.com/2019/01/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-TextDetection/</loc>
     
-    <lastmod>2019-01-27T14:01:11.450Z</lastmod>
+    <lastmod>2019-01-27T14:01:11.000Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://xiaofengshi.com/2019/01/25/Boosting-And-Bagging/</loc>
     
-    <lastmod>2019-01-25T12:53:28.078Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://xiaofengshi.com/2018/11/09/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%86%B3%E7%AD%96%E6%A0%91/</loc>
-    
-    <lastmod>2019-01-25T08:07:54.641Z</lastmod>
+    <lastmod>2019-01-25T12:53:28.000Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://xiaofengshi.com/2019/01/05/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-OCR_Overview/</loc>
     
-    <lastmod>2019-01-23T07:41:50.036Z</lastmod>
+    <lastmod>2019-01-23T07:41:50.000Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://xiaofengshi.com/2018/11/11/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-SVM/</loc>
     
-    <lastmod>2019-01-11T03:02:13.094Z</lastmod>
+    <lastmod>2019-01-11T03:02:13.000Z</lastmod>
     
   </url>
   
@@ -158,42 +172,35 @@
   <url>
     <loc>http://xiaofengshi.com/schedule/index.html</loc>
     
-    <lastmod>2018-11-25T12:08:16.773Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://xiaofengshi.com/2018/11/04/blog-make/</loc>
-    
-    <lastmod>2018-11-18T07:58:22.662Z</lastmod>
+    <lastmod>2018-11-25T12:08:16.000Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://xiaofengshi.com/guestbook/index.html</loc>
     
-    <lastmod>2018-11-11T09:38:05.118Z</lastmod>
+    <lastmod>2018-11-11T09:38:05.000Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://xiaofengshi.com/tags/index.html</loc>
     
-    <lastmod>2018-11-09T14:39:45.800Z</lastmod>
+    <lastmod>2018-11-09T14:39:45.000Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://xiaofengshi.com/categories/index.html</loc>
     
-    <lastmod>2018-11-09T14:39:27.874Z</lastmod>
+    <lastmod>2018-11-09T14:39:27.000Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://xiaofengshi.com/about/index.html</loc>
     
-    <lastmod>2018-11-09T14:39:05.118Z</lastmod>
+    <lastmod>2018-11-09T14:39:05.000Z</lastmod>
     
   </url>
   

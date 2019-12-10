@@ -6,7 +6,7 @@
 
 
 <html class="theme-next pisces use-motion" lang="zh-Hans">
-<head><meta name="generator" content="Hexo 3.8.0">
+<head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -97,7 +97,6 @@
 <meta property="og:image" content="http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/dis_curve.png">
 <meta property="og:image" content="http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/DCGAN.png">
 <meta property="og:image" content="http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/pix2pix.png">
-<meta property="og:image" content="http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/pix2pix_graphic.png">
 <meta property="og:image" content="http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/pix2pix_model.jpg">
 <meta property="og:image" content="http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/pix2pix_dis.png">
 <meta property="og:image" content="http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/pix2pix_g.png">
@@ -107,7 +106,7 @@
 <meta property="og:image" content="http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/cyclegan.png">
 <meta property="og:image" content="http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/noise_cube.png">
 <meta property="og:image" content="http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/gans_sphere.png">
-<meta property="og:updated_time" content="2019-03-05T09:02:38.048Z">
+<meta property="og:updated_time" content="2019-03-05T09:02:38.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深度学习-对抗生成网络">
 <meta name="twitter:description" content="GAN(Generative Adversary Networks)的思想是是一种二人零和博弈思想（two-player game），博弈双方的利益之和是一个常数，比如两个人掰手腕，假设总的空间是一定的，你的力气大一点，那你就得到的空间多一点，相应的我的空间就少一点，相反我力气大我就得到的多一点，但有一点是确定的就是，我两的总空间是一定的，这就是二人博弈，但是总利益是一定的。 引申到GAN里面就是">
@@ -159,7 +158,7 @@
 
 </head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
   
   
@@ -171,7 +170,7 @@
     <!-- add fork me on github -->
     <a href="https://github.com/xiaofengShi"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
 
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
   <div class="site-meta ">
     
@@ -333,20 +332,20 @@
   
   
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
   
   
   <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/">
 
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="ShiXiaofeng">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="挖掘机养成日记">
     </span>
 
@@ -389,7 +388,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/深度学习/" itemprop="url" rel="index">
                     <span itemprop="name">深度学习</span>
                   </a>
@@ -400,7 +399,7 @@
                   ， 
                 
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/深度学习/Gan/" itemprop="url" rel="index">
                     <span itemprop="name">Gan</span>
                   </a>
@@ -673,7 +672,7 @@ V(G, D)=E _ { x \sim p _ { d a t a } ( x ) } \log ( D ( x ) ) + E _ { z \sim p _
 <p>Pix2Pix就是这种网络架构。pix2pix可以用来为线稿图上色，表情转换，性别转换等任务。</p>
 <img src="/2019/02/23/深度学习-对抗生成网络/pix2pix.png" title="pix2pix">
 <p>正如图中所示，整个数据集中存在着成对的图像，分别为线稿的形式和上色的形式，线稿图输入生成网络生成假的彩色图，判别器判别该生成数据为假，判别真实的上色图为真来优判别器，使用真实的上色图和生成网络生成的彩色图之间的的差距来优化生成器。</p>
-<img src="/2019/02/23/深度学习-对抗生成网络/pix2pix_graphic.png" title="pix2pix graphic">
+
 <p>上图为pix2pix在tensorflow训练之后的graphic，可以从整个图中看出整个模型包含一个生成器一个判别器，包含3个损失函数，对上面的图形进行简化，如下图所示。</p>
 <img src="/2019/02/23/深度学习-对抗生成网络/pix2pix_model.jpg" title="pix2pix model">
 <p>如上图所示为pix2pix的模型结构，数据集中存储中成对的数据RealA和RealB，也就是上文所述的X,Y类型的图片。生成网络输入生成网络G中生成Fake_B。</p>
@@ -934,7 +933,7 @@ G^{*}=\arg \min _{G} \max _{D} \mathcal{L}_{c G A N}(G, D)+\lambda \mathcal{L}_{
 
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
               <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="ShiXiaofeng">
             
@@ -949,7 +948,7 @@ G^{*}=\arg \min _{G} \max _{D} \mathcal{L}_{c G A N}(G, D)+\lambda \mathcal{L}_{
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -960,7 +959,7 @@ G^{*}=\arg \min _{G} \max _{D} \mathcal{L}_{c G A N}(G, D)+\lambda \mathcal{L}_{
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -971,7 +970,7 @@ G^{*}=\arg \min _{G} \max _{D} \mathcal{L}_{c G A N}(G, D)+\lambda \mathcal{L}_{
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-count">37</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

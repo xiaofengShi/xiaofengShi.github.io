@@ -1,16 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>http://xiaofengshi.com/2018/12/12/AwsomeProcess/</loc>
-    <lastmod>2019-06-03</lastmod>
+    <loc>http://xiaofengshi.com/2018/11/04/blog-make/</loc>
+    <lastmod>2019-12-10</lastmod>
+  </url>  <url>
+    <loc>http://xiaofengshi.com/2019/08/06/AwesomesMac/</loc>
+    <lastmod>2019-12-10</lastmod>
   </url>  <url>
     <loc>http://xiaofengshi.com/2019/03/19/DeepLearning_Tensorflow/</loc>
+    <lastmod>2019-11-29</lastmod>
+  </url>  <url>
+    <loc>http://xiaofengshi.com/2018/12/12/AwsomeProcess/</loc>
+    <lastmod>2019-11-14</lastmod>
+  </url>  <url>
+    <loc>http://xiaofengshi.com/2018/11/09/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%86%B3%E7%AD%96%E6%A0%91/</loc>
     <lastmod>2019-04-20</lastmod>
   </url>  <url>
     <loc>http://xiaofengshi.com/2019/03/19/CV%E6%95%B0%E6%8D%AE%E9%9B%86/</loc>
     <lastmod>2019-04-04</lastmod>
   </url>  <url>
-    <loc>http://xiaofengshi.com/2019/03/19/%E7%99%BD%E8%AF%9D%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/</loc>
+    <loc>http://xiaofengshi.com/2019/03/19/assets/%E7%99%BD%E8%AF%9D%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/</loc>
     <lastmod>2019-03-28</lastmod>
   </url>  <url>
     <loc>http://xiaofengshi.com/2019/03/13/OCR-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B/</loc>
@@ -55,9 +64,6 @@
     <loc>http://xiaofengshi.com/2019/01/25/Boosting-And-Bagging/</loc>
     <lastmod>2019-01-25</lastmod>
   </url>  <url>
-    <loc>http://xiaofengshi.com/2018/11/09/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%86%B3%E7%AD%96%E6%A0%91/</loc>
-    <lastmod>2019-01-25</lastmod>
-  </url>  <url>
     <loc>http://xiaofengshi.com/2019/01/05/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-OCR_Overview/</loc>
     <lastmod>2019-01-23</lastmod>
   </url>  <url>
@@ -66,8 +72,5 @@
   </url>  <url>
     <loc>http://xiaofengshi.com/2018/11/09/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%81%9A%E7%B1%BB/</loc>
     <lastmod>2018-11-25</lastmod>
-  </url>  <url>
-    <loc>http://xiaofengshi.com/2018/11/04/blog-make/</loc>
-    <lastmod>2018-11-18</lastmod>
   </url>
 </urlset>
