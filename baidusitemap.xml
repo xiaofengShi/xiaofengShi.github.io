@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>http://xiaofengshi.com/2018/11/04/blog-make/</loc>
+    <loc>http://xiaofengshi.com/2019/02/15/NLP-Attention_is_all_you_need/</loc>
+    <lastmod>2019-12-10</lastmod>
+  </url>  <url>
+    <loc>http://xiaofengshi.com/2019/03/19/assets/%E7%99%BD%E8%AF%9D%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/</loc>
     <lastmod>2019-12-10</lastmod>
   </url>  <url>
     <loc>http://xiaofengshi.com/2019/08/06/AwesomesMac/</loc>
+    <lastmod>2019-12-10</lastmod>
+  </url>  <url>
+    <loc>http://xiaofengshi.com/2018/11/04/blog-make/</loc>
     <lastmod>2019-12-10</lastmod>
   </url>  <url>
     <loc>http://xiaofengshi.com/2019/03/19/DeepLearning_Tensorflow/</loc>
@@ -18,9 +24,6 @@
   </url>  <url>
     <loc>http://xiaofengshi.com/2019/03/19/CV%E6%95%B0%E6%8D%AE%E9%9B%86/</loc>
     <lastmod>2019-04-04</lastmod>
-  </url>  <url>
-    <loc>http://xiaofengshi.com/2019/03/19/assets/%E7%99%BD%E8%AF%9D%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/</loc>
-    <lastmod>2019-03-28</lastmod>
   </url>  <url>
     <loc>http://xiaofengshi.com/2019/03/13/OCR-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B/</loc>
     <lastmod>2019-03-18</lastmod>
@@ -36,9 +39,6 @@
   </url>  <url>
     <loc>http://xiaofengshi.com/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%9B%BE%E5%83%8F%E8%AF%86%E5%88%AB/</loc>
     <lastmod>2019-03-05</lastmod>
-  </url>  <url>
-    <loc>http://xiaofengshi.com/2019/02/15/Transformer-Attention_is_all_you_need/</loc>
-    <lastmod>2019-03-04</lastmod>
   </url>  <url>
     <loc>http://xiaofengshi.com/2018/11/06/LeetCode/</loc>
     <lastmod>2019-02-28</lastmod>
