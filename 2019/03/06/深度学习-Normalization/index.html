@@ -1,98 +1,59 @@
 <!DOCTYPE html>
-
-
-
-  
-
-
-<html class="theme-next pisces use-motion" lang="zh-Hans">
-<head><meta name="generator" content="Hexo 3.9.0">
+<html lang="zh-CN">
+<head>
   <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/panda_32px.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/panda_16px.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
 
 
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://xiaofengshi.com').hostname,
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
 
-
-
-
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform">
-<meta http-equiv="Cache-Control" content="no-siteapp">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-    
-  
-  <link href="https://cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css">
-
-
-
-
-
-
-
-  
-
-<link href="https://cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-
-<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/panda_32px.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/panda_16px.png?v=5.1.4">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
-
-
-
-
-
-  <meta name="keywords" content="深度学习,Normalization,">
-
-
-
-
-
-  <link rel="alternate" href="/atom.xml" title="挖掘机养成日记" type="application/atom+xml">
-
-
-
-
-
-
-<meta name="description" content="在深度学习领域，往往需要处理复杂的任务场景，一般使用较深层数的模型进行网络设计，这就涉及到复杂困难的模型调参：学习率的设置，权重初始化的设置以及激活函数的设置等。深度学习之所以难以训练，一个重要的原因在神经网络中层与层之间存在着极强的关联性，并且目前绝大部分使用的都是基于梯度下降的方法进行反向传播训练，当网络的底层发生微弱变化时，这些变化会随着层数的增加被放大，意味着对于高层网络要不断进行参数更新">
+  <meta name="description" content="在深度学习领域，往往需要处理复杂的任务场景，一般使用较深层数的模型进行网络设计，这就涉及到复杂困难的模型调参：学习率的设置，权重初始化的设置以及激活函数的设置等。深度学习之所以难以训练，一个重要的原因在神经网络中层与层之间存在着极强的关联性，并且目前绝大部分使用的都是基于梯度下降的方法进行反向传播训练，当网络的底层发生微弱变化时，这些变化会随着层数的增加被放大，意味着对于高层网络要不断进行参数更新">
 <meta name="keywords" content="深度学习,Normalization">
 <meta property="og:type" content="article">
 <meta property="og:title" content="深度学习-Normalization">
 <meta property="og:url" content="http://xiaofengshi.com/2019/03/06/深度学习-Normalization/index.html">
-<meta property="og:site_name" content="挖掘机养成日记">
+<meta property="og:site_name" content="挖掘机成长日记">
 <meta property="og:description" content="在深度学习领域，往往需要处理复杂的任务场景，一般使用较深层数的模型进行网络设计，这就涉及到复杂困难的模型调参：学习率的设置，权重初始化的设置以及激活函数的设置等。深度学习之所以难以训练，一个重要的原因在神经网络中层与层之间存在着极强的关联性，并且目前绝大部分使用的都是基于梯度下降的方法进行反向传播训练，当网络的底层发生微弱变化时，这些变化会随着层数的增加被放大，意味着对于高层网络要不断进行参数更新">
-<meta property="og:locale" content="zh-Hans">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://xiaofengshi.com/2019/03/06/深度学习-Normalization/normalization.png">
 <meta property="og:image" content="http://xiaofengshi.com/2019/03/06/深度学习-Normalization/bn_1.png">
 <meta property="og:image" content="http://xiaofengshi.com/2019/03/06/深度学习-Normalization/BN_alg1.jpg">
@@ -102,50 +63,28 @@
 <meta property="og:image" content="http://xiaofengshi.com/2019/03/06/深度学习-Normalization/BN_alg2.png">
 <meta property="og:image" content="http://xiaofengshi.com/2019/03/06/深度学习-Normalization/layernormal.png">
 <meta property="og:image" content="http://xiaofengshi.com/2019/03/06/深度学习-Normalization/ln_cnn.png">
-<meta property="og:image" content="http://xiaofengshi.com/2019/03/06/深度学习-Normalization/ln_cnn.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/03/06/深度学习-Normalization/ln_rnn.png">
 <meta property="og:image" content="http://xiaofengshi.com/2019/03/06/深度学习-Normalization/InstanceNormal.png">
 <meta property="og:image" content="http://xiaofengshi.com/2019/03/06/深度学习-Normalization/groupnormalization.png">
-<meta property="og:updated_time" content="2019-03-12T05:54:09.000Z">
+<meta property="og:updated_time" content="2020-01-19T03:18:36.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深度学习-Normalization">
 <meta name="twitter:description" content="在深度学习领域，往往需要处理复杂的任务场景，一般使用较深层数的模型进行网络设计，这就涉及到复杂困难的模型调参：学习率的设置，权重初始化的设置以及激活函数的设置等。深度学习之所以难以训练，一个重要的原因在神经网络中层与层之间存在着极强的关联性，并且目前绝大部分使用的都是基于梯度下降的方法进行反向传播训练，当网络的底层发生微弱变化时，这些变化会随着层数的增加被放大，意味着对于高层网络要不断进行参数更新">
 <meta name="twitter:image" content="http://xiaofengshi.com/2019/03/06/深度学习-Normalization/normalization.png">
 
+<link rel="canonical" href="http://xiaofengshi.com/2019/03/06/深度学习-Normalization/">
 
 
-<script type="text/javascript" id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Pisces',
-    version: '5.1.4',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
-    fancybox: true,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    duoshuo: {
-      userId: '0',
-      author: '博主'
-    },
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
   };
 </script>
 
-
-
-  <link rel="canonical" href="http://xiaofengshi.com/2019/03/06/深度学习-Normalization/">
-
-
-
-
-
-  <title>深度学习-Normalization | 挖掘机养成日记</title>
+  <title>深度学习-Normalization | 挖掘机成长日记</title>
   
 
 
@@ -153,339 +92,205 @@
 
 
 
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
 
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
 
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
-
-  
-  
-    
-  
-
-  <div class="container sidebar-position-left page-post-detail">
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
     <div class="headband"></div>
-    <!-- add fork me on github -->
-    <a href="https://github.com/xiaofengShi"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
 
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta ">
-    
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
 
-    <div class="custom-logo-site-title">
+    <div>
       <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">挖掘机养成日记</span>
+        <span class="site-title">挖掘机成长日记</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
-      
-        <p class="site-subtitle"></p>
-      
+        <p class="site-subtitle">BytedancerClub</p>
   </div>
 
   <div class="site-nav-toggle">
-    <button>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
   </div>
 </div>
+
 
 <nav class="site-nav">
   
-
-  
-    <ul id="menu" class="menu">
-      
-        
+  <ul id="menu" class="menu">
         <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
-            
-            首页
-          </a>
-        </li>
-      
-        
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
         <li class="menu-item menu-item-about">
-          <a href="/about/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
-            
-            关于
-          </a>
-        </li>
-      
-        
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
         <li class="menu-item menu-item-tags">
-          <a href="/tags/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
-            
-            标签
-          </a>
-        </li>
-      
-        
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
         <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
-            
-            分类
-          </a>
-        </li>
-      
-        
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
         <li class="menu-item menu-item-archives">
-          <a href="/archives/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
-            
-            归档
-          </a>
-        </li>
-      
-        
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
         <li class="menu-item menu-item-schedule">
-          <a href="/schedule/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>
-            
-            日程表
-          </a>
-        </li>
-      
-        
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>日程表</a>
+
+  </li>
         <li class="menu-item menu-item-guestbook">
-          <a href="/guestbook/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-commenting"></i> <br>
-            
-            留言板
-          </a>
-        </li>
-      
 
-      
-        <li class="menu-item menu-item-search">
-          
-            <a href="javascript:;" class="popup-trigger">
-          
-            
-              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
-            
-            搜索
-          </a>
-        </li>
-      
-    </ul>
-  
+    <a href="/guestbook/" rel="section"><i class="fa fa-fw fa-commenting"></i>guestbook</a>
 
-  
-    <div class="site-search">
-      
-  <div class="popup search-popup local-search-popup">
-  <div class="local-search-header clearfix">
-    <span class="search-icon">
-      <i class="fa fa-search"></i>
-    </span>
-    <span class="popup-btn-close">
-      <i class="fa fa-times-circle"></i>
-    </span>
-    <div class="local-search-input-wrapper">
-      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
-    </div>
-  </div>
-  <div id="local-search-result"></div>
-</div>
+  </li>
+  </ul>
 
-
-
-    </div>
-  
 </nav>
-
-
-
- </div>
+</div>
     </header>
 
-    <main id="main" class="main">
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/xiaofengShi" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
       <div class="main-inner">
         <div class="content-wrap">
-          <div id="content" class="content">
+          
+
+          <div class="content">
             
 
-  <div id="posts" class="posts-expand">
-    
-
-  
-
+  <div class="posts-expand">
+      
   
   
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2019/03/06/深度学习-Normalization/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ShiXiaofeng">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ShiXiaofeng">
+      <meta itemprop="description" content="机器学习,数据挖掘,深度学习相关技术记录分享">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="挖掘机养成日记">
+      <meta itemprop="name" content="挖掘机成长日记">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">深度学习-Normalization</h1>
-        
+        <h1 class="post-title" itemprop="name headline">
+          深度学习-Normalization
+        </h1>
 
         <div class="post-meta">
-          <span class="post-time">
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-06T12:02:30+08:00">
-                2019-03-06
-              </time>
-            
+              <span class="post-meta-item-text">发表于</span>
 
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
+              <time title="创建时间：2019-03-06 12:02:30" itemprop="dateCreated datePublished" datetime="2019-03-06T12:02:30+08:00">2019-03-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-01-19 11:18:36" itemprop="dateModified" datetime="2020-01-19T11:18:36+08:00">2020-01-19</time>
+              </span>
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
+              <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/深度学习/" itemprop="url" rel="index">
                     <span itemprop="name">深度学习</span>
                   </a>
                 </span>
-
-                
-                
-                  ， 
-                
-              
+                  ，
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/深度学习/Normalization/" itemprop="url" rel="index">
                     <span itemprop="name">Normalization</span>
                   </a>
                 </span>
-
-                
-                
-              
             </span>
-          
 
           
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/03/06/深度学习-Normalization/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/03/06/深度学习-Normalization/" itemprop="commentCount"></span>
-                </a>
+            <span id="/2019/03/06/深度学习-Normalization/" class="post-meta-item leancloud_visitors" data-flag-title="深度学习-Normalization" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
               </span>
-            
-          
-
-          
-          
-             <span id="/2019/03/06/深度学习-Normalization/" class="leancloud_visitors" data-flag-title="深度学习-Normalization">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  7.2k 字
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  28 分钟
-                </span>
-              
-            </div>
-          
-
-          
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2019/03/06/深度学习-Normalization/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2019/03/06/深度学习-Normalization/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
     
     <div class="post-body" itemprop="articleBody">
-
-      
-      
 
       
         <p>在深度学习领域，往往需要处理复杂的任务场景，一般使用较深层数的模型进行网络设计，这就涉及到复杂困难的模型调参：学习率的设置，权重初始化的设置以及激活函数的设置等。深度学习之所以难以训练，一个重要的原因在神经网络中层与层之间存在着极强的关联性，并且目前绝大部分使用的都是基于梯度下降的方法进行反向传播训练，当网络的底层发生微弱变化时，这些变化会随着层数的增加被放大，意味着对于高层网络要不断进行参数更新以适应底层参数的变化，如此导致了训练的困难，很容易会出现梯度爆炸或者梯度消失的情况，导致模型训练失败。</p>
@@ -495,7 +300,7 @@
 <p>深度学习中的 <code>Normalization</code>，因为神经网络里主要有两类实体：神经元或者连接神经元的边，所以按照规范化操作涉及对象的不同可以分为两大类。</p>
 <p>一类是对第 <code>L</code> 层每个神经元的激活值或者说对于第<code>L+1</code> 层网络神经元的输入值进行 Normalization操作，比如BatchNorm/LayerNorm/InstanceNorm/GroupNorm 等方法都属于这一类；</p>
 <p>另外一类是对神经网络中连接相邻隐层神经元之间的边上的权重进行规范化操作，比如 Weight Norm 就属于这一类。</p>
-<p>一般机器学习里看到的损失函数里面加入的对参数的的 L1/L2 等正则项，本质上也属于这第二类规范化操作。L1 正则的规范化目标是造成参数的稀疏化，就是争取达到让大量参数值取得 0 值的效果，而 L2 正则的规范化目标是有效减小原始参数值的大小。有了这些规范目标，通过具体的规范化手段来改变参数值，以达到避免模型过拟合的目的。</p>
+<p>一般机器学习里看到的损失函数里面加入的对参数的的 L1/L2 等正则项，本质上也属于这第二类规范化操作。L1 正则的规范化目标是造成参数的稀疏化，就是争取达到<strong>让大量参数值取得 0 值的效果</strong>，而 L2 正则的规范化目标是有效减小原始参数值的大小。有了这些规范目标，通过具体的规范化手段来改变参数值，以达到避免模型过拟合的目的。</p>
 <h2 id="BatchNormalization"><a href="#BatchNormalization" class="headerlink" title="BatchNormalization"></a>BatchNormalization</h2><p>按照BN论文所述，BN主要针对深度学习模型中的存在的ICS问题进行的设计。</p>
 <h3 id="内部协变量转移ICS"><a href="#内部协变量转移ICS" class="headerlink" title="内部协变量转移ICS"></a>内部协变量转移ICS</h3><p><strong>在深度学习网络的训练过程中，由于网络中参数的变化而引起内部节点数据分布发生变化的过程称为内部协变量转移(Internal Covariate Shift-ICS)。</strong></p>
 <p>正如开篇所述，在神经网络中，对于各个层之间的输出，由于在层内经过权重点乘和非线性激活的操作，每个层之间的输入信号的分布显然会发生变化，并且这种变化随着模型深度的增加会不断增大。</p>
@@ -522,16 +327,16 @@
 <li>计算成本过高，在每次训练的时候对神经网络每一层都进行白化操作</li>
 <li>白化改变了数据分布，会改变网络层中输入数据本身的表达能力，底层网络学习到的参数信息会被白化操作丢失了</li>
 </ul>
-<p>针对白化存在的问题，提出了<code>BN</code>，一方面是简化计算过程，降低计算开销；另一方面是经过批规范化使输出的数据尽量保留原始的数据特征，可以认为BN也是一种白化操作方法，相比白化更简单，并且设置了学习参数，使得BN可以一定程度保留原始的数据特征。</p>
+<p>针对白化存在的问题，提出了<code>BN</code>，一方面是简化计算过程，降低计算开销；另一方面是<strong>经过批规范化使输出的数据尽量保留原始的数据特征</strong>，可以认为BN也是一种白化操作方法，相比白化更简单，并且<strong>设置了学习参数，使得BN可以一定程度保留原始的数据特征</strong>。</p>
 <p><code>Batch</code>的含义是，<code>BN</code>操作针对一个<code>MiniBatch</code>的数据样本，<code>Normalization</code>是指数据标准化。</p>
-<p><code>BN</code>中对每个<code>MiniBatch</code>中的样本的每个特征进行单独的标准化处理，处理之后每个特征变成均值为0，标准化为$1$的分布；并且在白化的基础上在增加一个线性变换，使输出的数据能够尽量恢复原本输入数据的表达能力。</p>
+<p><code>BN</code>中对每个<code>MiniBatch</code>中的样本的每个特征进行单独的标准化处理，<strong>处理之后每个特征变成均值为0，标准化为$1$的分布</strong>；并且在白化的基础上在增加一个线性变换，使输出的数据能够尽量恢复原本输入数据的表达能力。</p>
 <h3 id="MLP训练过程"><a href="#MLP训练过程" class="headerlink" title="MLP训练过程"></a>MLP训练过程</h3><h4 id="前向传播"><a href="#前向传播" class="headerlink" title="前向传播"></a>前向传播</h4><p>在训练过程中，使用<code>MiniBatch</code>进行网络训练</p>
 <img src="/2019/03/06/深度学习-Normalization/bn_1.png" title="Fig1. BN">
 <p>如图1所示为MLP神经网络中的某一层，当前层的节点数量为4，也就是当前层的输入的数据特征数量为4，也就是4行；在当前MiniBatch中包含m个样本，也就是m列。对于BN来说，针对的是一个MiniBatch上的每个特征上单独进行的标准化处理，处理方式就是针对每个特征，计算当前MiniBatch中的该特征的均值和方差，然后对原始数据进行缩放和平移标准化处理。</p>
 <p>对于MLP中的计算过程如下</p>
 <img src="/2019/03/06/深度学习-Normalization/BN_alg1.jpg" title="Fig2. BN Algorithm 1">
-<p>输入：每个MiniBatch的数据$\mathcal{B}=\left\{x_{1 \dots m}\right\}$，样本数量为$m​$</p>
-<p>学习参数：线性变换参数$\gamma, \beta​$</p>
+<p>输入：每个MiniBatch的数据$\mathcal{B}=\left\{x_{1 \dots m}\right\}$，样本数量为$m$</p>
+<p>学习参数：线性变换参数$\gamma, \beta$</p>
 <p>算法步骤为：</p>
 <ul>
 <li><p>在当前MiniBatch上计算每个特征的平均值$\mu_{\mathcal{B}}$和方差$\sigma_{\mathcal{B}}^{2}$</p>
@@ -541,15 +346,15 @@
 <li><p>根据每个特征的均值和方差，对输入数据进行规范化处理得到$\widehat{x}_{i}$</p>
 <script type="math/tex; mode=display">
 \widehat{x}_{i} \leftarrow \frac{x_{i}-\mu_{\mathcal{B}}}{\sqrt{\sigma_{\mathcal{B}}^{2}+\epsilon}}</script><p>其中参数$\epsilon$是一个很小的常数，是为了防止原数据的方差为$0$。</p>
-<p>经过该处理，意味着对原始数据进行规范化处理，使得当前层的输入的每个特征的分布的均值为$0$，方差为$1$。即满足关系式$\sum_{i=1}^{m} \widehat{x}_{i}=0$和$\frac{1}{m} \sum_{i=1}^{m} \widehat{x}_{i}^{2}=1$。这样会使得数据分布变得统一并且稳定，但是这同样导致了数据表达能力的缺失，为了使得规范化的数据尽量保留原始数据的信息，在<code>BN</code>中引入两个可学习参数，对标准化的数据进行线性变换</p>
+<p>经过该处理，意味着对<strong>原始数据进行规范化处理，使得当前层的输入的每个特征的分布的均值为$0$，方差为$1$</strong>。即满足关系式$\sum_{i=1}^{m} \widehat{x}_{i}=0$和$\frac{1}{m} \sum_{i=1}^{m} \widehat{x}_{i}^{2}=1$。这样会使得数据分布变得统一并且稳定，但是这同样导致了数据表达能力的缺失，<strong>为了使得规范化的数据尽量保留原始数据的信息，在<code>BN</code>中引入两个可学习参数，对标准化的数据进行线性变换</strong></p>
 </li>
 <li><p>对规范化的数据进行缩放和平移处理得到批规范化处理后的数据</p>
 <script type="math/tex; mode=display">
-y_{i} \leftarrow \gamma \widehat{x}_{i}+\beta \equiv \mathrm{B} \mathrm{N}_{\gamma, \beta}\left(x_{i}\right)</script><p>经过上述操作，如果可学习参数满足关系$\gamma=\sigma_{\mathcal{B}}^{2}, \beta=\mu_{\mathcal{B}}$，这相当于对数据进行了反向变换$y_{i}=x_{i}​$，保留了原始输入的数据信息。</p>
+y_{i} \leftarrow \gamma \widehat{x}_{i}+\beta \equiv \mathrm{B} \mathrm{N}_{\gamma, \beta}\left(x_{i}\right)</script><p>经过上述操作，如果可学习参数满足关系$\gamma=\sigma_{\mathcal{B}}^{2}, \beta=\mu_{\mathcal{B}}$，这相当于对数据进行了反向变换$y_{i}=x_{i}$，保留了原始输入的数据信息。</p>
 </li>
 </ul>
 <p>如上就是训练阶段<code>BN</code>层前向传播的计算过程。</p>
-<h4 id="反向传播"><a href="#反向传播" class="headerlink" title="反向传播"></a>反向传播</h4><p>在<code>BN</code>层，学习参数为$\beta,\gamma​$</p>
+<h4 id="反向传播"><a href="#反向传播" class="headerlink" title="反向传播"></a>反向传播</h4><p>在<code>BN</code>层，学习参数为$\beta,\gamma$</p>
 <p>根据上述的前向过程，使用目标函数对<code>BN</code>层参数进行更新。</p>
 <script type="math/tex; mode=display">
 \begin{aligned} 
@@ -567,20 +372,20 @@ B N\left(X_{t e s t}\right)=\gamma \cdot \frac{X_{t e s t}-\mu_{t e s t}}{\sqrt{
 <h3 id="CNN中BN的应用"><a href="#CNN中BN的应用" class="headerlink" title="CNN中BN的应用"></a>CNN中BN的应用</h3><img src="/2019/03/06/深度学习-Normalization/bn_cnn.gif" title="Fig4. CNN">
 <p>如图所示为卷积计算过程，只考虑单个样本，输入数据为$7 \times7 \times 3$，使用两个$3\times3$的卷积核，步长为2进行计算，得到的输出维度为$3\times 3 \times 2$。</p>
 <p><strong>和MLP方式不同，对于卷积中<code>BN</code>的应用特别说明。</strong></p>
-<p>在<code>CNN</code>中，以二维卷积为例，输入的数据维度为$NHWC$，表示数据样本数量为$N$，特征图的高度为$H$，宽度为$W$，上一层卷积核的数量为$C$。那么对于<code>BN</code>在$C$的维度上进行特征的标准化处理，$C$可以看做卷积对上一层进行了$C$次卷积计算，得到了$C$个特征，在这个$C$个特征中，每个特征对应的样本数量为$N$，并且每个样本的位置为$H \times W$，这意味着对于每个特征，该特征包含的数据的数量为$N\times H\times W​$。</p>
+<p>在<code>CNN</code>中，以二维卷积为例，输入的数据维度为$NHWC$，表示数据样本数量为$N$，特征图的高度为$H$，宽度为$W$，上一层卷积核的数量为$C$。那么对于<code>BN</code>在$C$的维度上进行特征的标准化处理，$C$可以看做卷积对上一层进行了$C$次卷积计算，得到了$C$个特征，在这个$C$个特征中，每个特征对应的样本数量为$N$，并且每个样本的位置为$H \times W$，这意味着对于每个特征，该特征包含的数据的数量为$N\times H\times W$。</p>
 <img src="/2019/03/06/深度学习-Normalization/batchnormal.png" title="Fig5. Batch Normalization for CNN">
 <h4 id="训练过程"><a href="#训练过程" class="headerlink" title="训练过程"></a>训练过程</h4><h5 id="前向传播-1"><a href="#前向传播-1" class="headerlink" title="前向传播"></a>前向传播</h5><p>在训练时，以<code>MiniBatch</code>为最小单位进行迭代</p>
 <ul>
 <li><p>输入：待进入激活函数的变量<code>NHWC</code></p>
 </li>
-<li><p>学习参数：$\gamma, \beta​$</p>
+<li><p>学习参数：$\gamma, \beta$</p>
 </li>
 <li><p>算法过程</p>
 <p>整体算法按照论文所述如下</p>
 </li>
 </ul>
 <img src="/2019/03/06/深度学习-Normalization/BN_alg2.png" title="Fig5. BN Algorithm2">
-<p>在训练阶段，在图中所示的行$2$中$K$对应输入变量的特征，也就是$K=C​$，对每一个特征进行<code>BN</code>计算，由此需要循环计算BN，在每次循环中，按照图中所示方法进行<code>MiniBatch</code>计算，计算方法和MLP的方式相同，也就是说在MLP的基础上，CNN会在卷积核数量上进行BN的循环计算。</p>
+<p>在训练阶段，在图中所示的行$2$中$K$对应输入变量的特征，也就是$K=C$，对每一个特征进行<code>BN</code>计算，由此需要循环计算BN，在每次循环中，按照图中所示方法进行<code>MiniBatch</code>计算，计算方法和MLP的方式相同，也就是说在MLP的基础上，CNN会在卷积核数量上进行BN的循环计算。</p>
 <h4 id="测试过程-1"><a href="#测试过程-1" class="headerlink" title="测试过程"></a>测试过程</h4><p>在上图中同样描述了在Inference阶段BN的计算，在C维度上，进行BN的Inference计算。</p>
 <h3 id="BN的作用"><a href="#BN的作用" class="headerlink" title="BN的作用"></a>BN的作用</h3><ul>
 <li><p><strong>BN使网络中每层的数据分布相对稳定，加速模型的学习速度</strong></p>
@@ -588,7 +393,7 @@ B N\left(X_{t e s t}\right)=\gamma \cdot \frac{X_{t e s t}-\mu_{t e s t}}{\sqrt{
 </li>
 <li><p><strong>BN使模型对网络中参数不太敏感，简化调参过程，学习更稳定</strong></p>
 <p>在深度学习网络中，调参艰难且复杂，学习率过大的话，参数更新的步伐过大，容易出现震荡和不收敛，使用BN可以使得网络不收到参数数值大小的影响。</p>
-<p>如果参数为$W​$,对其进行缩放为$aW​$，输入数据为$x​$，那么原来的值为$\mu_1​$，方差为$\sigma_{1}^{2}​$，对于缩放之后的值，假设均值为$\mu_2​$，方差为$\sigma_2^2​$，则存在关系式$\mu_{2}=a \mu_{1}  ，\sigma_{2}^{2}=a^{2} \sigma_{1}^{2}​$</p>
+<p>如果参数为$W$,对其进行缩放为$aW$，输入数据为$x$，那么原来的值为$\mu_1$，方差为$\sigma_{1}^{2}$，对于缩放之后的值，假设均值为$\mu_2$，方差为$\sigma_2^2$，则存在关系式$\mu_{2}=a \mu_{1}  ，\sigma_{2}^{2}=a^{2} \sigma_{1}^{2}$</p>
 <p>对数据进行BN处理，忽略公式中的参数$\epsilon$</p>
 <script type="math/tex; mode=display">
 \begin{align}
@@ -599,7 +404,7 @@ B N\left(X_{t e s t}\right)=\gamma \cdot \frac{X_{t e s t}-\mu_{t e s t}}{\sqrt{
 <script type="math/tex; mode=display">
 \frac{\partial B N((a W) x)}{\partial x}=\gamma \cdot \frac{a W}{\sqrt{\sigma_{2}^{2}}}=\gamma \cdot \frac{a W}{\sqrt{a^{2} \sigma_{1}^{2}}}=\frac{\partial B N(W x)}{\partial x}</script><p>可以看到权重的缩放不会影响到对$x$的梯度计算</p>
 <script type="math/tex; mode=display">
-\frac{\partial B N((a W) u)}{\partial(a W)}=\gamma \cdot \frac{u}{\sqrt{\sigma_{2}^{2}}}=\gamma \cdot \frac{u}{a \sqrt{\sigma_{1}^{2}}}=\frac{1}{a} \cdot \frac{\partial B N(W u)}{\partial W}</script><p>BN之后对参数的更新，可以得到如果权重越大，也就是$a$越大，$\frac{1}{a}$越小，<strong>这意味着权重$W​$的梯度更小，如此BN就保证了梯度不会依赖于参数的缩放，使得参数的更新处在更加稳定的状态。</strong></p>
+\frac{\partial B N((a W) u)}{\partial(a W)}=\gamma \cdot \frac{u}{\sqrt{\sigma_{2}^{2}}}=\gamma \cdot \frac{u}{a \sqrt{\sigma_{1}^{2}}}=\frac{1}{a} \cdot \frac{\partial B N(W u)}{\partial W}</script><p>BN之后对参数的更新，可以得到如果权重越大，也就是$a$越大，$\frac{1}{a}$越小，<strong>这意味着权重$W$的梯度更小，如此BN就保证了梯度不会依赖于参数的缩放，使得参数的更新处在更加稳定的状态。</strong></p>
 <p><strong>如此，BN抑制了参数变化会随着网络深度增加被放大的问题，使得网络对参数大小的适应能力更好。</strong></p>
 </li>
 <li><p><strong>BN允许网络使用饱和性激活函数，缓解梯度消失</strong></p>
@@ -621,11 +426,11 @@ B N\left(X_{t e s t}\right)=\gamma \cdot \frac{X_{t e s t}-\mu_{t e s t}}{\sqrt{
 <p>LN在MLP，CNN和RNN的应用如下所示</p>
 <img src="/2019/03/06/深度学习-Normalization/layernormal.png" title="Fig6. Layer Normalization for MLP, 统计范围为当个样本当前隐藏层所有节点">
 <img src="/2019/03/06/深度学习-Normalization/ln_cnn.png" title="Fig7. LN for CNN 统计范围为每个样本所有通道的所有神经元">
-<img src="/2019/03/06/深度学习-Normalization/ln_cnn.png" title="Fig8. LN for RNN 统计范围为每个样本当前时间步隐藏层所有节点">
+<img src="/2019/03/06/深度学习-Normalization/ln_rnn.png" title="Fig8. LN for RNN 统计范围为每个样本当前时间步隐藏层所有节点">
 <p><strong>LN一般只用于RNN的场景下，在CNN中LN规范化效果不如BN,WN,GN,IN的</strong></p>
 <h3 id="计算方式"><a href="#计算方式" class="headerlink" title="计算方式"></a>计算方式</h3><p>计算当前层的参数的平均值和方差</p>
 <script type="math/tex; mode=display">
-\mu^{l}=\frac{1}{H} \sum_{i=1}^{H} a_{i}^{l} \quad (\sigma^{l})^2=\frac{1}{H} \sum_{i=1}^{H}\left(a_{i}^{l}-\mu^{l}\right)^{2}</script><p>其中$H$对应着当前层神经元的数量，也就是RNN中隐藏层节点数，计算所有隐藏层节点的均值和方差，然后使用整个隐藏层的均值和方差来对当前隐藏层进行标准化。</p>
+\mu^{l}=\frac{1}{H} \sum_{i=1}^{H} a_{i}^{l} \quad (\sigma^{l})^2=\frac{1}{H} \sum_{i=1}^{H}\left(a_{i}^{l}-\mu^{l}\right)^{2}</script><p>其中$H$对应着当前层神经元的数量，也就是<code>RNN</code>中隐藏层节点数，计算所有隐藏层节点的均值和方差，然后使用整个隐藏层的均值和方差来对当前隐藏层进行标准化。</p>
 <script type="math/tex; mode=display">
 \widehat{x}_{i}=\frac{x_i-\mu ^l}{\sqrt {\sigma^l +\epsilon }}</script><p>标准化之后经过缩放和平移得到LN之后的输出输出</p>
 <script type="math/tex; mode=display">
@@ -635,6 +440,22 @@ LN(x)=\gamma \widehat{x}_{i} +\beta</script><p>参数$\beta,\gamma$是学习参�
 <li>LN不需要保存MiniBatch的均值和方差，相比BN计算量更小</li>
 <li>BN针对单个神经元进行规范化，不同神经元的输入经过平移和缩放使不同神经元的分布在不同的区间中，LN对于整个一层的神经元进行转换，所有的输入全部控制在同一个区间范围内。在CNN中，假设输入的是一张图片，同一层的输入特征表征着不同的特征，例如有的位置神经元表征的是颜色信息，有的位置神经元表征的是形状信息，那么这个时候BN是更合适的，使不同的特征信息进行分别处理，但是如果这种输入使用LN处理，将一个样本的所有特征的分布全部标准化到一个统一的区间，显然会降低模型的表达能力。</li>
 </ul>
+<h3 id="LN-有效的原因研究"><a href="#LN-有效的原因研究" class="headerlink" title="LN 有效的原因研究"></a>LN 有效的原因研究</h3><p>​    在NLP中，尤其是在BERT等各种变体中，目前基本都是使用LN归一化，那么为什么LN是有效的呢？2019年关注了论文“Understanding and Improving Layer Normalization”，按照论文所属，均值跟方差对梯度的正则化才是层归一化有效的原因，而不是之前广泛认识的前向向量分布稳定性，另外根据论文所述，层归一化的参数部分增加了模型过拟合的风险，引入的参数在很多任务中都带来了效果的下降。</p>
+<p>根据链式求导法则</p>
+<script type="math/tex; mode=display">
+\frac{\partial \ell}{\partial \mathbf{x}} \leftarrow \frac{d \mathbf{y}}{d \mathbf{x}} \frac{\partial \ell}{\partial \mathbf{y}}</script><p>其中$\ell$是模型的损失，$\mathbf{y}$对应着经过LN标准化之后的向量，$\mathbf{x}$对应着原始数据输入，根据上面部分LN的推导，存在关系式</p>
+<script type="math/tex; mode=display">
+\mathbf{y}=\frac{\mathbf{x}-\hat{\mu}}{\hat{\sigma}}, \quad \hat{\mu}=\theta(\mu), \quad \hat{\sigma}=\theta(\sigma)</script><p>对于原始输入，未经过LN正则化，损失函数对输入变量$\mathbf{x}$的梯度</p>
+<script type="math/tex; mode=display">
+\frac{\partial \ell}{\partial x}=\left(a_{1}, a_{2}, \dots, a_{H}\right)^{T}</script><p>$\bar{a}$和$D_{a}$是梯度的均值和方差</p>
+<p>如果经过LN正则化，也就是</p>
+<script type="math/tex; mode=display">
+\mathbf{y}=LN(\mathbf{x})=\frac{\mathbf{x}-\hat{\mu}}{\hat{\sigma}}</script><p>那么损失函数$\ell$对$\mathbf {y}$的梯度为</p>
+<script type="math/tex; mode=display">
+\frac{\partial \ell}{\partial y}=\left(g_{1}, g_{2}, \dots, g_{H}\right)^{T}</script><p>对应的均值和方差为$\bar{g}$和$D_{g}$</p>
+<p>那么满足关系</p>
+<script type="math/tex; mode=display">
+\bar{a}=\bar{g} / \sigma, \quad  D_{a}=D_{g} /\left(\sigma^{2}\right)</script><p>如此，LN实现了对梯度的缩放和平移变换</p>
 <h2 id="Inastance-Normalization（IN）"><a href="#Inastance-Normalization（IN）" class="headerlink" title="Inastance Normalization（IN）"></a>Inastance Normalization（IN）</h2><p><strong>InstanceNormalization主要是针对CNN设计，并且是为了弥补BN的对batch的依赖。</strong></p>
 <p>LN去放弃了BN对batch的依赖，为了能够统计均值和方差，把同层内所有神经元的响应值作为统计范围。为了进一步缩小统计范围，减少噪声的输入，对于CNN，同一个卷积层内，每一个卷积核都会产生一个输出通道，每个输出通道对应一个二维平面，尺寸都为$H\times W$，也包含多个激活神经元。在卷积层中来说，将单个样本的每个输出通道内的神经元会作为一个集合来统计均值和方差。使用该二维平面统计得到的均值和方差，对该二维平面内的元素进行标准化。</p>
 <img src="/2019/03/06/深度学习-Normalization/InstanceNormal.png" title="Instance Normalization for CNN">
@@ -643,15 +464,15 @@ LN(x)=\gamma \widehat{x}_{i} +\beta</script><p>参数$\beta,\gamma$是学习参�
 <h2 id="GroupNormalization-GN"><a href="#GroupNormalization-GN" class="headerlink" title="GroupNormalization(GN)"></a>GroupNormalization(GN)</h2><p>对于LN使用同层所有神经元作为统计范围，用于RNN中。IN将CNN中同一卷积层中每个卷积核对应的输出通道单独作为统计范围。虽然LN用于RNN中，IN用于CNN中，但是可看出这是两种计算情况，LN使用当前层的所有神经元，IN使用当前的单个featuremap，设计的GN的统计范围是介于两者之间，对CNN的在输出通道上进行分组，在分组范围内进行统计。</p>
 <img src="/2019/03/06/深度学习-Normalization/groupnormalization.png" title="Group Normalization for CNN">
 <p><strong>GN在要求batch比较小的场景下或者目标检测，视频分类等任务由于BN</strong></p>
-<h2 id="WeightNormalization"><a href="#WeightNormalization" class="headerlink" title="WeightNormalization"></a>WeightNormalization</h2><p>目前没有API的方式可以实现权重归一化，对于前面的BN和LN，都是将输入的数据进行规范化，WN是从权重的角度进行规范化，WN将权值向量$\mathbf{w}​$在欧式范数和其方向上进行解耦成参数向量$\mathbf{v}​$和参数标量$g​$，在训练时使用SGD分别优化这两个参数。</p>
+<h2 id="WeightNormalization"><a href="#WeightNormalization" class="headerlink" title="WeightNormalization"></a>WeightNormalization</h2><p>目前没有API的方式可以实现权重归一化，对于前面的BN和LN，都是将输入的数据进行规范化，WN是从权重的角度进行规范化，WN将权值向量$\mathbf{w}$在欧式范数和其方向上进行解耦成参数向量$\mathbf{v}$和参数标量$g$，在训练时使用SGD分别优化这两个参数。</p>
 <p>WN和BN不同，与样本数量无关，可以用于batchsize较小和RNN等动态场景中；并且WN不会在梯度计算中像BN那样引入噪声。</p>
 <h3 id="WN训练方法"><a href="#WN训练方法" class="headerlink" title="WN训练方法"></a>WN训练方法</h3><p>在神经网络中，一个节点的计算可以表示为</p>
 <script type="math/tex; mode=display">
-y=\phi(\mathbf{w} \cdot \mathbf{x}+b)</script><p>其中$\mathbf{w}​$是一个k维的特征向量，$y​$是该神经元节点的输出，输出是一个标量。在计算得到损失之后会根据损失使用SGD的优化策略对参数$\mathbf{w}​$和$b​$进行更新。</p>
-<p>WN的归一化策略将$\mathbf{w}​$分解</p>
+y=\phi(\mathbf{w} \cdot \mathbf{x}+b)</script><p>其中$\mathbf{w}$是一个k维的特征向量，$y$是该神经元节点的输出，输出是一个标量。在计算得到损失之后会根据损失使用SGD的优化策略对参数$\mathbf{w}$和$b$进行更新。</p>
+<p>WN的归一化策略将$\mathbf{w}$分解</p>
 <script type="math/tex; mode=display">
 \mathbf{w}=\frac{g}{\|\mathbf{v}\|} \mathbf{v}</script><p>其中$|\mathbf{v}|$表示$\mathbf{v}$的欧氏范数，当$\mathbf{v}=\mathbf{w}$并且$g=|\mathbf{w}||$时，WN会被还原为普通的计算方式。</p>
-<p>如果将参数$g​$固定为$|\mathbf{w}|​$时，只对参数$\mathbf{v}​$进行优化，相当于只优化$\mathbf{w}​$的方向，并保留其范数的大小；如果固定参数$\mathbf{v}=\mathbf{w}​$，只对参数$g​$进行优化 ，相当于只优化$\mathbf{w}​$的范数，并且保留其方向。</p>
+<p>如果将参数$g$固定为$|\mathbf{w}|$时，只对参数$\mathbf{v}$进行优化，相当于只优化$\mathbf{w}$的方向，并保留其范数的大小；如果固定参数$\mathbf{v}=\mathbf{w}$，只对参数$g$进行优化 ，相当于只优化$\mathbf{w}$的范数，并且保留其方向。</p>
 <p>在优化$g$时，一般优化$g$的$\log$参数$s$来实现，即$g=e^{s}$</p>
 <p>参数更新方式</p>
 <script type="math/tex; mode=display">
@@ -672,7 +493,7 @@ y=\phi(\mathbf{w} \cdot \mathbf{x}+b)</script><p>其中$\mathbf{w}​$是一个k
 </ul>
 <h3 id="WN-amp-BN的关系"><a href="#WN-amp-BN的关系" class="headerlink" title="WN&amp;BN的关系"></a>WN&amp;BN的关系</h3><p>假设$t=\mathbf{v} \mathbf{x}$，$\mu[t]$和$\sigma[t]$分别为$t$的期望和方差，如果使用BN的方式进行标准化</p>
 <script type="math/tex; mode=display">
-t^{\prime}=\frac{t-\mu[t]}{\sigma[t]}=\frac{\mathbf{v}}{\sigma[t]} \mathbf{x}-\frac{\mu[t]}{\sigma[t]}</script><p>当网络只有一层并且输入样本服从期望为0，方差为1的独立分布时，有$\mu[t]=0​$并且$\sigma[t]=|\mathbf{v}|​$，此时BN和WN是等价的。</p>
+t^{\prime}=\frac{t-\mu[t]}{\sigma[t]}=\frac{\mathbf{v}}{\sigma[t]} \mathbf{x}-\frac{\mu[t]}{\sigma[t]}</script><p>当网络只有一层并且输入样本服从期望为0，方差为1的独立分布时，有$\mu[t]=0$并且$\sigma[t]=|\mathbf{v}|$，此时BN和WN是等价的。</p>
 <h3 id="Mean-Only-Batch-Normalization"><a href="#Mean-Only-Batch-Normalization" class="headerlink" title="Mean-Only Batch Normalization"></a>Mean-Only Batch Normalization</h3><p>在每一层的layer的激活函数之前</p>
 <script type="math/tex; mode=display">
 t=\boldsymbol{w} \cdot \boldsymbol{x}=\frac{g}{\|\boldsymbol{v}\|} \boldsymbol{v} \cdot x</script><p>虽然将权重$w$进行了分离，但是每一层激活函数之前的输出的均值仍然与$v$有关。将BN和WN进行结合，采用移动平均计算每个minibatch的均值$\mu[t]$，由此</p>
@@ -725,937 +546,412 @@ t=\boldsymbol{w} \cdot \boldsymbol{x}=\frac{g}{\|\boldsymbol{v}\|} \boldsymbol{v
 <li><a href="https://cloud.tencent.com/developer/article/1052868" target="_blank" rel="noopener">Batchnorm原理详解</a></li>
 </ul>
 
-      
     </div>
-    
-    
-    
 
-    <div>
-        
-        <div>
     
-        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>知识分享，方便你我-------------</div>
     
-</div>
-
-        
+    
+        <div class="reward-container">
+  <div>赏杯咖啡！</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat.jpeg" alt="ShiXiaofeng 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpeg" alt="ShiXiaofeng 支付宝">
+        <p>支付宝</p>
       </div>
 
-    
-    
-        
-<div class="my_post_copyright">
-  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
-  
-  <!-- JS库 sweetalert 可修改路径 -->
-  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
-  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-  <p><span>本文标题:</span><a href="/2019/03/06/深度学习-Normalization/">深度学习-Normalization</a></p>
-  <p><span>文章作者:</span><a href="/" title="访问 ShiXiaofeng 的个人博客">ShiXiaofeng</a></p>
-  <p><span>发布时间:</span>2019年03月06日 - 12:02</p>
-  <p><span>最后更新:</span>2019年03月12日 - 13:54</p>
-  <p><span>原始链接:</span><a href="/2019/03/06/深度学习-Normalization/" title="深度学习-Normalization">http://xiaofengshi.com/2019/03/06/深度学习-Normalization/</a>
-    <span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://xiaofengshi.com/2019/03/06/深度学习-Normalization/" aria-label="复制成功！"></i></span>
-  </p>
-  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+  </div>
 </div>
-<script> 
-    var clipboard = new Clipboard('.fa-clipboard');
-    $(".fa-clipboard").click(function(){
-      clipboard.on('success', function(){
-        swal({   
-          title: "",   
-          text: '复制成功',
-          icon: "success", 
-          showConfirmButton: true
-          });
-	});
-    });  
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>ShiXiaofeng
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://xiaofengshi.com/2019/03/06/深度学习-Normalization/" title="深度学习-Normalization">http://xiaofengshi.com/2019/03/06/深度学习-Normalization/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/深度学习/" rel="tag"># 深度学习</a>
+              <a href="/tags/Normalization/" rel="tag"># Normalization</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/02/25/机器学习-朴素贝叶斯/" rel="prev" title="机器学习-朴素贝叶斯">
+      <i class="fa fa-chevron-left"></i> 机器学习-朴素贝叶斯
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/03/13/OCR-从零开始/" rel="next" title="OCR-从零开始">
+      OCR-从零开始 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
 </script>
 
-
-    
-    
-
-    
-
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/深度学习/" rel="tag"><i class="fa fa-tag"></i> 深度学习</a>
-          
-            <a href="/tags/Normalization/" rel="tag"><i class="fa fa-tag"></i> Normalization</a>
-          
         </div>
-      
-
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2019/02/25/机器学习-朴素贝叶斯/" rel="next" title="机器学习-朴素贝叶斯">
-                <i class="fa fa-chevron-left"></i> 机器学习-朴素贝叶斯
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/03/13/OCR-从零开始/" rel="prev" title="OCR-从零开始">
-                OCR-从零开始 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
-  </div>
+          
   
-  
-  
-  </article>
-
-
-
-    <div class="post-spread">
-      
-    </div>
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
   </div>
 
-
-          </div>
-          
-
-
-          
-
-  
-    <div class="comments" id="comments">
-    </div>
-  
-
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    
+  <aside class="sidebar">
     <div class="sidebar-inner">
 
-      
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
 
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <section class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="ShiXiaofeng">
-            
-              <p class="site-author-name" itemprop="name">ShiXiaofeng</p>
-              <p class="site-description motion-element" itemprop="description">数据挖掘，机器学习，深度学习相关技术分享及记录</p>
-          </div>
-
-          <nav class="site-state motion-element">
-
-            
-              <div class="site-state-item site-state-posts">
-              
-                <a href="/archives/">
-              
-                  <span class="site-state-item-count">24</span>
-                  <span class="site-state-item-name">日志</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-categories">
-                <a href="/categories/index.html">
-                  <span class="site-state-item-count">20</span>
-                  <span class="site-state-item-name">分类</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-tags">
-                <a href="/tags/index.html">
-                  <span class="site-state-item-count">37</span>
-                  <span class="site-state-item-name">标签</span>
-                </a>
-              </div>
-            
-
-          </nav>
-
-          
-            <div class="feed-link motion-element">
-              <a href="/atom.xml" rel="alternate">
-                <i class="fa fa-rss"></i>
-                RSS
-              </a>
-            </div>
-          
-
-          
-            <div class="links-of-author motion-element">
-                
-                  <span class="links-of-author-item">
-                    <a href="https://github.com/xiaofengShi" target="_blank" title="GitHub">
-                      
-                        <i class="fa fa-fw fa-github"></i>GitHub</a>
-                  </span>
-                
-                  <span class="links-of-author-item">
-                    <a href="mailto:sxf1052566766@163.com" target="_blank" title="E-Mail">
-                      
-                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
-                  </span>
-                
-            </div>
-          
-
-          
-          
-
-          
-          
-
-          
-
-        </div>
-      </section>
-
-      
       <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#BatchNormalization"><span class="nav-number">1.</span> <span class="nav-text">BatchNormalization</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#内部协变量转移ICS"><span class="nav-number">1.1.</span> <span class="nav-text">内部协变量转移ICS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ICS会造成的问题"><span class="nav-number">1.2.</span> <span class="nav-text">ICS会造成的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何缓解ICS问题"><span class="nav-number">1.3.</span> <span class="nav-text">如何缓解ICS问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#白化whitening"><span class="nav-number">1.4.</span> <span class="nav-text">白化whitening</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MLP训练过程"><span class="nav-number">1.5.</span> <span class="nav-text">MLP训练过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#前向传播"><span class="nav-number">1.5.1.</span> <span class="nav-text">前向传播</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#反向传播"><span class="nav-number">1.5.2.</span> <span class="nav-text">反向传播</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试过程"><span class="nav-number">1.6.</span> <span class="nav-text">测试过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CNN中BN的应用"><span class="nav-number">1.7.</span> <span class="nav-text">CNN中BN的应用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#训练过程"><span class="nav-number">1.7.1.</span> <span class="nav-text">训练过程</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#前向传播-1"><span class="nav-number">1.7.1.1.</span> <span class="nav-text">前向传播</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#测试过程-1"><span class="nav-number">1.7.2.</span> <span class="nav-text">测试过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BN的作用"><span class="nav-number">1.8.</span> <span class="nav-text">BN的作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BN的思考"><span class="nav-number">1.9.</span> <span class="nav-text">BN的思考</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LayerNormalization"><span class="nav-number">2.</span> <span class="nav-text">LayerNormalization</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#计算方式"><span class="nav-number">2.1.</span> <span class="nav-text">计算方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LN思考以及和BN的区别"><span class="nav-number">2.2.</span> <span class="nav-text">LN思考以及和BN的区别</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Inastance-Normalization（IN）"><span class="nav-number">3.</span> <span class="nav-text">Inastance Normalization（IN）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GroupNormalization-GN"><span class="nav-number">4.</span> <span class="nav-text">GroupNormalization(GN)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WeightNormalization"><span class="nav-number">5.</span> <span class="nav-text">WeightNormalization</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#WN训练方法"><span class="nav-number">5.1.</span> <span class="nav-text">WN训练方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WN-amp-BN的关系"><span class="nav-number">5.2.</span> <span class="nav-text">WN&amp;BN的关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mean-Only-Batch-Normalization"><span class="nav-number">5.3.</span> <span class="nav-text">Mean-Only Batch Normalization</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WN-相比BN的优势"><span class="nav-number">5.4.</span> <span class="nav-text">WN 相比BN的优势</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Normalization为什么有效"><span class="nav-number">6.</span> <span class="nav-text">Normalization为什么有效</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reference"><span class="nav-number">7.</span> <span class="nav-text">Reference</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#BatchNormalization"><span class="nav-number">1.</span> <span class="nav-text">BatchNormalization</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#内部协变量转移ICS"><span class="nav-number">1.1.</span> <span class="nav-text">内部协变量转移ICS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ICS会造成的问题"><span class="nav-number">1.2.</span> <span class="nav-text">ICS会造成的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何缓解ICS问题"><span class="nav-number">1.3.</span> <span class="nav-text">如何缓解ICS问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#白化whitening"><span class="nav-number">1.4.</span> <span class="nav-text">白化whitening</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MLP训练过程"><span class="nav-number">1.5.</span> <span class="nav-text">MLP训练过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#前向传播"><span class="nav-number">1.5.1.</span> <span class="nav-text">前向传播</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#反向传播"><span class="nav-number">1.5.2.</span> <span class="nav-text">反向传播</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试过程"><span class="nav-number">1.6.</span> <span class="nav-text">测试过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CNN中BN的应用"><span class="nav-number">1.7.</span> <span class="nav-text">CNN中BN的应用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#训练过程"><span class="nav-number">1.7.1.</span> <span class="nav-text">训练过程</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#前向传播-1"><span class="nav-number">1.7.1.1.</span> <span class="nav-text">前向传播</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#测试过程-1"><span class="nav-number">1.7.2.</span> <span class="nav-text">测试过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BN的作用"><span class="nav-number">1.8.</span> <span class="nav-text">BN的作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BN的思考"><span class="nav-number">1.9.</span> <span class="nav-text">BN的思考</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LayerNormalization"><span class="nav-number">2.</span> <span class="nav-text">LayerNormalization</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#计算方式"><span class="nav-number">2.1.</span> <span class="nav-text">计算方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LN思考以及和BN的区别"><span class="nav-number">2.2.</span> <span class="nav-text">LN思考以及和BN的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LN-有效的原因研究"><span class="nav-number">2.3.</span> <span class="nav-text">LN 有效的原因研究</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Inastance-Normalization（IN）"><span class="nav-number">3.</span> <span class="nav-text">Inastance Normalization（IN）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GroupNormalization-GN"><span class="nav-number">4.</span> <span class="nav-text">GroupNormalization(GN)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WeightNormalization"><span class="nav-number">5.</span> <span class="nav-text">WeightNormalization</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#WN训练方法"><span class="nav-number">5.1.</span> <span class="nav-text">WN训练方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WN-amp-BN的关系"><span class="nav-number">5.2.</span> <span class="nav-text">WN&amp;BN的关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mean-Only-Batch-Normalization"><span class="nav-number">5.3.</span> <span class="nav-text">Mean-Only Batch Normalization</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WN-相比BN的优势"><span class="nav-number">5.4.</span> <span class="nav-text">WN 相比BN的优势</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Normalization为什么有效"><span class="nav-number">6.</span> <span class="nav-text">Normalization为什么有效</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reference"><span class="nav-number">7.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+      </div>
       <!--/noindex-->
-      
 
-      
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ShiXiaofeng"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">ShiXiaofeng</p>
+  <div class="site-description" itemprop="description">机器学习,数据挖掘,深度学习相关技术记录分享</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xiaofengShi" title="GitHub → https://github.com/xiaofengShi" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sxf1052566766@163.com" title="E-Mail → mailto:sxf1052566766@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
 
     </div>
   </aside>
+  <div id="sidebar-dimmer"></div>
 
 
-        
       </div>
     </main>
 
-    <footer id="footer" class="footer">
+    <footer class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2019</span>
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">ShiXiaofeng</span>
-
-  
 </div>
-
-
-
-
-
-
-
-
-
-        
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-          <span id="scrollpercent"><span>0</span>%</span>
-        
-      </div>
-    
-
-    
-
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0
   </div>
 
-  
+        
 
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
 
 
 
 
 
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="https://cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="https://cdn.bootcss.com/velocity/1.2.1/velocity.min.js"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="https://cdn.bootcss.com/velocity/1.2.1/velocity.ui.min.js"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="https://cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
-  
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
-
-
-
-  
-  
-
-
-  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
-
-  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
-
-
-
-  
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  
-
-
-
-
-	
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
-  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
-  
-  <script type="text/javascript">
-    var GUEST = ['nick','mail','link'];
-    var guest = 'nick,mail,link';
-    guest = guest.split(',').filter(item=>{
-      return GUEST.indexOf(item)>-1;
-    });
-    new Valine({
-        el: '#comments' ,
-        verify: false,
-        notify: false,
-        appId: 'rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz',
-        appKey: 'zJasiQnAqgUwf4kiHhHyXwOP',
-        placeholder: 'Just go go',
-        avatar:'mm',
-        guest_info:guest,
-        pageSize:'10' || 10,
-    });
-  </script>
-
-
-
-  
-
-  <script type="text/javascript">
-    // Popup Window;
-    var isfetched = false;
-    var isXml = true;
-    // Search DB path;
-    var search_path = "search.xml";
-    if (search_path.length === 0) {
-      search_path = "search.xml";
-    } else if (/json$/i.test(search_path)) {
-      isXml = false;
-    }
-    var path = "/" + search_path;
-    // monitor main search box;
-
-    var onPopupClose = function (e) {
-      $('.popup').hide();
-      $('#local-search-input').val('');
-      $('.search-result-list').remove();
-      $('#no-result').remove();
-      $(".local-search-pop-overlay").remove();
-      $('body').css('overflow', '');
-    }
-
-    function proceedsearch() {
-      $("body")
-        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
-        .css('overflow', 'hidden');
-      $('.search-popup-overlay').click(onPopupClose);
-      $('.popup').toggle();
-      var $localSearchInput = $('#local-search-input');
-      $localSearchInput.attr("autocapitalize", "none");
-      $localSearchInput.attr("autocorrect", "off");
-      $localSearchInput.focus();
-    }
-
-    // search function;
-    var searchFunc = function(path, search_id, content_id) {
-      'use strict';
-
-      // start loading animation
-      $("body")
-        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
-          '<div id="search-loading-icon">' +
-          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
-          '</div>' +
-          '</div>')
-        .css('overflow', 'hidden');
-      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
-
-      $.ajax({
-        url: path,
-        dataType: isXml ? "xml" : "json",
-        async: true,
-        success: function(res) {
-          // get the contents from search data
-          isfetched = true;
-          $('.popup').detach().appendTo('.header-inner');
-          var datas = isXml ? $("entry", res).map(function() {
-            return {
-              title: $("title", this).text(),
-              content: $("content",this).text(),
-              url: $("url" , this).text()
-            };
-          }).get() : res;
-          var input = document.getElementById(search_id);
-          var resultContent = document.getElementById(content_id);
-          var inputEventFunction = function() {
-            var searchText = input.value.trim().toLowerCase();
-            var keywords = searchText.split(/[\s\-]+/);
-            if (keywords.length > 1) {
-              keywords.push(searchText);
-            }
-            var resultItems = [];
-            if (searchText.length > 0) {
-              // perform local searching
-              datas.forEach(function(data) {
-                var isMatch = false;
-                var hitCount = 0;
-                var searchTextCount = 0;
-                var title = data.title.trim();
-                var titleInLowerCase = title.toLowerCase();
-                var content = data.content.trim().replace(/<[^>]+>/g,"");
-                var contentInLowerCase = content.toLowerCase();
-                var articleUrl = decodeURIComponent(data.url);
-                var indexOfTitle = [];
-                var indexOfContent = [];
-                // only match articles with not empty titles
-                if(title != '') {
-                  keywords.forEach(function(keyword) {
-                    function getIndexByWord(word, text, caseSensitive) {
-                      var wordLen = word.length;
-                      if (wordLen === 0) {
-                        return [];
-                      }
-                      var startPosition = 0, position = [], index = [];
-                      if (!caseSensitive) {
-                        text = text.toLowerCase();
-                        word = word.toLowerCase();
-                      }
-                      while ((position = text.indexOf(word, startPosition)) > -1) {
-                        index.push({position: position, word: word});
-                        startPosition = position + wordLen;
-                      }
-                      return index;
-                    }
-
-                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
-                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
-                  });
-                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
-                    isMatch = true;
-                    hitCount = indexOfTitle.length + indexOfContent.length;
-                  }
-                }
-
-                // show search results
-
-                if (isMatch) {
-                  // sort index by position of keyword
-
-                  [indexOfTitle, indexOfContent].forEach(function (index) {
-                    index.sort(function (itemLeft, itemRight) {
-                      if (itemRight.position !== itemLeft.position) {
-                        return itemRight.position - itemLeft.position;
-                      } else {
-                        return itemLeft.word.length - itemRight.word.length;
-                      }
-                    });
-                  });
-
-                  // merge hits into slices
-
-                  function mergeIntoSlice(text, start, end, index) {
-                    var item = index[index.length - 1];
-                    var position = item.position;
-                    var word = item.word;
-                    var hits = [];
-                    var searchTextCountInSlice = 0;
-                    while (position + word.length <= end && index.length != 0) {
-                      if (word === searchText) {
-                        searchTextCountInSlice++;
-                      }
-                      hits.push({position: position, length: word.length});
-                      var wordEnd = position + word.length;
-
-                      // move to next position of hit
-
-                      index.pop();
-                      while (index.length != 0) {
-                        item = index[index.length - 1];
-                        position = item.position;
-                        word = item.word;
-                        if (wordEnd > position) {
-                          index.pop();
-                        } else {
-                          break;
-                        }
-                      }
-                    }
-                    searchTextCount += searchTextCountInSlice;
-                    return {
-                      hits: hits,
-                      start: start,
-                      end: end,
-                      searchTextCount: searchTextCountInSlice
-                    };
-                  }
-
-                  var slicesOfTitle = [];
-                  if (indexOfTitle.length != 0) {
-                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
-                  }
-
-                  var slicesOfContent = [];
-                  while (indexOfContent.length != 0) {
-                    var item = indexOfContent[indexOfContent.length - 1];
-                    var position = item.position;
-                    var word = item.word;
-                    // cut out 100 characters
-                    var start = position - 20;
-                    var end = position + 80;
-                    if(start < 0){
-                      start = 0;
-                    }
-                    if (end < position + word.length) {
-                      end = position + word.length;
-                    }
-                    if(end > content.length){
-                      end = content.length;
-                    }
-                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
-                  }
-
-                  // sort slices in content by search text's count and hits' count
-
-                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
-                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
-                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
-                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
-                      return sliceRight.hits.length - sliceLeft.hits.length;
-                    } else {
-                      return sliceLeft.start - sliceRight.start;
-                    }
-                  });
-
-                  // select top N slices in content
-
-                  var upperBound = parseInt('1');
-                  if (upperBound >= 0) {
-                    slicesOfContent = slicesOfContent.slice(0, upperBound);
-                  }
-
-                  // highlight title and content
-
-                  function highlightKeyword(text, slice) {
-                    var result = '';
-                    var prevEnd = slice.start;
-                    slice.hits.forEach(function (hit) {
-                      result += text.substring(prevEnd, hit.position);
-                      var end = hit.position + hit.length;
-                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
-                      prevEnd = end;
-                    });
-                    result += text.substring(prevEnd, slice.end);
-                    return result;
-                  }
-
-                  var resultItem = '';
-
-                  if (slicesOfTitle.length != 0) {
-                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
-                  } else {
-                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
-                  }
-
-                  slicesOfContent.forEach(function (slice) {
-                    resultItem += "<a href='" + articleUrl + "'>" +
-                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
-                      "...</p>" + "</a>";
-                  });
-
-                  resultItem += "</li>";
-                  resultItems.push({
-                    item: resultItem,
-                    searchTextCount: searchTextCount,
-                    hitCount: hitCount,
-                    id: resultItems.length
-                  });
-                }
-              })
-            };
-            if (keywords.length === 1 && keywords[0] === "") {
-              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
-            } else if (resultItems.length === 0) {
-              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
-            } else {
-              resultItems.sort(function (resultLeft, resultRight) {
-                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
-                  return resultRight.searchTextCount - resultLeft.searchTextCount;
-                } else if (resultLeft.hitCount !== resultRight.hitCount) {
-                  return resultRight.hitCount - resultLeft.hitCount;
-                } else {
-                  return resultRight.id - resultLeft.id;
-                }
-              });
-              var searchResultList = '<ul class=\"search-result-list\">';
-              resultItems.forEach(function (result) {
-                searchResultList += result.item;
-              })
-              searchResultList += "</ul>";
-              resultContent.innerHTML = searchResultList;
-            }
-          }
-
-          if ('auto' === 'auto') {
-            input.addEventListener('input', inputEventFunction);
-          } else {
-            $('.search-icon').click(inputEventFunction);
-            input.addEventListener('keypress', function (event) {
-              if (event.keyCode === 13) {
-                inputEventFunction();
-              }
-            });
-          }
-
-          // remove loading animation
-          $(".local-search-pop-overlay").remove();
-          $('body').css('overflow', '');
-
-          proceedsearch();
-        }
-      });
-    }
-
-    // handle and trigger popup window;
-    $('.popup-trigger').click(function(e) {
-      e.stopPropagation();
-      if (isfetched === false) {
-        searchFunc(path, 'local-search-input', 'local-search-result');
-      } else {
-        proceedsearch();
-      };
-    });
-
-    $('.popup-btn-close').click(onPopupClose);
-    $('.popup').click(function(e){
-      e.stopPropagation();
-    });
-    $(document).on('keyup', function (event) {
-      var shouldDismissSearchPopup = event.which === 27 &&
-        $('.search-popup').is(':visible');
-      if (shouldDismissSearchPopup) {
-        onPopupClose();
-      }
-    });
-  </script>
-
-
-
-
-
-  
-
-  
-  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
-  <script>AV.initialize("rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz", "zJasiQnAqgUwf4kiHhHyXwOP");</script>
   <script>
-    function showTime(Counter) {
-      var query = new AV.Query(Counter);
-      var entries = [];
-      var $visitors = $(".leancloud_visitors");
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
 
-      $visitors.each(function () {
-        entries.push( $(this).attr("id").trim() );
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+              leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
       });
 
-      query.containedIn('url', entries);
-      query.find()
-        .done(function (results) {
-          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
-
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
           if (results.length === 0) {
-            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
             return;
           }
-
-          for (var i = 0; i < results.length; i++) {
-            var item = results[i];
-            var url = item.get('url');
-            var time = item.get('time');
-            var element = document.getElementById(url);
-
-            $(element).find(COUNT_CONTAINER_REF).text(time);
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
           }
-          for(var i = 0; i < entries.length; i++) {
-            var url = entries[i];
-            var element = document.getElementById(url);
-            var countSpan = $(element).find(COUNT_CONTAINER_REF);
-            if( countSpan.text() == '') {
-              countSpan.text(0);
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
             }
           }
         })
-        .fail(function (object, error) {
-          console.log("Error: " + error.code + " " + error.message);
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
         });
     }
+  }
 
-    function addCount(Counter) {
-      var $visitors = $(".leancloud_visitors");
-      var url = $visitors.attr('id').trim();
-      var title = $visitors.attr('data-flag-title').trim();
-      var query = new AV.Query(Counter);
-
-      query.equalTo("url", url);
-      query.find({
-        success: function(results) {
-          if (results.length > 0) {
-            var counter = results[0];
-            counter.fetchWhenSave(true);
-            counter.increment("time");
-            counter.save(null, {
-              success: function(counter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(counter.get('time'));
-              },
-              error: function(counter, error) {
-                console.log('Failed to save Visitor num, with error message: ' + error.message);
-              }
-            });
-          } else {
-            var newcounter = new Counter();
-            /* Set ACL */
-            var acl = new AV.ACL();
-            acl.setPublicReadAccess(true);
-            acl.setPublicWriteAccess(true);
-            newcounter.setACL(acl);
-            /* End Set ACL */
-            newcounter.set("title", title);
-            newcounter.set("url", url);
-            newcounter.set("time", 1);
-            newcounter.save(null, {
-              success: function(newcounter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
-              },
-              error: function(newcounter, error) {
-                console.log('Failed to create');
-              }
-            });
-          }
-        },
-        error: function(error) {
-          console.log('Error:' + error.code + " " + error.message);
-        }
-      });
-    }
-
-    $(function() {
-      var Counter = AV.Object.extend("Counter");
-      if ($('.leancloud_visitors').length == 1) {
+  fetch('https://app-router.leancloud.cn/2/route?appId=rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id': 'rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz',
+            'X-LC-Key': 'zJasiQnAqgUwf4kiHhHyXwOP',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
         addCount(Counter);
-      } else if ($('.post-title-link').length > 1) {
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
         showTime(Counter);
       }
     });
   </script>
 
 
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   
 
   
+      
+<script type="text/x-mathjax-config">
 
-  
-  
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
 
-  
-  
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Config({
-        tex2jax: {
-          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
-          processEscapes: true,
-          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
         }
-      });
-    </script>
-
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for (i=0; i < all.length; i += 1) {
-          all[i].SourceElement().parentNode.className += ' has-jax';
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
         }
-      });
-    </script>
-    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+
   
 
 
-  
-
-  
-
-  <!-- 代码块复制功能 -->
-  <script type="text/javascript" src="/js/src/clipboard.min.js"></script>
-  <script type="text/javascript" src="/js/src/clipboard-use.js"></script>
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el: '#valine-comments',
+      verify: false,
+      notify: false,
+      appId: 'rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz',
+      appKey: 'zJasiQnAqgUwf4kiHhHyXwOP',
+      placeholder: "Just go go",
+      avatar: 'mm',
+      meta: guest,
+      pageSize: '10' || 10,
+      visitor: false,
+      lang: '' || 'zh-cn',
+      path: location.pathname,
+      recordIP: false,
+      serverURLs: ''
+    });
+  }, window.Valine);
+});
+</script>
 
 </body>
 </html>

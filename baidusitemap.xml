@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>http://xiaofengshi.com/2019/02/15/NLP-Attention_is_all_you_need/</loc>
-    <lastmod>2019-12-10</lastmod>
+    <loc>http://xiaofengshi.com/2020/01/29/AwesomesPython/</loc>
+    <lastmod>2020-01-30</lastmod>
   </url>  <url>
-    <loc>http://xiaofengshi.com/2019/03/19/assets/%E7%99%BD%E8%AF%9D%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/</loc>
-    <lastmod>2019-12-10</lastmod>
+    <loc>http://xiaofengshi.com/2019/03/13/OCR-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B/</loc>
+    <lastmod>2020-01-30</lastmod>
+  </url>  <url>
+    <loc>http://xiaofengshi.com/2019/03/19/DeepLearning_Tensorflow/</loc>
+    <lastmod>2020-01-30</lastmod>
   </url>  <url>
     <loc>http://xiaofengshi.com/2019/08/06/AwesomesMac/</loc>
+    <lastmod>2020-01-30</lastmod>
+  </url>  <url>
+    <loc>http://xiaofengshi.com/2019/12/10/NLP-Bert/</loc>
+    <lastmod>2020-01-30</lastmod>
+  </url>  <url>
+    <loc>http://xiaofengshi.com/2018/12/12/AwsomeProcess/</loc>
+    <lastmod>2020-01-29</lastmod>
+  </url>  <url>
+    <loc>http://xiaofengshi.com/2019/03/06/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Normalization/</loc>
+    <lastmod>2020-01-19</lastmod>
+  </url>  <url>
+    <loc>http://xiaofengshi.com/2019/02/15/NLP-Attention_is_all_you_need/</loc>
     <lastmod>2019-12-10</lastmod>
   </url>  <url>
     <loc>http://xiaofengshi.com/2018/11/04/blog-make/</loc>
     <lastmod>2019-12-10</lastmod>
   </url>  <url>
-    <loc>http://xiaofengshi.com/2019/03/19/DeepLearning_Tensorflow/</loc>
-    <lastmod>2019-11-29</lastmod>
-  </url>  <url>
-    <loc>http://xiaofengshi.com/2018/12/12/AwsomeProcess/</loc>
-    <lastmod>2019-11-14</lastmod>
-  </url>  <url>
     <loc>http://xiaofengshi.com/2018/11/09/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%86%B3%E7%AD%96%E6%A0%91/</loc>
     <lastmod>2019-04-20</lastmod>
-  </url>  <url>
-    <loc>http://xiaofengshi.com/2019/03/19/CV%E6%95%B0%E6%8D%AE%E9%9B%86/</loc>
-    <lastmod>2019-04-04</lastmod>
-  </url>  <url>
-    <loc>http://xiaofengshi.com/2019/03/13/OCR-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B/</loc>
-    <lastmod>2019-03-18</lastmod>
-  </url>  <url>
-    <loc>http://xiaofengshi.com/2019/03/06/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Normalization/</loc>
-    <lastmod>2019-03-12</lastmod>
   </url>  <url>
     <loc>http://xiaofengshi.com/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/</loc>
     <lastmod>2019-03-05</lastmod>

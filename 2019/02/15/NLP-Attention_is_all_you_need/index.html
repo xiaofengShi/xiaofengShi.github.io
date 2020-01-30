@@ -1,142 +1,82 @@
 <!DOCTYPE html>
-
-
-
-  
-
-
-<html class="theme-next pisces use-motion" lang="zh-Hans">
-<head><meta name="generator" content="Hexo 3.9.0">
+<html lang="zh-CN">
+<head>
   <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/panda_32px.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/panda_16px.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
 
 
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://xiaofengshi.com').hostname,
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
 
-
-
-
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform">
-<meta http-equiv="Cache-Control" content="no-siteapp">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-    
-  
-  <link href="https://cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css">
-
-
-
-
-
-
-
-  
-
-<link href="https://cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-
-<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/panda_32px.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/panda_16px.png?v=5.1.4">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
-
-
-
-
-
-  <meta name="keywords" content="深度学习，NLP,Transformer,">
-
-
-
-
-
-  <link rel="alternate" href="/atom.xml" title="挖掘机养成日记" type="application/atom+xml">
-
-
-
-
-
-
-<meta name="description" content="Transformer是在2017年的Google发布的论文《Attention is all you need》中提出，主要用于解决RNN相关网络无法捕获序列的长期依赖，以及网络无法并行化的问题，其网络结构示意图如下  从示意图中可以看出在Transformer中包含多个组件，分别为Multi-Head Attention, Masked Multi-Head Attention, Add, N">
+  <meta name="description" content="Transformer是在2017年的Google发布的论文《Attention is all you need》中提出，主要用于解决RNN相关网络无法捕获序列的长期依赖，以及网络无法并行化的问题，其网络结构示意图如下  从示意图中可以看出在Transformer中包含多个组件，分别为Multi-Head Attention, Masked Multi-Head Attention, Add, N">
 <meta name="keywords" content="深度学习，NLP,Transformer">
 <meta property="og:type" content="article">
 <meta property="og:title" content="NLP-Attention_is_all_you_need">
 <meta property="og:url" content="http://xiaofengshi.com/2019/02/15/NLP-Attention_is_all_you_need/index.html">
-<meta property="og:site_name" content="挖掘机养成日记">
+<meta property="og:site_name" content="挖掘机成长日记">
 <meta property="og:description" content="Transformer是在2017年的Google发布的论文《Attention is all you need》中提出，主要用于解决RNN相关网络无法捕获序列的长期依赖，以及网络无法并行化的问题，其网络结构示意图如下  从示意图中可以看出在Transformer中包含多个组件，分别为Multi-Head Attention, Masked Multi-Head Attention, Add, N">
-<meta property="og:locale" content="zh-Hans">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://xiaofengshi.com/2019/02/15/NLP-Attention_is_all_you_need/transformer_model.jpeg">
 <meta property="og:image" content="http://xiaofengshi.com/2019/02/15/NLP-Attention_is_all_you_need/original_att.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/02/15/NLP-Attention_is_all_you_need/sacle_dot_multi_head_attention.png">
 <meta property="og:image" content="http://xiaofengshi.com/2019/02/15/NLP-Attention_is_all_you_need/residual_layernormal.png">
-<meta property="og:updated_time" content="2019-12-10T05:26:22.092Z">
+<meta property="og:updated_time" content="2019-12-10T07:30:00.075Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="NLP-Attention_is_all_you_need">
 <meta name="twitter:description" content="Transformer是在2017年的Google发布的论文《Attention is all you need》中提出，主要用于解决RNN相关网络无法捕获序列的长期依赖，以及网络无法并行化的问题，其网络结构示意图如下  从示意图中可以看出在Transformer中包含多个组件，分别为Multi-Head Attention, Masked Multi-Head Attention, Add, N">
 <meta name="twitter:image" content="http://xiaofengshi.com/2019/02/15/NLP-Attention_is_all_you_need/transformer_model.jpeg">
 
+<link rel="canonical" href="http://xiaofengshi.com/2019/02/15/NLP-Attention_is_all_you_need/">
 
 
-<script type="text/javascript" id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Pisces',
-    version: '5.1.4',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
-    fancybox: true,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    duoshuo: {
-      userId: '0',
-      author: '博主'
-    },
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
   };
 </script>
 
-
-
-  <link rel="canonical" href="http://xiaofengshi.com/2019/02/15/NLP-Attention_is_all_you_need/">
-
-
-
-
-
-  <title>NLP-Attention_is_all_you_need | 挖掘机养成日记</title>
+  <title>NLP-Attention_is_all_you_need | 挖掘机成长日记</title>
   
 
 
@@ -144,339 +84,205 @@
 
 
 
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
 
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
 
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
-
-  
-  
-    
-  
-
-  <div class="container sidebar-position-left page-post-detail">
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
     <div class="headband"></div>
-    <!-- add fork me on github -->
-    <a href="https://github.com/xiaofengShi"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
 
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta ">
-    
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
 
-    <div class="custom-logo-site-title">
+    <div>
       <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">挖掘机养成日记</span>
+        <span class="site-title">挖掘机成长日记</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
-      
-        <p class="site-subtitle"></p>
-      
+        <p class="site-subtitle">BytedancerClub</p>
   </div>
 
   <div class="site-nav-toggle">
-    <button>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
   </div>
 </div>
+
 
 <nav class="site-nav">
   
-
-  
-    <ul id="menu" class="menu">
-      
-        
+  <ul id="menu" class="menu">
         <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
-            
-            首页
-          </a>
-        </li>
-      
-        
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
         <li class="menu-item menu-item-about">
-          <a href="/about/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
-            
-            关于
-          </a>
-        </li>
-      
-        
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
         <li class="menu-item menu-item-tags">
-          <a href="/tags/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
-            
-            标签
-          </a>
-        </li>
-      
-        
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
         <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
-            
-            分类
-          </a>
-        </li>
-      
-        
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
         <li class="menu-item menu-item-archives">
-          <a href="/archives/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
-            
-            归档
-          </a>
-        </li>
-      
-        
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
         <li class="menu-item menu-item-schedule">
-          <a href="/schedule/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>
-            
-            日程表
-          </a>
-        </li>
-      
-        
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>日程表</a>
+
+  </li>
         <li class="menu-item menu-item-guestbook">
-          <a href="/guestbook/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-commenting"></i> <br>
-            
-            留言板
-          </a>
-        </li>
-      
 
-      
-        <li class="menu-item menu-item-search">
-          
-            <a href="javascript:;" class="popup-trigger">
-          
-            
-              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
-            
-            搜索
-          </a>
-        </li>
-      
-    </ul>
-  
+    <a href="/guestbook/" rel="section"><i class="fa fa-fw fa-commenting"></i>guestbook</a>
 
-  
-    <div class="site-search">
-      
-  <div class="popup search-popup local-search-popup">
-  <div class="local-search-header clearfix">
-    <span class="search-icon">
-      <i class="fa fa-search"></i>
-    </span>
-    <span class="popup-btn-close">
-      <i class="fa fa-times-circle"></i>
-    </span>
-    <div class="local-search-input-wrapper">
-      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
-    </div>
-  </div>
-  <div id="local-search-result"></div>
-</div>
+  </li>
+  </ul>
 
-
-
-    </div>
-  
 </nav>
-
-
-
- </div>
+</div>
     </header>
 
-    <main id="main" class="main">
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/xiaofengShi" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
       <div class="main-inner">
         <div class="content-wrap">
-          <div id="content" class="content">
+          
+
+          <div class="content">
             
 
-  <div id="posts" class="posts-expand">
-    
-
-  
-
+  <div class="posts-expand">
+      
   
   
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2019/02/15/NLP-Attention_is_all_you_need/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ShiXiaofeng">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ShiXiaofeng">
+      <meta itemprop="description" content="机器学习,数据挖掘,深度学习相关技术记录分享">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="挖掘机养成日记">
+      <meta itemprop="name" content="挖掘机成长日记">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">NLP-Attention_is_all_you_need</h1>
-        
+        <h1 class="post-title" itemprop="name headline">
+          NLP-Attention_is_all_you_need
+        </h1>
 
         <div class="post-meta">
-          <span class="post-time">
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-15T17:42:31+08:00">
-                2019-02-15
-              </time>
-            
+              <span class="post-meta-item-text">发表于</span>
 
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
+              <time title="创建时间：2019-02-15 17:42:31" itemprop="dateCreated datePublished" datetime="2019-02-15T17:42:31+08:00">2019-02-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-12-10 15:30:00" itemprop="dateModified" datetime="2019-12-10T15:30:00+08:00">2019-12-10</time>
+              </span>
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
+              <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/深度学习/" itemprop="url" rel="index">
                     <span itemprop="name">深度学习</span>
                   </a>
                 </span>
-
-                
-                
-                  ， 
-                
-              
+                  ，
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/深度学习/seq2seq/" itemprop="url" rel="index">
                     <span itemprop="name">seq2seq</span>
                   </a>
                 </span>
-
-                
-                
-              
             </span>
-          
 
           
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/02/15/NLP-Attention_is_all_you_need/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/02/15/NLP-Attention_is_all_you_need/" itemprop="commentCount"></span>
-                </a>
+            <span id="/2019/02/15/NLP-Attention_is_all_you_need/" class="post-meta-item leancloud_visitors" data-flag-title="NLP-Attention_is_all_you_need" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
               </span>
-            
-          
-
-          
-          
-             <span id="/2019/02/15/NLP-Attention_is_all_you_need/" class="leancloud_visitors" data-flag-title="NLP-Attention_is_all_you_need">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  4.2k 字
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  15 分钟
-                </span>
-              
-            </div>
-          
-
-          
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2019/02/15/NLP-Attention_is_all_you_need/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2019/02/15/NLP-Attention_is_all_you_need/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
-    
 
     
     
     
     <div class="post-body" itemprop="articleBody">
-
-      
-      
 
       
         <p>Transformer是在2017年的Google发布的论文《Attention is all you need》中提出，主要用于解决RNN相关网络无法捕获序列的长期依赖，以及网络无法并行化的问题，其网络结构示意图如下</p>
@@ -537,21 +343,21 @@ new_{out}=\tanh([Contex,query]*w)
 Score &= value* \tanh(w*[query,key])  \:\:\:\:\:\:\:\:\:\: & add\\
 Score &= query* key^T & dot   \\
 Score &= query *w*key^T & gernel
-\end{align}</script><p><strong>对于加性attention和点乘attention的计算方式，二者在计算复杂度上式相似的，但是点乘注意力一般更快并且具有更高效的存储，因为点乘的方式可以使用矩阵操作更高效的实现，在低纬度情况下，加性注意力和点乘注意力相似，但是在高纬度上，加性注意力比点乘注意力小姑更好。</strong></p>
+\end{align}</script><p><strong>对于加性attention和点乘attention的计算方式，二者在计算复杂度上式相似的，但是点乘注意力一般更快并且具有更高效的存储，因为点乘的方式可以使用矩阵操作更高效的实现，在低纬度情况下，加性注意力和点乘注意力相似，但是在高纬度上，加性注意力比点乘注意力效果更好。</strong></p>
 <hr>
 
-<p>对于Multi-head Attention的序列间依赖关系的计算和传统Attention计算方式相同，不同的有两点</p>
+<p>对于<code>Multi-head Attention</code>的序列间依赖关系的计算和传统<code>Attention</code>计算方式相同，不同的有两点</p>
 <ul>
 <li>序列内部依赖关系，query，key，value均为当前序列</li>
 <li>多头Attention，针对多个维度空间计算Attention，最后再合并多头Attention的计算结果</li>
 </ul>
-
+<img src="/2019/02/15/NLP-Attention_is_all_you_need/sacle_dot_multi_head_attention.png" title="Fig.3 Scale dot Attention and Multi-Head Attention">
 <p>下面分别说明</p>
 <h4 id="计算方法"><a href="#计算方法" class="headerlink" title="计算方法"></a>计算方法</h4><ul>
 <li><p>score的计算</p>
-<p>对于Multi-Head Attention，<strong>使用query，key，和value来表示待匹配的序列，原始序列和目标序列</strong>，如果要捕获序列内部的依赖关系，存在关系为$query=key=value=sequence$，对于序列依赖关系的计算在Multi-Head Attention中使用的点积的方式，也就是</p>
+<p>对于<code>Multi-Head Attention</code>，<strong>使用<code>query</code>，<code>key</code>，和<code>value</code>来表示待匹配的序列，原始序列和目标序列</strong>，如果要捕获序列内部的依赖关系，存在关系为$query=key=value=sequence$，对于序列依赖关系的计算在Multi-Head Attention中使用的点积的方式，也就是</p>
 <script type="math/tex; mode=display">
-score(query,key)=query*key^T</script><p>因为query和key来自同一个序列，如果使用点积的方式会存在当query和key的维度变大的时候二者的点乘结果要么很大要么很小，在这里引入了Scale dot product Attention的方式，算是对DotAttention的一种修正。</p>
+score(query,key)=query*key^T</script><p>因为<code>query</code>和<code>key</code>来自同一个序列，如果使用点积的方式会存在当<code>query</code>和<code>key</code>的维度变大的时候二者的点乘结果要么很大要么很小，在这里引入了Scale dot product Attention的方式，算是对DotAttention的一种修正。</p>
 </li>
 <li><p>Scale dot product Attention</p>
 <p>假设query和key均为标准正太分布，并且存在关系式</p>
@@ -564,7 +370,7 @@ query*key^T=\sum_{i=1}^{dk}query_i*key_i</script><p>​    其中$d_k$对应着�
 <p>​    得到的期望为0，方差为$d_k$，如果$d_k$很大的话，那么內积的总和就会很大，使得<code>softmax</code>计算之后就会变成非零即1。</p>
 <p>​    对<code>score</code>进行缩放，这样<code>score</code>的计算变成了</p>
 <script type="math/tex; mode=display">
-score(query,key)=\frac{query*key^T}{\sqrt{d_k}}</script><p>​    也就是对传统Attention score计算的基础上，对计算结果进行了缩放，在Attention score计算时，使用的有相加                                的方式或者前文所述的点乘的方式，相比较而言两者效果差不多，但是使用点乘的方式只是用一步操作而使用相加的方式要进行尺度缩放之后相加，因此点乘的方式运行的时候会更快，在序列维度$d_k$不大的情况下，二者效果可以认为一致，但是当$d_k$变大的时候，对于点乘的方式就会存在结果过大或者过小的问题，因此需要进行缩放，前文中对此已经进行了一定叙述。</p>
+score(query,key)=\frac{query*key^T}{\sqrt{d_k}}</script><p>​    也就是对传统Attention score计算的基础上，对计算结果进行了缩放，在Attention score计算时，使用的有相加的方式或者前文所述的点乘的方式，相比较而言两者效果差不多，但是使用点乘的方式只是用一步操作，而使用相加的方式要进行尺度缩放之后相加，因此<strong>点乘的方式运行的时候会更快</strong>，在序列维度$d_k$不大的情况下，二者效果可以认为一致，但是当$d_k$变大的时候，对于点乘的方式就会存在结果过大或者过小的问题，因此需要进行缩放，前文中对此已经进行了一定叙述。</p>
 <ul>
 <li><p>Attention weight的计算</p>
 <p>在得到<code>Attention score</code>之后同样使用<code>softmax</code>的方式对<code>socre</code>进行归一化处理，得到<code>Attention weight</code>，可以认为这就是query和key之间的依赖的分布，将得到的结果和value点乘，就得到了被更新之后的序列</p>
@@ -572,27 +378,28 @@ score(query,key)=\frac{query*key^T}{\sqrt{d_k}}</script><p>​    也就是对�
 </li>
 </ul>
 <script type="math/tex; mode=display">
-Attention(query,key,value)=softmax(\frac{query*key^T}{\sqrt{d_k}})*value</script><p>​    和Encoder-Decoder Attention不同的是，这里不再计算contex，而是对value进行更新，去掉了原来的求和操作。</p>
-<h4 id="Multi的解释"><a href="#Multi的解释" class="headerlink" title="Multi的解释"></a>Multi的解释</h4><p>之所以叫做多头Attention，是相比较传统的Attention而言的，<strong>传统Attention对整个序列只进行一次计算，并且是直接计算整个序列的所有维度，多头表示针对序列的不同维度空间进行计算，对整个维度空间进行线性投影，投影到几个相同的更小的维度空间，并对该维度空间进行Attention计算</strong>，实际上在实现的过程中是很简单的，下面进行阐述。</p>
+Attention(query,key,value)=softmax(\frac{query*key^T}{\sqrt{d_k}})*value</script><p>​    和传统的Encoder-Decoder Attention不同的是，这里不再计算contex，而是对value进行更新，去掉了原来的求和操作。</p>
+<h4 id="Multi的解释"><a href="#Multi的解释" class="headerlink" title="Multi的解释"></a>Multi的解释</h4><p>之所以叫做多头<code>Attention</code>，是相比较传统的<code>Attention</code>而言的，<strong>传统<code>Attention</code>对整个序列只进行一次计算，并且是直接计算整个序列的所有维度，多头表示针对序列的不同维度空间进行计算，对整个维度空间进行线性投影，投影到几个相同的更小的维度空间，并对该维度空间进行<code>Attention</code>计算</strong>，实际上在实现的过程中是很简单的，下面进行阐述。</p>
 <p>假设序列的维度是$d_{model}$，如果想在$n$个维度空间下进行<code>Attention</code>的计算，那么可以得到每个维度空间下的维度为$d_{feature}$，并且满足关系式$d_{model}=n*d_{feature}$，根据$d_{model}$得到$d_{feature}$的方法使用线性变换的方式得到，其中线性变换的参数是学习参数</p>
 <script type="math/tex; mode=display">
-d_{feature}=w*d_{model}</script><p>如此重复$n$次，可以得到$n$个不同的$d_{feature}$，将每个$d_{feature}$进行Attention计算，并将$n$个计算结果在维度方向上拼接，就得到了<code>Multi-Head Attention</code>的输出，也就是如图三中所显示的那样。</p>
-<h3 id="ResidualConnect-amp-LayerNormal"><a href="#ResidualConnect-amp-LayerNormal" class="headerlink" title="ResidualConnect &amp; LayerNormal"></a>ResidualConnect &amp; LayerNormal</h3><p>在模型前向传播过程中，每个Transformer block中存在两个部分，一个部分就是前文所述的Multi-head Attention，另一个就是一个简单的前馈神经网络FFD。</p>
-<p>在完成Multi-head Attention到传递至FFD之间使用看了残差连接和层归一化的方法，如图4所示</p>
+d_{feature}=w*d_{model}</script><p>如此重复$n$次，可以得到$n$个不同的$d_{feature}$，将每个$d_{feature}$进行<code>Attention</code>计算，并将$n$个计算结果在维度方向上拼接，就得到了<code>Multi-Head Attention</code>的输出，也就是如图三中所显示的那样。</p>
+<h3 id="ResidualConnect-amp-LayerNormal"><a href="#ResidualConnect-amp-LayerNormal" class="headerlink" title="ResidualConnect &amp; LayerNormal"></a>ResidualConnect &amp; LayerNormal</h3><p>在模型前向传播过程中，每个<code>Transformer block</code>中存在两个部分，一个部分就是前文所述的<code>Multi-head Attention</code>，另一个就是一个简单的前馈神经网络FFD。</p>
+<p>在完成<code>Multi-head Attention</code>到传递至<code>FFD</code>之间使用看了残差连接和层归一化的方法，如图4所示</p>
 <img src="/2019/02/15/NLP-Attention_is_all_you_need/residual_layernormal.png" title="Fig.4 residual_layernormal">
 <p><strong>残差连接，使得模型在训练时，微小的变化可以被注意到，更多的可以查看残差网络相关论文及文章，本人在其他<a href="http://xiaofengshi.com/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%9B%BE%E5%83%8F%E8%AF%86%E5%88%AB/">文章</a>中已有所述</strong></p>
-<p><strong>层归一化，最常和batch normalization进行比较，layer normalization的优点在于它是独立计算的，也就是针对单一样本进行正规化，batch normalization则是针对各维度，因此和batch size有所关联。</strong></p>
+<p><strong>层归一化，最常和<code>batch normalization</code>进行比较，<code>layer normalization</code>的优点在于它是独立计算的，也就是针对单一样本进行正规化，<code>batch normalization</code>则是针对各维度，因此和batch size有所关联。</strong></p>
 <p>归纳出数学公式就是</p>
 <script type="math/tex; mode=display">
-y=LayerNormal(x+Sublayer(x))</script><p>其中$Sublayer$对应着Multi-Head Attention和一个前馈神经网络，如图四中所示</p>
-<h3 id="Masked-Multi-head-Attention"><a href="#Masked-Multi-head-Attention" class="headerlink" title="Masked Multi-head Attention"></a>Masked Multi-head Attention</h3><p>Decoder的运作模式和Encoder大同小异，也都是经过residual connections再到layer normalization。Encoder中的self Attention在计算时，key, value, query都是来自Encoder前一层的输出，Decoder亦然。</p>
-<p>不同的是，在Decoder阶段使用的是添加Mask的多头Attention，来计算目标序列的内部依赖关系，<strong>Mask是为了避免在解码的时候，还在翻译前半段时，就突然翻译到后半段的句子，会在计算self-Attention时的softmax前先mask掉未来的位置(设定成-∞)。这个步骤确保在预测位置i的时候只能根据i之前位置的输出，其实这个是因应Encoder-Decoder Attention 的特性而做的配套措施，因为Encoder-Decoder Attention可以看到Encoder的整个句子</strong>。</p>
-<h3 id="Encoder-Decoder-Attention"><a href="#Encoder-Decoder-Attention" class="headerlink" title="Encoder-Decoder Attention"></a>Encoder-Decoder Attention</h3><p>该步骤是为了将目标序列和输入序列进行对齐，也就是常用的Attention结构，在计算的时候query对应着Decoder的self-Attention的结果，而key和value对应着Encoder的self-Attention的结果，再次不再赘述，可以参考另一文章<a href="http://xiaofengshi.com/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/">深度学习-PythonTutorial_LSTM_GRU_Attention_LNLSTM_LNGRU</a></p>
-<h3 id="Final-Layer-and-Softmax"><a href="#Final-Layer-and-Softmax" class="headerlink" title="Final Layer and Softmax"></a>Final Layer and Softmax</h3><p>在Encoder-Decoder之后得到了整个序列的输出，经过线性连接维度转换，实际上就是将最终的到的维度控制在和整个字表的大小一致的情况，采用<code>softmax</code>计算得分，选择得分最大的作为当前点的输出，在论文中使用的贪心的方法直接对每个点进行输出，当然也可以使用集束搜索的方法，设置输出的备选范围，拿到每个点上输出最大的k个，之后再使用这几个计算下一个单位，这样就可以得到累计概率，最后输出累计概率最大的一个序列语句，这显然就是一种动态规划的思想。</p>
-<h2 id="overview"><a href="#overview" class="headerlink" title="overview"></a>overview</h2><p>整个过程说的比较简单，实际上可以记住Transformer的模型结构图，内部的组件包括position encoding，Multi-head Attention，residual connect，layernormal，masked-Multi-head Attention，Encoder-deocder Attention，以及最后的linear和softmax等，每个组件都不复杂，最核心的就是位置编码和Multi-Head Attention，masked Multi-head Attention了。</p>
+y=LayerNormal(x+Sublayer(x))</script><p>其中<code>Sublayer</code>​对应着<code>Multi-Head Attention</code>和一个前馈神经网络，如图四中所示</p>
+<h3 id="Masked-Multi-head-Attention"><a href="#Masked-Multi-head-Attention" class="headerlink" title="Masked Multi-head Attention"></a>Masked Multi-head Attention</h3><p><code>Decoder</code>的运作模式和<code>Encoder</code>大同小异，也都是经过<code>residual connections</code>再到<code>layer normalization</code>。<code>Encoder</code>中的<code>SelfAttention</code>在计算时，<code>key</code>, <code>value</code>, <code>query</code>都是来自<code>Encoder</code>前一层的输出，<code>Decoder</code>亦然。</p>
+<p>不同的是，在<code>Decoder</code>阶段使用的是添加<code>Mask</code>的多头<code>Attention</code>，来计算目标序列的内部依赖关系，<strong><code>Mask</code>是为了避免在解码的时候，还在翻译前半段时，就突然翻译到后半段的句子，会在计算<code>SelfAttention</code>时的<code>softmax</code>前先<code>mask</code>掉未来的位置(设定成-∞)。这个步骤确保在预测位置<code>i</code>的时候只能根据<code>i</code>之前位置的输出，其实这个是因应<code>Encoder-Decoder Attention</code> 的特性而做的配套措施，因为<code>Encoder-Decoder Attention</code>可以看到<code>Encoder</code>的整个句子</strong>。</p>
+<h3 id="Encoder-Decoder-Attention"><a href="#Encoder-Decoder-Attention" class="headerlink" title="Encoder-Decoder Attention"></a>Encoder-Decoder Attention</h3><p>该步骤是为了将目标序列和输入序列进行对齐，也就是常用的<code>Attention</code>结构，在计算的时候<code>query</code>对应着<code>Decoder</code>的<code>SelfAttention</code>的结果，而<code>key</code>和<code>value</code>对应着<code>Encoder</code>的<code>SelfAttention</code>的结果，在此不再赘述，可以参考另一文章<a href="http://xiaofengshi.com/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/">深度学习-PythonTutorial_LSTM_GRU_Attention_LNLSTM_LNGRU</a></p>
+<h3 id="Final-Layer-and-Softmax"><a href="#Final-Layer-and-Softmax" class="headerlink" title="Final Layer and Softmax"></a>Final Layer and Softmax</h3><p>在<code>Encoder-Decoder</code>之后得到了整个序列的输出，经过线性连接维度转换，实际上就是将最终得到的维度控制在和整个字表的大小一致的情况，采用<code>softmax</code>计算得分，选择得分最大的作为当前点的输出，在论文中使用的贪心的方法直接对每个点进行输出，当然也可以使用集束搜索的方法，设置输出的备选范围，拿到每个点上输出最大的<code>k</code>个，之后再使用这几个计算下一个单位，这样就可以得到累计概率，最后输出累计概率最大的一个序列语句，这显然就是一种动态规划的思想。</p>
+<h2 id="overview"><a href="#overview" class="headerlink" title="overview"></a>overview</h2><p>整个过程说的比较简单，实际上可以记住<code>Transformer</code>的模型结构图，内部的组件包括position encoding，Multi-head Attention，residual connect，layernormal，masked-Multi-head Attention，Encoder-deocder Attention，以及最后的linear和softmax等，每个组件都不复杂，最核心的就是位置编码和Multi-Head Attention，masked Multi-head Attention了。</p>
 <p>可以结合参考文献中的的<a href="https://github.com/keitakurita/Practical_NLP_in_PyTorch/blob/master/deep_dives/transformer_from_scratch.ipynb" target="_blank" rel="noopener">jupyter notebook</a>进行运行和测试。</p>
 <h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ul>
-<li><a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener">pape: Attention Is All You Need</a></li>
+<li><a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener">paper: Attention Is All You Need</a></li>
+<li><a href="http://jalammar.github.io/illustrated-transformer/" target="_blank" rel="noopener">blog:The Illustrated Transformer</a></li>
 <li><a href="https://wallstreetcn.com/articles/3417279" target="_blank" rel="noopener">从Seq2seq到Attention模型到Self Attention</a></li>
 <li><a href="http://mlexplained.com/2017/12/29/Attention-is-all-you-need-explained/" target="_blank" rel="noopener">Paper Dissected: “Attention is All You Need” Explained</a><ul>
 <li><a href="https://github.com/keitakurita/Practical_NLP_in_PyTorch/blob/master/deep_dives/transformer_from_scratch.ipynb" target="_blank" rel="noopener">jupyter: Building the Transformer from Scratch</a></li>
@@ -605,937 +412,412 @@ y=LayerNormal(x+Sublayer(x))</script><p>其中$Sublayer$对应着Multi-Head Atte
 <li><a href="https://mchromiak.github.io/articles/2017/Sep/12/Transformer-Attention-is-all-you-need/#.XGoc0JMzZZh" target="_blank" rel="noopener">The Transformer-Attention is all you need</a></li>
 </ul>
 
-      
     </div>
-    
-    
-    
 
-    <div>
-        
-        <div>
     
-        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>知识分享，方便你我-------------</div>
     
-</div>
-
-        
+    
+        <div class="reward-container">
+  <div>赏杯咖啡！</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat.jpeg" alt="ShiXiaofeng 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpeg" alt="ShiXiaofeng 支付宝">
+        <p>支付宝</p>
       </div>
 
-    
-    
-        
-<div class="my_post_copyright">
-  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
-  
-  <!-- JS库 sweetalert 可修改路径 -->
-  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
-  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-  <p><span>本文标题:</span><a href="/2019/02/15/NLP-Attention_is_all_you_need/">NLP-Attention_is_all_you_need</a></p>
-  <p><span>文章作者:</span><a href="/" title="访问 ShiXiaofeng 的个人博客">ShiXiaofeng</a></p>
-  <p><span>发布时间:</span>2019年02月15日 - 17:42</p>
-  <p><span>最后更新:</span>2019年12月10日 - 13:26</p>
-  <p><span>原始链接:</span><a href="/2019/02/15/NLP-Attention_is_all_you_need/" title="NLP-Attention_is_all_you_need">http://xiaofengshi.com/2019/02/15/NLP-Attention_is_all_you_need/</a>
-    <span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://xiaofengshi.com/2019/02/15/NLP-Attention_is_all_you_need/" aria-label="复制成功！"></i></span>
-  </p>
-  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+  </div>
 </div>
-<script> 
-    var clipboard = new Clipboard('.fa-clipboard');
-    $(".fa-clipboard").click(function(){
-      clipboard.on('success', function(){
-        swal({   
-          title: "",   
-          text: '复制成功',
-          icon: "success", 
-          showConfirmButton: true
-          });
-	});
-    });  
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>ShiXiaofeng
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://xiaofengshi.com/2019/02/15/NLP-Attention_is_all_you_need/" title="NLP-Attention_is_all_you_need">http://xiaofengshi.com/2019/02/15/NLP-Attention_is_all_you_need/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/深度学习，NLP/" rel="tag"># 深度学习，NLP</a>
+              <a href="/tags/Transformer/" rel="tag"># Transformer</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/02/14/CTC算法原理/" rel="prev" title="CTC算法原理">
+      <i class="fa fa-chevron-left"></i> CTC算法原理
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/02/23/深度学习-对抗生成网络/" rel="next" title="深度学习-对抗生成网络">
+      深度学习-对抗生成网络 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
 </script>
 
-
-    
-    
-
-    
-
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/深度学习，NLP/" rel="tag"><i class="fa fa-tag"></i> 深度学习，NLP</a>
-          
-            <a href="/tags/Transformer/" rel="tag"><i class="fa fa-tag"></i> Transformer</a>
-          
         </div>
-      
-
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2019/02/14/CTC算法原理/" rel="next" title="CTC算法原理">
-                <i class="fa fa-chevron-left"></i> CTC算法原理
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/02/23/深度学习-对抗生成网络/" rel="prev" title="深度学习-对抗生成网络">
-                深度学习-对抗生成网络 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
-  </div>
+          
   
-  
-  
-  </article>
-
-
-
-    <div class="post-spread">
-      
-    </div>
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
   </div>
 
-
-          </div>
-          
-
-
-          
-
-  
-    <div class="comments" id="comments">
-    </div>
-  
-
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    
+  <aside class="sidebar">
     <div class="sidebar-inner">
 
-      
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
 
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <section class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="ShiXiaofeng">
-            
-              <p class="site-author-name" itemprop="name">ShiXiaofeng</p>
-              <p class="site-description motion-element" itemprop="description">数据挖掘，机器学习，深度学习相关技术分享及记录</p>
-          </div>
-
-          <nav class="site-state motion-element">
-
-            
-              <div class="site-state-item site-state-posts">
-              
-                <a href="/archives/">
-              
-                  <span class="site-state-item-count">24</span>
-                  <span class="site-state-item-name">日志</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-categories">
-                <a href="/categories/index.html">
-                  <span class="site-state-item-count">20</span>
-                  <span class="site-state-item-name">分类</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-tags">
-                <a href="/tags/index.html">
-                  <span class="site-state-item-count">37</span>
-                  <span class="site-state-item-name">标签</span>
-                </a>
-              </div>
-            
-
-          </nav>
-
-          
-            <div class="feed-link motion-element">
-              <a href="/atom.xml" rel="alternate">
-                <i class="fa fa-rss"></i>
-                RSS
-              </a>
-            </div>
-          
-
-          
-            <div class="links-of-author motion-element">
-                
-                  <span class="links-of-author-item">
-                    <a href="https://github.com/xiaofengShi" target="_blank" title="GitHub">
-                      
-                        <i class="fa fa-fw fa-github"></i>GitHub</a>
-                  </span>
-                
-                  <span class="links-of-author-item">
-                    <a href="mailto:sxf1052566766@163.com" target="_blank" title="E-Mail">
-                      
-                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
-                  </span>
-                
-            </div>
-          
-
-          
-          
-
-          
-          
-
-          
-
-        </div>
-      </section>
-
-      
       <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Seq2Seq"><span class="nav-number">1.</span> <span class="nav-text">Seq2Seq</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Why-Transformer"><span class="nav-number">2.</span> <span class="nav-text">Why Transformer?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Structure"><span class="nav-number">3.</span> <span class="nav-text">Structure</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Positional-Encoding"><span class="nav-number">3.1.</span> <span class="nav-text">Positional Encoding</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Multi-Head-Attention"><span class="nav-number">3.2.</span> <span class="nav-text">Multi-Head Attention</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#计算方法"><span class="nav-number">3.2.1.</span> <span class="nav-text">计算方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Multi的解释"><span class="nav-number">3.2.2.</span> <span class="nav-text">Multi的解释</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ResidualConnect-amp-LayerNormal"><span class="nav-number">3.3.</span> <span class="nav-text">ResidualConnect &amp; LayerNormal</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Masked-Multi-head-Attention"><span class="nav-number">3.4.</span> <span class="nav-text">Masked Multi-head Attention</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Encoder-Decoder-Attention"><span class="nav-number">3.5.</span> <span class="nav-text">Encoder-Decoder Attention</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Final-Layer-and-Softmax"><span class="nav-number">3.6.</span> <span class="nav-text">Final Layer and Softmax</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#overview"><span class="nav-number">4.</span> <span class="nav-text">overview</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reference"><span class="nav-number">5.</span> <span class="nav-text">Reference</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Seq2Seq"><span class="nav-number">1.</span> <span class="nav-text">Seq2Seq</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Why-Transformer"><span class="nav-number">2.</span> <span class="nav-text">Why Transformer?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Structure"><span class="nav-number">3.</span> <span class="nav-text">Structure</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Positional-Encoding"><span class="nav-number">3.1.</span> <span class="nav-text">Positional Encoding</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Multi-Head-Attention"><span class="nav-number">3.2.</span> <span class="nav-text">Multi-Head Attention</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#计算方法"><span class="nav-number">3.2.1.</span> <span class="nav-text">计算方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Multi的解释"><span class="nav-number">3.2.2.</span> <span class="nav-text">Multi的解释</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ResidualConnect-amp-LayerNormal"><span class="nav-number">3.3.</span> <span class="nav-text">ResidualConnect &amp; LayerNormal</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Masked-Multi-head-Attention"><span class="nav-number">3.4.</span> <span class="nav-text">Masked Multi-head Attention</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Encoder-Decoder-Attention"><span class="nav-number">3.5.</span> <span class="nav-text">Encoder-Decoder Attention</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Final-Layer-and-Softmax"><span class="nav-number">3.6.</span> <span class="nav-text">Final Layer and Softmax</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#overview"><span class="nav-number">4.</span> <span class="nav-text">overview</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reference"><span class="nav-number">5.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+      </div>
       <!--/noindex-->
-      
 
-      
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ShiXiaofeng"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">ShiXiaofeng</p>
+  <div class="site-description" itemprop="description">机器学习,数据挖掘,深度学习相关技术记录分享</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xiaofengShi" title="GitHub → https://github.com/xiaofengShi" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sxf1052566766@163.com" title="E-Mail → mailto:sxf1052566766@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
 
     </div>
   </aside>
+  <div id="sidebar-dimmer"></div>
 
 
-        
       </div>
     </main>
 
-    <footer id="footer" class="footer">
+    <footer class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2019</span>
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">ShiXiaofeng</span>
-
-  
 </div>
-
-
-
-
-
-
-
-
-
-        
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-          <span id="scrollpercent"><span>0</span>%</span>
-        
-      </div>
-    
-
-    
-
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0
   </div>
 
-  
+        
 
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
 
 
 
 
 
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="https://cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="https://cdn.bootcss.com/velocity/1.2.1/velocity.min.js"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="https://cdn.bootcss.com/velocity/1.2.1/velocity.ui.min.js"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="https://cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
-  
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
-
-
-
-  
-  
-
-
-  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
-
-  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
-
-
-
-  
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  
-
-
-
-
-	
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
-  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
-  
-  <script type="text/javascript">
-    var GUEST = ['nick','mail','link'];
-    var guest = 'nick,mail,link';
-    guest = guest.split(',').filter(item=>{
-      return GUEST.indexOf(item)>-1;
-    });
-    new Valine({
-        el: '#comments' ,
-        verify: false,
-        notify: false,
-        appId: 'rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz',
-        appKey: 'zJasiQnAqgUwf4kiHhHyXwOP',
-        placeholder: 'Just go go',
-        avatar:'mm',
-        guest_info:guest,
-        pageSize:'10' || 10,
-    });
-  </script>
-
-
-
-  
-
-  <script type="text/javascript">
-    // Popup Window;
-    var isfetched = false;
-    var isXml = true;
-    // Search DB path;
-    var search_path = "search.xml";
-    if (search_path.length === 0) {
-      search_path = "search.xml";
-    } else if (/json$/i.test(search_path)) {
-      isXml = false;
-    }
-    var path = "/" + search_path;
-    // monitor main search box;
-
-    var onPopupClose = function (e) {
-      $('.popup').hide();
-      $('#local-search-input').val('');
-      $('.search-result-list').remove();
-      $('#no-result').remove();
-      $(".local-search-pop-overlay").remove();
-      $('body').css('overflow', '');
-    }
-
-    function proceedsearch() {
-      $("body")
-        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
-        .css('overflow', 'hidden');
-      $('.search-popup-overlay').click(onPopupClose);
-      $('.popup').toggle();
-      var $localSearchInput = $('#local-search-input');
-      $localSearchInput.attr("autocapitalize", "none");
-      $localSearchInput.attr("autocorrect", "off");
-      $localSearchInput.focus();
-    }
-
-    // search function;
-    var searchFunc = function(path, search_id, content_id) {
-      'use strict';
-
-      // start loading animation
-      $("body")
-        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
-          '<div id="search-loading-icon">' +
-          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
-          '</div>' +
-          '</div>')
-        .css('overflow', 'hidden');
-      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
-
-      $.ajax({
-        url: path,
-        dataType: isXml ? "xml" : "json",
-        async: true,
-        success: function(res) {
-          // get the contents from search data
-          isfetched = true;
-          $('.popup').detach().appendTo('.header-inner');
-          var datas = isXml ? $("entry", res).map(function() {
-            return {
-              title: $("title", this).text(),
-              content: $("content",this).text(),
-              url: $("url" , this).text()
-            };
-          }).get() : res;
-          var input = document.getElementById(search_id);
-          var resultContent = document.getElementById(content_id);
-          var inputEventFunction = function() {
-            var searchText = input.value.trim().toLowerCase();
-            var keywords = searchText.split(/[\s\-]+/);
-            if (keywords.length > 1) {
-              keywords.push(searchText);
-            }
-            var resultItems = [];
-            if (searchText.length > 0) {
-              // perform local searching
-              datas.forEach(function(data) {
-                var isMatch = false;
-                var hitCount = 0;
-                var searchTextCount = 0;
-                var title = data.title.trim();
-                var titleInLowerCase = title.toLowerCase();
-                var content = data.content.trim().replace(/<[^>]+>/g,"");
-                var contentInLowerCase = content.toLowerCase();
-                var articleUrl = decodeURIComponent(data.url);
-                var indexOfTitle = [];
-                var indexOfContent = [];
-                // only match articles with not empty titles
-                if(title != '') {
-                  keywords.forEach(function(keyword) {
-                    function getIndexByWord(word, text, caseSensitive) {
-                      var wordLen = word.length;
-                      if (wordLen === 0) {
-                        return [];
-                      }
-                      var startPosition = 0, position = [], index = [];
-                      if (!caseSensitive) {
-                        text = text.toLowerCase();
-                        word = word.toLowerCase();
-                      }
-                      while ((position = text.indexOf(word, startPosition)) > -1) {
-                        index.push({position: position, word: word});
-                        startPosition = position + wordLen;
-                      }
-                      return index;
-                    }
-
-                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
-                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
-                  });
-                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
-                    isMatch = true;
-                    hitCount = indexOfTitle.length + indexOfContent.length;
-                  }
-                }
-
-                // show search results
-
-                if (isMatch) {
-                  // sort index by position of keyword
-
-                  [indexOfTitle, indexOfContent].forEach(function (index) {
-                    index.sort(function (itemLeft, itemRight) {
-                      if (itemRight.position !== itemLeft.position) {
-                        return itemRight.position - itemLeft.position;
-                      } else {
-                        return itemLeft.word.length - itemRight.word.length;
-                      }
-                    });
-                  });
-
-                  // merge hits into slices
-
-                  function mergeIntoSlice(text, start, end, index) {
-                    var item = index[index.length - 1];
-                    var position = item.position;
-                    var word = item.word;
-                    var hits = [];
-                    var searchTextCountInSlice = 0;
-                    while (position + word.length <= end && index.length != 0) {
-                      if (word === searchText) {
-                        searchTextCountInSlice++;
-                      }
-                      hits.push({position: position, length: word.length});
-                      var wordEnd = position + word.length;
-
-                      // move to next position of hit
-
-                      index.pop();
-                      while (index.length != 0) {
-                        item = index[index.length - 1];
-                        position = item.position;
-                        word = item.word;
-                        if (wordEnd > position) {
-                          index.pop();
-                        } else {
-                          break;
-                        }
-                      }
-                    }
-                    searchTextCount += searchTextCountInSlice;
-                    return {
-                      hits: hits,
-                      start: start,
-                      end: end,
-                      searchTextCount: searchTextCountInSlice
-                    };
-                  }
-
-                  var slicesOfTitle = [];
-                  if (indexOfTitle.length != 0) {
-                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
-                  }
-
-                  var slicesOfContent = [];
-                  while (indexOfContent.length != 0) {
-                    var item = indexOfContent[indexOfContent.length - 1];
-                    var position = item.position;
-                    var word = item.word;
-                    // cut out 100 characters
-                    var start = position - 20;
-                    var end = position + 80;
-                    if(start < 0){
-                      start = 0;
-                    }
-                    if (end < position + word.length) {
-                      end = position + word.length;
-                    }
-                    if(end > content.length){
-                      end = content.length;
-                    }
-                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
-                  }
-
-                  // sort slices in content by search text's count and hits' count
-
-                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
-                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
-                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
-                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
-                      return sliceRight.hits.length - sliceLeft.hits.length;
-                    } else {
-                      return sliceLeft.start - sliceRight.start;
-                    }
-                  });
-
-                  // select top N slices in content
-
-                  var upperBound = parseInt('1');
-                  if (upperBound >= 0) {
-                    slicesOfContent = slicesOfContent.slice(0, upperBound);
-                  }
-
-                  // highlight title and content
-
-                  function highlightKeyword(text, slice) {
-                    var result = '';
-                    var prevEnd = slice.start;
-                    slice.hits.forEach(function (hit) {
-                      result += text.substring(prevEnd, hit.position);
-                      var end = hit.position + hit.length;
-                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
-                      prevEnd = end;
-                    });
-                    result += text.substring(prevEnd, slice.end);
-                    return result;
-                  }
-
-                  var resultItem = '';
-
-                  if (slicesOfTitle.length != 0) {
-                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
-                  } else {
-                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
-                  }
-
-                  slicesOfContent.forEach(function (slice) {
-                    resultItem += "<a href='" + articleUrl + "'>" +
-                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
-                      "...</p>" + "</a>";
-                  });
-
-                  resultItem += "</li>";
-                  resultItems.push({
-                    item: resultItem,
-                    searchTextCount: searchTextCount,
-                    hitCount: hitCount,
-                    id: resultItems.length
-                  });
-                }
-              })
-            };
-            if (keywords.length === 1 && keywords[0] === "") {
-              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
-            } else if (resultItems.length === 0) {
-              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
-            } else {
-              resultItems.sort(function (resultLeft, resultRight) {
-                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
-                  return resultRight.searchTextCount - resultLeft.searchTextCount;
-                } else if (resultLeft.hitCount !== resultRight.hitCount) {
-                  return resultRight.hitCount - resultLeft.hitCount;
-                } else {
-                  return resultRight.id - resultLeft.id;
-                }
-              });
-              var searchResultList = '<ul class=\"search-result-list\">';
-              resultItems.forEach(function (result) {
-                searchResultList += result.item;
-              })
-              searchResultList += "</ul>";
-              resultContent.innerHTML = searchResultList;
-            }
-          }
-
-          if ('auto' === 'auto') {
-            input.addEventListener('input', inputEventFunction);
-          } else {
-            $('.search-icon').click(inputEventFunction);
-            input.addEventListener('keypress', function (event) {
-              if (event.keyCode === 13) {
-                inputEventFunction();
-              }
-            });
-          }
-
-          // remove loading animation
-          $(".local-search-pop-overlay").remove();
-          $('body').css('overflow', '');
-
-          proceedsearch();
-        }
-      });
-    }
-
-    // handle and trigger popup window;
-    $('.popup-trigger').click(function(e) {
-      e.stopPropagation();
-      if (isfetched === false) {
-        searchFunc(path, 'local-search-input', 'local-search-result');
-      } else {
-        proceedsearch();
-      };
-    });
-
-    $('.popup-btn-close').click(onPopupClose);
-    $('.popup').click(function(e){
-      e.stopPropagation();
-    });
-    $(document).on('keyup', function (event) {
-      var shouldDismissSearchPopup = event.which === 27 &&
-        $('.search-popup').is(':visible');
-      if (shouldDismissSearchPopup) {
-        onPopupClose();
-      }
-    });
-  </script>
-
-
-
-
-
-  
-
-  
-  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
-  <script>AV.initialize("rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz", "zJasiQnAqgUwf4kiHhHyXwOP");</script>
   <script>
-    function showTime(Counter) {
-      var query = new AV.Query(Counter);
-      var entries = [];
-      var $visitors = $(".leancloud_visitors");
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
 
-      $visitors.each(function () {
-        entries.push( $(this).attr("id").trim() );
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+              leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
       });
 
-      query.containedIn('url', entries);
-      query.find()
-        .done(function (results) {
-          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
-
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
           if (results.length === 0) {
-            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
             return;
           }
-
-          for (var i = 0; i < results.length; i++) {
-            var item = results[i];
-            var url = item.get('url');
-            var time = item.get('time');
-            var element = document.getElementById(url);
-
-            $(element).find(COUNT_CONTAINER_REF).text(time);
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
           }
-          for(var i = 0; i < entries.length; i++) {
-            var url = entries[i];
-            var element = document.getElementById(url);
-            var countSpan = $(element).find(COUNT_CONTAINER_REF);
-            if( countSpan.text() == '') {
-              countSpan.text(0);
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
             }
           }
         })
-        .fail(function (object, error) {
-          console.log("Error: " + error.code + " " + error.message);
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
         });
     }
+  }
 
-    function addCount(Counter) {
-      var $visitors = $(".leancloud_visitors");
-      var url = $visitors.attr('id').trim();
-      var title = $visitors.attr('data-flag-title').trim();
-      var query = new AV.Query(Counter);
-
-      query.equalTo("url", url);
-      query.find({
-        success: function(results) {
-          if (results.length > 0) {
-            var counter = results[0];
-            counter.fetchWhenSave(true);
-            counter.increment("time");
-            counter.save(null, {
-              success: function(counter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(counter.get('time'));
-              },
-              error: function(counter, error) {
-                console.log('Failed to save Visitor num, with error message: ' + error.message);
-              }
-            });
-          } else {
-            var newcounter = new Counter();
-            /* Set ACL */
-            var acl = new AV.ACL();
-            acl.setPublicReadAccess(true);
-            acl.setPublicWriteAccess(true);
-            newcounter.setACL(acl);
-            /* End Set ACL */
-            newcounter.set("title", title);
-            newcounter.set("url", url);
-            newcounter.set("time", 1);
-            newcounter.save(null, {
-              success: function(newcounter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
-              },
-              error: function(newcounter, error) {
-                console.log('Failed to create');
-              }
-            });
-          }
-        },
-        error: function(error) {
-          console.log('Error:' + error.code + " " + error.message);
-        }
-      });
-    }
-
-    $(function() {
-      var Counter = AV.Object.extend("Counter");
-      if ($('.leancloud_visitors').length == 1) {
+  fetch('https://app-router.leancloud.cn/2/route?appId=rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id': 'rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz',
+            'X-LC-Key': 'zJasiQnAqgUwf4kiHhHyXwOP',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
         addCount(Counter);
-      } else if ($('.post-title-link').length > 1) {
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
         showTime(Counter);
       }
     });
   </script>
 
 
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   
 
   
+      
+<script type="text/x-mathjax-config">
 
-  
-  
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
 
-  
-  
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Config({
-        tex2jax: {
-          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
-          processEscapes: true,
-          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
         }
-      });
-    </script>
-
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for (i=0; i < all.length; i += 1) {
-          all[i].SourceElement().parentNode.className += ' has-jax';
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
         }
-      });
-    </script>
-    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+
   
 
 
-  
-
-  
-
-  <!-- 代码块复制功能 -->
-  <script type="text/javascript" src="/js/src/clipboard.min.js"></script>
-  <script type="text/javascript" src="/js/src/clipboard-use.js"></script>
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el: '#valine-comments',
+      verify: false,
+      notify: false,
+      appId: 'rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz',
+      appKey: 'zJasiQnAqgUwf4kiHhHyXwOP',
+      placeholder: "Just go go",
+      avatar: 'mm',
+      meta: guest,
+      pageSize: '10' || 10,
+      visitor: false,
+      lang: '' || 'zh-cn',
+      path: location.pathname,
+      recordIP: false,
+      serverURLs: ''
+    });
+  }, window.Valine);
+});
+</script>
 
 </body>
 </html>
