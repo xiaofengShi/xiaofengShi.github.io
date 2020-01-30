@@ -2,9 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://xiaofengshi.com/schedule/index.html</loc>
+    
+    <lastmod>2020-01-30T14:27:36.478Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://xiaofengshi.com/2020/01/29/AwesomesPython/</loc>
     
-    <lastmod>2020-01-30T12:59:42.669Z</lastmod>
+    <lastmod>2020-01-30T14:27:02.641Z</lastmod>
     
   </url>
   
@@ -166,13 +173,6 @@
     <loc>http://xiaofengshi.com/2018/11/09/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%81%9A%E7%B1%BB/</loc>
     
     <lastmod>2018-11-25T13:19:25.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://xiaofengshi.com/schedule/index.html</loc>
-    
-    <lastmod>2018-11-25T12:08:16.000Z</lastmod>
     
   </url>
   
