@@ -2,16 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://xiaofengshi.com/schedule/index.html</loc>
+    <loc>http://xiaofengshi.com/2020/01/29/AwesomesPython/</loc>
     
-    <lastmod>2020-01-30T14:27:36.478Z</lastmod>
+    <lastmod>2020-01-30T15:29:01.568Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://xiaofengshi.com/2020/01/29/AwesomesPython/</loc>
+    <loc>http://xiaofengshi.com/2018/12/12/AwsomeProcess/</loc>
     
-    <lastmod>2020-01-30T14:27:02.641Z</lastmod>
+    <lastmod>2020-01-30T15:28:56.578Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaofengshi.com/schedule/index.html</loc>
+    
+    <lastmod>2020-01-30T14:27:36.478Z</lastmod>
     
   </url>
   
@@ -40,13 +47,6 @@
     <loc>http://xiaofengshi.com/2019/12/10/NLP-Bert/</loc>
     
     <lastmod>2020-01-30T12:29:08.728Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://xiaofengshi.com/2018/12/12/AwsomeProcess/</loc>
-    
-    <lastmod>2020-01-29T11:25:32.742Z</lastmod>
     
   </url>
   

@@ -25,14 +25,14 @@
     version: '7.7.0',
     exturl: false,
     sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
-    copycode: {"enable":false,"show_result":false,"style":null},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
     back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
     bookmark: {"enable":false,"color":"#222","save":"auto"},
     fancybox: false,
     mediumzoom: false,
     lazyload: false,
     pangu: false,
-    comments: {"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
     algolia: {
       appID: '',
       apiKey: '',
@@ -46,22 +46,22 @@
   };
 </script>
 
-  <meta name="description" content="本篇涉及平时工作中使用的一些python相关轮子，在此记录，不断更新……">
+  <meta name="description" content="本篇涉及平时工作中使用的一些python相关轮子，在此记录，不断补充更新……">
 <meta name="keywords" content="Python">
 <meta property="og:type" content="article">
 <meta property="og:title" content="AwesomesPython">
 <meta property="og:url" content="http://xiaofengshi.com/2020/01/29/AwesomesPython/index.html">
 <meta property="og:site_name" content="挖掘机成长日记">
-<meta property="og:description" content="本篇涉及平时工作中使用的一些python相关轮子，在此记录，不断更新……">
+<meta property="og:description" content="本篇涉及平时工作中使用的一些python相关轮子，在此记录，不断补充更新……">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://xiaofengshi.com/2020/01/29/AwesomesPython/python.png">
 <meta property="og:image" content="http://xiaofengshi.com/2020/01/29/AwesomesPython/string_to_list.png">
 <meta property="og:image" content="http://xiaofengshi.com/2020/01/29/AwesomesPython/object_dict.png">
 <meta property="og:image" content="http://xiaofengshi.com/2020/01/29/AwesomesPython/dict_obj.png">
-<meta property="og:updated_time" content="2020-01-30T14:27:02.641Z">
+<meta property="og:updated_time" content="2020-01-30T15:29:01.568Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="AwesomesPython">
-<meta name="twitter:description" content="本篇涉及平时工作中使用的一些python相关轮子，在此记录，不断更新……">
+<meta name="twitter:description" content="本篇涉及平时工作中使用的一些python相关轮子，在此记录，不断补充更新……">
 <meta name="twitter:image" content="http://xiaofengshi.com/2020/01/29/AwesomesPython/python.png">
 
 <link rel="canonical" href="http://xiaofengshi.com/2020/01/29/AwesomesPython/">
@@ -186,6 +186,7 @@
     <i class="fa fa-arrow-up"></i>
     <span>0%</span>
   </div>
+  <div class="reading-progress-bar"></div>
 
   <a href="https://github.com/xiaofengShi" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
 
@@ -233,7 +234,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-01-30 22:27:02" itemprop="dateModified" datetime="2020-01-30T22:27:02+08:00">2020-01-30</time>
+                <time title="修改时间：2020-01-30 23:29:01" itemprop="dateModified" datetime="2020-01-30T23:29:01+08:00">2020-01-30</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -279,14 +280,14 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>本篇涉及平时工作中使用的一些python相关轮子，在此记录，不断更新……</p>
+        <p>本篇涉及平时工作中使用的一些python相关轮子，在此记录，不断补充更新……</p>
 <img src="/2020/01/29/AwesomesPython/python.png" title="Python">
 <a id="more"></a>
-<h2 id="文件及路径"><a href="#文件及路径" class="headerlink" title="文件及路径"></a>文件及路径</h2><h3 id="遍历读取文件夹下所有目录"><a href="#遍历读取文件夹下所有目录" class="headerlink" title="遍历读取文件夹下所有目录"></a>遍历读取文件夹下所有目录</h3><p>在python中使用os.path.lisdir()可以实现读取给定路径下的所有文件，并返回文件名列表，在给定的路径下，有可能存在着子目录，这个时候我们想要读取子目录下的文件又该如何处理呢</p>
+<h2 id="文件及路径"><a href="#文件及路径" class="headerlink" title="文件及路径"></a>文件及路径</h2><h3 id="遍历读取文件夹下所有目录"><a href="#遍历读取文件夹下所有目录" class="headerlink" title="遍历读取文件夹下所有目录"></a>遍历读取文件夹下所有目录</h3><p>在<code>Python</code>中使用<code>os.path.lisdir()</code>可以实现读取给定路径下的所有文件，并返回文件名列表，在给定的路径下，有可能存在着子目录，这个时候我们想要读取子目录下的文件又该如何处理呢</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># encoding:utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">readDir</span><span class="params">(dirPath)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> dirPath[<span class="number">-1</span>] == <span class="string">'/'</span>:</span><br><span class="line">        print( <span class="string">u'文件夹路径末尾不能加/'</span>)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    allFiles = []</span><br><span class="line">    <span class="comment"># 判断给定的路径是否是一个路径</span></span><br><span class="line">    <span class="keyword">if</span> os.path.isdir(dirPath):</span><br><span class="line">      	<span class="comment"># 获取当前路径下所有的所有文件</span></span><br><span class="line">        fileList = os.listdir(dirPath)</span><br><span class="line">        <span class="keyword">for</span> f <span class="keyword">in</span> fileList:</span><br><span class="line">            full_path = os.path.join(dirPath, f)</span><br><span class="line">            <span class="keyword">if</span> os.path.isdir(full_path):</span><br><span class="line">                <span class="comment"># 如果存在子目录，递归调用读取函数</span></span><br><span class="line">                subFiles = readDir(full_path)</span><br><span class="line">                allFiles = subFiles + allFiles <span class="comment">#合并当前目录与子目录的所有文件路径</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                allFiles.append(full_path)</span><br><span class="line">        <span class="keyword">return</span> allFiles</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">'Error,not a dir'</span></span><br></pre></td></tr></table></figure>
-<p>如上是对文件进行读取，当读取文件之后，如果文件是<code>txt</code>文件，那么读取这个文件的内容并打印</p>
+<p>如上是对文件进行读取，当读取文件之后，如果文件是<code>.txt</code>文件，那么读取这个文件的内容并打印</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># encoding:utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">readTxt</span> <span class="params">(filePath)</span>:</span></span><br><span class="line">    <span class="keyword">with</span> open(filePath) <span class="keyword">as</span> f:</span><br><span class="line">        lines = f.readlines()</span><br><span class="line">        <span class="keyword">for</span> line <span class="keyword">in</span> lines:</span><br><span class="line">            data = line.strip().split(<span class="string">'\001'</span>) <span class="comment">#以列表形式返回分割了的行数据</span></span><br><span class="line">                <span class="keyword">for</span> i <span class="keyword">in</span> data:</span><br><span class="line">                	<span class="keyword">print</span> i</span><br><span class="line">             </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    dirPath = <span class="string">'xxxx'</span></span><br><span class="line">    fileList=ReadDirFiles.readDir(dirPath)</span><br><span class="line">    <span class="keyword">for</span> f <span class="keyword">in</span> fileList:</span><br><span class="line">    	<span class="keyword">if</span> f.split(<span class="string">'.'</span>)[<span class="number">-1</span>] <span class="keyword">in</span> [<span class="string">'txt'</span>]:</span><br><span class="line">    		readTxt(f)</span><br></pre></td></tr></table></figure>
-<h2 id="PANDAS"><a href="#PANDAS" class="headerlink" title="PANDAS"></a>PANDAS</h2><h3 id="CSV2LIST"><a href="#CSV2LIST" class="headerlink" title="CSV2LIST"></a>CSV2LIST</h3><p>csv是很常用的数据存储方式，推荐使用pandas读取，pandas真是一个非常棒的数据分析工具，说回本例，数据存储在csv文件中，读取里面的一列或者某几列存储为列表格式</p>
+<h2 id="PANDAS"><a href="#PANDAS" class="headerlink" title="PANDAS"></a>PANDAS</h2><h3 id="CSV2LIST"><a href="#CSV2LIST" class="headerlink" title="CSV2LIST"></a>CSV2LIST</h3><p><code>csv</code>是很常用的数据存储方式，推荐使用<code>pandas</code>读取，<code>pandas</code>真是一个非常棒的数据分析工具，说回本例，数据存储在<code>csv</code>文件中，读取里面的一列或者某几列存储为列表格式</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line">csv_file=<span class="string">'Pandas_example_read.csv'</span></span><br><span class="line"><span class="comment"># 默认使用第一行作为列的名称</span></span><br><span class="line">df_example=pd.read_csv(filepath,header=<span class="number">0</span>)</span><br><span class="line"><span class="comment"># csv存在标题但是想换成自己的标题</span></span><br><span class="line">df_example = pd.read_csv(<span class="string">'Pandas_example_read.csv'</span>，names=[<span class="string">'A'</span>,<span class="string">'B'</span>,<span class="string">'C'</span>]) </span><br><span class="line"></span><br><span class="line"><span class="comment"># CSV没有标题，第一行就是数据，这样读取的时候要设置header</span></span><br><span class="line">df_example_noCols = pd.read_csv(<span class="string">'Pandas_example_read_withoutCols.csv'</span>, header=<span class="keyword">None</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># csv没有标题，读的时候加上标题，操作方法和有标题相同</span></span><br><span class="line">df_example_noCols = pd.read_csv(<span class="string">'Pandas_example_read_withoutCols.csv'</span>, names=[<span class="string">'A'</span>, <span class="string">'B'</span>,<span class="string">'C'</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># key 对应的是要提取的列的header</span></span><br><span class="line">select=df_example[<span class="string">'key'</span>].tolist()</span><br></pre></td></tr></table></figure>
 <h2 id="图片处理"><a href="#图片处理" class="headerlink" title="图片处理"></a>图片处理</h2><h3 id="Canny边缘检测"><a href="#Canny边缘检测" class="headerlink" title="Canny边缘检测"></a>Canny边缘检测</h3><p>参考：<strong><a href="https://mp.weixin.qq.com/s/ejwnsPkrpSJieCPssU8Caw" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/ejwnsPkrpSJieCPssU8Caw</a></strong></p>
 <p>主要涉及如下几个操作</p>
@@ -306,14 +307,15 @@
 <h2 id="IOU的计算"><a href="#IOU的计算" class="headerlink" title="IOU的计算"></a>IOU的计算</h2><p>在<code>ObjectDetection</code>任务中，在后处理阶段一般要进行<code>NMS</code>处理，也就是需要计算两个<code>box</code>之间的<code>IOU</code>，顾明思议，<code>IOU</code>就是两个矩形交集面积与并集面积的比值，比值的范围为$[0,1]$，比值越大，表示两个矩形越相同。</p>
 <p>代码实现</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_cal_iou</span><span class="params">(query_box, store_box)</span>:</span></span><br><span class="line">  	<span class="comment"># @query_box is a list, contains the cordinates for the leftup and rightdown corner</span></span><br><span class="line">    <span class="comment"># left_x,left_y,right_x,right_y=query_box</span></span><br><span class="line">    <span class="comment"># @store_box is a list, each element is a box</span></span><br><span class="line">    <span class="comment"># return，ratios between query and store boxes</span></span><br><span class="line">    x1, y1, x2, y2 = query_box</span><br><span class="line">    w1 = x2 - x1</span><br><span class="line">    h1 = y2 - y1</span><br><span class="line">    query_area = w1 * h1</span><br><span class="line">    ratios = []</span><br><span class="line">    <span class="keyword">for</span> box <span class="keyword">in</span> store_box:</span><br><span class="line">        x_11, y_11, x_22, y_22 = box</span><br><span class="line">        w_11 = x_22 - x_11</span><br><span class="line">        h_11 = y_22 - y_11</span><br><span class="line">        store_area = w_11*h_11</span><br><span class="line">        </span><br><span class="line">        endx = max(x2, x_22)</span><br><span class="line">        startx = min(x1, x_11)</span><br><span class="line">        width = w1 + w_11 - (endx - startx)</span><br><span class="line">        </span><br><span class="line">        endy = max(y2, y_22)</span><br><span class="line">        starty = min(y1, y_11)</span><br><span class="line">        height = h1 + h_11 - (endy - starty)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> width &lt;= <span class="number">0</span> <span class="keyword">or</span> height &lt;= <span class="number">0</span>:</span><br><span class="line">            ratio = <span class="number">0</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            inter_area = width * height</span><br><span class="line">            ratio = inter_area / (query_area + store_area - inter_area)</span><br><span class="line">        ratios.append(ratio)</span><br><span class="line">    <span class="keyword">return</span> ratios</span><br></pre></td></tr></table></figure>
-<h2 id="数据转换Convertation"><a href="#数据转换Convertation" class="headerlink" title="数据转换Convertation"></a>数据转换Convertation</h2><h3 id="string-amp-list"><a href="#string-amp-list" class="headerlink" title="string&amp;list"></a>string&amp;list</h3><p>改程序涉及将字符串转换为list，这里的字符串不是简单地字符串，是具有数据格式的字符串，如下所示</p>
+<h2 id="数据转换Convertation"><a href="#数据转换Convertation" class="headerlink" title="数据转换Convertation"></a>数据转换Convertation</h2><h3 id="String-amp-List"><a href="#String-amp-List" class="headerlink" title="String&amp;List"></a>String&amp;List</h3><p>该程序涉及将字符串转换为<code>list</code>，这里的字符串不是简单地字符串，是具有数据格式的字符串，如下所示</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">demo=<span class="string">'[&#123;"label":0,"dots":[&#123;"x":109.60000000000001,"y":7.466666666666667&#125;,&#123;"x":311.2,"y":7.466666666666667&#125;,&#123;"x":311.2,"y":197.33333333333334&#125;,&#123;"x":109.60000000000001,"y":197.33333333333334&#125;]&#125;]'</span></span><br></pre></td></tr></table></figure>
-<p>可以看出来，虽然整体是一个string的格式，但是内部实际上是列表，并且列表内是一个字典，那么如何将这个字符串转换成列表，并且能够读取列表中的字典呢？</p>
-<p>很简单，使用ast的literal_eval包</p>
-<p>如下进行处理</p>
+<p>可以看出来，虽然整体是一个<code>string</code>的格式，但是内部实际上是列表，并且列表内是一个字典，那么如何将这个字符串转换成列表，并且能够读取列表中的字典呢？</p>
+<p>很简单，使用依赖包<code>ast</code></p>
+<p>处理代码如下所示</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## import package</span></span><br><span class="line"><span class="keyword">from</span> ast <span class="keyword">import</span> literal_eval</span><br><span class="line"><span class="comment">##<span class="doctag">NOTE:</span> turn string to list</span></span><br><span class="line">mlist = literal_eval(demo)</span><br><span class="line"><span class="keyword">assert</span> isinstance(mlist,list)， <span class="string">"After literal_eval, must return a list"</span></span><br><span class="line">out=[]</span><br><span class="line"><span class="keyword">for</span> dic <span class="keyword">in</span> mlist:</span><br><span class="line">    want=dic[<span class="string">'dots'</span>]</span><br><span class="line">    keys=[<span class="string">'x'</span>,<span class="string">'y'</span>]</span><br><span class="line">    <span class="keyword">for</span> each_points <span class="keyword">in</span> want:</span><br><span class="line">        <span class="keyword">for</span> key <span class="keyword">in</span> keys:</span><br><span class="line">            out.append(each_points[key])</span><br><span class="line"><span class="keyword">print</span> out</span><br></pre></td></tr></table></figure>
 <p>经过如上程序，就可以得到列表</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt; [109.60000000000001, 7.466666666666667, 311.2, 7.466666666666667, 311.2, 197.33333333333334, 109.60000000000001, 197.33333333333334]</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[109.60000000000001, 7.466666666666667, 311.2, 7.466666666666667, 311.2, 197.33333333333334, 109.60000000000001, 197.33333333333334]</span><br></pre></td></tr></table></figure>
+<p>对应的<code>jupyter</code>程序截图如下</p>
 <img src="/2020/01/29/AwesomesPython/string_to_list.png" title="string to image">
 <h3 id="Dict-amp-Object"><a href="#Dict-amp-Object" class="headerlink" title="Dict&amp;Object"></a>Dict&amp;Object</h3><p>在<code>Object</code>中直接调用<code>object.__dict__</code>就可以得到当前object的dictionary形式</p>
 <img src="/2020/01/29/AwesomesPython/object_dict.png" title="Get dictionary from object">
@@ -338,10 +340,49 @@
 <li><p>Json</p>
 <p>使用<code>json.dumps</code>和<code>json.loads</code>对字典数据进行序列化和反序列化</p>
 <p>在<code>Python</code>中包含多个<code>json</code>处理方式</p>
-<p>| 依赖库      | 序列化耗时 | 反序列化耗时 |<br>| —————- | ————— | —————— |<br>| yajl        | 1.910      | 1.970        |<br>| cjson       | 3.305      | 1.328        |<br>| simplejson  | 10.279     | 4.658        |<br>| stdlib json | 7.013      | 8.579        |<br>| ujson       | 2.084      | 1.157        |</p>
-<p>一般情况下使用<code>ujson</code>来也就是<code>import ujson as json</code>使用方法还是<code>json.dumps</code>和<code>json.loads</code></p>
-<p>显而易见，json类型的数据保存了数据中元素的数据类型和数据结构等信息，比如json中保存多维数组数据，只需要在使用<code>vector.to_list()</code>将其赋值给字典中的元素即可使用<code>json.dumps</code>的方式保存，但是<code>json</code>方式带来的问题就是序列化的时间很慢，尤其是带序列化的数据越大，所需时间大量增加。</p>
 </li>
+</ol>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>依赖库</th>
+<th>序列化耗时</th>
+<th>反序列化耗时</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>yajl</td>
+<td>1.910</td>
+<td>1.970</td>
+</tr>
+<tr>
+<td>cjson</td>
+<td>3.305</td>
+<td>1.328</td>
+</tr>
+<tr>
+<td>simplejson</td>
+<td>10.279</td>
+<td>4.658</td>
+</tr>
+<tr>
+<td>stdlib json</td>
+<td>7.013</td>
+<td>8.579</td>
+</tr>
+<tr>
+<td>ujson</td>
+<td>2.084</td>
+<td>1.157</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>   一般情况下使用<code>ujson</code>来也就是<code>import ujson as json</code>使用方法还是<code>json.dumps</code>和<code>json.loads</code></p>
+<p>   显而易见，json类型的数据保存了数据中元素的数据类型和数据结构等信息，比如json中保存多维数组数据，只需要在使用<code>vector.to_list()</code>将其赋值给字典中的元素即可使用<code>json.dumps</code>的方式保存，但是<code>json</code>方式带来的问题就是序列化的时间很慢，尤其是带序列化的数据越大，所需时间大量增加。</p>
+<ol>
 <li><p>msgpack</p>
 <p>和<code>json</code>类似，<a href="https://msgpack.org/" target="_blank" rel="noopener"><code>msgpack</code></a>的口号就是<code>It&#39;s like JSON. but fast and small.</code>目前我已经不再使用<code>json</code>而使用<code>msgpack</code>了，序列化和反序列化时间相比<code>usjon</code>更快</p>
 </li>
@@ -485,7 +526,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#文件及路径"><span class="nav-number">1.</span> <span class="nav-text">文件及路径</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#遍历读取文件夹下所有目录"><span class="nav-number">1.1.</span> <span class="nav-text">遍历读取文件夹下所有目录</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PANDAS"><span class="nav-number">2.</span> <span class="nav-text">PANDAS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CSV2LIST"><span class="nav-number">2.1.</span> <span class="nav-text">CSV2LIST</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#图片处理"><span class="nav-number">3.</span> <span class="nav-text">图片处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Canny边缘检测"><span class="nav-number">3.1.</span> <span class="nav-text">Canny边缘检测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#降噪"><span class="nav-number">3.2.</span> <span class="nav-text">降噪</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#判断图像是否模糊"><span class="nav-number">3.3.</span> <span class="nav-text">判断图像是否模糊</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IOU的计算"><span class="nav-number">4.</span> <span class="nav-text">IOU的计算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据转换Convertation"><span class="nav-number">5.</span> <span class="nav-text">数据转换Convertation</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#string-amp-list"><span class="nav-number">5.1.</span> <span class="nav-text">string&amp;list</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dict-amp-Object"><span class="nav-number">5.2.</span> <span class="nav-text">Dict&amp;Object</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多进程"><span class="nav-number">6.</span> <span class="nav-text">多进程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#多进程数据同步"><span class="nav-number">6.1.</span> <span class="nav-text">多进程数据同步</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#logging"><span class="nav-number">7.</span> <span class="nav-text">logging</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#简单版"><span class="nav-number">7.1.</span> <span class="nav-text">简单版</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进阶版"><span class="nav-number">7.2.</span> <span class="nav-text">进阶版</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Opencv-amp-PIL"><span class="nav-number">8.</span> <span class="nav-text">Opencv&amp;PIL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据序列化"><span class="nav-number">9.</span> <span class="nav-text">数据序列化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#字典类型数据"><span class="nav-number">9.1.</span> <span class="nav-text">字典类型数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#出错重试"><span class="nav-number">10.</span> <span class="nav-text">出错重试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Tenacity"><span class="nav-number">10.1.</span> <span class="nav-text">Tenacity</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#文件及路径"><span class="nav-number">1.</span> <span class="nav-text">文件及路径</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#遍历读取文件夹下所有目录"><span class="nav-number">1.1.</span> <span class="nav-text">遍历读取文件夹下所有目录</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PANDAS"><span class="nav-number">2.</span> <span class="nav-text">PANDAS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CSV2LIST"><span class="nav-number">2.1.</span> <span class="nav-text">CSV2LIST</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#图片处理"><span class="nav-number">3.</span> <span class="nav-text">图片处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Canny边缘检测"><span class="nav-number">3.1.</span> <span class="nav-text">Canny边缘检测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#降噪"><span class="nav-number">3.2.</span> <span class="nav-text">降噪</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#判断图像是否模糊"><span class="nav-number">3.3.</span> <span class="nav-text">判断图像是否模糊</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IOU的计算"><span class="nav-number">4.</span> <span class="nav-text">IOU的计算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据转换Convertation"><span class="nav-number">5.</span> <span class="nav-text">数据转换Convertation</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#String-amp-List"><span class="nav-number">5.1.</span> <span class="nav-text">String&amp;List</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dict-amp-Object"><span class="nav-number">5.2.</span> <span class="nav-text">Dict&amp;Object</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多进程"><span class="nav-number">6.</span> <span class="nav-text">多进程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#多进程数据同步"><span class="nav-number">6.1.</span> <span class="nav-text">多进程数据同步</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#logging"><span class="nav-number">7.</span> <span class="nav-text">logging</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#简单版"><span class="nav-number">7.1.</span> <span class="nav-text">简单版</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进阶版"><span class="nav-number">7.2.</span> <span class="nav-text">进阶版</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Opencv-amp-PIL"><span class="nav-number">8.</span> <span class="nav-text">Opencv&amp;PIL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据序列化"><span class="nav-number">9.</span> <span class="nav-text">数据序列化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#字典类型数据"><span class="nav-number">9.1.</span> <span class="nav-text">字典类型数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#出错重试"><span class="nav-number">10.</span> <span class="nav-text">出错重试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Tenacity"><span class="nav-number">10.1.</span> <span class="nav-text">Tenacity</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -566,93 +607,6 @@
 
 
 
-  <script>
-  function leancloudSelector(url) {
-    url = encodeURI(url);
-    return document.getElementById(url).querySelector('.leancloud-visitors-count');
-  }
-  if (CONFIG.page.isPost) {
-    function addCount(Counter) {
-      var visitors = document.querySelector('.leancloud_visitors');
-      var url = decodeURI(visitors.getAttribute('id'));
-      var title = visitors.getAttribute('data-flag-title');
-
-      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
-        .then(response => response.json())
-        .then(({ results }) => {
-          if (results.length > 0) {
-            var counter = results[0];
-              leancloudSelector(url).innerText = counter.time + 1;
-            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
-              .then(response => response.json())
-              .catch(error => {
-                console.error('Failed to save visitor count', error);
-              })
-          } else {
-              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
-              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
-            
-          }
-        })
-        .catch(error => {
-          console.error('LeanCloud Counter Error', error);
-        });
-    }
-  } else {
-    function showTime(Counter) {
-      var visitors = document.querySelectorAll('.leancloud_visitors');
-      var entries = [...visitors].map(element => {
-        return decodeURI(element.getAttribute('id'));
-      });
-
-      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
-        .then(response => response.json())
-        .then(({ results }) => {
-          if (results.length === 0) {
-            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
-              element.innerText = 0;
-            });
-            return;
-          }
-          for (let item of results) {
-            let { url, time } = item;
-            leancloudSelector(url).innerText = time;
-          }
-          for (let url of entries) {
-            var element = leancloudSelector(url);
-            if (element.innerText == '') {
-              element.innerText = 0;
-            }
-          }
-        })
-        .catch(error => {
-          console.error('LeanCloud Counter Error', error);
-        });
-    }
-  }
-
-  fetch('https://app-router.leancloud.cn/2/route?appId=rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz')
-    .then(response => response.json())
-    .then(({ api_server }) => {
-      var Counter = (method, url, data) => {
-        return fetch(`https://${api_server}/1.1${url}`, {
-          method: method,
-          headers: {
-            'X-LC-Id': 'rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz',
-            'X-LC-Key': 'zJasiQnAqgUwf4kiHhHyXwOP',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data)
-        });
-      };
-      if (CONFIG.page.isPost) {
-        if (CONFIG.hostname !== location.hostname) return;
-        addCount(Counter);
-      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
-        showTime(Counter);
-      }
-    });
-  </script>
 
 
       </div>
@@ -756,11 +710,11 @@ NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
       notify: false,
       appId: 'rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz',
       appKey: 'zJasiQnAqgUwf4kiHhHyXwOP',
-      placeholder: "Just go go",
+      placeholder: "Leave Your Message and Contact Details",
       avatar: 'mm',
       meta: guest,
       pageSize: '10' || 10,
-      visitor: false,
+      visitor: true,
       lang: '' || 'zh-cn',
       path: location.pathname,
       recordIP: false,

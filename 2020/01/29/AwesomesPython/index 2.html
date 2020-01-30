@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/panda_32px.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/panda_16px.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://xiaofengshi.com').hostname,
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="本篇涉及平时工作中使用的一些python相关轮子，在此记录，不断更新……">
+<meta name="keywords" content="Python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AwesomesPython">
+<meta property="og:url" content="http://xiaofengshi.com/2020/01/29/AwesomesPython/index.html">
+<meta property="og:site_name" content="挖掘机成长日记">
+<meta property="og:description" content="本篇涉及平时工作中使用的一些python相关轮子，在此记录，不断更新……">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://xiaofengshi.com/2020/01/29/AwesomesPython/python.png">
+<meta property="og:image" content="http://xiaofengshi.com/2020/01/29/AwesomesPython/string_to_list.png">
+<meta property="og:image" content="http://xiaofengshi.com/2020/01/29/AwesomesPython/object_dict.png">
+<meta property="og:image" content="http://xiaofengshi.com/2020/01/29/AwesomesPython/dict_obj.png">
+<meta property="og:updated_time" content="2020-01-30T12:59:42.669Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AwesomesPython">
+<meta name="twitter:description" content="本篇涉及平时工作中使用的一些python相关轮子，在此记录，不断更新……">
+<meta name="twitter:image" content="http://xiaofengshi.com/2020/01/29/AwesomesPython/python.png">
+
+<link rel="canonical" href="http://xiaofengshi.com/2020/01/29/AwesomesPython/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>AwesomesPython | 挖掘机成长日记</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">挖掘机成长日记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">BytedancerClub</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-guestbook">
+
+    <a href="/guestbook/" rel="section"><i class="fa fa-fw fa-commenting"></i>guestbook</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/xiaofengShi" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2020/01/29/AwesomesPython/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ShiXiaofeng">
+      <meta itemprop="description" content="机器学习,数据挖掘,深度学习相关技术记录分享">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="挖掘机成长日记">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          AwesomesPython
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-01-29 13:22:42" itemprop="dateCreated datePublished" datetime="2020-01-29T13:22:42+08:00">2020-01-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-01-30 20:59:42" itemprop="dateModified" datetime="2020-01-30T20:59:42+08:00">2020-01-30</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/01/29/AwesomesPython/" class="post-meta-item leancloud_visitors" data-flag-title="AwesomesPython" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/01/29/AwesomesPython/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/01/29/AwesomesPython/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img src="/2020/01/29/AwesomesPython/python.png" title="Python">
+<p>本篇涉及平时工作中使用的一些python相关轮子，在此记录，不断更新……</p>
+<a id="more"></a>
+<h2 id="文件及路径"><a href="#文件及路径" class="headerlink" title="文件及路径"></a>文件及路径</h2><h3 id="遍历读取文件夹下所有目录"><a href="#遍历读取文件夹下所有目录" class="headerlink" title="遍历读取文件夹下所有目录"></a>遍历读取文件夹下所有目录</h3><p>在python中使用os.path.lisdir()可以实现读取给定路径下的所有文件，并返回文件名列表，在给定的路径下，有可能存在着子目录，这个时候我们想要读取子目录下的文件又该如何处理呢</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># encoding:utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">readDir</span><span class="params">(dirPath)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> dirPath[<span class="number">-1</span>] == <span class="string">'/'</span>:</span><br><span class="line">        print( <span class="string">u'文件夹路径末尾不能加/'</span>)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    allFiles = []</span><br><span class="line">    <span class="comment"># 判断给定的路径是否是一个路径</span></span><br><span class="line">    <span class="keyword">if</span> os.path.isdir(dirPath):</span><br><span class="line">      	<span class="comment"># 获取当前路径下所有的所有文件</span></span><br><span class="line">        fileList = os.listdir(dirPath)</span><br><span class="line">        <span class="keyword">for</span> f <span class="keyword">in</span> fileList:</span><br><span class="line">            full_path = os.path.join(dirPath, f)</span><br><span class="line">            <span class="keyword">if</span> os.path.isdir(full_path):</span><br><span class="line">                <span class="comment"># 如果存在子目录，递归调用读取函数</span></span><br><span class="line">                subFiles = readDir(full_path)</span><br><span class="line">                allFiles = subFiles + allFiles <span class="comment">#合并当前目录与子目录的所有文件路径</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                allFiles.append(full_path)</span><br><span class="line">        <span class="keyword">return</span> allFiles</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">'Error,not a dir'</span></span><br></pre></td></tr></table></figure>
+<p>如上是对文件进行读取，当读取文件之后，如果文件是<code>txt</code>文件，那么读取这个文件的内容并打印</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># encoding:utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">readTxt</span> <span class="params">(filePath)</span>:</span></span><br><span class="line">    <span class="keyword">with</span> open(filePath) <span class="keyword">as</span> f:</span><br><span class="line">        lines = f.readlines()</span><br><span class="line">        <span class="keyword">for</span> line <span class="keyword">in</span> lines:</span><br><span class="line">            data = line.strip().split(<span class="string">'\001'</span>) <span class="comment">#以列表形式返回分割了的行数据</span></span><br><span class="line">                <span class="keyword">for</span> i <span class="keyword">in</span> data:</span><br><span class="line">                	<span class="keyword">print</span> i</span><br><span class="line">             </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    dirPath = <span class="string">'xxxx'</span></span><br><span class="line">    fileList=ReadDirFiles.readDir(dirPath)</span><br><span class="line">    <span class="keyword">for</span> f <span class="keyword">in</span> fileList:</span><br><span class="line">    	<span class="keyword">if</span> f.split(<span class="string">'.'</span>)[<span class="number">-1</span>] <span class="keyword">in</span> [<span class="string">'txt'</span>]:</span><br><span class="line">    		readTxt(f)</span><br></pre></td></tr></table></figure>
+<h2 id="PANDAS"><a href="#PANDAS" class="headerlink" title="PANDAS"></a>PANDAS</h2><h3 id="CSV2LIST"><a href="#CSV2LIST" class="headerlink" title="CSV2LIST"></a>CSV2LIST</h3><p>csv是很常用的数据存储方式，推荐使用pandas读取，pandas真是一个非常棒的数据分析工具，说回本例，数据存储在csv文件中，读取里面的一列或者某几列存储为列表格式</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line">csv_file=<span class="string">'Pandas_example_read.csv'</span></span><br><span class="line"><span class="comment"># 默认使用第一行作为列的名称</span></span><br><span class="line">df_example=pd.read_csv(filepath,header=<span class="number">0</span>)</span><br><span class="line"><span class="comment"># csv存在标题但是想换成自己的标题</span></span><br><span class="line">df_example = pd.read_csv(<span class="string">'Pandas_example_read.csv'</span>，names=[<span class="string">'A'</span>,<span class="string">'B'</span>,<span class="string">'C'</span>]) </span><br><span class="line"></span><br><span class="line"><span class="comment"># CSV没有标题，第一行就是数据，这样读取的时候要设置header</span></span><br><span class="line">df_example_noCols = pd.read_csv(<span class="string">'Pandas_example_read_withoutCols.csv'</span>, header=<span class="keyword">None</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># csv没有标题，读的时候加上标题，操作方法和有标题相同</span></span><br><span class="line">df_example_noCols = pd.read_csv(<span class="string">'Pandas_example_read_withoutCols.csv'</span>, names=[<span class="string">'A'</span>, <span class="string">'B'</span>,<span class="string">'C'</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># key 对应的是要提取的列的header</span></span><br><span class="line">select=df_example[<span class="string">'key'</span>].tolist()</span><br></pre></td></tr></table></figure>
+<h2 id="图片处理"><a href="#图片处理" class="headerlink" title="图片处理"></a>图片处理</h2><h3 id="Canny边缘检测"><a href="#Canny边缘检测" class="headerlink" title="Canny边缘检测"></a>Canny边缘检测</h3><p>参考：<strong><a href="https://mp.weixin.qq.com/s/ejwnsPkrpSJieCPssU8Caw" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/ejwnsPkrpSJieCPssU8Caw</a></strong></p>
+<p>主要涉及如下几个操作</p>
+<ul>
+<li>降噪</li>
+<li>梯度计算</li>
+<li>非最大抑制</li>
+<li>双重阈值</li>
+<li>滞后边缘跟踪</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> scipy <span class="keyword">import</span> ndimage</span><br><span class="line"><span class="keyword">from</span> scipy.ndimage.filters <span class="keyword">import</span> convolve</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> scipy <span class="keyword">import</span> misc</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">cannyEdgeDetector</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, imgs, sigma=<span class="number">1</span>, kernel_size=<span class="number">5</span>, weak_pixel=<span class="number">75</span>, strong_pixel=<span class="number">255</span>, lowthreshold=<span class="number">0.05</span>, highthreshold=<span class="number">0.15</span>)</span>:</span></span><br><span class="line">        self.imgs = imgs</span><br><span class="line">        self.imgs_final = []</span><br><span class="line">        self.img_smoothed = <span class="keyword">None</span></span><br><span class="line">        self.gradientMat = <span class="keyword">None</span></span><br><span class="line">        self.thetaMat = <span class="keyword">None</span></span><br><span class="line">        self.nonMaxImg = <span class="keyword">None</span></span><br><span class="line">        self.thresholdImg = <span class="keyword">None</span></span><br><span class="line">        self.weak_pixel = weak_pixel</span><br><span class="line">        self.strong_pixel = strong_pixel</span><br><span class="line">        self.sigma = sigma</span><br><span class="line">        self.kernel_size = kernel_size</span><br><span class="line">        self.lowThreshold = lowthreshold</span><br><span class="line">        self.highThreshold = highthreshold</span><br><span class="line">        <span class="keyword">return</span> </span><br><span class="line">    <span class="comment"># 创建高斯核函数</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">gaussian_kernel</span><span class="params">(self, size, sigma=<span class="number">1</span>)</span>:</span></span><br><span class="line">        size = int(size) // <span class="number">2</span></span><br><span class="line">        x, y = np.mgrid[-size:size+<span class="number">1</span>, -size:size+<span class="number">1</span>]</span><br><span class="line">        normal = <span class="number">1</span> / (<span class="number">2.0</span> * np.pi * sigma**<span class="number">2</span>)</span><br><span class="line">        g =  np.exp(-((x**<span class="number">2</span> + y**<span class="number">2</span>) / (<span class="number">2.0</span>*sigma**<span class="number">2</span>))) * normal</span><br><span class="line">        <span class="keyword">return</span> g</span><br><span class="line">    <span class="comment"># 梯度计算步骤通过使用边缘检测算子计算图像的梯度来检测边缘强度和方向。</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sobel_filters</span><span class="params">(self, img)</span>:</span></span><br><span class="line">        Kx = np.array([[<span class="number">-1</span>, <span class="number">0</span>, <span class="number">1</span>], [<span class="number">-2</span>, <span class="number">0</span>, <span class="number">2</span>], [<span class="number">-1</span>, <span class="number">0</span>, <span class="number">1</span>]], np.float32)</span><br><span class="line">        Ky = np.array([[<span class="number">1</span>, <span class="number">2</span>, <span class="number">1</span>], [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>], [<span class="number">-1</span>, <span class="number">-2</span>, <span class="number">-1</span>]], np.float32)</span><br><span class="line"></span><br><span class="line">        Ix = ndimage.filters.convolve(img, Kx)</span><br><span class="line">        Iy = ndimage.filters.convolve(img, Ky)</span><br><span class="line"></span><br><span class="line">        G = np.hypot(Ix, Iy)</span><br><span class="line">        G = G / G.max() * <span class="number">255</span></span><br><span class="line">        theta = np.arctan2(Iy, Ix)</span><br><span class="line">        <span class="keyword">return</span> (G, theta)</span><br><span class="line">    </span><br><span class="line">		<span class="comment"># 非最大抑制步骤是：</span></span><br><span class="line">    <span class="comment"># 创建一个初始化为0的矩阵，该矩阵与原始梯度强度矩阵的大小相同;</span></span><br><span class="line">    <span class="comment"># 根据角度矩阵的角度值识别边缘方向;</span></span><br><span class="line">    <span class="comment"># 检查相同方向的像素是否具有比当前处理的像素更高的强度;</span></span><br><span class="line">    <span class="comment"># 返回使用非最大抑制算法处理的图像。</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">non_max_suppression</span><span class="params">(self, img, D)</span>:</span></span><br><span class="line">        M, N = img.shape</span><br><span class="line">        Z = np.zeros((M,N), dtype=np.int32)</span><br><span class="line">        angle = D * <span class="number">180.</span> / np.pi</span><br><span class="line">        angle[angle &lt; <span class="number">0</span>] += <span class="number">180</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>,M<span class="number">-1</span>):</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>,N<span class="number">-1</span>):</span><br><span class="line">                <span class="keyword">try</span>:</span><br><span class="line">                    q = <span class="number">255</span></span><br><span class="line">                    r = <span class="number">255</span></span><br><span class="line"></span><br><span class="line">                   <span class="comment">#angle 0</span></span><br><span class="line">                    <span class="keyword">if</span> (<span class="number">0</span> &lt;= angle[i,j] &lt; <span class="number">22.5</span>) <span class="keyword">or</span> (<span class="number">157.5</span> &lt;= angle[i,j] &lt;= <span class="number">180</span>):</span><br><span class="line">                        q = img[i, j+<span class="number">1</span>]</span><br><span class="line">                        r = img[i, j<span class="number">-1</span>]</span><br><span class="line">                    <span class="comment">#angle 45</span></span><br><span class="line">                    <span class="keyword">elif</span> (<span class="number">22.5</span> &lt;= angle[i,j] &lt; <span class="number">67.5</span>):</span><br><span class="line">                        q = img[i+<span class="number">1</span>, j<span class="number">-1</span>]</span><br><span class="line">                        r = img[i<span class="number">-1</span>, j+<span class="number">1</span>]</span><br><span class="line">                    <span class="comment">#angle 90</span></span><br><span class="line">                    <span class="keyword">elif</span> (<span class="number">67.5</span> &lt;= angle[i,j] &lt; <span class="number">112.5</span>):</span><br><span class="line">                        q = img[i+<span class="number">1</span>, j]</span><br><span class="line">                        r = img[i<span class="number">-1</span>, j]</span><br><span class="line">                    <span class="comment">#angle 135</span></span><br><span class="line">                    <span class="keyword">elif</span> (<span class="number">112.5</span> &lt;= angle[i,j] &lt; <span class="number">157.5</span>):</span><br><span class="line">                        q = img[i<span class="number">-1</span>, j<span class="number">-1</span>]</span><br><span class="line">                        r = img[i+<span class="number">1</span>, j+<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">if</span> (img[i,j] &gt;= q) <span class="keyword">and</span> (img[i,j] &gt;= r):</span><br><span class="line">                        Z[i,j] = img[i,j]</span><br><span class="line">                    <span class="keyword">else</span>:</span><br><span class="line">                        Z[i,j] = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">                <span class="keyword">except</span> IndexError <span class="keyword">as</span> e:</span><br><span class="line">                    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> Z</span><br><span class="line">		</span><br><span class="line">    <span class="comment"># 双阈值步骤旨在识别3种像素：强，弱和不相关：</span></span><br><span class="line">    <span class="comment"># 强像素是强度如此之高的像素，我们确信它们有助于最终边缘。</span></span><br><span class="line">    <span class="comment"># 弱像素是具有不足以被视为强的强度值的像素，但是还不足以被认为与边缘检测不相关。其他像素被认为与边缘无关。</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">threshold</span><span class="params">(self, img)</span>:</span></span><br><span class="line"></span><br><span class="line">        highThreshold = img.max() * self.highThreshold;</span><br><span class="line">        lowThreshold = highThreshold * self.lowThreshold;</span><br><span class="line"></span><br><span class="line">        M, N = img.shape</span><br><span class="line">        res = np.zeros((M,N), dtype=np.int32)</span><br><span class="line"></span><br><span class="line">        weak = np.int32(self.weak_pixel)</span><br><span class="line">        strong = np.int32(self.strong_pixel)</span><br><span class="line"></span><br><span class="line">        strong_i, strong_j = np.where(img &gt;= highThreshold)</span><br><span class="line">        zeros_i, zeros_j = np.where(img &lt; lowThreshold)</span><br><span class="line"></span><br><span class="line">        weak_i, weak_j = np.where((img &lt;= highThreshold) &amp; (img &gt;= lowThreshold))</span><br><span class="line"></span><br><span class="line">        res[strong_i, strong_j] = strong</span><br><span class="line">        res[weak_i, weak_j] = weak</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> (res)</span><br><span class="line">		<span class="comment"># 滞后边缘跟踪</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">hysteresis</span><span class="params">(self, img)</span>:</span></span><br><span class="line"></span><br><span class="line">        M, N = img.shape</span><br><span class="line">        weak = self.weak_pixel</span><br><span class="line">        strong = self.strong_pixel</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, M<span class="number">-1</span>):</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, N<span class="number">-1</span>):</span><br><span class="line">                <span class="keyword">if</span> (img[i,j] == weak):</span><br><span class="line">                    <span class="keyword">try</span>:</span><br><span class="line">                        <span class="keyword">if</span> ((img[i+<span class="number">1</span>, j<span class="number">-1</span>] == strong) <span class="keyword">or</span> (img[i+<span class="number">1</span>, j] == strong) <span class="keyword">or</span> (img[i+<span class="number">1</span>, j+<span class="number">1</span>] == strong)</span><br><span class="line">                            <span class="keyword">or</span> (img[i, j<span class="number">-1</span>] == strong) <span class="keyword">or</span> (img[i, j+<span class="number">1</span>] == strong)</span><br><span class="line">                            <span class="keyword">or</span> (img[i<span class="number">-1</span>, j<span class="number">-1</span>] == strong) <span class="keyword">or</span> (img[i<span class="number">-1</span>, j] == strong) <span class="keyword">or</span> (img[i<span class="number">-1</span>, j+<span class="number">1</span>] == strong)):</span><br><span class="line">                            img[i, j] = strong</span><br><span class="line">                        <span class="keyword">else</span>:</span><br><span class="line">                            img[i, j] = <span class="number">0</span></span><br><span class="line">                    <span class="keyword">except</span> IndexError <span class="keyword">as</span> e:</span><br><span class="line">                        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> img</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">detect</span><span class="params">(self)</span>:</span></span><br><span class="line">        imgs_final = []</span><br><span class="line">        <span class="keyword">for</span> i, img <span class="keyword">in</span> enumerate(self.imgs):    </span><br><span class="line">            self.img_smoothed = convolve(img, self.gaussian_kernel(self.kernel_size, self.sigma))</span><br><span class="line">            self.gradientMat, self.thetaMat = self.sobel_filters(self.img_smoothed)</span><br><span class="line">            self.nonMaxImg = self.non_max_suppression(self.gradientMat, self.thetaMat)</span><br><span class="line">            self.thresholdImg = self.threshold(self.nonMaxImg)</span><br><span class="line">            img_final = self.hysteresis(self.thresholdImg)</span><br><span class="line">            self.imgs_final.append(img_final)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> self.imgs_final</span><br></pre></td></tr></table></figure>
+<h3 id="降噪"><a href="#降噪" class="headerlink" title="降噪"></a>降噪</h3><p>由于场景背后涉及的数学主要基于导数（参见步骤2：梯度计算），边缘检测结果对图像噪声高度敏感。摆脱图像噪声的一种方法是使用高斯模糊来平滑它。为此图像卷积技术应用高斯核（3x3,5x5,7x7等…）。内核大小取决于预期的模糊效果。基本上内核最小，模糊不太明显。</p>
+<h3 id="判断图像是否模糊"><a href="#判断图像是否模糊" class="headerlink" title="判断图像是否模糊"></a>判断图像是否模糊</h3><p>Reference:<a href="https://juejin.im/post/5b76df76f265da43330c3f50" target="_blank" rel="noopener">https://juejin.im/post/5b76df76f265da43330c3f50</a></p>
+<p>将图像转换成灰度图，之后使用拉普拉斯算子进行滤波，得到的是图像的高频图像，会将低频图像去掉，计算滤波之后的图像的方差，如果方差较大，认为滤波之后的图像具有更广阔的频率范围，认为是一个清晰的图像； 如果滤波之后方差较小，可以认为，经过滤波得到的图像，频率范围很窄，可以在一定程度上认为这是一个模糊的图像。总而言之，是通过拉普拉斯滤波之后的图像的方差的值进行判断。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> cv2</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getImageVar</span><span class="params">(imgPath)</span>:</span></span><br><span class="line">	image = cv2.imread(imgPath);</span><br><span class="line">	img2gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)</span><br><span class="line">	imageVar = cv2.Laplacian(img2gray, cv2.CV_64F).var()</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> imageVar</span><br></pre></td></tr></table></figure>
+<p><strong>但是会存在一个问题，那就是对于远景虚化或者远景模糊的图像，经过滤波之后，得到的图像会将虚化部分过滤掉，这样相比于正常的清晰照片，得到的图像的方差较低，有可能会被误杀。</strong></p>
+<h2 id="IOU的计算"><a href="#IOU的计算" class="headerlink" title="IOU的计算"></a>IOU的计算</h2><p>在<code>ObjectDetection</code>任务中，在后处理阶段一般要进行<code>NMS</code>处理，也就是需要计算两个<code>box</code>之间的<code>IOU</code>，顾明思议，<code>IOU</code>就是两个矩形交集面积与并集面积的比值，比值的范围为$[0,1]$，比值越大，表示两个矩形越相同。</p>
+<p>代码实现</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_cal_iou</span><span class="params">(query_box, store_box)</span>:</span></span><br><span class="line">  	<span class="comment"># @query_box is a list, contains the cordinates for the leftup and rightdown corner</span></span><br><span class="line">    <span class="comment"># left_x,left_y,right_x,right_y=query_box</span></span><br><span class="line">    <span class="comment"># @store_box is a list, each element is a box</span></span><br><span class="line">    <span class="comment"># return，ratios between query and store boxes</span></span><br><span class="line">    x1, y1, x2, y2 = query_box</span><br><span class="line">    w1 = x2 - x1</span><br><span class="line">    h1 = y2 - y1</span><br><span class="line">    query_area = w1 * h1</span><br><span class="line">    ratios = []</span><br><span class="line">    <span class="keyword">for</span> box <span class="keyword">in</span> store_box:</span><br><span class="line">        x_11, y_11, x_22, y_22 = box</span><br><span class="line">        w_11 = x_22 - x_11</span><br><span class="line">        h_11 = y_22 - y_11</span><br><span class="line">        store_area = w_11*h_11</span><br><span class="line">        </span><br><span class="line">        endx = max(x2, x_22)</span><br><span class="line">        startx = min(x1, x_11)</span><br><span class="line">        width = w1 + w_11 - (endx - startx)</span><br><span class="line">        </span><br><span class="line">        endy = max(y2, y_22)</span><br><span class="line">        starty = min(y1, y_11)</span><br><span class="line">        height = h1 + h_11 - (endy - starty)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> width &lt;= <span class="number">0</span> <span class="keyword">or</span> height &lt;= <span class="number">0</span>:</span><br><span class="line">            ratio = <span class="number">0</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            inter_area = width * height</span><br><span class="line">            ratio = inter_area / (query_area + store_area - inter_area)</span><br><span class="line">        ratios.append(ratio)</span><br><span class="line">    <span class="keyword">return</span> ratios</span><br></pre></td></tr></table></figure>
+<h2 id="数据转换Convertation"><a href="#数据转换Convertation" class="headerlink" title="数据转换Convertation"></a>数据转换Convertation</h2><h3 id="string-amp-list"><a href="#string-amp-list" class="headerlink" title="string&amp;list"></a>string&amp;list</h3><p>改程序涉及将字符串转换为list，这里的字符串不是简单地字符串，是具有数据格式的字符串，如下所示</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">demo=<span class="string">'[&#123;"label":0,"dots":[&#123;"x":109.60000000000001,"y":7.466666666666667&#125;,&#123;"x":311.2,"y":7.466666666666667&#125;,&#123;"x":311.2,"y":197.33333333333334&#125;,&#123;"x":109.60000000000001,"y":197.33333333333334&#125;]&#125;]'</span></span><br></pre></td></tr></table></figure>
+<p>可以看出来，虽然整体是一个string的格式，但是内部实际上是列表，并且列表内是一个字典，那么如何将这个字符串转换成列表，并且能够读取列表中的字典呢？</p>
+<p>很简单，使用ast的literal_eval包</p>
+<p>如下进行处理</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## import package</span></span><br><span class="line"><span class="keyword">from</span> ast <span class="keyword">import</span> literal_eval</span><br><span class="line"><span class="comment">##<span class="doctag">NOTE:</span> turn string to list</span></span><br><span class="line">mlist = literal_eval(demo)</span><br><span class="line"><span class="keyword">assert</span> isinstance(mlist,list)， <span class="string">"After literal_eval, must return a list"</span></span><br><span class="line">out=[]</span><br><span class="line"><span class="keyword">for</span> dic <span class="keyword">in</span> mlist:</span><br><span class="line">    want=dic[<span class="string">'dots'</span>]</span><br><span class="line">    keys=[<span class="string">'x'</span>,<span class="string">'y'</span>]</span><br><span class="line">    <span class="keyword">for</span> each_points <span class="keyword">in</span> want:</span><br><span class="line">        <span class="keyword">for</span> key <span class="keyword">in</span> keys:</span><br><span class="line">            out.append(each_points[key])</span><br><span class="line"><span class="keyword">print</span> out</span><br></pre></td></tr></table></figure>
+<p>经过如上程序，就可以得到列表</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt; [109.60000000000001, 7.466666666666667, 311.2, 7.466666666666667, 311.2, 197.33333333333334, 109.60000000000001, 197.33333333333334]</span><br></pre></td></tr></table></figure>
+<img src="/2020/01/29/AwesomesPython/string_to_list.png" title="string to image">
+<h3 id="Dict-amp-Object"><a href="#Dict-amp-Object" class="headerlink" title="Dict&amp;Object"></a>Dict&amp;Object</h3><p>在<code>Object</code>中直接调用<code>object.__dict__</code>就可以得到当前object的dictionary形式</p>
+<img src="/2020/01/29/AwesomesPython/object_dict.png" title="Get dictionary from object">
+<p>当然了，还要有反向操作，就是将<code>dictionary</code>转换成<code>struct</code>形式，通过一个转换方程</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Struct</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, d)</span>:</span></span><br><span class="line">        <span class="keyword">for</span> a, b <span class="keyword">in</span> d.items():</span><br><span class="line">            <span class="keyword">if</span> isinstance(b, (list, tuple)):</span><br><span class="line">               setattr(self, a, [Struct(x) <span class="keyword">if</span> isinstance(x, dict) <span class="keyword">else</span> x <span class="keyword">for</span> x <span class="keyword">in</span> b])</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">               setattr(self, a, Struct(b) <span class="keyword">if</span> isinstance(b, dict) <span class="keyword">else</span> b)</span><br></pre></td></tr></table></figure>
+<p>对应的<code>jupyter</code>测试程序如下所示↓↓↓↓</p>
+<img src="/2020/01/29/AwesomesPython/dict_obj.png" title="Convet dictionary to struct">
+<h2 id="多进程"><a href="#多进程" class="headerlink" title="多进程"></a>多进程</h2><p>所谓多进程可以理解成，独立运行多个程序，可以看做是一种并发环境；与之对应的是多线程，多线程是在一个进程中的，每个进程处理一部分的数据或操作。</p>
+<p>在机器学习和深度学习中，当模型训练好之后，一般使用多进程进行<strong>Inference</strong>操作，但是有一点需要注意，要在每个进程中单独Load模型。</p>
+<p>一般的操作方法是</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># !/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding:utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> division, print_function</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">from</span> multiprocessing <span class="keyword">import</span> Process</span><br><span class="line"></span><br><span class="line"><span class="comment"># handler function to exit the process</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">exit_signal_handler</span><span class="params">(sig=None, frame=None)</span>:</span></span><br><span class="line">    t1 = time.time()</span><br><span class="line">    <span class="keyword">while</span>(multiprocessing.active_children()):</span><br><span class="line">        <span class="keyword">for</span> p <span class="keyword">in</span> multiprocessing.active_children():</span><br><span class="line">            t2 = time.time()</span><br><span class="line">            <span class="keyword">if</span> (t2 - t1 &gt; <span class="number">5</span>):</span><br><span class="line">                os.kill(p.pid, signal.SIGKILL)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                p.terminate()</span><br><span class="line">        time.sleep(<span class="number">1</span>)</span><br><span class="line">    os._exit(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># receive keyboard information</span></span><br><span class="line">signal.signal(signal.SIGINT, exit_signal_handler)</span><br><span class="line">signal.signal(signal.SIGTERM, exit_signal_handler)</span><br><span class="line">signal.signal(signal.SIGHUP, exit_signal_handler)</span><br><span class="line"></span><br><span class="line">processes=[]</span><br><span class="line">process_num=<span class="number">10</span></span><br><span class="line"><span class="keyword">for</span> process_idx <span class="keyword">in</span> range(process_num):</span><br><span class="line">  	<span class="comment"># if there only one parmeter, the args should add "," </span></span><br><span class="line">  	consumer = Process(target=consumer, args=(process_idx,))</span><br><span class="line">    processes.append(consumer)</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">  	<span class="comment"># start the process and protect the process</span></span><br><span class="line">    <span class="keyword">for</span> p <span class="keyword">in</span> processes:</span><br><span class="line">        p.daemon = <span class="keyword">True</span></span><br><span class="line">        p.start()</span><br><span class="line">    <span class="keyword">for</span> p <span class="keyword">in</span> processes:</span><br><span class="line">        p.join()</span><br><span class="line"><span class="comment"># recevie the keyboard input to terminate the process</span></span><br><span class="line"><span class="keyword">except</span> KeyboardInterrupt:</span><br><span class="line">    self.logger.info(<span class="string">'Parent received ctrl-c'</span>)</span><br><span class="line">    <span class="keyword">for</span> p <span class="keyword">in</span> processes:</span><br><span class="line">        p.terminate()</span><br><span class="line">        p.join()</span><br></pre></td></tr></table></figure>
+<p>需要注意，在process的<code>args</code>参数，要是一个可迭代的对象，可以是列表，元组等</p>
+<h3 id="多进程数据同步"><a href="#多进程数据同步" class="headerlink" title="多进程数据同步"></a>多进程数据同步</h3><p>在多进程中，如果需要进行数据同步，一般使用队列来进行进程数据管理，比如一个进程写入数据，其余进程读取数据，<strong>那么这里的进程要使用multiprocessing下面的Queue，不能使用默认的Queue。</strong></p>
+<h2 id="logging"><a href="#logging" class="headerlink" title="logging"></a>logging</h2><h3 id="简单版"><a href="#简单版" class="headerlink" title="简单版"></a>简单版</h3><p>只使用log代替print显示，并不写入文件</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> logging</span><br><span class="line">logger = logging.getLogger(<span class="string">'IntenseModel'</span>)</span><br><span class="line">logger.setLevel(logging.DEBUG)</span><br><span class="line"></span><br><span class="line"><span class="comment"># create console handler and set level to debug</span></span><br><span class="line">ch = logging.StreamHandler()</span><br><span class="line">ch.setLevel(logging.DEBUG)</span><br><span class="line"></span><br><span class="line"><span class="comment"># create formatter</span></span><br><span class="line">formatter = logging.Formatter(<span class="string">'%(asctime)s - %(name)s - %(levelname)s - %(message)s'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># add formatter to ch</span></span><br><span class="line">ch.setFormatter(formatter)</span><br><span class="line"></span><br><span class="line"><span class="comment"># add ch to logger</span></span><br><span class="line">logger.addHandler(ch)</span><br></pre></td></tr></table></figure>
+<h3 id="进阶版"><a href="#进阶版" class="headerlink" title="进阶版"></a>进阶版</h3><p>日志打印模块写入文件，把一个轮子记录在此，直接使用</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> logging</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_logger</span><span class="params">(_loggerDir, log_filename, logger_name)</span>:</span></span><br><span class="line">    <span class="string">"""[summary]</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Arguments:</span></span><br><span class="line"><span class="string">        _loggerDir &#123;[type]&#125; -- [directory of the Logger]</span></span><br><span class="line"><span class="string">        log_filename &#123;[type]&#125; -- [Logger name ]</span></span><br><span class="line"><span class="string">        logger_name &#123;[type]&#125; -- [Logger file name]</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        [type] -- [description]</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    _LogFile = os.path.join(_loggerDir, log_filename)</span><br><span class="line"></span><br><span class="line">    logger = logging.getLogger(logger_name)</span><br><span class="line">    logger.setLevel(logging.INFO)</span><br><span class="line">    <span class="comment"># default_value is True, it will send mesaage to the root, which will print twice for one mesaage</span></span><br><span class="line">    logger.propagate=<span class="keyword">False</span></span><br><span class="line">    <span class="comment"># ccreate file handler which logs even debug messages</span></span><br><span class="line">    fh = logging.FileHandler(_LogFile)</span><br><span class="line">    fh.setLevel(logging.INFO)</span><br><span class="line">    <span class="comment"># create console handler with a higher log level</span></span><br><span class="line">    console = logging.StreamHandler()</span><br><span class="line">    console.setLevel(logging.INFO)</span><br><span class="line">    <span class="comment"># create formatter and add it to the handlers</span></span><br><span class="line">    _LogFormat = logging.Formatter(<span class="string">"%(asctime)2s -%(name)-12s:  %(levelname)-10s - %(message)s"</span>)</span><br><span class="line"></span><br><span class="line">    fh.setFormatter(_LogFormat)</span><br><span class="line">    console.setFormatter(_LogFormat)</span><br><span class="line">    <span class="comment"># add the handlers to logger</span></span><br><span class="line">    logger.addHandler(fh)</span><br><span class="line">    logger.addHandler(console)</span><br><span class="line">    <span class="keyword">return</span> logger</span><br></pre></td></tr></table></figure>
+<h2 id="Opencv-amp-PIL"><a href="#Opencv-amp-PIL" class="headerlink" title="Opencv&amp;PIL"></a>Opencv&amp;PIL</h2><p><code>Opencv</code>默认读取的图片格式为<strong>BGR</strong>通道顺序，写入的时候默认也是<strong>BGR</strong>的格式，，如果使用OpenCV读写，那么不需要进行通道转换，但是如果使用OpenCV读用PIL 写，那么在读取的时候要进行图片通道转换。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> cv2</span><br><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image</span><br><span class="line"></span><br><span class="line"><span class="comment"># opencv read and write</span></span><br><span class="line">image_file=<span class="string">''</span></span><br><span class="line">img_data=cv2.imread(image_file)</span><br><span class="line">img_crop=img_data[y1:y2,x1:x2]</span><br><span class="line">cv2.imwrite(crop_file_dir,img_crop)</span><br><span class="line"></span><br><span class="line"><span class="comment"># oepncv read, PIL write</span></span><br><span class="line">img_data=cv2.imread(image_file)</span><br><span class="line">img_data=img_data[:,:,::<span class="number">-1</span>]</span><br><span class="line">img=Image.fromarray(img_data)</span><br><span class="line">img.save(<span class="string">'xxxx'</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="数据序列化"><a href="#数据序列化" class="headerlink" title="数据序列化"></a>数据序列化</h2><p>在进行传输的过程中，一般对数据进行序列化，比如在图片转化成base64格式，tcp传输使用pb或protobuf格式等，根据自己工作的经验，对这方面进行一下总结记录</p>
+<h3 id="字典类型数据"><a href="#字典类型数据" class="headerlink" title="字典类型数据"></a>字典类型数据</h3><ol>
+<li><p>Json</p>
+<p>使用<code>json.dumps</code>和<code>json.loads</code>对字典数据进行序列化和反序列化</p>
+<p>在<code>Python</code>中包含多个<code>json</code>处理方式</p>
+<p>| 依赖库      | 序列化耗时 | 反序列化耗时 |<br>| —————- | ————— | —————— |<br>| yajl        | 1.910      | 1.970        |<br>| cjson       | 3.305      | 1.328        |<br>| simplejson  | 10.279     | 4.658        |<br>| stdlib json | 7.013      | 8.579        |<br>| ujson       | 2.084      | 1.157        |</p>
+<p>一般情况下使用<code>ujson</code>来也就是<code>import ujson as json</code>使用方法还是<code>json.dumps</code>和<code>json.loads</code></p>
+<p>显而易见，json类型的数据保存了数据中元素的数据类型和数据结构等信息，比如json中保存多维数组数据，只需要在使用<code>vector.to_list()</code>将其赋值给字典中的元素即可使用<code>json.dumps</code>的方式保存，但是<code>json</code>方式带来的问题就是序列化的时间很慢，尤其是带序列化的数据越大，所需时间大量增加。</p>
+</li>
+<li><p>msgpack</p>
+<p>和<code>json</code>类似，<a href="https://msgpack.org/" target="_blank" rel="noopener"><code>msgpack</code></a>的口号就是<code>It&#39;s like JSON. but fast and small.</code>目前我已经不再使用<code>json</code>而使用<code>msgpack</code>了，序列化和反序列化时间相比<code>usjon</code>更快</p>
+</li>
+<li><p>Thrift</p>
+<p>将字符串转化为二进制字节流，这样缺点是最造成数据的结构丢失，但是好处是会最大程度减小数据的大小。在pack的时候，只能处理<code>float</code>的数据，也就是如果数据是多维的，那么要对数据进行铺平才能进行二进制自己留转化。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> struct</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">data = np.random.uniform(size=(<span class="number">10</span>, <span class="number">4</span>, <span class="number">2</span>))</span><br><span class="line">data_size = data.size</span><br><span class="line">data_shape = data.shape</span><br><span class="line"><span class="comment"># pack data</span></span><br><span class="line">packed_data = struct.pack(<span class="string">'=%sf'</span> % data.size, *data.flatten(<span class="string">'F'</span>))</span><br><span class="line"><span class="comment"># unpack data</span></span><br><span class="line">unpacked_data = struct.unpack(<span class="string">'=%sf'</span> % data_size, packed_data)</span><br><span class="line"><span class="comment"># reshape data to original shape</span></span><br><span class="line">original_data = np.reshape(np.asarray(unpacked_data), data_shape,order=<span class="string">'F'</span>)</span><br><span class="line">print(<span class="string">"original_data shape is &#123;&#125;"</span>.format(original_data.shape))</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>一般是两种处理方式，一个是将字典转化成<code>struct</code>的形式，也就是先使用<a href="https://en.wikipedia.org/wiki/Apache_Thrift" target="_blank" rel="noopener"><strong>thrift</strong></a>定义结构体，然后再将字典数据赋值到对应的结构体上</p>
+<ol>
+<li><p>安装<code>thrift</code>  <a href="https://thrift.apache.org/docs/install/debian" target="_blank" rel="noopener">https://thrift.apache.org/docs/install/debian</a></p>
+</li>
+<li><p>编写<code>thrift</code>文件定义<code>struct</code>和<code>tcp</code>函数的接口</p>
+<p>假设如下文件名为<code>service.thrift</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/usr/<span class="built_in">local</span>/bin/thrift --gen cpp --gen py:new_style -o . -r</span></span><br><span class="line">include "base.thrift" // thrift dependicy</span><br><span class="line">namespace py Service // namespace, the folder name you want generate by thrift</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> define request</span></span><br><span class="line">struct ServiceRequest&#123;</span><br><span class="line">  1: binary image_binary, // image binary </span><br><span class="line">  2: i32 req_id, // request id</span><br><span class="line">  255: optional base.Base Base // base caller</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> define response</span></span><br><span class="line">struct ServiceResponse &#123;</span><br><span class="line">  1: binary output, </span><br><span class="line">  255: optional base.BaseResp BaseResp // base response</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> define service</span></span><br><span class="line">service Service &#123;</span><br><span class="line">    ServiceResponse forward(1: ServiceRequest request),</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>实际上按照上面的步骤，导入需要的依赖，一般是通用项，用来保存常用的请求和返回的status，msg等信息，对于上面的<code>base.thrift</code>我这里是这么定义的 ↓↓↓↓↓</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">   #</span><span class="bash"> defination</span></span><br><span class="line">   namespace py base</span><br><span class="line">   namespace go base</span><br><span class="line">   namespace java com.bytedance.thrift.base</span><br><span class="line">   </span><br><span class="line">   struct TrafficEnv &#123;</span><br><span class="line">       1: bool Open = false,</span><br><span class="line">       2: string Env = "",</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line"><span class="meta">   #</span><span class="bash"> define the base request</span></span><br><span class="line">   struct Base &#123;</span><br><span class="line">       1: string LogID = "",</span><br><span class="line">       2: string Caller = "",</span><br><span class="line">       3: string Addr = "",</span><br><span class="line">       4: string Client = "",</span><br><span class="line">       5: optional TrafficEnv TrafficEnv,</span><br><span class="line">       6: optional map&lt;string, string&gt; Extra,</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line"><span class="meta">   #</span><span class="bash"> define the base response</span></span><br><span class="line">   struct BaseResp &#123;</span><br><span class="line">       1: string StatusMessage = "",</span><br><span class="line">       2: i32 StatusCode = 0,</span><br><span class="line">       3: optional map&lt;string, string&gt; Extra,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>定义好这两个<code>thrift</code>文件之后那么使用安装的<code>thrift</code>命令生成对应的可读取文件， 如果想要生成<code>python</code>文件，那么可以直接执行命令行命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> !/usr/bin/env bash</span></span><br><span class="line"></span><br><span class="line">echo "Step1: thrift deploy"</span><br><span class="line">thrift -r --gen py:new_style -o . service.thrift</span><br><span class="line"></span><br><span class="line">echo "Step2: remove gen-py detail output to root"</span><br><span class="line">mv gen-py gen_py</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>   如此就会生成文件夹<code>gen_py</code>在该文件夹下包含了两个目录<code>service</code> 和<code>base</code>，在这个目录下包含着对应的接口。</p>
+<h2 id="出错重试"><a href="#出错重试" class="headerlink" title="出错重试"></a>出错重试</h2><h3 id="Tenacity"><a href="#Tenacity" class="headerlink" title="Tenacity"></a>Tenacity</h3><p>在爬虫或者下载的时候很容易出现错误，报错的时候进行自动重试</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> tenacity <span class="keyword">import</span> retry,stop_after_delay,stop_after_attempt,wait_fixed</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重试5次，每次间隔10秒，重试前等待2秒</span></span><br><span class="line"><span class="meta">@retry(stop=(stop_after_delay(10) | stop_after_attempt(5)), wait=wait_fixed(2))</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">stop_after_10_s_or_5_retries</span><span class="params">()</span>:</span></span><br><span class="line">    print(<span class="string">"Stopping after 10 seconds or 5 retries"</span>)</span><br><span class="line">    <span class="string">"""other progress"""</span></span><br><span class="line">    <span class="keyword">raise</span> Exception</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>赏杯咖啡！</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat.jpeg" alt="ShiXiaofeng 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpeg" alt="ShiXiaofeng 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>ShiXiaofeng
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://xiaofengshi.com/2020/01/29/AwesomesPython/" title="AwesomesPython">http://xiaofengshi.com/2020/01/29/AwesomesPython/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/12/10/NLP-Bert/" rel="prev" title="NLP-Bert">
+      <i class="fa fa-chevron-left"></i> NLP-Bert
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#文件及路径"><span class="nav-number">1.</span> <span class="nav-text">文件及路径</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#遍历读取文件夹下所有目录"><span class="nav-number">1.1.</span> <span class="nav-text">遍历读取文件夹下所有目录</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PANDAS"><span class="nav-number">2.</span> <span class="nav-text">PANDAS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CSV2LIST"><span class="nav-number">2.1.</span> <span class="nav-text">CSV2LIST</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#图片处理"><span class="nav-number">3.</span> <span class="nav-text">图片处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Canny边缘检测"><span class="nav-number">3.1.</span> <span class="nav-text">Canny边缘检测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#降噪"><span class="nav-number">3.2.</span> <span class="nav-text">降噪</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#判断图像是否模糊"><span class="nav-number">3.3.</span> <span class="nav-text">判断图像是否模糊</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IOU的计算"><span class="nav-number">4.</span> <span class="nav-text">IOU的计算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据转换Convertation"><span class="nav-number">5.</span> <span class="nav-text">数据转换Convertation</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#string-amp-list"><span class="nav-number">5.1.</span> <span class="nav-text">string&amp;list</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dict-amp-Object"><span class="nav-number">5.2.</span> <span class="nav-text">Dict&amp;Object</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多进程"><span class="nav-number">6.</span> <span class="nav-text">多进程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#多进程数据同步"><span class="nav-number">6.1.</span> <span class="nav-text">多进程数据同步</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#logging"><span class="nav-number">7.</span> <span class="nav-text">logging</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#简单版"><span class="nav-number">7.1.</span> <span class="nav-text">简单版</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进阶版"><span class="nav-number">7.2.</span> <span class="nav-text">进阶版</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Opencv-amp-PIL"><span class="nav-number">8.</span> <span class="nav-text">Opencv&amp;PIL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据序列化"><span class="nav-number">9.</span> <span class="nav-text">数据序列化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#字典类型数据"><span class="nav-number">9.1.</span> <span class="nav-text">字典类型数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#出错重试"><span class="nav-number">10.</span> <span class="nav-text">出错重试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Tenacity"><span class="nav-number">10.1.</span> <span class="nav-text">Tenacity</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ShiXiaofeng"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">ShiXiaofeng</p>
+  <div class="site-description" itemprop="description">机器学习,数据挖掘,深度学习相关技术记录分享</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xiaofengShi" title="GitHub → https://github.com/xiaofengShi" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sxf1052566766@163.com" title="E-Mail → mailto:sxf1052566766@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ShiXiaofeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0
+  </div>
+
+        
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+              leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id': 'rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz',
+            'X-LC-Key': 'zJasiQnAqgUwf4kiHhHyXwOP',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+<script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el: '#valine-comments',
+      verify: false,
+      notify: false,
+      appId: 'rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz',
+      appKey: 'zJasiQnAqgUwf4kiHhHyXwOP',
+      placeholder: "Just go go",
+      avatar: 'mm',
+      meta: guest,
+      pageSize: '10' || 10,
+      visitor: false,
+      lang: '' || 'zh-cn',
+      path: location.pathname,
+      recordIP: false,
+      serverURLs: ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
