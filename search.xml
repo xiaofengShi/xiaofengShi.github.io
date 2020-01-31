@@ -3,7 +3,7 @@
   <entry>
     <title>AwesomesPython</title>
     <url>/2020/01/29/AwesomesPython/</url>
-    <content><![CDATA[<p>本篇涉及平时工作中使用的一些python相关轮子，在此记录，不断补充更新……</p>
+    <content><![CDATA[<p>本篇涉及平时工作中使用的一些<strong>Python</strong>相关轮子，在此记录，不断补充更新……</p>
 <img src="/2020/01/29/AwesomesPython/python.png" title="Python">
 <a id="more"></a>
 <h2 id="文件及路径"><a href="#文件及路径" class="headerlink" title="文件及路径"></a>文件及路径</h2><h3 id="遍历读取文件夹下所有目录"><a href="#遍历读取文件夹下所有目录" class="headerlink" title="遍历读取文件夹下所有目录"></a>遍历读取文件夹下所有目录</h3><p>在<code>Python</code>中使用<code>os.path.lisdir()</code>可以实现读取给定路径下的所有文件，并返回文件名列表，在给定的路径下，有可能存在着子目录，这个时候我们想要读取子目录下的文件又该如何处理呢</p>
