@@ -193,6 +193,26 @@
 <p>语料：最好是<strong>document-level</strong>的，比如百科答，wiki，新闻等通用预料，如此能够保证预训练阶段得到的网络权重足够鲁棒以适应后续的特定领域的下游任务。</p>
 <h4 id="下游任务训练"><a href="#下游任务训练" class="headerlink" title="下游任务训练"></a>下游任务训练</h4><p>目的：学习特定的模型表达能力，比如相关性，问答等子任务</p>
 <p>语料：特定任务的标定数据，比如要学习<code>query</code>和<code>recall</code>的相关性，那么就要准备相应的数据进行训练。</p>
+<h2 id="基于BERT的应用"><a href="#基于BERT的应用" class="headerlink" title="基于BERT的应用"></a>基于BERT的应用</h2><p>既然BERT这么好用，那么是否能在其他领域也借鉴使用呢，不止我这么想，很多大牛已经尝试过了，由此催生出了videoBert，ELECTRA，uniter，uncoder等这些基于BERT的相关研究。</p>
+<h3 id="图文BERT"><a href="#图文BERT" class="headerlink" title="图文BERT"></a>图文BERT</h3><p>本人目前在做图片搜索相关工作，复现了uniter这篇论文的代码，由于工作原因，目前代码无法开源，实际上这部分还是很简单的，基于google-bert的代码，加入图片visual部分的处理前处理和后续loss的计算。</p>
+<hr>
+
+<img src="/2019/12/10/NLP-Bert/uniter.png" title="UniterModel">
+<hr>
+
+<p>本篇论文是将检测和图片描述作为提个一组输入，数据的构成方式和BERT类似，一些区别点是</p>
+<ol>
+<li>第一个句子用图片检测<code>RPN</code>之后得到的<code>ROIPooling</code>特征，第二个句子对应着当前这张图片的描述信息</li>
+<li>使用和<code>BERT</code>相似的训练策略，不过略有不同，在原来<code>MLM</code>，<code>NSP</code>基础上加对视觉部分的<code>MRM</code></li>
+<li><code>MLM</code>和<code>MRM</code>是基于条件性的，二者不能同时进行，这个在制作数据的时候要注意</li>
+<li>在数据预处理过程中，视觉部分和文本部分分别处理之后进行<code>concat</code>，再输入给<code>transformer</code>部分</li>
+<li><code>Loss</code>部分在原来的基础上计入了<code>MRM</code>部分的损失，并且论文中针对<code>MRM</code>部分的损失设计了三种方式<ol>
+<li>视觉特征回归<code>MRFR</code></li>
+<li>类别分类<code>MRC</code></li>
+<li>KL散度类别回归<code>MRC-kl</code></li>
+</ol>
+</li>
+</ol>
 <h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ol>
 <li>Official Github: <a href="https://github.com/google-research/bert" target="_blank" rel="noopener">https://github.com/google-research/bert</a></li>
 <li>知乎: <a href="https://zhuanlan.zhihu.com/p/48612853" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/48612853</a></li>
@@ -4883,8 +4903,8 @@ p(x)=\sum_{i=1}^{K}\pi_{i}N(x|\mu_{i}, \sigma_{i})</script><p>每次循环时，
       </categories>
       <tags>
         <tag>机器学习</tag>
-        <tag>聚类</tag>
         <tag>EM</tag>
+        <tag>聚类</tag>
         <tag>高斯混合分布</tag>
       </tags>
   </entry>

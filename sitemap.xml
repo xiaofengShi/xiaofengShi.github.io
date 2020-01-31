@@ -2,9 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://xiaofengshi.com/2019/12/10/NLP-Bert/</loc>
+    
+    <lastmod>2020-01-31T13:11:47.436Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://xiaofengshi.com/2020/01/29/AwesomesPython/</loc>
     
-    <lastmod>2020-01-31T11:57:01.887Z</lastmod>
+    <lastmod>2020-01-31T12:13:06.872Z</lastmod>
     
   </url>
   
@@ -12,13 +19,6 @@
     <loc>http://xiaofengshi.com/2019/02/15/NLP-Attention_is_all_you_need/</loc>
     
     <lastmod>2020-01-31T11:54:32.026Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://xiaofengshi.com/2019/12/10/NLP-Bert/</loc>
-    
-    <lastmod>2020-01-31T11:32:09.311Z</lastmod>
     
   </url>
   
