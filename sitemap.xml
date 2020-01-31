@@ -2,9 +2,72 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://xiaofengshi.com/2019/02/15/NLP-Attention_is_all_you_need/</loc>
+    
+    <lastmod>2020-01-31T11:54:32.026Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaofengshi.com/2019/12/10/NLP-Bert/</loc>
+    
+    <lastmod>2020-01-31T11:32:09.311Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaofengshi.com/2018/11/11/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-SVM/</loc>
+    
+    <lastmod>2020-01-31T07:53:26.387Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaofengshi.com/2019/03/19/DeepLearning_Tensorflow/</loc>
+    
+    <lastmod>2020-01-31T07:53:23.945Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaofengshi.com/2019/03/13/OCR-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B/</loc>
+    
+    <lastmod>2020-01-31T06:30:32.579Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaofengshi.com/2019/01/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-TextDetection/</loc>
+    
+    <lastmod>2020-01-31T06:30:14.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaofengshi.com/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/</loc>
+    
+    <lastmod>2020-01-31T06:16:02.728Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaofengshi.com/2018/11/25/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-EM%E7%AE%97%E6%B3%95/</loc>
+    
+    <lastmod>2020-01-31T06:00:43.397Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://xiaofengshi.com/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/</loc>
+    
+    <lastmod>2020-01-31T05:53:21.768Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://xiaofengshi.com/2020/01/29/AwesomesPython/</loc>
     
-    <lastmod>2020-01-30T15:29:01.568Z</lastmod>
+    <lastmod>2020-01-31T02:29:04.082Z</lastmod>
     
   </url>
   
@@ -23,20 +86,6 @@
   </url>
   
   <url>
-    <loc>http://xiaofengshi.com/2019/03/13/OCR-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B/</loc>
-    
-    <lastmod>2020-01-30T12:33:27.276Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://xiaofengshi.com/2019/03/19/DeepLearning_Tensorflow/</loc>
-    
-    <lastmod>2020-01-30T12:31:40.555Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://xiaofengshi.com/2019/08/06/AwesomesMac/</loc>
     
     <lastmod>2020-01-30T12:30:05.604Z</lastmod>
@@ -44,23 +93,9 @@
   </url>
   
   <url>
-    <loc>http://xiaofengshi.com/2019/12/10/NLP-Bert/</loc>
-    
-    <lastmod>2020-01-30T12:29:08.728Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://xiaofengshi.com/2019/03/06/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Normalization/</loc>
     
     <lastmod>2020-01-19T03:18:36.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://xiaofengshi.com/2019/02/15/NLP-Attention_is_all_you_need/</loc>
-    
-    <lastmod>2019-12-10T07:30:00.075Z</lastmod>
     
   </url>
   
@@ -114,37 +149,9 @@
   </url>
   
   <url>
-    <loc>http://xiaofengshi.com/2018/11/25/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-EM%E7%AE%97%E6%B3%95/</loc>
-    
-    <lastmod>2019-02-25T02:53:47.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://xiaofengshi.com/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/</loc>
-    
-    <lastmod>2019-02-24T02:50:15.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://xiaofengshi.com/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/</loc>
-    
-    <lastmod>2019-02-20T06:04:35.000Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://xiaofengshi.com/2019/02/14/CTC%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/</loc>
     
     <lastmod>2019-02-20T04:20:46.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://xiaofengshi.com/2019/01/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-TextDetection/</loc>
-    
-    <lastmod>2019-01-27T14:01:11.000Z</lastmod>
     
   </url>
   
@@ -159,13 +166,6 @@
     <loc>http://xiaofengshi.com/2019/01/05/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-OCR_Overview/</loc>
     
     <lastmod>2019-01-23T07:41:50.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://xiaofengshi.com/2018/11/11/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-SVM/</loc>
-    
-    <lastmod>2019-01-11T03:02:13.000Z</lastmod>
     
   </url>
   

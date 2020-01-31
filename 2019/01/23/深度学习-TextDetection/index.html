@@ -14,6 +14,8 @@
 
 <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
 <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
 
 
 <script id="hexo-configurations">
@@ -40,7 +42,7 @@
       hits: {"per_page":10},
       labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
     },
-    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
     path: 'search.xml',
     motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
   };
@@ -65,7 +67,7 @@
 <meta property="og:image" content="http://xiaofengshi.com/2019/01/23/深度学习-TextDetection/EAST_RRBX.png">
 <meta property="og:image" content="http://xiaofengshi.com/2019/01/23/深度学习-TextDetection/east_rbox_quad.png">
 <meta property="og:image" content="http://xiaofengshi.com/2019/01/23/深度学习-TextDetection/east_iou.png">
-<meta property="og:updated_time" content="2019-01-27T14:01:11.000Z">
+<meta property="og:updated_time" content="2020-01-31T06:30:14.133Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深度学习-TextDetection">
 <meta name="twitter:description" content="本文主要对常用的文本检测模型算法进行总结及分析，有的模型笔者切实run过，有的是通过论文及相关代码的分析，如有错误，请不吝指正。">
@@ -131,7 +133,8 @@
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
-        <p class="site-subtitle">BytedancerClub</p>
+        <h1 class="site-subtitle" itemprop="description">BytedancerClub</h1>
+      
   </div>
 
   <div class="site-nav-toggle">
@@ -182,9 +185,34 @@
     <a href="/guestbook/" rel="section"><i class="fa fa-fw fa-commenting"></i>guestbook</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 
 </nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
 </div>
     </header>
 
@@ -223,9 +251,9 @@
       <meta itemprop="name" content="挖掘机成长日记">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
+        <h2 class="post-title" itemprop="name headline">
           深度学习-TextDetection
-        </h1>
+        </h2>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -241,7 +269,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-01-27 22:01:11" itemprop="dateModified" datetime="2019-01-27T22:01:11+08:00">2019-01-27</time>
+                <time title="修改时间：2020-01-31 14:30:14" itemprop="dateModified" datetime="2020-01-31T14:30:14+08:00">2020-01-31</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -392,7 +420,7 @@ traget_h &= \log (GT_{height}/AN_{height})
 </li>
 <li><p>特征合并层，将抽取的特征进行merge．这里合并的规则采用了Unet的方法，合并规则：从特征提取网络的顶部特征按照相应的规则向上进行合并，不断增大featuremap的尺寸。</p>
 </li>
-<li><p>网络输出层，包含文本得分和文本形状．根据不同文本形状(可分为RBOX和QUAD，对于RROX预测的是当前点距离gtbox的四个边的距离以及gtbox的相对图像的x正方向的角度$\theta​$，也就是总共为5个值分别对应着$(d_1,d_2,d_3,d_4,\theta)​$，而对于QUAD来说预测对应的gtbox的四个交点的坐标，一共8个值)，对于RBOX对应的示意图如下所示</p>
+<li><p>网络输出层，包含文本得分和文本形状．根据不同文本形状(可分为RBOX和QUAD，对于RROX预测的是当前点距离gtbox的四个边的距离以及gtbox的相对图像的x正方向的角度$\theta$，也就是总共为5个值分别对应着$(d_1,d_2,d_3,d_4,\theta)$，而对于QUAD来说预测对应的gtbox的四个交点的坐标，一共8个值)，对于RBOX对应的示意图如下所示</p>
 <img src="/2019/01/23/深度学习-TextDetection/EAST_RRBX.png" title="EAST_RBOX">
 <p>图中的$d_{i}$对应的是当前点到gt的距离，知道了一个固定点到矩形的四条边的距离，就可以的知道这个矩形所在的位置和大小，即确定这个矩形。</p>
 <img src="/2019/01/23/深度学习-TextDetection/east_rbox_quad.png" title="EAST_RBOX_QUAD">
@@ -417,7 +445,7 @@ L_S&=\ {balanced-xent}(\dot Y,Y)\\
 \\
 & where \:\:\:\:\: \beta=1-\frac{\sum_{ y \in  Y}y }{|Y|}
 
-\end{align}</script><p>其中$\dot Y​$为预测值，$Y​$为label值。相比普通的交叉熵损失，平衡交叉熵损失对正负样本进行了平衡。</p>
+\end{align}</script><p>其中$\dot Y$为预测值，$Y$为label值。相比普通的交叉熵损失，平衡交叉熵损失对正负样本进行了平衡。</p>
 <p>对于$L_g$损失，由于在对于RBOX信息中包含的是5个预测值即$(d_1,d_2,d_3,d_4,\theta)$，那么就可以得到损失为</p>
 <script type="math/tex; mode=display">
 \begin{align}
@@ -713,6 +741,20 @@ where \:\:\:\:\:\:& L_{AABB}=-\log IoU (\dot R,R^*)=-\log \frac{|\dot R \cap R^*
 
 
   
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  <script src="/js/local-search.js"></script>
 
 
 
@@ -721,11 +763,40 @@ where \:\:\:\:\:\:& L_{AABB}=-\log IoU (\dot R,R^*)=-\log \frac{|\dot R \cap R^*
 
 
 
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
 
 
-
-
-
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
   

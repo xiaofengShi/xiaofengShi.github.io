@@ -14,6 +14,8 @@
 
 <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
 <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
 
 
 <script id="hexo-configurations">
@@ -40,19 +42,19 @@
       hits: {"per_page":10},
       labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
     },
-    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
     path: 'search.xml',
     motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
   };
 </script>
 
-  <meta name="description" content="本篇详细说明了OCR的应用，技术实现，当前相关进展等，不定时补充更新">
+  <meta name="description" content="本篇详细说明了OCR的应用，技术实现，当前相关进展等，不定时补充更新。 本篇博客最初想写成一本掘金小册，可是掘金的那边看了我的提纲说太难了，应该没什么受众，额……，那我就自己写一下记录下来，不会太讲究斟词酌句了，希望见谅。 本篇博客算是一篇针对OCR相关学习或者初步接触者的引导和入门，讲的不深，实际上针对每个模块，比如CTPN，CTC，Attention，Densenet这些我都有专门写过博客来讲">
 <meta name="keywords" content="机器学习,深度学习,CV,NLP,Python">
 <meta property="og:type" content="article">
 <meta property="og:title" content="OCR-从零开始">
 <meta property="og:url" content="http://xiaofengshi.com/2019/03/13/OCR-从零开始/index.html">
 <meta property="og:site_name" content="挖掘机成长日记">
-<meta property="og:description" content="本篇详细说明了OCR的应用，技术实现，当前相关进展等，不定时补充更新">
+<meta property="og:description" content="本篇详细说明了OCR的应用，技术实现，当前相关进展等，不定时补充更新。 本篇博客最初想写成一本掘金小册，可是掘金的那边看了我的提纲说太难了，应该没什么受众，额……，那我就自己写一下记录下来，不会太讲究斟词酌句了，希望见谅。 本篇博客算是一篇针对OCR相关学习或者初步接触者的引导和入门，讲的不深，实际上针对每个模块，比如CTPN，CTC，Attention，Densenet这些我都有专门写过博客来讲">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://xiaofengshi.com/2019/03/13/OCR-从零开始/text.png">
 <meta property="og:image" content="http://xiaofengshi.com/2019/03/13/OCR-从零开始/ali_text.png">
@@ -74,10 +76,10 @@
 <meta property="og:image" content="http://xiaofengshi.com/2019/03/13/OCR-从零开始/CTPN.png">
 <meta property="og:image" content="http://xiaofengshi.com/2019/03/13/OCR-从零开始/RRPN.png">
 <meta property="og:image" content="http://xiaofengshi.com/2019/03/13/OCR-从零开始/DMPNet.png">
-<meta property="og:updated_time" content="2020-01-30T12:33:27.276Z">
+<meta property="og:updated_time" content="2020-01-31T06:30:32.579Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="OCR-从零开始">
-<meta name="twitter:description" content="本篇详细说明了OCR的应用，技术实现，当前相关进展等，不定时补充更新">
+<meta name="twitter:description" content="本篇详细说明了OCR的应用，技术实现，当前相关进展等，不定时补充更新。 本篇博客最初想写成一本掘金小册，可是掘金的那边看了我的提纲说太难了，应该没什么受众，额……，那我就自己写一下记录下来，不会太讲究斟词酌句了，希望见谅。 本篇博客算是一篇针对OCR相关学习或者初步接触者的引导和入门，讲的不深，实际上针对每个模块，比如CTPN，CTC，Attention，Densenet这些我都有专门写过博客来讲">
 <meta name="twitter:image" content="http://xiaofengshi.com/2019/03/13/OCR-从零开始/text.png">
 
 <link rel="canonical" href="http://xiaofengshi.com/2019/03/13/OCR-从零开始/">
@@ -140,7 +142,8 @@
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
-        <p class="site-subtitle">BytedancerClub</p>
+        <h1 class="site-subtitle" itemprop="description">BytedancerClub</h1>
+      
   </div>
 
   <div class="site-nav-toggle">
@@ -191,9 +194,34 @@
     <a href="/guestbook/" rel="section"><i class="fa fa-fw fa-commenting"></i>guestbook</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 
 </nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
 </div>
     </header>
 
@@ -232,9 +260,9 @@
       <meta itemprop="name" content="挖掘机成长日记">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
+        <h2 class="post-title" itemprop="name headline">
           OCR-从零开始
-        </h1>
+        </h2>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -250,7 +278,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-01-30 20:33:27" itemprop="dateModified" datetime="2020-01-30T20:33:27+08:00">2020-01-30</time>
+                <time title="修改时间：2020-01-31 14:30:32" itemprop="dateModified" datetime="2020-01-31T14:30:32+08:00">2020-01-31</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -302,7 +330,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>本篇详细说明了OCR的应用，技术实现，当前相关进展等，不定时补充更新</p>
+        <p>本篇详细说明了OCR的应用，技术实现，当前相关进展等，不定时补充更新。</p>
+<p>本篇博客最初想写成一本掘金小册，可是掘金的那边看了我的提纲说太难了，应该没什么受众，额……，那我就自己写一下记录下来，不会太讲究斟词酌句了，希望见谅。</p>
+<p>本篇博客算是一篇针对OCR相关学习或者初步接触者的引导和入门，讲的不深，实际上针对每个模块，比如<code>CTPN</code>，<code>CTC</code>，<code>Attention</code>，<code>Densenet</code>这些我都有专门写过博客来讲述过，感兴趣的可以翻翻我的博客文章。</p>
+<p>更新记录：</p>
+<p>2020.01.31: 自从19年4月份入职字节跳动之后一直忙于工作，很久没有更新个人博客了，今天看到各位的留言很是感动，为自己长久的拖延感到羞愧。由于武汉肺炎延迟开工，今天努力把以前写的提纲补充齐全，这一年来，相比于之前增加了更多的工业界算法思维，一个好的算法是在能够实现预定目的的同时，尽可能节省算力的，接下来也会把自己的一些感触和经验体现在博客里面。</p>
 <a id="more"></a>
 <h2 id="OCR任务详解及应用场景"><a href="#OCR任务详解及应用场景" class="headerlink" title="OCR任务详解及应用场景"></a>OCR任务详解及应用场景</h2><h3 id="什么叫OCR"><a href="#什么叫OCR" class="headerlink" title="什么叫OCR"></a>什么叫OCR</h3><p>按照维基百科的定义，(<strong>Optical Character Recognition,OCR</strong>)光学字符识别是指对文本资料的图像文件进行分析识别处理，获取文字及版面信息的过程。通俗来讲，<strong>OCR任务就是我们输入一张包含文本资料的图片，得到该图像中包含的文字和版面信息输出，图形中包含的文字很好理解，版面信息对应的是在输入的图片中文字所在的位置信息。</strong></p>
 <p>下面通过一张简单的图像进行OCR任务的说明</p>
@@ -431,6 +463,7 @@ M
 <p>对于上述的基于人工特征方法的OCR技术实现方案，都伴随着复杂的特征工程，不论是从文本图形的文字的连通性考虑或者从文字的字体等信息考虑，这些方法的适用性都相对狭小，只能处理相对单一类别的文本图像，此外提取的效果也不够鲁棒，容易受到输入图像中的背景信息影响，并且提取结果很容易受到人为设置的一些参数的影响。随着计算机硬件计算能力的大幅度提升，在2014年左右，出现了深度学习方法的OCR技术方案，OCR技术不论是从识别效果还是从OCR识别场景适用性都取得了巨大进步。</p>
 <h4 id="深度学习OCR技术"><a href="#深度学习OCR技术" class="headerlink" title="深度学习OCR技术"></a>深度学习OCR技术</h4><p>正如上文所述的使用人工特征的方法在OCR识别过程中存在诸多问题，深度学习OCR技术以其适用性更广，人工特征更少，识别准确率更高的优点，目前已经成为OCR识别的主流应用技术。对于OCR识别过程，上文已经有所描述，过程中的难点，一个是版面分析，也就是找到输入图像的文本区域所在的位置，另一个是文本识别，也就是对找到的文本图像进行识别。这里所说的深度学习OCR技术，也是着重解决这两个问题。目前存在的深度学习OCR方案主要是分两种，一种是端到端实现OCR识别，也就是设计一个网络模型，实现文字区域检测和文本识别，另一种是进行对文本检测和文本识别都设计开发单独的网络模型以实现任务目标，下面进行分别说明。</p>
 <h5 id="文本检测"><a href="#文本检测" class="headerlink" title="文本检测"></a>文本检测</h5><p>说到文本检测，也就是检测到输入图像的文本区域，得到文字区域的位置信息。目前主要有两种深度学习实现思路，一种是基于目标检测方法，一种是基于图像分割的方法，其中基于目标检测的方法是目前应用最广泛的方法。</p>
+<p>目前来说，在文本检测中，以目标检测为baseline仍然是占据主流，因为这两个任务具有天然的相关性，文本检测可以看做是目标检测中的一个分支，因此通用的目标检测技术经过一定定制优化是可以直接移植到文本检测上的，本人不太推荐基于分割的技术方法，首先在数据标注上，分割显然比检测的标注难度提升好几个等级，再者就是分割算法相比于检测算法需要更多的参数量，需要更多的计算资源和更久的运算时间，在工业界不太推荐。</p>
 <ul>
 <li><p>基于目标检测的方法</p>
 <ol>
@@ -461,12 +494,18 @@ M
 </li>
 <li><p>基于文本在图像中是具有不规则多边形的轮廓的角度思考，<a href="https://arxiv.org/abs/1703.01425" target="_blank" rel="noopener">DMPNet</a>将目标检测任务中目标区域为矩形框修改为多边形目标区域，在目标检测模型<a href="https://arxiv.org/abs/1512.02325" target="_blank" rel="noopener">SSD</a>的基础上进行整个模型的设计。</p>
 <img src="/2019/03/13/OCR-从零开始/DMPNet.png" title="DMPNet中Anchor生成">
-<p>如图正式DMPNet中关于Anchor的的设计方案，在图$a$中，</p>
+<p>如图是<code>DMPNet</code>中关于<code>Anchor</code>的的设计方案，在图$a$中，如果使用用于的目标检测的<code>Anchor</code>生成方法，得到的检测区域是蓝色虚线部分，因为在传统的<code>Anchor</code>生成过程中，先验的<code>Anchor</code>都是矩形形状，因此得到的检测框肯定也是矩形的，但是在街景<code>OCR</code>中，使用矩形的区域进行文本区域检测显然会引入更多的背景信息，对后续的文本识别带来干扰。在<code>DMPNet</code>中的<code>Anchor</code>设计使用的是图<code>C</code>这种方式，加入了旋转角度，这样的<code>Anchor</code>设计会检测到图$a$中红色虚线的区域，显然相比于传统目标检测得到的结果更优。</p>
 </li>
 </ol>
 </li>
 </ul>
-<h2 id="深度学习技术实现方案综述"><a href="#深度学习技术实现方案综述" class="headerlink" title="深度学习技术实现方案综述"></a>深度学习技术实现方案综述</h2><h2 id="文本行提取任务算法模型分类及技术选型"><a href="#文本行提取任务算法模型分类及技术选型" class="headerlink" title="文本行提取任务算法模型分类及技术选型"></a>文本行提取任务算法模型分类及技术选型</h2><h2 id="连续文本提议网络-CTPN-模型原理"><a href="#连续文本提议网络-CTPN-模型原理" class="headerlink" title="连续文本提议网络(CTPN)模型原理"></a>连续文本提议网络(CTPN)模型原理</h2><h2 id="区域提议网络-RPN-原理分析"><a href="#区域提议网络-RPN-原理分析" class="headerlink" title="区域提议网络(RPN)原理分析"></a>区域提议网络(RPN)原理分析</h2><h2 id="CTPN模型优化目标原理及代码实现"><a href="#CTPN模型优化目标原理及代码实现" class="headerlink" title="CTPN模型优化目标原理及代码实现"></a>CTPN模型优化目标原理及代码实现</h2><h2 id="不定长文字识别算法模型分类及技术选型"><a href="#不定长文字识别算法模型分类及技术选型" class="headerlink" title="不定长文字识别算法模型分类及技术选型"></a>不定长文字识别算法模型分类及技术选型</h2><h2 id="卷积循环神经网络-CRNN-模型原理"><a href="#卷积循环神经网络-CRNN-模型原理" class="headerlink" title="卷积循环神经网络(CRNN)模型原理"></a>卷积循环神经网络(CRNN)模型原理</h2><h2 id="常用卷积网络模型结构"><a href="#常用卷积网络模型结构" class="headerlink" title="常用卷积网络模型结构"></a>常用卷积网络模型结构</h2><h2 id="DenseNet和CTC解码原理及代码实现"><a href="#DenseNet和CTC解码原理及代码实现" class="headerlink" title="DenseNet和CTC解码原理及代码实现"></a>DenseNet和CTC解码原理及代码实现</h2><h2 id="深度学习的数据标准化原理及选择"><a href="#深度学习的数据标准化原理及选择" class="headerlink" title="深度学习的数据标准化原理及选择"></a>深度学习的数据标准化原理及选择</h2><h2 id="序列到序列算法模型原理"><a href="#序列到序列算法模型原理" class="headerlink" title="序列到序列算法模型原理"></a>序列到序列算法模型原理</h2><h2 id="不定长文字识别的编码器设计及代码实现"><a href="#不定长文字识别的编码器设计及代码实现" class="headerlink" title="不定长文字识别的编码器设计及代码实现"></a>不定长文字识别的编码器设计及代码实现</h2><h2 id="注意力机制原理详解"><a href="#注意力机制原理详解" class="headerlink" title="注意力机制原理详解"></a>注意力机制原理详解</h2><h2 id="解码器的贪婪搜索和集束搜索选择和实现"><a href="#解码器的贪婪搜索和集束搜索选择和实现" class="headerlink" title="解码器的贪婪搜索和集束搜索选择和实现"></a>解码器的贪婪搜索和集束搜索选择和实现</h2><h2 id="循环神经网的模型设计策略及代码实现"><a href="#循环神经网的模型设计策略及代码实现" class="headerlink" title="循环神经网的模型设计策略及代码实现"></a>循环神经网的模型设计策略及代码实现</h2><h2 id="搭建中文OCR任务pipeline"><a href="#搭建中文OCR任务pipeline" class="headerlink" title="搭建中文OCR任务pipeline"></a>搭建中文OCR任务pipeline</h2><h2 id="技术总结及触类旁通"><a href="#技术总结及触类旁通" class="headerlink" title="技术总结及触类旁通"></a>技术总结及触类旁通</h2>
+<h5 id="文本识别"><a href="#文本识别" class="headerlink" title="文本识别"></a>文本识别</h5><p>检测之后肯定就是识别了，由于2019年中旬之后更换工作，没有太多关注OCR相关方面的发展，根据我曾经的浅薄的经验，使用何种文本识别技术基于我们使用了何种文本检测技术，尤其在工业界，我们的目的是输出图片中的信息，而不是检测的检测到文本区域。</p>
+<p>前面已经说过了，目前的主流做法是基于目标检测的文本检测实现方案，检测到的一般情况是文本区域而不是单个的字，这个时候我们在进行文本识别的时候显然也要对文本区域进行识别，现在的<code>CNN</code>技术发展迅速，几乎都快到瓶颈了，这些我们先不管，我们只需要知道对于文本识别目前来讲基于<code>CNN</code>是一种非常可行的方案，不管是<code>CRNN</code>(将<code>CNN,RNN</code>联系起，模拟语音识别的方法建立前后文联系)，还是<code>CNN+CTC</code>的方案，都是将文本区域使用<code>CNN</code>进行特征提取，然后使用<code>NLP</code>中解决方案。</p>
+<p>至于更传统的单字符识别目前应该没有人使用了，这里也就不过多介绍了。关于该部分的内容，如果想了解更多，我也写过针对<code>OCR</code>的一篇博客<a href="[http://xiaofengshi.com/2019/01/05/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-OCR_Overview/](http://xiaofengshi.com/2019/01/05/深度学习-OCR_Overview/">文章: 深度学习-OCR_Overview</a>)</p>
+<h2 id="深度学习技术实现方案综述"><a href="#深度学习技术实现方案综述" class="headerlink" title="深度学习技术实现方案综述"></a>深度学习技术实现方案综述</h2><p>前文已经对深度学习在<code>OCR</code>上的应用有所涉及，目前的不论学术界还是工业界应该都已经抛弃了传统的直方图或单字符识别的研究和投入，但是，还是那句话，最后的算法是在满足需求的条件下尽可能节省算力，如果我们的场景是具有规定排版样式的场景，比如扫描合同，身份证，银行卡，发票单据等，这些使用传统方法实际上完全可以<code>cover</code>住，没有<code>low</code>的算法，只有<code>low</code>的开发者，这是近一年来在字节我最大的收获。</p>
+<p>接下来说一下目前的主流解决方案，<code>OCR</code>目前来讲分为两个过程文本区域检测和文本识别，目前应该还没有<code>End2End</code>的解决方案。这两个过程主要就是上面所说的那样，文本检测一般是基于目标检测来实现，文本识别一般是不定长文本识别，因此更多的采用的是<code>NLP</code>中关于语音识别的相关方法。</p>
+<h2 id="连续文本提议网络-CTPN-模型原理"><a href="#连续文本提议网络-CTPN-模型原理" class="headerlink" title="连续文本提议网络(CTPN)模型原理"></a>连续文本提议网络(CTPN)模型原理</h2><p>这一部分，我已经写作一篇博客了，可以看一下这里<a href="[http://xiaofengshi.com/2019/01/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-TextDetection/](http://xiaofengshi.com/2019/01/23/深度学习-TextDetection/">深度学习-TextDetection</a>)</p>
+<h2 id="卷积循环神经网络-CRNN-模型原理"><a href="#卷积循环神经网络-CRNN-模型原理" class="headerlink" title="卷积循环神经网络(CRNN)模型原理"></a>卷积循环神经网络(CRNN)模型原理</h2><h2 id="常用卷积网络模型结构"><a href="#常用卷积网络模型结构" class="headerlink" title="常用卷积网络模型结构"></a>常用卷积网络模型结构</h2><h2 id="DenseNet和CTC解码原理及代码实现"><a href="#DenseNet和CTC解码原理及代码实现" class="headerlink" title="DenseNet和CTC解码原理及代码实现"></a>DenseNet和CTC解码原理及代码实现</h2><h2 id="深度学习的数据标准化原理及选择"><a href="#深度学习的数据标准化原理及选择" class="headerlink" title="深度学习的数据标准化原理及选择"></a>深度学习的数据标准化原理及选择</h2><h2 id="序列到序列算法模型原理"><a href="#序列到序列算法模型原理" class="headerlink" title="序列到序列算法模型原理"></a>序列到序列算法模型原理</h2><h2 id="不定长文字识别的编码器设计及代码实现"><a href="#不定长文字识别的编码器设计及代码实现" class="headerlink" title="不定长文字识别的编码器设计及代码实现"></a>不定长文字识别的编码器设计及代码实现</h2><h2 id="注意力机制原理详解"><a href="#注意力机制原理详解" class="headerlink" title="注意力机制原理详解"></a>注意力机制原理详解</h2><h2 id="解码器的贪婪搜索和集束搜索选择和实现"><a href="#解码器的贪婪搜索和集束搜索选择和实现" class="headerlink" title="解码器的贪婪搜索和集束搜索选择和实现"></a>解码器的贪婪搜索和集束搜索选择和实现</h2><h2 id="循环神经网的模型设计策略及代码实现"><a href="#循环神经网的模型设计策略及代码实现" class="headerlink" title="循环神经网的模型设计策略及代码实现"></a>循环神经网的模型设计策略及代码实现</h2><h2 id="搭建中文OCR任务pipeline"><a href="#搭建中文OCR任务pipeline" class="headerlink" title="搭建中文OCR任务pipeline"></a>搭建中文OCR任务pipeline</h2><h2 id="技术总结及触类旁通"><a href="#技术总结及触类旁通" class="headerlink" title="技术总结及触类旁通"></a>技术总结及触类旁通</h2>
     </div>
 
     
@@ -585,7 +624,7 @@ M
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#OCR任务详解及应用场景"><span class="nav-number">1.</span> <span class="nav-text">OCR任务详解及应用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么叫OCR"><span class="nav-number">1.1.</span> <span class="nav-text">什么叫OCR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OCR用于何处"><span class="nav-number">1.2.</span> <span class="nav-text">OCR用于何处</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">1.3.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#思考"><span class="nav-number">1.4.</span> <span class="nav-text">思考</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#中文OCR任务解决方案"><span class="nav-number">2.</span> <span class="nav-text">中文OCR任务解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#OCR识别过程"><span class="nav-number">2.1.</span> <span class="nav-text">OCR识别过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#版面分析"><span class="nav-number">2.2.</span> <span class="nav-text">版面分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#传统手工特征方法"><span class="nav-number">2.2.1.</span> <span class="nav-text">传统手工特征方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#深度学习OCR技术"><span class="nav-number">2.2.2.</span> <span class="nav-text">深度学习OCR技术</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#文本检测"><span class="nav-number">2.2.2.1.</span> <span class="nav-text">文本检测</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#深度学习技术实现方案综述"><span class="nav-number">3.</span> <span class="nav-text">深度学习技术实现方案综述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文本行提取任务算法模型分类及技术选型"><span class="nav-number">4.</span> <span class="nav-text">文本行提取任务算法模型分类及技术选型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#连续文本提议网络-CTPN-模型原理"><span class="nav-number">5.</span> <span class="nav-text">连续文本提议网络(CTPN)模型原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#区域提议网络-RPN-原理分析"><span class="nav-number">6.</span> <span class="nav-text">区域提议网络(RPN)原理分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CTPN模型优化目标原理及代码实现"><span class="nav-number">7.</span> <span class="nav-text">CTPN模型优化目标原理及代码实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#不定长文字识别算法模型分类及技术选型"><span class="nav-number">8.</span> <span class="nav-text">不定长文字识别算法模型分类及技术选型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#卷积循环神经网络-CRNN-模型原理"><span class="nav-number">9.</span> <span class="nav-text">卷积循环神经网络(CRNN)模型原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用卷积网络模型结构"><span class="nav-number">10.</span> <span class="nav-text">常用卷积网络模型结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DenseNet和CTC解码原理及代码实现"><span class="nav-number">11.</span> <span class="nav-text">DenseNet和CTC解码原理及代码实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#深度学习的数据标准化原理及选择"><span class="nav-number">12.</span> <span class="nav-text">深度学习的数据标准化原理及选择</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#序列到序列算法模型原理"><span class="nav-number">13.</span> <span class="nav-text">序列到序列算法模型原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#不定长文字识别的编码器设计及代码实现"><span class="nav-number">14.</span> <span class="nav-text">不定长文字识别的编码器设计及代码实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意力机制原理详解"><span class="nav-number">15.</span> <span class="nav-text">注意力机制原理详解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解码器的贪婪搜索和集束搜索选择和实现"><span class="nav-number">16.</span> <span class="nav-text">解码器的贪婪搜索和集束搜索选择和实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#循环神经网的模型设计策略及代码实现"><span class="nav-number">17.</span> <span class="nav-text">循环神经网的模型设计策略及代码实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#搭建中文OCR任务pipeline"><span class="nav-number">18.</span> <span class="nav-text">搭建中文OCR任务pipeline</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#技术总结及触类旁通"><span class="nav-number">19.</span> <span class="nav-text">技术总结及触类旁通</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#OCR任务详解及应用场景"><span class="nav-number">1.</span> <span class="nav-text">OCR任务详解及应用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么叫OCR"><span class="nav-number">1.1.</span> <span class="nav-text">什么叫OCR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OCR用于何处"><span class="nav-number">1.2.</span> <span class="nav-text">OCR用于何处</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">1.3.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#思考"><span class="nav-number">1.4.</span> <span class="nav-text">思考</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#中文OCR任务解决方案"><span class="nav-number">2.</span> <span class="nav-text">中文OCR任务解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#OCR识别过程"><span class="nav-number">2.1.</span> <span class="nav-text">OCR识别过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#版面分析"><span class="nav-number">2.2.</span> <span class="nav-text">版面分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#传统手工特征方法"><span class="nav-number">2.2.1.</span> <span class="nav-text">传统手工特征方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#深度学习OCR技术"><span class="nav-number">2.2.2.</span> <span class="nav-text">深度学习OCR技术</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#文本检测"><span class="nav-number">2.2.2.1.</span> <span class="nav-text">文本检测</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#文本识别"><span class="nav-number">2.2.2.2.</span> <span class="nav-text">文本识别</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#深度学习技术实现方案综述"><span class="nav-number">3.</span> <span class="nav-text">深度学习技术实现方案综述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#连续文本提议网络-CTPN-模型原理"><span class="nav-number">4.</span> <span class="nav-text">连续文本提议网络(CTPN)模型原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#卷积循环神经网络-CRNN-模型原理"><span class="nav-number">5.</span> <span class="nav-text">卷积循环神经网络(CRNN)模型原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用卷积网络模型结构"><span class="nav-number">6.</span> <span class="nav-text">常用卷积网络模型结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DenseNet和CTC解码原理及代码实现"><span class="nav-number">7.</span> <span class="nav-text">DenseNet和CTC解码原理及代码实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#深度学习的数据标准化原理及选择"><span class="nav-number">8.</span> <span class="nav-text">深度学习的数据标准化原理及选择</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#序列到序列算法模型原理"><span class="nav-number">9.</span> <span class="nav-text">序列到序列算法模型原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#不定长文字识别的编码器设计及代码实现"><span class="nav-number">10.</span> <span class="nav-text">不定长文字识别的编码器设计及代码实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意力机制原理详解"><span class="nav-number">11.</span> <span class="nav-text">注意力机制原理详解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解码器的贪婪搜索和集束搜索选择和实现"><span class="nav-number">12.</span> <span class="nav-text">解码器的贪婪搜索和集束搜索选择和实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#循环神经网的模型设计策略及代码实现"><span class="nav-number">13.</span> <span class="nav-text">循环神经网的模型设计策略及代码实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#搭建中文OCR任务pipeline"><span class="nav-number">14.</span> <span class="nav-text">搭建中文OCR任务pipeline</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#技术总结及触类旁通"><span class="nav-number">15.</span> <span class="nav-text">技术总结及触类旁通</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -685,6 +724,20 @@ M
 
 
   
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  <script src="/js/local-search.js"></script>
 
 
 
@@ -693,11 +746,40 @@ M
 
 
 
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
 
 
-
-
-
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
   
