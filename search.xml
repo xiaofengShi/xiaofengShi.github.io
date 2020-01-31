@@ -4883,8 +4883,8 @@ p(x)=\sum_{i=1}^{K}\pi_{i}N(x|\mu_{i}, \sigma_{i})</script><p>每次循环时，
       </categories>
       <tags>
         <tag>机器学习</tag>
-        <tag>EM</tag>
         <tag>聚类</tag>
+        <tag>EM</tag>
         <tag>高斯混合分布</tag>
       </tags>
   </entry>
