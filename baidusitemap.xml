@@ -1,14 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://xiaofengshi.com/2019/03/06/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Normalization/</loc>
+    <lastmod>2020-03-16</lastmod>
+  </url>  <url>
+    <loc>http://xiaofengshi.com/2019/02/15/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-NLP-Attention_is_all_you_need/</loc>
+    <lastmod>2020-03-12</lastmod>
+  </url>  <url>
+    <loc>http://xiaofengshi.com/2020/03/06/DeepLearning-Docker/</loc>
+    <lastmod>2020-03-06</lastmod>
+  </url>  <url>
+    <loc>http://xiaofengshi.com/2019/03/19/DeepLearning_Tensorflow/</loc>
+    <lastmod>2020-03-05</lastmod>
+  </url>  <url>
     <loc>http://xiaofengshi.com/2020/01/29/Awesomes-Python/</loc>
-    <lastmod>2020-02-25</lastmod>
+    <lastmod>2020-02-29</lastmod>
+  </url>  <url>
+    <loc>http://xiaofengshi.com/2020/02/17/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-SENet/</loc>
+    <lastmod>2020-02-29</lastmod>
   </url>  <url>
     <loc>http://xiaofengshi.com/2020/02/25/AwesomesErrors/</loc>
     <lastmod>2020-02-25</lastmod>
-  </url>  <url>
-    <loc>http://xiaofengshi.com/2020/02/17/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-SENet/</loc>
-    <lastmod>2020-02-17</lastmod>
   </url>  <url>
     <loc>http://xiaofengshi.com/2020/02/03/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-MobileNetV1-V3/</loc>
     <lastmod>2020-02-16</lastmod>
@@ -37,9 +49,6 @@
     <loc>http://xiaofengshi.com/2019/03/13/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-OCR-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B/</loc>
     <lastmod>2020-02-03</lastmod>
   </url>  <url>
-    <loc>http://xiaofengshi.com/2019/02/15/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-NLP-Attention_is_all_you_need/</loc>
-    <lastmod>2020-02-03</lastmod>
-  </url>  <url>
     <loc>http://xiaofengshi.com/2019/12/10/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-NLP-BERT/</loc>
     <lastmod>2020-02-03</lastmod>
   </url>  <url>
@@ -47,9 +56,6 @@
     <lastmod>2020-02-03</lastmod>
   </url>  <url>
     <loc>http://xiaofengshi.com/2018/11/11/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-SVM/</loc>
-    <lastmod>2020-01-31</lastmod>
-  </url>  <url>
-    <loc>http://xiaofengshi.com/2019/03/19/DeepLearning_Tensorflow/</loc>
     <lastmod>2020-01-31</lastmod>
   </url>  <url>
     <loc>http://xiaofengshi.com/2019/01/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-TextDetection/</loc>
@@ -63,9 +69,6 @@
   </url>  <url>
     <loc>http://xiaofengshi.com/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/</loc>
     <lastmod>2020-01-31</lastmod>
-  </url>  <url>
-    <loc>http://xiaofengshi.com/2019/03/06/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Normalization/</loc>
-    <lastmod>2020-01-19</lastmod>
   </url>  <url>
     <loc>http://xiaofengshi.com/2018/11/04/blog-make/</loc>
     <lastmod>2019-12-10</lastmod>

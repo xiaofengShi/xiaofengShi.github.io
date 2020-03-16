@@ -57,7 +57,16 @@
 <meta property="og:description" content="本篇主要记录一下2017年ILSVR竞赛的冠军-SENet，这是一种网络的block结构，可以有效的结合到InceptionNet，Resnet中。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://xiaofengshi.com/2020/02/17/深度学习-ConvNet-SENet/SE-pipeline.jpg">
-<meta property="og:updated_time" content="2020-02-17T14:37:45.613Z">
+<meta property="og:image" content="http://xiaofengshi.com/2020/02/17/深度学习-ConvNet-SENet/gap-gmp.png">
+<meta property="og:image" content="http://xiaofengshi.com/2020/02/17/深度学习-ConvNet-SENet/opreator.png">
+<meta property="og:image" content="http://xiaofengshi.com/2020/02/17/深度学习-ConvNet-SENet/se-blocks.png">
+<meta property="og:image" content="http://xiaofengshi.com/2020/02/17/深度学习-ConvNet-SENet/blocks-error.png">
+<meta property="og:image" content="http://xiaofengshi.com/2020/02/17/深度学习-ConvNet-SENet/bottleneck-resnet-block.png">
+<meta property="og:image" content="http://xiaofengshi.com/2020/02/17/深度学习-ConvNet-SENet/block-variance.png">
+<meta property="og:image" content="http://xiaofengshi.com/2020/02/17/深度学习-ConvNet-SENet/squeeze-role.png">
+<meta property="og:image" content="http://xiaofengshi.com/2020/02/17/深度学习-ConvNet-SENet/extitction-activation.png">
+<meta property="og:image" content="http://xiaofengshi.com/2020/02/17/深度学习-ConvNet-SENet/excitation-activation-standard.png">
+<meta property="og:updated_time" content="2020-02-29T07:09:34.875Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深度学习-ConvNet-SENet">
 <meta name="twitter:description" content="本篇主要记录一下2017年ILSVR竞赛的冠军-SENet，这是一种网络的block结构，可以有效的结合到InceptionNet，Resnet中。">
@@ -247,10 +256,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-02-17 22:05:43 / 修改时间：22:37:45" itemprop="dateCreated datePublished" datetime="2020-02-17T22:05:43+08:00">2020-02-17</time>
+              <time title="创建时间：2020-02-17 22:05:43" itemprop="dateCreated datePublished" datetime="2020-02-17T22:05:43+08:00">2020-02-17</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-02-29 15:09:34" itemprop="dateModified" datetime="2020-02-29T15:09:34+08:00">2020-02-29</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -315,7 +330,42 @@
 </li>
 <li>$F_{scale}(.)$—类似通道注意力，将得到的C维度的值作为权重乘到输入的特征图的维度上。</li>
 </ol>
-<h2 id="为什么有效"><a href="#为什么有效" class="headerlink" title="为什么有效"></a>为什么有效</h2><h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<h2 id="参数和结构是如何确定的"><a href="#参数和结构是如何确定的" class="headerlink" title="参数和结构是如何确定的"></a>参数和结构是如何确定的</h2><h3 id="扩展层压缩比"><a href="#扩展层压缩比" class="headerlink" title="扩展层压缩比"></a>扩展层压缩比</h3><p>在论文中，作者认为压缩比为16可以取得模型的精度和运算复杂度之间的平衡，并且作者在论文中提出，由于模型的不同层在整个模型中的作用不一样，因此，在整个模型中使用同一个固定的压缩比不是一个最好的办法，可以设置不同的压缩比以适应不同的基础网络，<strong>我们在日常使用的过程中可以先使用16，之后在模型优化的时候再通过更改压缩比来进行对比试验。</strong></p>
+<h3 id="压缩层"><a href="#压缩层" class="headerlink" title="压缩层"></a>压缩层</h3><p>在sequeeze层中，对比研究了GlobalMaxPooling和GlobalAvgPooling，从指标身上看GlobalAvgPooling表现会更好一些，但是Maxpooling的计算更加简单，因此在模型中使用的是Maxpooling，<strong>这一步也是可以在个人实践的时候进行优化的。</strong></p>
+<img src="/2020/02/17/深度学习-ConvNet-SENet/gap-gmp.png">
+<h3 id="扩展层计算方法"><a href="#扩展层计算方法" class="headerlink" title="扩展层计算方法"></a>扩展层计算方法</h3><p>这里主要是讨论选择什么样的激活函数，众所周知常用的激活层是Relu，Sigmoid，Tanh。可以看到Tanh相比Sigmoid表现差一点，并且使用了Relu的Se-Resnet50已经低于了Resnet50的基线表现。这一步使用什么样的激活函数是很重要的，不是想当然的认为这一步要得到0~1之间的数，所以要使用Sigmoid激活函数，任何一个网络模型的设计都是要有依据的。</p>
+<img src="/2020/02/17/深度学习-ConvNet-SENet/opreator.png">
+<h3 id="Block结构设计"><a href="#Block结构设计" class="headerlink" title="Block结构设计"></a>Block结构设计</h3><p>为什么选择开篇图中那种Block的设计方式，论文中，作者研究了不同的网络结构设计如下</p>
+<img src="/2020/02/17/深度学习-ConvNet-SENet/se-blocks.png" title="Blocks">
+<p>具体的表现为</p>
+<img src="/2020/02/17/深度学习-ConvNet-SENet/blocks-error.png">
+<p>可以看出来，SE-POST表现相比是最差的。如果SE单元在分支聚合之前应用，则SE单元所产生的性能改进对其梭子的位置比较鲁棒的，表现差别不大。 </p>
+<p>正常情况下，每个SE块都放置在残差单元的结构外部。 论文中作者还构造了一种设计变体，将SE块移动到剩余单元内，将其直接放置在3×3卷积层之后，虽然论文中作者没给出是哪种block，但是个人感觉应该是瓶颈残差模块。</p>
+<img src="/2020/02/17/深度学习-ConvNet-SENet/bottleneck-resnet-block.png">
+<p> 由于3×3卷积层具有较少的通道，因此相应的SE块引入的参数数量会想要减少。从下面的图标可以看出来，SE3x3与标准的SE相比，在减少10%左右参数量的情况下，并没有明显降低模型的精度。 <strong>在后续优化中，通过针对特定架构量身定制SE块使用，可以进一步提高效率。</strong></p>
+<img src="/2020/02/17/深度学习-ConvNet-SENet/block-variance.png">
+<h2 id="SEBlock各模块的作用"><a href="#SEBlock各模块的作用" class="headerlink" title="SEBlock各模块的作用"></a>SEBlock各模块的作用</h2><p>整个SEBlock中主要包含2个模块，sequence，excitation，后面的scale属于常规操作。</p>
+<h3 id="Squeeze的作用"><a href="#Squeeze的作用" class="headerlink" title="Squeeze的作用"></a>Squeeze的作用</h3><p>在SEblock中的sequence是通过GlobalAvgpooling实现的，为了查看这一步的作用，在论文中作者做了这么一个实验。</p>
+<ol>
+<li>参数量固定</li>
+<li>移除GlobalAvgpooling操作</li>
+<li>移除两个fc层使用1x1卷积代替，保持输出的通道数与原来相同</li>
+</ol>
+<p>显然，去除了squeeze这一步，在SE模块中，网络无法再直接访问全局特征。在下面的图中通过对比试验，可以看出，去除掉squeeze这一步之后，为模型带了0.7个点的性能损失，并且带来了更多的计算量，而squeeze使用简单地pooling操作，既降低了计算量有带来了性能的提升。</p>
+<img src="/2020/02/17/深度学习-ConvNet-SENet/squeeze-role.png">
+<h3 id="Excitation的作用"><a href="#Excitation的作用" class="headerlink" title="Excitation的作用"></a>Excitation的作用</h3><p>这一步很有趣，作者是通过研究分类任务上，网络不同深度上对不同类别的图像和同一类别内的变化。</p>
+<p>这里选择了语义和外观上都有很大差异的四个类：金鱼，狗，飞机，悬崖。使用每个阶段的最后一个在降采样之前的SE模块，均匀采样50个通道，并计算着50个通道的平均值。从下面这个图可以得到两个结论</p>
+<ol>
+<li>在较浅的层，不同的类别之间的激活值是很相似的，这有可能是由于CNN的通道权重共享造成的，比如图中的SE2-3</li>
+<li>随着模型深度的增加，不同类别的激活变得更加特定，这是由于不同类别的输入视觉信号和类别监督信号对特征具有不同的偏好，比如图中的SE4-6,SE5-1</li>
+<li>SE5-2不同的类别的激活表现了趋于饱和的激活状态，在所有激活值取值为1的电商，SE则变成了一个逻辑运算符来判断0/1</li>
+<li>在SE5-3，后面加上globalpooling就是最后的分类层了，可以看到在不同的类别上的表现趋势很相似，并且变化不大。这表明SE5-2和SE5-3对模型的贡献已经很小了。这表明，<strong>可以通过删除这一层，也不会太影响模型的性能，但是可以显著的降低模型的参数量，也验证了随着模型深度的增加，获得的收益越来越小</strong>。</li>
+</ol>
+<p>实际上这个表现不是SE独有的，任何一个深度学习网络，经过研究发现，浅层特征表达浅层特征，深层特征表达高层特征。</p>
+<img src="/2020/02/17/深度学习-ConvNet-SENet/extitction-activation.png" title="ActivationCurve">
+<p>再看一下不同类别激活值的均值和方差的分布，可以明显的看出来，不同类别的均值和方差的分布曲线和激活值的曲线是一致的。</p>
+<img src="/2020/02/17/深度学习-ConvNet-SENet/excitation-activation-standard.png">
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
 <li>官方repo <a href="https://github.com/hujie-frank/SENet" target="_blank" rel="noopener">https://github.com/hujie-frank/SENet</a></li>
 <li></li>
 </ol>
@@ -443,7 +493,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Block结构"><span class="nav-number">1.</span> <span class="nav-text">Block结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么有效"><span class="nav-number">2.</span> <span class="nav-text">为什么有效</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">3.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Block结构"><span class="nav-number">1.</span> <span class="nav-text">Block结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参数和结构是如何确定的"><span class="nav-number">2.</span> <span class="nav-text">参数和结构是如何确定的</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#扩展层压缩比"><span class="nav-number">2.1.</span> <span class="nav-text">扩展层压缩比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#压缩层"><span class="nav-number">2.2.</span> <span class="nav-text">压缩层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#扩展层计算方法"><span class="nav-number">2.3.</span> <span class="nav-text">扩展层计算方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Block结构设计"><span class="nav-number">2.4.</span> <span class="nav-text">Block结构设计</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SEBlock各模块的作用"><span class="nav-number">3.</span> <span class="nav-text">SEBlock各模块的作用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Squeeze的作用"><span class="nav-number">3.1.</span> <span class="nav-text">Squeeze的作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Excitation的作用"><span class="nav-number">3.2.</span> <span class="nav-text">Excitation的作用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">4.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -459,7 +509,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-count">32</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
