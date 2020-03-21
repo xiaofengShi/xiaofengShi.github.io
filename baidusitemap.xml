@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://xiaofengshi.com/2018/12/12/Awesomes-Process/</loc>
+    <lastmod>2020-03-21</lastmod>
+  </url>  <url>
+    <loc>http://xiaofengshi.com/2020/03/17/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Loss-softmax-based/</loc>
+    <lastmod>2020-03-17</lastmod>
+  </url>  <url>
     <loc>http://xiaofengshi.com/2019/03/06/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Normalization/</loc>
     <lastmod>2020-03-16</lastmod>
   </url>  <url>
     <loc>http://xiaofengshi.com/2019/02/15/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-NLP-Attention_is_all_you_need/</loc>
     <lastmod>2020-03-12</lastmod>
-  </url>  <url>
-    <loc>http://xiaofengshi.com/2020/03/06/DeepLearning-Docker/</loc>
-    <lastmod>2020-03-06</lastmod>
   </url>  <url>
     <loc>http://xiaofengshi.com/2019/03/19/DeepLearning_Tensorflow/</loc>
     <lastmod>2020-03-05</lastmod>
@@ -27,9 +30,6 @@
   </url>  <url>
     <loc>http://xiaofengshi.com/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-ShuffleNet/</loc>
     <lastmod>2020-02-16</lastmod>
-  </url>  <url>
-    <loc>http://xiaofengshi.com/2018/12/12/Awesomes-Process/</loc>
-    <lastmod>2020-02-13</lastmod>
   </url>  <url>
     <loc>http://xiaofengshi.com/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-EfficientNet/</loc>
     <lastmod>2020-02-10</lastmod>
@@ -50,9 +50,6 @@
     <lastmod>2020-02-03</lastmod>
   </url>  <url>
     <loc>http://xiaofengshi.com/2019/12/10/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-NLP-BERT/</loc>
-    <lastmod>2020-02-03</lastmod>
-  </url>  <url>
-    <loc>http://xiaofengshi.com/2019/08/06/Awesomes-Mac/</loc>
     <lastmod>2020-02-03</lastmod>
   </url>  <url>
     <loc>http://xiaofengshi.com/2018/11/11/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-SVM/</loc>
