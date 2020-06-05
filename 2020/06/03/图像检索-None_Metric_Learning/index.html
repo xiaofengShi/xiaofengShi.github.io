@@ -48,19 +48,19 @@
   };
 </script>
 
-  <meta name="description" content="最近在开展图像检索相关方面的工作，看到一篇论文 Learning Non-Metric Visual Similarity for Image Retrieval，本篇文章主要结合个人理解来记录一下这篇应用于图像检索领域的一种非度量学习方法的论文。  如图，左侧是我们常用的度量学习方法，右侧是本论文提出来的使用一个similarity-network来代替常用的度量方程。">
+  <meta name="description" content="最近和同学@liguoqing.sant有聊到图像检索相关方面的工作，主要是这么一篇论文 Learning Non-Metric Visual Similarity for Image Retrieval，本篇文章主要结合个人理解来记录一下这篇论文。  如图，左侧是我们常用的度量学习方法，右侧是本论文提出来的使用一个similarity-network来代替常用的度量方程。">
 <meta name="keywords" content="度量学习">
 <meta property="og:type" content="article">
 <meta property="og:title" content="深度学习-None_Metric_Learning">
 <meta property="og:url" content="http://xiaofengshi.com/2020/06/03/图像检索-None_Metric_Learning/index.html">
 <meta property="og:site_name" content="挖掘机成长日记">
-<meta property="og:description" content="最近在开展图像检索相关方面的工作，看到一篇论文 Learning Non-Metric Visual Similarity for Image Retrieval，本篇文章主要结合个人理解来记录一下这篇应用于图像检索领域的一种非度量学习方法的论文。  如图，左侧是我们常用的度量学习方法，右侧是本论文提出来的使用一个similarity-network来代替常用的度量方程。">
+<meta property="og:description" content="最近和同学@liguoqing.sant有聊到图像检索相关方面的工作，主要是这么一篇论文 Learning Non-Metric Visual Similarity for Image Retrieval，本篇文章主要结合个人理解来记录一下这篇论文。  如图，左侧是我们常用的度量学习方法，右侧是本论文提出来的使用一个similarity-network来代替常用的度量方程。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://xiaofengshi.com/2020/06/03/图像检索-None_Metric_Learning/metric_and_non_metric.png">
-<meta property="og:updated_time" content="2020-06-05T02:10:55.351Z">
+<meta property="og:updated_time" content="2020-06-05T08:57:06.144Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深度学习-None_Metric_Learning">
-<meta name="twitter:description" content="最近在开展图像检索相关方面的工作，看到一篇论文 Learning Non-Metric Visual Similarity for Image Retrieval，本篇文章主要结合个人理解来记录一下这篇应用于图像检索领域的一种非度量学习方法的论文。  如图，左侧是我们常用的度量学习方法，右侧是本论文提出来的使用一个similarity-network来代替常用的度量方程。">
+<meta name="twitter:description" content="最近和同学@liguoqing.sant有聊到图像检索相关方面的工作，主要是这么一篇论文 Learning Non-Metric Visual Similarity for Image Retrieval，本篇文章主要结合个人理解来记录一下这篇论文。  如图，左侧是我们常用的度量学习方法，右侧是本论文提出来的使用一个similarity-network来代替常用的度量方程。">
 <meta name="twitter:image" content="http://xiaofengshi.com/2020/06/03/图像检索-None_Metric_Learning/metric_and_non_metric.png">
 
 <link rel="canonical" href="http://xiaofengshi.com/2020/06/03/图像检索-None_Metric_Learning/">
@@ -255,7 +255,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-06-05 10:10:55" itemprop="dateModified" datetime="2020-06-05T10:10:55+08:00">2020-06-05</time>
+                <time title="修改时间：2020-06-05 16:57:06" itemprop="dateModified" datetime="2020-06-05T16:57:06+08:00">2020-06-05</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -301,7 +301,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>最近在开展图像检索相关方面的工作，看到一篇论文 <a href="https://arxiv.org/abs/1709.01353" target="_blank" rel="noopener">Learning Non-Metric Visual Similarity for Image Retrieval</a>，本篇文章主要结合个人理解来记录一下这篇应用于图像检索领域的一种非度量学习方法的论文。</p>
+        <p>最近和同学@liguoqing.sant有聊到图像检索相关方面的工作，主要是这么一篇论文 <a href="https://arxiv.org/abs/1709.01353" target="_blank" rel="noopener">Learning Non-Metric Visual Similarity for Image Retrieval</a>，本篇文章主要结合个人理解来记录一下这篇论文。</p>
 <img src="/2020/06/03/图像检索-None_Metric_Learning/metric_and_non_metric.png">
 <p>如图，左侧是我们常用的度量学习方法，右侧是本论文提出来的使用一个similarity-network来代替常用的度量方程。</p>
 <a id="more"></a>

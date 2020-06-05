@@ -3,7 +3,7 @@
   <entry>
     <title>深度学习-None_Metric_Learning</title>
     <url>/2020/06/03/%E5%9B%BE%E5%83%8F%E6%A3%80%E7%B4%A2-None_Metric_Learning/</url>
-    <content><![CDATA[<p>最近在开展图像检索相关方面的工作，看到一篇论文 <a href="https://arxiv.org/abs/1709.01353" target="_blank" rel="noopener">Learning Non-Metric Visual Similarity for Image Retrieval</a>，本篇文章主要结合个人理解来记录一下这篇应用于图像检索领域的一种非度量学习方法的论文。</p>
+    <content><![CDATA[<p>最近和同学@liguoqing.sant有聊到图像检索相关方面的工作，主要是这么一篇论文 <a href="https://arxiv.org/abs/1709.01353" target="_blank" rel="noopener">Learning Non-Metric Visual Similarity for Image Retrieval</a>，本篇文章主要结合个人理解来记录一下这篇论文。</p>
 <img src="/2020/06/03/图像检索-None_Metric_Learning/metric_and_non_metric.png">
 <p>如图，左侧是我们常用的度量学习方法，右侧是本论文提出来的使用一个similarity-network来代替常用的度量方程。</p>
 <a id="more"></a>
