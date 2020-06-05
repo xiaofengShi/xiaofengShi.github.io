@@ -48,22 +48,22 @@
   };
 </script>
 
-  <meta name="description" content="最近和同学@liguoqing.sant有聊到图像检索相关方面的工作，主要是这么一篇论文 Learning Non-Metric Visual Similarity for Image Retrieval，本篇文章主要结合个人理解来记录一下这篇论文。  如图，左侧是我们常用的度量学习方法，右侧是本论文提出来的使用一个similarity-network来代替常用的度量方程。">
+  <meta name="description" content="最近和同学@liguoqing.sant有聊到图像检索相关方面的工作，主要是这么一篇论文 Learning Non-Metric Visual Similarity for Image Retrieval，本篇文章主要结合个人理解来记录一下这篇论文。  如图，左侧是我们常用的度量学习方法，右侧是本论文提出来的使用一个similarity-network来代替常用的线性度量方程。">
 <meta name="keywords" content="度量学习">
 <meta property="og:type" content="article">
-<meta property="og:title" content="深度学习-None_Metric_Learning">
-<meta property="og:url" content="http://xiaofengshi.com/2020/06/03/图像检索-None_Metric_Learning/index.html">
+<meta property="og:title" content="深度学习-None_Metric">
+<meta property="og:url" content="http://xiaofengshi.com/2020/06/03/图像检索-None_Metric/index.html">
 <meta property="og:site_name" content="挖掘机成长日记">
-<meta property="og:description" content="最近和同学@liguoqing.sant有聊到图像检索相关方面的工作，主要是这么一篇论文 Learning Non-Metric Visual Similarity for Image Retrieval，本篇文章主要结合个人理解来记录一下这篇论文。  如图，左侧是我们常用的度量学习方法，右侧是本论文提出来的使用一个similarity-network来代替常用的度量方程。">
+<meta property="og:description" content="最近和同学@liguoqing.sant有聊到图像检索相关方面的工作，主要是这么一篇论文 Learning Non-Metric Visual Similarity for Image Retrieval，本篇文章主要结合个人理解来记录一下这篇论文。  如图，左侧是我们常用的度量学习方法，右侧是本论文提出来的使用一个similarity-network来代替常用的线性度量方程。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://xiaofengshi.com/2020/06/03/图像检索-None_Metric_Learning/metric_and_non_metric.png">
-<meta property="og:updated_time" content="2020-06-05T08:57:06.144Z">
+<meta property="og:image" content="http://xiaofengshi.com/2020/06/03/图像检索-None_Metric/metric_and_non_metric.png">
+<meta property="og:updated_time" content="2020-06-05T10:31:09.021Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="深度学习-None_Metric_Learning">
-<meta name="twitter:description" content="最近和同学@liguoqing.sant有聊到图像检索相关方面的工作，主要是这么一篇论文 Learning Non-Metric Visual Similarity for Image Retrieval，本篇文章主要结合个人理解来记录一下这篇论文。  如图，左侧是我们常用的度量学习方法，右侧是本论文提出来的使用一个similarity-network来代替常用的度量方程。">
-<meta name="twitter:image" content="http://xiaofengshi.com/2020/06/03/图像检索-None_Metric_Learning/metric_and_non_metric.png">
+<meta name="twitter:title" content="深度学习-None_Metric">
+<meta name="twitter:description" content="最近和同学@liguoqing.sant有聊到图像检索相关方面的工作，主要是这么一篇论文 Learning Non-Metric Visual Similarity for Image Retrieval，本篇文章主要结合个人理解来记录一下这篇论文。  如图，左侧是我们常用的度量学习方法，右侧是本论文提出来的使用一个similarity-network来代替常用的线性度量方程。">
+<meta name="twitter:image" content="http://xiaofengshi.com/2020/06/03/图像检索-None_Metric/metric_and_non_metric.png">
 
-<link rel="canonical" href="http://xiaofengshi.com/2020/06/03/图像检索-None_Metric_Learning/">
+<link rel="canonical" href="http://xiaofengshi.com/2020/06/03/图像检索-None_Metric/">
 
 
 <script id="page-configurations">
@@ -75,7 +75,7 @@
   };
 </script>
 
-  <title>深度学习-None_Metric_Learning | 挖掘机成长日记</title>
+  <title>深度学习-None_Metric | 挖掘机成长日记</title>
   
 
 
@@ -225,7 +225,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2020/06/03/图像检索-None_Metric_Learning/">
+    <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2020/06/03/图像检索-None_Metric/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -238,7 +238,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          深度学习-None_Metric_Learning
+          深度学习-None_Metric
         </h2>
 
         <div class="post-meta">
@@ -255,7 +255,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-06-05 16:57:06" itemprop="dateModified" datetime="2020-06-05T16:57:06+08:00">2020-06-05</time>
+                <time title="修改时间：2020-06-05 18:31:09" itemprop="dateModified" datetime="2020-06-05T18:31:09+08:00">2020-06-05</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -270,7 +270,7 @@
             </span>
 
           
-            <span id="/2020/06/03/图像检索-None_Metric_Learning/" class="post-meta-item leancloud_visitors" data-flag-title="深度学习-None_Metric_Learning" title="阅读次数">
+            <span id="/2020/06/03/图像检索-None_Metric/" class="post-meta-item leancloud_visitors" data-flag-title="深度学习-None_Metric" title="阅读次数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -285,8 +285,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/2020/06/03/图像检索-None_Metric_Learning/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/06/03/图像检索-None_Metric_Learning/" itemprop="commentCount"></span>
+    <a title="valine" href="/2020/06/03/图像检索-None_Metric/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/06/03/图像检索-None_Metric/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -302,23 +302,22 @@
 
       
         <p>最近和同学@liguoqing.sant有聊到图像检索相关方面的工作，主要是这么一篇论文 <a href="https://arxiv.org/abs/1709.01353" target="_blank" rel="noopener">Learning Non-Metric Visual Similarity for Image Retrieval</a>，本篇文章主要结合个人理解来记录一下这篇论文。</p>
-<img src="/2020/06/03/图像检索-None_Metric_Learning/metric_and_non_metric.png">
-<p>如图，左侧是我们常用的度量学习方法，右侧是本论文提出来的使用一个similarity-network来代替常用的度量方程。</p>
+<img src="/2020/06/03/图像检索-None_Metric/metric_and_non_metric.png">
+<p>如图，左侧是我们常用的度量学习方法，右侧是本论文提出来的使用一个similarity-network来代替常用的线性度量方程。</p>
 <a id="more"></a>
-<p>在进行图像检索或者召回的时候，我们一般是通过query图像和doc图像之间的相似度来进行向量化召回或者检索。这里的样本之间相似度的度量方式可以认为是一种metric，一般使用余弦距离，或者欧式距离来表示相似度，这种计算样本之间相似度的方法是线性的。</p>
-<p>在Reid领域，一般情况下的设计思路是：计算表征样本对之间的相似性，然后根据标注信息和计算得到的样本相似度设计合适的loss，来优化特征提取网络。</p>
-<p>在说Non-Metric learning之前，先说一下什么是metric-learning。</p>
-<h2 id="Metric-learning"><a href="#Metric-learning" class="headerlink" title="Metric learning"></a>Metric learning</h2><p>关于度量学习，在知乎或者csdn上面都有不少的资料<a href="https://blog.csdn.net/JNingWei/article/details/80641184" target="_blank" rel="noopener">机器学习: Metric Learning (度量学习)</a>,<a href="https://zhuanlan.zhihu.com/p/68200241" target="_blank" rel="noopener">Deep Metric Learning</a>，简单来说度量学习就是学习一个度量相似度的函数，最终的目标是相似的目标离得近,不相似的离得远。就像开篇那副图左侧那样，通过cnn抽取图像特征，使用cosine或者euler方式计算样本对的相似度。</p>
-<p>基于pair方式的triplet-loss，center-loss或者contrast-loss或者基于softmax的arceface-loss, circle-loss等都是在metric learning的基础上设计的loss。</p>
-<h2 id="Non-Metric-leraning"><a href="#Non-Metric-leraning" class="headerlink" title="Non Metric leraning"></a>Non Metric leraning</h2><p>这里的这个论文是一种Non-Metric learning的方法。</p>
-<p>看完论文之后，这篇论文的的设计思路比较有意思，使用一个similarity-network来代替cos_distance或者euler_distance的方式来计算输入样本对之间的相似度，这个similarit-network的参数是可学习的。之所以这么设计是因为在计算样本对相似度的时候，我们从人的角度出发，一般情况下对样本对的相似度的要求是</p>
+<p>在进行图像检索的时候，一般是通过query图像和doc图像之间的相似度来进行检索。这里的样本之间相似度的度量方式可以认为是一种metric，一般使用余弦距离，或者欧式距离来表示相似度，这种计算样本之间相似度的方法是线性的。</p>
+<p>在说Non-Metric之前，先说一下什么是metric-learning。</p>
+<h2 id="Metric-learning"><a href="#Metric-learning" class="headerlink" title="Metric learning"></a>Metric learning</h2><p>关于度量学习，在知乎或者csdn上面都有不少的资料<a href="https://blog.csdn.net/JNingWei/article/details/80641184" target="_blank" rel="noopener">机器学习: Metric Learning (度量学习)</a>,<a href="https://zhuanlan.zhihu.com/p/68200241" target="_blank" rel="noopener">Deep Metric Learning</a>，简单来说度量学习就是学习一个度量相似度的函数，最终的目标是相似的目标离得近,不相似的离得远。就像开篇那副图左侧那样，通过cnn抽取图像特征，使用cosine或者euclidean的方式计算样本对的相似度。</p>
+<p>基于pair/triplet方式的triplet-loss，center-loss或者contrast-loss以及基于softmax的arceface-loss, circle-loss等都是在metric learning的基础上设计的loss，优化的目标更多的是特征提取网络。</p>
+<h2 id="Non-Metric"><a href="#Non-Metric" class="headerlink" title="Non Metric"></a>Non Metric</h2><p>这里的这个论文是一种非线性的Non-Metric的方法来计算样本之间的相似度。</p>
+<p>看完论文之后，这篇论文的的设计思路比较有意思，使用一个similarity-network来代替cos_distance或者euclidean_metric的方式来计算输入样本对之间的相似度，这个similarit-network的参数是可学习的。之所以这么设计是因为在计算样本对相似度的时候，我们从人的角度出发，一般情况下对样本对的相似度的要求是</p>
 <ol>
 <li>非负性，d(a,b)&gt;=0</li>
 <li>等价性，d(a,b)=0 等价于 a=b</li>
 <li>交换性，d(a,b)=d(b,a)</li>
 <li>三角不等性，d(a,b)&lt;=d(a,c)+d(b,c)</li>
 </ol>
-<p>我们平时使用的相似度度量方式，不论是cosine还是euler的方式，都或多或少的不满足上面的四个要求。这也是这一篇文章的设计原因，既然现在的相似度度量方法和我们认为的相似度不太一致，那直接搞一个网络来计算两个样本的相似度岂不美哉，还省了很多的推导和公式设计。</p>
+<p>我们平时使用的相似度度量方式，不论是cosine还是euclidean的方式，都或多或少的不满足上面的四个要求。这也是这一篇文章的设计原因，既然现在的相似度度量方法和我们认为的相似度不太一致，那直接搞一个网络来计算两个样本的相似度岂不美哉，还省了很多的推导和公式设计。</p>
 <p>本篇中所说的similarity-network就是一个输出维度为1的全连接网络，并且这里使用的除了最后一层，其余层全部使用的relu激活函数，之所以使用relu，一个是为了使得特征稀疏，一定程度提升模型的鲁棒性，另一个感觉是基于上面非负性要求的设计。</p>
 <h2 id="训练方法"><a href="#训练方法" class="headerlink" title="训练方法"></a>训练方法</h2><p>训练的过程如下</p>
 <ol>
@@ -345,8 +344,8 @@
 </ol>
 </li>
 </ol>
-<p>网络设计的很简单，解决的任务也很简单，就是用这个similarity-network代替cosine的方式，来计算样本之间的相似度，用这个相似度来进行图像检索和排序。</p>
-<h2 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h2><p>看这篇文章的时候，刚开始没太明白，以为这是一种可以替代Triplet或者contrast的新的训练网络的方法，看到后面明白本论文解决的是特征之间度量的问题。</p>
+<p>网络设计的很简单，解决的任务也很简单，就是用这个similarity-network代替cosine/euclidean的方式，来计算样本之间的相似度，用这个相似度来进行图像检索。</p>
+<h2 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h2><p>看这篇文章的时候，刚开始没太明白，以为这是一种可以替代triplet-loss或者pair_loss的的新的训练网络的方法，看到后面明白本论文解决的是特征之间度量的问题。</p>
 <h3 id="解决什么问题？"><a href="#解决什么问题？" class="headerlink" title="解决什么问题？"></a>解决什么问题？</h3><p>在平常进行图像检索或者reid领域，实际上很重要的一点是设计更高效的loss来训练特征提取网路，如果这个网络训练好了，一般直接使用cosine的方式或者归一化向量內积的方式来表征不同样本之间的相似度。这篇文章解决的就是CNN网络训练好了之后的事情。</p>
 <h3 id="论文实验对比公平吗？"><a href="#论文实验对比公平吗？" class="headerlink" title="论文实验对比公平吗？"></a>论文实验对比公平吗？</h3><p>先说结论，个人感觉论文中的结果对比是不公平的。</p>
 <p>这篇文章给出了一个很有意思的结论，当similarity-network训练的数据比较好的时候，对比cosine优势明显，当训练数据不太好的时候，那么cosine是更好的选择。</p>
@@ -356,11 +355,12 @@
 <li>Loss设计的时候使用的cosine和margin，对比的目标是cosine，这个天然就是不合理的。</li>
 </ol>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ol>
-<li>在工业界similarity-network的设计思路可以相对更快速的进行检索特征的更新。</li>
+<li>在工业界similarity-network的设计思路可以相对更快速适配新的检索特征。</li>
 <li>在学术界这有可能被当成一篇灌水文章。</li>
 <li>模型设计很简单，参数很少，没有可以学习到的trick。</li>
 <li>探讨了不同fc的隐藏层节点数得到的结果，直白讲，节点越多结果越好，参数量越大，这个要取一个trade-off。</li>
 </ol>
+<p>审稿人@liguoqing.sant</p>
 
     </div>
 
@@ -396,7 +396,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://xiaofengshi.com/2020/06/03/图像检索-None_Metric_Learning/" title="深度学习-None_Metric_Learning">http://xiaofengshi.com/2020/06/03/图像检索-None_Metric_Learning/</a>
+    <a href="http://xiaofengshi.com/2020/06/03/图像检索-None_Metric/" title="深度学习-None_Metric">http://xiaofengshi.com/2020/06/03/图像检索-None_Metric/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -480,7 +480,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Metric-learning"><span class="nav-number">1.</span> <span class="nav-text">Metric learning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Non-Metric-leraning"><span class="nav-number">2.</span> <span class="nav-text">Non Metric leraning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#训练方法"><span class="nav-number">3.</span> <span class="nav-text">训练方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#思考"><span class="nav-number">4.</span> <span class="nav-text">思考</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#解决什么问题？"><span class="nav-number">4.1.</span> <span class="nav-text">解决什么问题？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#论文实验对比公平吗？"><span class="nav-number">4.2.</span> <span class="nav-text">论文实验对比公平吗？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">4.3.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Metric-learning"><span class="nav-number">1.</span> <span class="nav-text">Metric learning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Non-Metric"><span class="nav-number">2.</span> <span class="nav-text">Non Metric</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#训练方法"><span class="nav-number">3.</span> <span class="nav-text">训练方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#思考"><span class="nav-number">4.</span> <span class="nav-text">思考</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#解决什么问题？"><span class="nav-number">4.1.</span> <span class="nav-text">解决什么问题？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#论文实验对比公平吗？"><span class="nav-number">4.2.</span> <span class="nav-text">论文实验对比公平吗？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">4.3.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
