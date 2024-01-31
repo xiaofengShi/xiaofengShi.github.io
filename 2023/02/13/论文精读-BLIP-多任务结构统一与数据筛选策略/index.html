@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/panda_32px.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/panda_16px.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://xiaofengshi.com').hostname,
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="2022年多模态领域的一篇很棒的工作，由ALBEF原班人马打造，结合了ALBEF和VLMO的共同优点，提出了统一结构的多阶段多模态模型，此外提出了一套可行的基于caption-filter的数据筛选self-training策略，值得一读。 论文链接：https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;2201.12086 主要参考b站：多模态论文串讲·下【论文精读·49】 BLIP的贡献值主要有两个">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[论文精读]BLIP-多任务结构统一与数据筛选策略">
+<meta property="og:url" content="http://xiaofengshi.com/2023/02/13/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-BLIP-%E5%A4%9A%E4%BB%BB%E5%8A%A1%E7%BB%93%E6%9E%84%E7%BB%9F%E4%B8%80%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%AD%9B%E9%80%89%E7%AD%96%E7%95%A5/index.html">
+<meta property="og:site_name" content="做一个有用的人">
+<meta property="og:description" content="2022年多模态领域的一篇很棒的工作，由ALBEF原班人马打造，结合了ALBEF和VLMO的共同优点，提出了统一结构的多阶段多模态模型，此外提出了一套可行的基于caption-filter的数据筛选self-training策略，值得一读。 论文链接：https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;2201.12086 主要参考b站：多模态论文串讲·下【论文精读·49】 BLIP的贡献值主要有两个">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://xiaofengshi.com/2023/02/13/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-BLIP-%E5%A4%9A%E4%BB%BB%E5%8A%A1%E7%BB%93%E6%9E%84%E7%BB%9F%E4%B8%80%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%AD%9B%E9%80%89%E7%AD%96%E7%95%A5/BLIP-MODEL.png">
+<meta property="og:image" content="http://xiaofengshi.com/2023/02/13/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-BLIP-%E5%A4%9A%E4%BB%BB%E5%8A%A1%E7%BB%93%E6%9E%84%E7%BB%9F%E4%B8%80%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%AD%9B%E9%80%89%E7%AD%96%E7%95%A5/blip-dataset.png">
+<meta property="og:image" content="http://xiaofengshi.com/2023/02/13/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-BLIP-%E5%A4%9A%E4%BB%BB%E5%8A%A1%E7%BB%93%E6%9E%84%E7%BB%9F%E4%B8%80%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%AD%9B%E9%80%89%E7%AD%96%E7%95%A5/blip-caption.png">
+<meta property="og:image" content="http://xiaofengshi.com/2023/02/13/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-BLIP-%E5%A4%9A%E4%BB%BB%E5%8A%A1%E7%BB%93%E6%9E%84%E7%BB%9F%E4%B8%80%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%AD%9B%E9%80%89%E7%AD%96%E7%95%A5/blip-exp.png">
+<meta property="article:published_time" content="2023-02-13T04:05:00.000Z">
+<meta property="article:modified_time" content="2023-02-17T08:00:34.000Z">
+<meta property="article:author" content="ShiXiaofeng">
+<meta property="article:tag" content="多模态">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://xiaofengshi.com/2023/02/13/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-BLIP-%E5%A4%9A%E4%BB%BB%E5%8A%A1%E7%BB%93%E6%9E%84%E7%BB%9F%E4%B8%80%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%AD%9B%E9%80%89%E7%AD%96%E7%95%A5/BLIP-MODEL.png">
+
+<link rel="canonical" href="http://xiaofengshi.com/2023/02/13/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-BLIP-%E5%A4%9A%E4%BB%BB%E5%8A%A1%E7%BB%93%E6%9E%84%E7%BB%9F%E4%B8%80%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%AD%9B%E9%80%89%E7%AD%96%E7%95%A5/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>[论文精读]BLIP-多任务结构统一与数据筛选策略 | 做一个有用的人</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">做一个有用的人</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">LLM And Search</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-guestbook">
+
+    <a href="/guestbook/" rel="section"><i class="fa fa-fw fa-commenting"></i>guestbook</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/xiaofengShi" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2023/02/13/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-BLIP-%E5%A4%9A%E4%BB%BB%E5%8A%A1%E7%BB%93%E6%9E%84%E7%BB%9F%E4%B8%80%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%AD%9B%E9%80%89%E7%AD%96%E7%95%A5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ShiXiaofeng">
+      <meta itemprop="description" content="LLM,搜索,数据挖掘,深度学习相关技术记录分享">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="做一个有用的人">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          [论文精读]BLIP-多任务结构统一与数据筛选策略
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-02-13 12:05:00" itemprop="dateCreated datePublished" datetime="2023-02-13T12:05:00+08:00">2023-02-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-02-17 16:00:34" itemprop="dateModified" datetime="2023-02-17T16:00:34+08:00">2023-02-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A4%9A%E6%A8%A1%E6%80%81/" itemprop="url" rel="index">
+                    <span itemprop="name">多模态</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2023/02/13/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-BLIP-%E5%A4%9A%E4%BB%BB%E5%8A%A1%E7%BB%93%E6%9E%84%E7%BB%9F%E4%B8%80%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%AD%9B%E9%80%89%E7%AD%96%E7%95%A5/" class="post-meta-item leancloud_visitors" data-flag-title="[论文精读]BLIP-多任务结构统一与数据筛选策略" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2023/02/13/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-BLIP-%E5%A4%9A%E4%BB%BB%E5%8A%A1%E7%BB%93%E6%9E%84%E7%BB%9F%E4%B8%80%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%AD%9B%E9%80%89%E7%AD%96%E7%95%A5/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2023/02/13/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-BLIP-%E5%A4%9A%E4%BB%BB%E5%8A%A1%E7%BB%93%E6%9E%84%E7%BB%9F%E4%B8%80%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%AD%9B%E9%80%89%E7%AD%96%E7%95%A5/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>2022年多模态领域的一篇很棒的工作，由ALBEF原班人马打造，结合了ALBEF和VLMO的共同优点，提出了统一结构的多阶段多模态模型，此外提出了一套可行的基于caption-filter的数据筛选self-training策略，值得一读。</p>
+<p>论文链接：<a href="https://arxiv.org/abs/2201.12086">https://arxiv.org/abs/2201.12086</a></p>
+<p>主要参考b站：<a href="https://www.bilibili.com/video/BV1fA411Z772/?spm_id_from=333.788.recommend_more_video.0&vd_source=e8b74628d0beb8e8c369a368ed8a3889">多模态论文串讲·下【论文精读·49】</a></p>
+<p>BLIP的贡献值主要有两个</p>
+<ol>
+<li>模型层面，提出了encoder-decder的多模态结构，弥补了encoder-based的结构，例如CLIP这种做不了生成任务，Fusion-encoder模型结构例如ALBEF、VLMo没办法直接用来做retrieval的问题；</li>
+<li>数据层面，提出了基于image-caption和image-text-filter策略的数据过滤方法，该操作显著提升了模型的性能，这种方式可以当做一个通用的数据筛选策略。</li>
+</ol>
+<span id="more"></span>
+
+<h2 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h2><p>在ALBEF，CLIP这种encoder-only的多模结构，能很好的用在IR任务上，但是没办法用来做生成任务；对于encoder-decoder结构，可以用来做生成任务，但是模型又太大，再者结合VLMO提出来的MHA共享参数FFN做MMOE的观点，结合ALBEF，VLMO，和encoder-decoder结构，做一个统一的模型是可行的。</p>
+<img src="/2023/02/13/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-BLIP-%E5%A4%9A%E4%BB%BB%E5%8A%A1%E7%BB%93%E6%9E%84%E7%BB%9F%E4%B8%80%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%AD%9B%E9%80%89%E7%AD%96%E7%95%A5/BLIP-MODEL.png" class="" title="BLIP-MODEL">
+
+<p>从模型结构可以看出</p>
+<ol>
+<li>整个模型中相同颜色的模块共享参数，这里明显借鉴了VLMo的思路，可以看到，相比encoder-only的模型只多了一个casual-self-attention模块；</li>
+<li>蓝色框内可以看成和ALBEF是一样的结构，在交互之前使用ITC任务进行align，在交互之后使用ITM任务进行多模交互；</li>
+<li>整个模型包含3个encoder和1个decoder</li>
+<li>为了适配生成任务，将使用的是LM任务，给定前面的词，预测后面的词，和GPT的做法一致。</li>
+</ol>
+<h2 id="数据"><a href="#数据" class="headerlink" title="数据"></a>数据</h2><p>预训练的数据一般是图文对的形式，并且基本是从网上爬取来的，这个数据就有很大的噪声，在ALBEF中，使用的基于动量蒸馏的方式进行标签修正，在BLIP中，除了延续ALBEF中的策略外，又离线做了一个数据筛选策略。简单来说训练过程是这样的。</p>
+<img src="/2023/02/13/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-BLIP-%E5%A4%9A%E4%BB%BB%E5%8A%A1%E7%BB%93%E6%9E%84%E7%BB%9F%E4%B8%80%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%AD%9B%E9%80%89%E7%AD%96%E7%95%A5/blip-dataset.png" class="" title="blip-dataset">
+
+<ol>
+<li><p>使用离线抓取的数据和ALBEF的训练trick来训练blip模型，得到了几个encoder模型</p>
+</li>
+<li><p>生成caption和filter模型</p>
+<ul>
+<li><p>使用预训练之后的image-grounded text encoder在coco数据上进行finetune，得到具有图文匹配判别能力的filter模型</p>
+</li>
+<li><p>使用预训练之后的image-grounded text decoder在coco数据上进行finetune，得到具有图片描述生成能力的caption模型</p>
+</li>
+<li><p>caption和filter模型的初始参数一致，finetune是单独进行的</p>
+</li>
+</ul>
+</li>
+<li><p>数据处理流程</p>
+<ul>
+<li>对于有caption的数据，使用filter模型判断caption与图片是否match，不match的删掉，数据删除的过程；</li>
+<li>对于没有caption的数据，使用caption模型生成caption信息，然后再用filter模型判断，不满足的删掉，满足的留下，数据增加的过程；</li>
+</ul>
+</li>
+<li><p>经过数据筛选，得到数量更多，质量更好的图文对数据</p>
+</li>
+<li><p>将新的数据重新拿去训练BLIP模型，self-training的思路</p>
+</li>
+</ol>
+<p>数据处理流程是独立的，离线的，这个方法完全可以移到其他领域中，用来数据筛选。</p>
+<p>在论文中，作者给出了caption的效果，从例子中能看出来效果出乎意料的好，生产出来的caption有时候比原始的caption信息更好，通常来讲更高质量的数据对应着更好的性能。</p>
+<img src="/2023/02/13/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-BLIP-%E5%A4%9A%E4%BB%BB%E5%8A%A1%E7%BB%93%E6%9E%84%E7%BB%9F%E4%B8%80%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%AD%9B%E9%80%89%E7%AD%96%E7%95%A5/blip-caption.png" class="" title="blip-caption">
+
+<p>数据策略是否有效呢？从论文中给出来的指标看</p>
+<ol>
+<li>Caption-filter策略一共能带来两个点左右的提升</li>
+<li>Caption策略相比filter策略带来的提升更多一些，这个是符合直觉的，一定程度的noisy是不影响模型性能的，而caption提升了训练数据量，并且提高了数据的多样性。</li>
+</ol>
+<img src="/2023/02/13/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-BLIP-%E5%A4%9A%E4%BB%BB%E5%8A%A1%E7%BB%93%E6%9E%84%E7%BB%9F%E4%B8%80%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%AD%9B%E9%80%89%E7%AD%96%E7%95%A5/blip-exp.png" class="" title="blip-exp">
+
+<h2 id=""><a href="#" class="headerlink" title=""></a></h2>
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>赏杯咖啡！</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat.jpeg" alt="ShiXiaofeng 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpeg" alt="ShiXiaofeng 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>ShiXiaofeng
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://xiaofengshi.com/2023/02/13/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-BLIP-%E5%A4%9A%E4%BB%BB%E5%8A%A1%E7%BB%93%E6%9E%84%E7%BB%9F%E4%B8%80%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%AD%9B%E9%80%89%E7%AD%96%E7%95%A5/" title="[论文精读]BLIP-多任务结构统一与数据筛选策略">http://xiaofengshi.com/2023/02/13/论文精读-BLIP-多任务结构统一与数据筛选策略/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%A4%9A%E6%A8%A1%E6%80%81/" rel="tag"># 多模态</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/03/23/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-MAE-%E5%A6%82%E4%BD%95%E5%9C%A8CV%E4%BB%BB%E5%8A%A1%E4%B8%AD%E8%BF%9B%E8%A1%8CMASK/" rel="prev" title="[论文精读]MAE-如何在CV任务中进行MASK">
+      <i class="fa fa-chevron-left"></i> [论文精读]MAE-如何在CV任务中进行MASK
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/02/10/%E7%82%BC%E4%B8%B9%E6%8A%80%E5%B7%A7-%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%BA%94%E7%94%A8/" rel="next" title="炼丹技巧-对比学习的应用">
+      炼丹技巧-对比学习的应用 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE"><span class="nav-number">2.</span> <span class="nav-text">数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text"></span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ShiXiaofeng"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">ShiXiaofeng</p>
+  <div class="site-description" itemprop="description">LLM,搜索,数据挖掘,深度学习相关技术记录分享</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xiaofengShi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xiaofengShi" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sxf1052566766@163.com" title="E-Mail → mailto:sxf1052566766@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ShiXiaofeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v7.1.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+  
+      
+<script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el: '#valine-comments',
+      verify: false,
+      notify: false,
+      appId: 'rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz',
+      appKey: 'zJasiQnAqgUwf4kiHhHyXwOP',
+      placeholder: "Leave Your Message and Contact Details",
+      avatar: 'mm',
+      meta: guest,
+      pageSize: '10' || 10,
+      visitor: true,
+      lang: '' || 'zh-cn',
+      path: location.pathname,
+      recordIP: false,
+      serverURLs: ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

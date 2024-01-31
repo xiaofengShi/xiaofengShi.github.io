@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/panda_32px.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/panda_16px.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://xiaofengshi.com').hostname,
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="Transformer是在2017年的Google发布的论文《Attention is all you need》中提出，主要用于解决RNN相关网络无法捕获序列的长期依赖，以及网络无法并行化的问题，其网络结构示意图如下  从示意图中可以看出在Transformer中包含多个组件，分别为Multi-Head Attention, Masked Multi-Head Attention, Add, N">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习-NLP-Attention_is_all_you_need">
+<meta property="og:url" content="http://xiaofengshi.com/2019/02/15/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-NLP-Attention_is_all_you_need/index.html">
+<meta property="og:site_name" content="做一个有用的人">
+<meta property="og:description" content="Transformer是在2017年的Google发布的论文《Attention is all you need》中提出，主要用于解决RNN相关网络无法捕获序列的长期依赖，以及网络无法并行化的问题，其网络结构示意图如下  从示意图中可以看出在Transformer中包含多个组件，分别为Multi-Head Attention, Masked Multi-Head Attention, Add, N">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://xiaofengshi.com/transformer_model.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/02/15/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-NLP-Attention_is_all_you_need/original_att.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/02/15/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-NLP-Attention_is_all_you_need/sacle_dot_multi_head_attention.png">
+<meta property="og:image" content="http://xiaofengshi.com/masked-att.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/02/15/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-NLP-Attention_is_all_you_need/residual_layernormal.png">
+<meta property="og:image" content="http://xiaofengshi.com/tf-emb.png">
+<meta property="article:published_time" content="2019-02-15T09:42:31.000Z">
+<meta property="article:modified_time" content="2023-02-15T08:55:07.000Z">
+<meta property="article:author" content="ShiXiaofeng">
+<meta property="article:tag" content="深度学习，NLP">
+<meta property="article:tag" content="Transformer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://xiaofengshi.com/transformer_model.png">
+
+<link rel="canonical" href="http://xiaofengshi.com/2019/02/15/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-NLP-Attention_is_all_you_need/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>深度学习-NLP-Attention_is_all_you_need | 做一个有用的人</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">做一个有用的人</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">LLM And Search</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-guestbook">
+
+    <a href="/guestbook/" rel="section"><i class="fa fa-fw fa-commenting"></i>guestbook</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/xiaofengShi" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2019/02/15/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-NLP-Attention_is_all_you_need/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ShiXiaofeng">
+      <meta itemprop="description" content="LLM,搜索,数据挖掘,深度学习相关技术记录分享">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="做一个有用的人">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          深度学习-NLP-Attention_is_all_you_need
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-02-15 17:42:31" itemprop="dateCreated datePublished" datetime="2019-02-15T17:42:31+08:00">2019-02-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-02-15 16:55:07" itemprop="dateModified" datetime="2023-02-15T16:55:07+08:00">2023-02-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/seq2seq/" itemprop="url" rel="index">
+                    <span itemprop="name">seq2seq</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2019/02/15/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-NLP-Attention_is_all_you_need/" class="post-meta-item leancloud_visitors" data-flag-title="深度学习-NLP-Attention_is_all_you_need" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2019/02/15/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-NLP-Attention_is_all_you_need/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2019/02/15/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-NLP-Attention_is_all_you_need/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Transformer是在2017年的Google发布的论文《Attention is all you need》中提出，主要用于解决RNN相关网络无法捕获序列的长期依赖，以及网络无法并行化的问题，其网络结构示意图如下</p>
+<p><img src="/transformer_model.png" alt="transformer_model"></p>
+<p>从示意图中可以看出在Transformer中包含多个组件，分别为Multi-Head Attention, Masked Multi-Head Attention, Add, Norm, Feed Forward, Position Encoding，会在接下来的内容中结合Transformer的前向传播过程依次解释。</p>
+<span id="more"></span>
+
+<h2 id="UPDATE"><a href="#UPDATE" class="headerlink" title="UPDATE"></a>UPDATE</h2><h3 id="2023-02-15"><a href="#2023-02-15" class="headerlink" title="2023-02-15"></a>2023-02-15</h3><p>本篇文章写于2019年，那时候单纯的还是在看论文和看一些博客，并没有在业务中用过，经过这几年的工作，日常的模型开发中深度使用transformer结构，有了一些新的认识。</p>
+<ol>
+<li><p>transformer引领了一个新的时代，不仅在NLP中广泛使用，在视觉领域，多模态领域目前也在广泛使用</p>
+</li>
+<li><p>transformer在各个领域大放异彩</p>
+<ul>
+<li><p>在NLP的Albert中，使用多层mha+ffn共享权重的方式，并没有降低指标，说明transformer对不同层次信息的捕获能力</p>
+</li>
+<li><p>在多模态的VLMO中，不同模态之间共享MHA模块，只训练FFN，就可以cover不同模态，这说明了该结构对不同模态的兼容性</p>
+</li>
+<li><p>在视觉的ViT中，使用图片切分patch+transformer的方式就能在下游视觉任务上超越Resnet这种传统CNN方案，这说明了transformer结构对输入数据的兼容性，粗粒度的输入中使用ATT结构就可以捕获信息</p>
+</li>
+</ul>
+</li>
+</ol>
+<p>将本篇文章进行一下翻新，修复一些错误，调整一些结构，此外推荐李沐老师的视频<a href="https://www.bilibili.com/video/BV1pu411o7BE/?spm_id_from=333.788&vd_source=e8b74628d0beb8e8c369a368ed8a3889">https://www.bilibili.com/video/BV1pu411o7BE/?spm_id_from=333.788&amp;vd_source=e8b74628d0beb8e8c369a368ed8a3889</a></p>
+<h2 id="Seq2Seq"><a href="#Seq2Seq" class="headerlink" title="Seq2Seq"></a>Seq2Seq</h2><p>NLP领域内的相关任务为机器翻译，语音识别，问答系统，文本分类等等，多数情况下处理的是序列结构的数据，长久以来，RNN是序列模型的首选工具，因为RNN基于时间步传递，天然的可以捕获序列的前后语义关系和位置关系，这就是目前广泛使用的Seq2seq模型结构，包含Encoder部分和Decoder部分，Encoder部分负责对输入的数据进行编码处理，Decoder部分根据Encoder的输出进行解码输出，最开始的Decoder接受Encoder部分的最后一个时间步的隐藏层输出作为其初始状态输入，但是这很显然的会存在两个问题，将输入序列编码之后信息只是用最后一个时间步的隐藏层输出是不合理的，因为时间步储存的信息是优先的，无法捕获输入数据的长期依赖，距离该时间步近的序列保存的多，远离的保留的就少；另一个问题，在解码的时候使用最后一层时间步，无法捕获输出信息和输入信息之间的依赖关系。为了解决Encoder和Decoder之间的依赖问题，就在Decoder阶段引入了Attention机制，可以看做是当前步的Decoder输出和整个Encoder的输出序列的依赖关系。但是seq2seq模型还存在一个问题，那就是基于RNN建模会导致模型无法并行运算，因为在RNN运算时是基于时间传播的，当前时间步接收的输入为上一个时间步的输出和当前时间步的输入，因此无法进行并行运算。针对这些问题，提出了多种改进方案，Transformer正是从提升seq2seq模型运算速度的角度出发进行设计的。更多关于seq2seq的相关内容，可以参看另一篇文章<a href="http://xiaofengshi.com/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/">深度学习-PythonTutorial_LSTM_GRU_Attention_LNLSTM_LNGRU</a></p>
+<h2 id="Why-Transformer"><a href="#Why-Transformer" class="headerlink" title="Why Transformer?"></a>Why Transformer?</h2><p>首先需要说明的是为什么设计开发了Transformer这种模型结构，也就是在Tf提出之前模型存在着哪些问题。</p>
+<ol>
+<li><p>RNN运行速度的问题。对于序列相关数据结构，使用RNN基于时间步进行传递，很天然的能够有效处理序列数据，但是同样是由于RNN的信息是基于时间步传递的，会存在无法并行化的问题，在RNN中，当前时间步的计算结果是由上一个时间步的输出结果和当前时间步的输入序列数据相关的，也就是说当前的计算是依赖于上一个时间步的，在没计算出上一个时间步的情况下是无法计算当前步的，这就导致了模型无法进行并行化训练，模型的运行时间过长。</p>
+<p>针对RNN结构无法并行化的问题，提出了一些改进措施，例如使用跨步卷积，wavenet等，跨步卷积由于感受野的范围有限只能通过增加网络深度的方法进行感受野的扩增。而Transformer是通过的设计了新的Attention计算方式实现并行运算</p>
+</li>
+<li><p>捕获序列的长时依赖。在RNN的变体LSTM,GRU中使用门控的方式来捕获序列之间的长时依赖，但是实验证明，当序列过长时，LSTM，GRU仍然无法有效捕获这种依赖，此外在机器翻译任务或者语音识别,TTS等任务中存在着输入序列或者输入序列中同字异音，同字异意的问题，这就需要设计更好的模型来捕获序列的内部依和序列之间的依赖。</p>
+</li>
+</ol>
+<p>Transformer正是针对上述这两点进行设计的，在论文中整体的框架仍然是seq2seq，摒弃了RNN结构，全部使用经过合理设计的Attention结构代替，实现了当时的SOTA结果。</p>
+<h2 id="Structure"><a href="#Structure" class="headerlink" title="Structure"></a>Structure</h2><p>整个模型的结构如文首所述，摒弃了RNN结构，全部使用的Attention结构。在论文中和一般的博客中是按照的各个组件进行的介绍和讲解，本文将针对整个模型结构进行剖析和解释。</p>
+<p>按照数据前向传播的方式进行简要说明</p>
+<ul>
+<li><p>输入序列的序列内部依赖关系提取</p>
+<p>对输入的序列数据转化为词向量和位置编码，使用多头Attention进行输入序列间依赖关系的提取，并使用残差网络的连接方式连接多头Attention的输出结果和输入的分析序列，经过层归一化处理，之后使用前向网络进行维度转换并再次进行层归一化处理</p>
+</li>
+<li><p>输出序列的序列间内部关系提取</p>
+<p>和输入的序列处理方式类似，只是在使用多头Attention的时候要加入mask的机制，这是为了保证在预测输出的时候只能使用当前位置之间的序列信息，因为在预测的时候，输出序列是未知的，当前待计算的位置之后的部分的信息无法给当前位置的预测提供帮助</p>
+</li>
+<li><p>输入序列和输出序列之间的依赖关系</p>
+<p>在该阶段和传统的Attention相同，捕获的是预测的节点和输入序列经过编码之后的输出序列之间的依赖关系。</p>
+</li>
+<li><p>预测输出</p>
+<p>在预测输出时，每个节点使用softmax的方式进行输出，输出每个节点属于不同字符的概率，这里可以使用贪心搜索的方式或者集束搜索的方式进行预测输出。</p>
+</li>
+</ul>
+<p>整个结构中包含多个组件，下面进行分别说明。</p>
+<h2 id="Attention"><a href="#Attention" class="headerlink" title="Attention"></a>Attention</h2><p>先说整个transformer中最核心的就是Attention结构，这里包含3种Attention结构，Encodoer中的self-MHA，Decoder的maked-MHA和cross-MHA。</p>
+<h3 id="Multi-Head-Attention"><a href="#Multi-Head-Attention" class="headerlink" title="Multi-Head Attention"></a>Multi-Head Attention</h3><h4 id="什么是Attention？"><a href="#什么是Attention？" class="headerlink" title="什么是Attention？"></a>什么是Attention？</h4><p>先说attention的计算过程</p>
+<img src="/2019/02/15/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-NLP-Attention_is_all_you_need/original_att.png" class="" title="original Attention">
+<p>$$<br>\begin{align}<br>Score&#x3D;score(query,key)\<br>Attention_{weight}&#x3D;softmax(Socre) \<br>Contex&#x3D;Attention_{weight}*value \<br>new_{out}&#x3D;\tanh([Contex,query]*w)<br>\end{align}<br>$$</p>
+<p>上面式子中的score用来计算目标序列和原序列的对齐程度，一般使用加性，点积的方式<br>$$<br>\begin{align}<br>Score &amp;&#x3D; value* \tanh(w*[query,key])  :::::::::: &amp; add\<br>Score &amp;&#x3D; query* key^T &amp; dot   \<br>Score &amp;&#x3D; query <em>w</em>key^T &amp; gernel<br>\end{align}<br>$$<br><strong>对于加性attention和点乘attention的计算方式，二者在计算复杂度上式相似的，但是点乘注意力一般更快并且具有更高效的存储，因为点乘的方式可以使用矩阵操作更高效的实现，在低纬度情况下，加性注意力和点乘注意力相似，但是在高纬度上，加性注意力比点乘注意力效果更好。</strong></p>
+<p>从搜索的角度解释，查询词Q从查询序列Key中计算每个item和Q的相似度，然后将这个相似度作用到查询序列Value上，得到加权之后的Value，这里的Key和value相同。Q如果来自查询序列，那么就是self-attention，如果是来自与另一个序列那么就是corss-attention，也就是我们常用的attention，比如翻译模型中的目标词是Q，输入序列就是KV。</p>
+<h4 id="为什么用多头Attention"><a href="#为什么用多头Attention" class="headerlink" title="为什么用多头Attention"></a>为什么用多头Attention</h4><p>传统的attention，是一个一次性的计算，使用的中QKV来自整个序列，但是在transformer中的计算过程是，先将原始序列映射到一个低纬度空间，再在这个低纬度空间上进行attention操作，如此重复H次，将H次att的结果concat起来+NN得到整体输出。这样做的好处</p>
+<ol>
+<li>使用多个头增加了模型复杂度，有助于提升模型对信息的捕获能力</li>
+<li>多个头可以捕获多种层次或者维度的信息，但是这个说法是理论上如此，因为没有任务约束，所有捕获的是哪些维度不好确认</li>
+</ol>
+<hr>
+
+<img src="/2019/02/15/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-NLP-Attention_is_all_you_need/sacle_dot_multi_head_attention.png" class="" title="Fig.3 Scale dot Attention and Multi-Head Attention">
+
+<h4 id="attention中的softmax为什么要scacled"><a href="#attention中的softmax为什么要scacled" class="headerlink" title="attention中的softmax为什么要scacled"></a>attention中的softmax为什么要scacled</h4><p>在transformer中计算Attention的公式为<br>$$<br>\operatorname{Attention}(Q, K, V)&#x3D;\operatorname{softmax}\left(\frac{Q K^T}{\sqrt{d_k}}\right) V<br>$$<br>这里区别于通用attention，在计算softmax的时候除了一个$d_k$，这里的d_k是当前head的维度。那么为什么要这么做呢？</p>
+<p>在transformer中使用的是QK^T的方式，假设query和key均为标准正太分布，并且存在关系式<br>$$<br>Var(\sum_{i&#x3D;1}^{m}X_i)&#x3D;\sum_{i&#x3D;1}^{m}Var(X_i)<br>$$</p>
+<p>也就是数据和的方差和方差的和是相等的，那么对于socre的计算过程中就会存在<br>$$<br>query<em>key^T&#x3D;\sum_{i&#x3D;1}^{dk}query_i</em>key_i<br>$$<br>其中d_k对应着序列的维度，两个向量相乘得到的数据的期望为0，方差为$d_k$，如果$d_k$很大的话，那么內积的总和就会很大，使得<code>softmax</code>计算之后就会变成非零即1，这样在进行梯度计算反向传播的时候，就会导致梯度很小，出现梯度消失的情况，使模型不好训练。那么把两个向量的点积的分布拉回到期望0方差1不是就好了，就跟BN，LN一样，使数据的分布稳定，具体的做法就是常规操作，减去均值，除以标准差，也就是这里的scale操作的原因，也是为什么除的数是$\sqrt{d_{k}}$的原因。</p>
+<p>引申出一些其他的问题</p>
+<ul>
+<li>为什么要让数据服从期望0方差1的正太分布？</li>
+</ul>
+<p>  参考 <a href="https://kexue.fm/archives/8620/comment-page-1">https://kexue.fm/archives/8620/comment-page-1</a></p>
+<ul>
+<li><p>为什么其他的attention场景下不需要进行scale操作？</p>
+<p>在self-attention中，用的是点积形式的attention计算方式，这会造成两个随机变量相乘之后的数值过大，经过softmax之后会造成梯度消失的情况，如果使用Add的形式，相加之后 不会出现数值过大的情况。</p>
+</li>
+<li><p>为什么其他的softmax场景，例如分类任务重的softmax没有用scale？</p>
+<p>首先要明确的一点是softmax加scale操作是为了防止梯度消失，导致模型无法更新，那么如果没有这个问题，也就不需要scale了</p>
+<ul>
+<li><p>第一，因为没有两个向量相乘的情况，不会导致点积之后的数量级过大导致反向传播梯度过小的问题；</p>
+</li>
+<li><p>第二，softmax和交叉熵联合使用，loss的定义是y-y’，预测值和label的差值，当出现某个很大的值的时候，经过softmax之后的值接近于1，根据LOSS的定义，如果预测准确，那么LOSS&#x3D;0，参数不更新；如果预测错误，那么LOSS&#x3D;1，给出最大程度的梯度反馈。不会出现attention中softmax存在的值过大存在的梯度消失的问题。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Decoder-Masked-Multi-head-Attention"><a href="#Decoder-Masked-Multi-head-Attention" class="headerlink" title="Decoder: Masked Multi-head Attention"></a>Decoder: Masked Multi-head Attention</h3><p>在<code>Decoder</code>阶段使用的是添加<code>Mask</code>的多头<code>Attention</code>，来计算目标序列的内部依赖关系，**<code>Mask</code>是为了避免在解码的时候，还在翻译前半段时，就突然翻译到后半段的句子，会在计算<code>SelfAttention</code>时的<code>softmax</code>前先<code>mask</code>掉未来的位置(设定成-∞)。这个步骤确保在预测位置<code>i</code>的时候只能根据<code>i</code>之前位置的输出，其实这个是因应<code>Encoder-Decoder Attention</code> 的特性而做的配套措施，因为<code>Encoder-Decoder Attention</code>可以看到<code>Encoder</code>的整个句子**。</p>
+<p><img src="/masked-att.png" alt="masked-att"></p>
+<h3 id="Decoder：Cross-Multi-head-Attention"><a href="#Decoder：Cross-Multi-head-Attention" class="headerlink" title="Decoder：Cross Multi-head Attention"></a>Decoder：Cross Multi-head Attention</h3><p>该步骤是为了将目标序列和输入序列进行对齐，在encoder中使用的是<code>self-attention</code>，QKV均来自于上层的encoder输出，在decoder中，先进行masked-self-att再和encoder的输出进行cross-att，在cross-att中的QKV来自哪里呢？Q来自与decoder的上层输出，KV来自于encoder的输出，可以认为decoder的Q去encoder中进行查询，并从K中查看哪些信息与Q相关。</p>
+<p>关于corss-attention可以看这里<a href="http://xiaofengshi.com/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/">深度学习-PythonTutorial_LSTM_GRU_Attention_LNLSTM_LNGRU</a></p>
+<h2 id="ResidualConnect-LayerNormal"><a href="#ResidualConnect-LayerNormal" class="headerlink" title="ResidualConnect &amp; LayerNormal"></a>ResidualConnect &amp; LayerNormal</h2><h3 id="残差连接"><a href="#残差连接" class="headerlink" title="残差连接"></a>残差连接</h3><p>在模型前向传播过程中，每个<code>Transformer block</code>中存在两个部分，一个部分就是前文所述的<code>Multi-head Attention</code>，另一个就是一个简单的前馈神经网络FFN。</p>
+<p>在完成<code>Multi-head Attention</code>到传递至<code>FFN</code>之间使用看了残差连接和层归一化的方法，如图4所示</p>
+<img src="/2019/02/15/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-NLP-Attention_is_all_you_need/residual_layernormal.png" class="" title="Fig.4 residual_layernormal">
+
+<p><strong>残差连接，使得模型在训练时，微小的变化可以被注意到，作用和resnet中的残差一个道理，因为transformer是一个 很深的模型，靠近输入端的参数更新的动力不足，使用残差链接将优化目标转成成目标值和预测值的差</strong></p>
+<h3 id="LN"><a href="#LN" class="headerlink" title="LN"></a>LN</h3><p>层归一化，最常和<code>batch normalization</code>进行比较，<code>layer normalization</code>的优点在于它是独立计算的，也就是针对单一样本进行归一化，<code>batch normalization</code>则是针对各维度，因此和batch size有所关联。</p>
+<p>归纳出数学公式就是<br>$$<br>y&#x3D;LayerNormal(x+Sublayer(x))<br>$$<br>其中<code>Sublayer</code>对应着<code>Multi-Head Attention</code>或者FFN部分的模块</p>
+<h3 id="Resisual-LN存在的问题"><a href="#Resisual-LN存在的问题" class="headerlink" title="Resisual+LN存在的问题"></a>Resisual+LN存在的问题</h3><p>使用LN(x+f(x))这种post_norm的方式会削弱残差的作用，这样的设计优点是 使数据分布 稳定，稳定了前向传播的数据方差，但是失去了残差易于训练的优点。</p>
+<p>假设x和f(x)的方差都是1，并且二者独立分布，那么x+f(x)的分布就是2，而LN的作用就是将分布的方差重新拉回到1，这说明初始阶段的post_norm等于<br>$$<br>x_{t+1}&#x3D;\frac{x_t+F_t\left(x_t\right)}{\sqrt{2}}<br>$$<br>进行递归<br>$$<br>\begin{aligned}<br>x_l &amp; &#x3D;\frac{x_{l-l}}{\sqrt{2}}+\frac{F_{l-l}\left(x_{l-l}\right)}{\sqrt{2}} \<br>&amp; &#x3D;\frac{x_{l-2}}{2}+\frac{F_{l-2}\left(x_{l-2}\right)}{2}+\frac{F_{l-l}\left(x_{l-l}\right)}{\sqrt{2}} \<br>&amp; &#x3D;\cdots \<br>&amp; &#x3D;\frac{x_0}{2^{l &#x2F; 2}}+\frac{F_0\left(x_0\right)}{2^{l &#x2F; 2}}+\frac{F_l\left(x_l\right)}{2^{(l-l) &#x2F; 2}}+\frac{F_2\left(x_2\right)}{2^{(l-2) &#x2F; 2}}+\cdots+\frac{F_{l-l}\left(x_{l-l}\right)}{2^{1 &#x2F; 2}}<br>\end{aligned}<br>$$<br>可以看到x_l的更新，到了x_0上影响会变得非常小了，也就是削弱了resnet的作用。</p>
+<p>所以训练bert的时候，通常要warmup并设置足够小的学习率才能使它收敛。</p>
+<h2 id="FFN"><a href="#FFN" class="headerlink" title="FFN"></a>FFN</h2><p>主要是为了对每个位置的emb进行维度转化，增加模型的复杂度。这里就是一个MLP，包含一个隐藏层的全连接<br>$$<br>\operatorname{FFN}(x)&#x3D;\max \left(0, x W_1+b_1\right) W_2+b_2<br>$$<br>并且维度变化为512–&gt;2048–&gt;512，后续的设计秉承的都是维度*4的设置。</p>
+<h2 id="Embedding"><a href="#Embedding" class="headerlink" title="Embedding"></a>Embedding</h2><h3 id="为什么emb乘上维度的根号"><a href="#为什么emb乘上维度的根号" class="headerlink" title="为什么emb乘上维度的根号"></a>为什么emb乘上维度的根号</h3><p><img src="/tf-emb.png" alt="att-emb"></p>
+<p>这个问题很少被提及</p>
+<blockquote>
+<p>按照李沐老师的回答，主要是为了emb训练的时候优于L2norm的作用会将参数约束到1这个值上，那么随着纬度增加，里面的值就会很小，并且emb要和pos_emb相加，为了使两个向量的scale基本相同，所以乘上一个参数$\sqrt{d_{model}}$，讲道理，这么说基本能明白，但是不清晰。</p>
+</blockquote>
+<p>参考知乎的高赞回答，<a href="https://www.zhihu.com/question/415263284/answer/2010360549">https://www.zhihu.com/question/415263284/answer/2010360549</a></p>
+<p>类似于scaled softmax的方法，这里也从数据分布的角度分析，</p>
+<h3 id="Positional-Encoding"><a href="#Positional-Encoding" class="headerlink" title="Positional Encoding"></a>Positional Encoding</h3><p>顾名思义，对序列进行位置编码，因为在设计的Attention和传统的RNN结构不同，对于RNN结构是对数据按照时间步进行计算的，但是Attention是针对整个序列进行的计算，并且里面是没有位置或者时序信息的，因此需要在输入的序列中不但要进行词向量的转化，还要进行位置编码，由此得到的序列既包含序列的语义信息又包含序列的位置信息。</p>
+<p>根据论文中所述，在位置编码的时候将序列按照时间步的不同进行三角函数变换，使其满足不同位置之间能通过线性变换的方式进行转换。在序列的位置pos的计算方式，假设序列的维度为d_{model}，计算公式为<br>$$<br>\begin{align}<br>POS(pos,2<em>i)&#x3D;\sin(pos&#x2F;(10000^{(\frac{2</em>i}{d_{model}})})) \<br>POS(pos,2<em>i+1)&#x3D;\cos(pos&#x2F;(10000^{(\frac{2</em>i+1}{d_{model}})}))<br>\end{align}<br>$$<br>在维度方向上，在偶数位置上使用正弦函数，在奇数位置上使用余弦函数。对于正余弦函数存在关系式<br>$$<br>\begin{align}<br>\sin(x+y)&#x3D;\sin(x) \cos(y) +\sin(y)\cos(x) \<br>\cos(x+y)&#x3D;\cos(x)\cos(y) -\sin(x)\sin(y)<br>\end{align}<br>$$<br>由此对于位置POS(pos+k)可以经过线性变换得到。</p>
+<p>这种方式在后续基本不用了，用的最多的还是绝对位置的方式。</p>
+<h2 id="Final-Layer-and-Softmax"><a href="#Final-Layer-and-Softmax" class="headerlink" title="Final Layer and Softmax"></a>Final Layer and Softmax</h2><p>在<code>Encoder-Decoder</code>之后得到了整个序列的输出，经过线性连接维度转换，实际上就是将最终得到的维度控制在和整个字表的大小一致的情况，采用<code>softmax</code>计算得分，选择得分最大的作为当前点的输出，在论文中使用的贪心的方法直接对每个点进行输出，当然也可以使用集束搜索的方法，设置输出的备选范围，拿到每个点上输出最大的<code>k</code>个，之后再使用这几个计算下一个单位，这样就可以得到累计概率，最后输出累计概率最大的一个序列语句，这显然就是一种动态规划的思想。</p>
+<h2 id="overview"><a href="#overview" class="headerlink" title="overview"></a>overview</h2><p>整个过程说的比较简单，实际上可以记住<code>Transformer</code>的模型结构图，内部的组件包括position encoding，Multi-head Attention，residual connect，layernormal，masked-Multi-head Attention，Encoder-deocder Attention，以及最后的linear和softmax等，每个组件都不复杂，最核心的就是位置编码和Multi-Head Attention，masked Multi-head Attention了。</p>
+<p>可以结合参考文献中的的<a href="https://github.com/keitakurita/Practical_NLP_in_PyTorch/blob/master/deep_dives/transformer_from_scratch.ipynb">jupyter notebook</a>进行运行和测试。</p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ul>
+<li><a href="https://arxiv.org/abs/1706.03762">paper: Attention Is All You Need</a></li>
+<li><a href="http://jalammar.github.io/illustrated-transformer/">blog:The Illustrated Transformer</a></li>
+<li><a href="https://wallstreetcn.com/articles/3417279">从Seq2seq到Attention模型到Self Attention</a></li>
+<li><a href="http://mlexplained.com/2017/12/29/Attention-is-all-you-need-explained/">Paper Dissected: “Attention is All You Need” Explained</a><ul>
+<li><a href="https://github.com/keitakurita/Practical_NLP_in_PyTorch/blob/master/deep_dives/transformer_from_scratch.ipynb">jupyter: Building the Transformer from Scratch</a></li>
+</ul>
+</li>
+<li><a href="http://nlp.seas.harvard.edu/2018/04/03/Attention.html">The Annotated Transformer</a><ul>
+<li><a href="https://github.com/harvardnlp/annotated-transformer">code</a></li>
+</ul>
+</li>
+<li><a href="https://mchromiak.github.io/articles/2017/Sep/12/Transformer-Attention-is-all-you-need/#.XGoc0JMzZZh">The Transformer-Attention is all you need</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>赏杯咖啡！</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat.jpeg" alt="ShiXiaofeng 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpeg" alt="ShiXiaofeng 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>ShiXiaofeng
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://xiaofengshi.com/2019/02/15/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-NLP-Attention_is_all_you_need/" title="深度学习-NLP-Attention_is_all_you_need">http://xiaofengshi.com/2019/02/15/深度学习-NLP-Attention_is_all_you_need/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%EF%BC%8CNLP/" rel="tag"># 深度学习，NLP</a>
+              <a href="/tags/Transformer/" rel="tag"># Transformer</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/" rel="prev" title="深度学习-对抗生成网络">
+      <i class="fa fa-chevron-left"></i> 深度学习-对抗生成网络
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/02/14/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-CTC%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/" rel="next" title="深度学习-CTC算法原理">
+      深度学习-CTC算法原理 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#UPDATE"><span class="nav-number">1.</span> <span class="nav-text">UPDATE</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2023-02-15"><span class="nav-number">1.1.</span> <span class="nav-text">2023-02-15</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Seq2Seq"><span class="nav-number">2.</span> <span class="nav-text">Seq2Seq</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Why-Transformer"><span class="nav-number">3.</span> <span class="nav-text">Why Transformer?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Structure"><span class="nav-number">4.</span> <span class="nav-text">Structure</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Attention"><span class="nav-number">5.</span> <span class="nav-text">Attention</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Multi-Head-Attention"><span class="nav-number">5.1.</span> <span class="nav-text">Multi-Head Attention</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFAttention%EF%BC%9F"><span class="nav-number">5.1.1.</span> <span class="nav-text">什么是Attention？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E7%94%A8%E5%A4%9A%E5%A4%B4Attention"><span class="nav-number">5.1.2.</span> <span class="nav-text">为什么用多头Attention</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#attention%E4%B8%AD%E7%9A%84softmax%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81scacled"><span class="nav-number">5.1.3.</span> <span class="nav-text">attention中的softmax为什么要scacled</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Decoder-Masked-Multi-head-Attention"><span class="nav-number">5.2.</span> <span class="nav-text">Decoder: Masked Multi-head Attention</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Decoder%EF%BC%9ACross-Multi-head-Attention"><span class="nav-number">5.3.</span> <span class="nav-text">Decoder：Cross Multi-head Attention</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ResidualConnect-LayerNormal"><span class="nav-number">6.</span> <span class="nav-text">ResidualConnect &amp; LayerNormal</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AE%8B%E5%B7%AE%E8%BF%9E%E6%8E%A5"><span class="nav-number">6.1.</span> <span class="nav-text">残差连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LN"><span class="nav-number">6.2.</span> <span class="nav-text">LN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Resisual-LN%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">6.3.</span> <span class="nav-text">Resisual+LN存在的问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FFN"><span class="nav-number">7.</span> <span class="nav-text">FFN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Embedding"><span class="nav-number">8.</span> <span class="nav-text">Embedding</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88emb%E4%B9%98%E4%B8%8A%E7%BB%B4%E5%BA%A6%E7%9A%84%E6%A0%B9%E5%8F%B7"><span class="nav-number">8.1.</span> <span class="nav-text">为什么emb乘上维度的根号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Positional-Encoding"><span class="nav-number">8.2.</span> <span class="nav-text">Positional Encoding</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Final-Layer-and-Softmax"><span class="nav-number">9.</span> <span class="nav-text">Final Layer and Softmax</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#overview"><span class="nav-number">10.</span> <span class="nav-text">overview</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reference"><span class="nav-number">11.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ShiXiaofeng"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">ShiXiaofeng</p>
+  <div class="site-description" itemprop="description">LLM,搜索,数据挖掘,深度学习相关技术记录分享</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xiaofengShi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xiaofengShi" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sxf1052566766@163.com" title="E-Mail → mailto:sxf1052566766@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ShiXiaofeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v7.1.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+  
+      
+<script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el: '#valine-comments',
+      verify: false,
+      notify: false,
+      appId: 'rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz',
+      appKey: 'zJasiQnAqgUwf4kiHhHyXwOP',
+      placeholder: "Leave Your Message and Contact Details",
+      avatar: 'mm',
+      meta: guest,
+      pageSize: '10' || 10,
+      visitor: true,
+      lang: '' || 'zh-cn',
+      path: location.pathname,
+      recordIP: false,
+      serverURLs: ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

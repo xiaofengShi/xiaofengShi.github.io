@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/panda_32px.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/panda_16px.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://xiaofengshi.com').hostname,
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="目标检测为计算机视觉领域内的相关任务，输入一张图片，输出图片中物体所在位置及物体的名称。是一个典型的多任务模型。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习-目标检测">
+<meta property="og:url" content="http://xiaofengshi.com/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/index.html">
+<meta property="og:site_name" content="做一个有用的人">
+<meta property="og:description" content="目标检测为计算机视觉领域内的相关任务，输入一张图片，输出图片中物体所在位置及物体的名称。是一个典型的多任务模型。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/object_detection.jpg">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/RCNN.png">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/FastRCNN.png">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/fastrcnn_strueture.png">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/fastrcnn_pipeline.png">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/loss.png">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/smoothl1_l2.png">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/svd.png">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/faster_fast_rcnn.png">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/faster_featuremap.png">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/rpn_structure.png">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/RPN.jpeg">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/SSD_architecture.png">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/ssd_dilate_conv.jpg">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/ssd_anchor.png">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/fpn_model.png">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/yolov1.jpeg">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/yolov1_str.png">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/yolov2_loca.png">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/yolov2_darknet19.png">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/yolov2v3.jpg">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/yolov2_v3_over.jpg">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/yolov3_graphic.png">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/yolov3_model.jpg">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/Yolov3ImageGrid.png">
+<meta property="article:published_time" content="2018-11-12T09:27:00.000Z">
+<meta property="article:modified_time" content="2020-06-03T14:12:54.000Z">
+<meta property="article:author" content="ShiXiaofeng">
+<meta property="article:tag" content="目标检测">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://xiaofengshi.com/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/object_detection.jpg">
+
+<link rel="canonical" href="http://xiaofengshi.com/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>深度学习-目标检测 | 做一个有用的人</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">做一个有用的人</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">LLM And Search</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-guestbook">
+
+    <a href="/guestbook/" rel="section"><i class="fa fa-fw fa-commenting"></i>guestbook</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/xiaofengShi" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ShiXiaofeng">
+      <meta itemprop="description" content="LLM,搜索,数据挖掘,深度学习相关技术记录分享">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="做一个有用的人">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          深度学习-目标检测
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-11-12 17:27:00" itemprop="dateCreated datePublished" datetime="2018-11-12T17:27:00+08:00">2018-11-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-06-03 22:12:54" itemprop="dateModified" datetime="2020-06-03T22:12:54+08:00">2020-06-03</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/CV/" itemprop="url" rel="index">
+                    <span itemprop="name">CV</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/" class="post-meta-item leancloud_visitors" data-flag-title="深度学习-目标检测" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>目标检测为计算机视觉领域内的相关任务，输入一张图片，输出图片中物体所在位置及物体的名称。是一个典型的多任务模型。</p>
+<img src="/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/object_detection.jpg" class="" title="object detection">
+
+<span id="more"></span>
+
+<p>深度学习目标检测技术近年来发展迅速并且取得的成果相当棒，从最早的RCNN到Fast，Faster再到后来的SSD,YOLO等相关算法，不同的算法在目标检测识别正确率和运行速度之间在不算提升。</p>
+<h2 id="目标检测三部曲"><a href="#目标检测三部曲" class="headerlink" title="目标检测三部曲"></a>目标检测三部曲</h2><h3 id="Rcnn"><a href="#Rcnn" class="headerlink" title="Rcnn"></a>Rcnn</h3><p>虽然现在RCNN算法早已经被超越并抛弃了，但是作为深度学习的目标检测技术将CNN引入的开山之作还是有必要了解其相关算法的。RCNN的算法结构如下所示</p>
+<img src="/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/RCNN.png" class="" title="RCNN">
+
+<p><strong>论文链接</strong>：<a href="https://arxiv.org/pdf/1311.2524.pdf">https://arxiv.org/pdf/1311.2524.pdf</a></p>
+<h4 id="pipeline"><a href="#pipeline" class="headerlink" title="pipeline"></a>pipeline</h4><ul>
+<li><p>数据准备</p>
+<p>输入要进行目标检测的图片，及其图片中物体的目标框(<code>groundtruth</code>)及对应的label</p>
+</li>
+<li><p>候选区生产</p>
+<p>对图片使用<code>ROI</code>(region of interest)区域提取，常用<code>selective search</code>算法，对输入图片进行感兴趣区域的提取，一张图像能提取到2k左右的<code>ROI</code></p>
+</li>
+<li><p>特征提取</p>
+<p>将得到的<code>ROI</code>进行卷积<code>CNN</code>特征提取。将候选区域归一化成同一尺寸$227\times227$，使用的是<code>ImageNet</code>(卷积之后最终维度$4096$,之后全连接维度为$1000$，在<code>Rcnn</code>中去掉全连接层)</p>
+</li>
+<li><p>分类计算</p>
+<p><code>CNN</code>之后连接的是<code>SVM</code>进行分类计算，<code>SVM</code>进行每个类别的二分类计算(对于某一类来说，设计一个<code>SVM</code>来判断该类是否为正，为一个二分类任务)，这就说明，如果数据集中的物体类别数量为n，那么就需要设计n个<code>SVM</code>，由于在所有的<code>ROI</code>中负样本数量相对正样本数量很多，因此使用了<code>hard negative mining</code>的方法</p>
+<ul>
+<li>正样本：输入的<code>ROI</code>为与<code>label</code>相同</li>
+<li>负样本：考察每个候选框，如果和本类别的目标框的<code>IOU</code>小于$0.3$，认为负样本</li>
+</ul>
+</li>
+<li><p>目标框修正</p>
+<p>对于目标检测任务，其评价指标一为预测的目标框与<code>groundtruth</code>之间<code>IOU</code>，另一个为类别是否正确。通过SS提取到的<code>ROI</code>一般和<code>groundtruth</code> 差别很大，就需要进行目标框的修正。</p>
+<p>使用回归器训练目标检测框的准确性，输入同样为<code>CNN</code>之后得到的维度$4096$的向量，输出为xy方向的缩放和偏移。同样，对于每个分类训练一个目标检测框</p>
+</li>
+</ul>
+<p><strong>作为深度学习目标检测的开山之作，<code>RCNN</code>在当年取得的识别正确率相对于传统的直方图方法是颠覆性的，由此，目标检测相关算法在此基础上不断发展。</strong></p>
+<h4 id="RCN缺点"><a href="#RCN缺点" class="headerlink" title="RCN缺点"></a>RCN缺点</h4><ul>
+<li>使用<code>SS</code>算法进行<code>ROI</code>的提取，对所有的<code>Region</code>会存在重复计算，会拖慢悬链速度</li>
+<li>使用<code>SVM</code>和回归器进行分类和位置回归计算，不太符合深度学习端对端的方法，不太优雅并且每个类别对应一个分类器和回归器，这就需要训练数据要足够大才可以</li>
+</ul>
+<h3 id="FastRcnn"><a href="#FastRcnn" class="headerlink" title="FastRcnn"></a>FastRcnn</h3><img src="/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/FastRCNN.png" class="" title="FastRCNN">
+
+<p><code>FastRcnn</code>是对rcnn的改进，主要针对上文所述的<code>RCNN</code>存在的缺点。</p>
+<ul>
+<li>将整张图像归一化后直接送入深度网络。在邻接时，才加入候选框信息，在末尾的少数几层处理每个候选框。</li>
+<li>在训练时，将一张图像送入网络，紧接着送入从这幅图像上提取出的<strong>候选区域</strong>。这些候选区域的前几层特征不需要再重复计算。</li>
+<li>类别判断和位置精调<strong>统一用深度网络实现</strong>，不再需要额外存储。</li>
+</ul>
+<h4 id="Pipeline"><a href="#Pipeline" class="headerlink" title="Pipeline"></a>Pipeline</h4><img src="/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/fastrcnn_strueture.png" class="" title="fastrcnn_strueture">
+
+<img src="/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/fastrcnn_pipeline.png" class="" title="fastrcnn_pipeline">
+
+<ul>
+<li><p>为了进行批量输入计算，图像归一化为$224 \times224$</p>
+</li>
+<li><p>特征提取</p>
+<p>卷积网络<code>CNN+RELU+POOLING</code></p>
+</li>
+<li><p><code>ROI_pooling_layer</code></p>
+<p>仍然使用SS算法进行<code>ROI</code>提议得到<code>2K</code>个<code>ROI</code></p>
+<p>在特征图中找到每个<code>ROI</code>对应的特征框(进行比例缩放)，并使用<code>max pool</code>将每个特征框池化到固定的大小</p>
+<p><strong><code>forward</code>实现方法</strong><br>首先假设建议框对应特征图中的特征框大小为$h \times w$，将其划分$H \times W$个子窗口，每个子窗$h&#x2F;H \times w&#x2F;W$，然后对每个子窗口采用<code>maxpooling</code>下采样操作，每个子窗口只取一个最大值，则特征框最终池化为$H \times W$固定的尺寸【特征框各深度同理】，这将各个大小不一的特征框转化为大小统一的数据输入下一层。</p>
+<p><strong><code>backward</code></strong></p>
+<p>对于<code>maxpool</code>层，设$x_{i}$为<code>ROI_pooling</code>输入层的第$i$个节点，$y_{j}$为输出层第$r$个$ROI$的第$j$个节点，存在如下关系<br>$$<br>\begin{align*}<br>\frac{\partial L}{\partial x_{i}}&#x3D;<br>\begin{cases}<br>&amp; 0 :::::::::: &amp; if :::::::::: &amp;\delta(i,j)&#x3D;false \<br>&amp; \frac{\partial L}{\partial y_{j}} &amp; if &amp; \delta(i,j)&#x3D;true<br>\end{cases}<br>\end{align*}<br>$$<br>判决函数$\delta(i,j)$表示节点$i$是否被节点$j$选择为最大值输出</p>
+<p>对于<code>ROI max pooling</code>，一个输入节点可能和多个输出节点相连。设$x_{i}$为输入层的节点，$y_{rj}$为第$r$个候选区域的第$j$个输出节点<br>$$<br>\begin{align*}<br>\frac{\partial L}{\partial x_{i}}&#x3D;\sum_{r}\sum_{j}\delta(i,r,j)\frac{\partial L}{\partial y_{rj}}<br>\end{align*}<br>$$<br>判决函数$\delta(i,r,j)$表示节点是否被第$r$个<code>ROI</code>的第$j$个节点选为最大输出</p>
+</li>
+<li><p>全连接计算</p>
+<p>得到的固定大小的特征框$[r,H,W,Dims]$，其中使用全连接得到固定大小的特征向量$[r,H  \times W  \times Dims]$，共得到$r$个$ROI$的固定大小的向量</p>
+</li>
+<li><p>分类计算+预测框计算</p>
+<hr>
+
+<img src="/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/loss.png" class="" title="Loss">
+
+<p><code>cls_score</code>为全连接之后得到的类别预测，输出为$k+1$维度，表示属于$k$类和背景类别的概率，使用$softmax$计算</p>
+<p><code>bbox_predict</code>为全连接之后得到的预测目标框，维度为$4 \times k$，对每个目标输出一个预测框</p>
+<p><code>bbox_targets</code>为目标值，对应着真实的目标框，维度为$4 \times 1$表示当前<code>ROI</code>中包含物体的目标框</p>
+<p><code>bbox_loss_weights</code>用于标记每一个预测的<code>box</code>是否属于某一个类，只有预测和真实类别相同时才进行<code>loss</code>计算</p>
+<hr>
+
+<ul>
+<li><p>分类计算及代价函数</p>
+<p>假设数据集中一共存在$K$个类别，输入为全连接之后的固定长度的向量$[r,H  \times W  \times Dims]$，输出为$[r,K+1]$，进行$K+1$个类别的输出，包含$K$个物体类别以及$1$个背景类，使用的是全连接的计算方式</p>
+<p><strong>代价函数</strong></p>
+<p>代价函数由真实的类别标签<code>label</code>和预测得到类别${pred}$经过softmax计算得到：<br>$$<br>\begin{align*}<br>L_{cls}(label,{pred})&amp;&#x3D;-log({pred}_{u})\<br>&amp;&#x3D;-u<em>log(softmax(pred))<br>\end{align</em>}<br>$$<br><strong>说明：假设数据集中包含的目标类别数量为$100$对于单个的ROI进行类别判别时，输出的数据维度为$[1, (100+1)]$,对应着$100$个数据集中的目标类别和$1$个背景类别，假设当前输入的ROI中目标数量为1，并且对应着1个类别为$1$，对应的数据格式为$[1,0,0,…]$，也就是在相应的类别处数据为1，其余位置均为0。在进行计算时，使用$sofmax$函数，将类别预测的概率控制在$[0,1]$之间</strong></p>
+<p>$softmax$函数计算公式为<br>$$<br>\sigma(x_{j})&#x3D;\frac{e^{x_{j}}}{\sum_{k&#x3D;1}^{K}e^{x_{k}}}<br>$$<br>在进行类别计算时，计算的是预测值在所有类别中的概率。得到输出的类别预测的概率，将其与真实$label$相乘，得到损失。</p>
+</li>
+<li><p>预测框计算</p>
+<p>每个预测框的<code>label</code>包含四个坐标$box&#x3D;[x,y,h,w]$(左上角的$x,y$坐标值及真实框的高度和宽度)，因此对应的输出维度为$[r,(K+1)*4]$</p>
+<p><strong>代价函数</strong></p>
+<p>真实类别$u$对应的目标框为$v&#x3D;[v_{x},v_{y},v_{w},v_{h}]$，预测的目标$u$对应的类别为$t^{u}&#x3D;[t^{x},t^{y},t^{w},t^{h}]$，可以由此计算<br>$$<br>L_{loc}&#x3D;\sum_{i \in\lbrace x,y,w,h\rbrace}smooth_{L_{1}}(t_{i}^{u}-v_{i})<br>$$<br>其中<br>$$<br>\begin{align*}<br>smooth_{L_{1}}&#x3D;<br>\begin{cases}<br>0.5|x|^{2}::::::::::&amp; if |x|&lt;1 \<br>|x|-0.5 &amp; otherwise<br>\end{cases}<br>\end{align*}<br>$$<br>该损失函数对应的是检测框的偏移量，比于<code>L2</code>损失函数，其对离群点、异常值不敏感，可控制梯度的量级使训练时不容易跑飞。如下图所示在同样的输入<code>x</code>的前提下，橙色曲线为<code>L2</code>损失函数，蓝色线条为<code>smoothL1</code>损失函数。</p>
+<img src="/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/smoothl1_l2.png" class="" title="smoothl1_l2">
+
+<p><strong>这里需要说明一点：对于单个的<code>ROI</code>，输出的向量为$[1,4 \times (k+1)]$ ，对应着所以类别预测的目标框，但是在当前的<code>ROI</code>中，对应的标签为该ROI中对应的目标类别和该目标的位置，因此在进行预测框损失函数的计算是，只考虑输出的的所有数据中对应的输入ROI的类别的位置的数据，假设当前的<code>ROI</code>中包含一个目标，类别分别为1，整个样本中的所有类别为$100$，因此，对于当前的位置计算时，预测框的输出为$[1,4 \times 100]$，但是在计算位置损失时，只是用输出数据的第1行的数据，其余的输出数据不参与损失计算</strong></p>
+<p>代码实现</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">rois = tf.placeholder(tf.int32,[<span class="literal">None</span>, <span class="number">5</span>], name=<span class="string">&#x27;rois&#x27;</span>)</span><br><span class="line">y_true = tf.placeholder(tf.float32, [<span class="literal">None</span>, class_num*<span class="number">5</span>-<span class="number">4</span>], name=<span class="string">&#x27;labels&#x27;</span>)</span><br><span class="line">logits=slim.fully_connected(drop7, class_num,activation_fn=nn_ops.softmax ,scope=<span class="string">&#x27;fc_8&#x27;</span>)</span><br><span class="line">bbox = bbox = slim.fully_connected(drop7, (class_num-<span class="number">1</span>)*<span class="number">4</span>,                                     </span><br><span class="line">                                        activation_fn=<span class="literal">None</span> ,scope=<span class="string">&#x27;fc_9&#x27;</span>)</span><br><span class="line">cls_pred = logits</span><br><span class="line"><span class="comment"># label中数据的存储格式为[cls_1,cls_2,...,cls_nums,box_1_1,box_1_2,box_1_3,....]</span></span><br><span class="line"><span class="comment"># 前面存储的是label，后面存储的是每个label对应的groundtruth</span></span><br><span class="line">cls_true = y_true[:, :class_num]</span><br><span class="line">bbox_pred = bbox</span><br><span class="line">bbox_ture = y_true[:, class_num:]</span><br><span class="line"></span><br><span class="line">cls_pred /= tf.reduce_sum(cls_pred,</span><br><span class="line">                          reduction_indices=<span class="built_in">len</span>(cls_pred.get_shape()) - <span class="number">1</span>,</span><br><span class="line">                          keep_dims=<span class="literal">True</span>)</span><br><span class="line">cls_pred = tf.clip_by_value(cls_pred, tf.cast(<span class="number">1e-10</span>, dtype=tf.float32), tf.cast(<span class="number">1.</span> - <span class="number">1e-10</span>, dtype=tf.float32))</span><br><span class="line">cross_entropy = -tf.reduce_sum(cls_true * tf.log(cls_pred), reduction_indices=<span class="built_in">len</span>(cls_pred.get_shape()) - <span class="number">1</span>)</span><br><span class="line">cls_loss = tf.reduce_mean(cross_entropy)</span><br><span class="line">tf.losses.add_loss(cls_loss)</span><br><span class="line">tf.summary.scalar(<span class="string">&#x27;class-loss&#x27;</span>, cls_loss)</span><br><span class="line"></span><br><span class="line">mask = tf.tile(tf.reshape(cls_true[:, <span class="number">1</span>], [-<span class="number">1</span>, <span class="number">1</span>]), [<span class="number">1</span>, <span class="number">4</span>])</span><br><span class="line"><span class="keyword">for</span> cls_idx <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>, self.class_num):</span><br><span class="line">    mask =tf.concat([mask, tf.tile(tf.reshape(cls_true[:, <span class="built_in">int</span>(cls_idx)], [-<span class="number">1</span>, <span class="number">1</span>]), [<span class="number">1</span>, <span class="number">4</span>])], <span class="number">1</span>)</span><br><span class="line">bbox_sub =  tf.square(mask * (bbox_pred - bbox_ture))</span><br><span class="line">bbox_loss = tf.reduce_mean(tf.reduce_sum(bbox_sub, <span class="number">1</span>))</span><br><span class="line">tf.losses.add_loss(bbox_loss)</span><br><span class="line">tf.summary.scalar(<span class="string">&#x27;bbox-loss&#x27;</span>, bbox_loss)</span><br></pre></td></tr></table></figure>
+
+<p>代码连接：</p>
+<p><a href="https://github.com/Liu-Yicheng/Fast-RCNN">https://github.com/Liu-Yicheng/Fast-RCNN</a></p>
+<p><a href="https://github.com/rbgirshick/fast-rcnn/blob/master/tools/train_net.py">https://github.com/rbgirshick/fast-rcnn/blob/master/tools/train_net.py</a></p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="Tricks"><a href="#Tricks" class="headerlink" title="Tricks"></a>Tricks</h4><ul>
+<li><p>参数初始化</p>
+<p>使用<code>ImageNet</code>上预训练的模型，并去除最后的全连接层</p>
+</li>
+<li><p>分层数据</p>
+<p>在调优训练时，每一个<code>mini-batch</code>中首先加入$N$张完整图片，而后加入从$N$张图片中选取的$R$个候选框。这$R$个候选框可以复用$N$张图片前5个阶段的网络特征。<br>实际选择$N&#x3D;2$， $R&#x3D;128$</p>
+</li>
+<li><p>训练数据增强</p>
+<p>$N$张完整图片以$50%$概率水平翻转</p>
+</li>
+<li><p>全连接层加速</p>
+<p>正常的全连接层，假设输入为$x$，输出为$y$，中间的参数为$W&#x3D;u \times v$，对应的计算复杂度为$u \times v$<br>$$<br>y&#x3D;Wx<br>$$<br>对权重参数$W$进行<code>SVD</code>分解<br>$$<br>W\approx U \sum_{t}V^{T}<br>$$<br>其中各个变量的尺寸为$U&#x3D;u \times v$，$\sum_{t}&#x3D;t\times t$，$V&#x3D;v \times t$，如此全连接计算变为<br>$$<br>y&#x3D;Wx&#x3D; U.(\sum_{t}.V^{T}).x<br>$$<br>对应的计算复杂度为$u \times t +v \times t$，如此实现了将一个全连接拆分成两个低纬度的全连接，节约了计算资源提升计算速度。</p>
+<hr>
+
+<img src="/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/svd.png" class="" title="svd">
+
+<hr></li>
+</ul>
+<h3 id="FasterRcnn"><a href="#FasterRcnn" class="headerlink" title="FasterRcnn"></a>FasterRcnn</h3><p>作为<code>FastRcnn</code>的继承和改进，主要针对<code>ROI</code>生成的改进，在<code>FastRcnn</code>中使用<code>Selective Search</code>的方法进行<code>ROI</code>的生成，<code>FasterRcnn</code>开发了用于生成<code>ROI</code>的卷积网络<code>RPN-region proposal network</code>，将整个目标检测的过程归纳为一个端到端的网络，完全可以看成<code>RPN+FastRcnn</code>两个网络的联合。此外，在<code>RPN</code>中提出了锚点<code>anchor</code>的概念，后续的<code>SSD,YOLO</code>都借鉴了这种思路</p>
+<hr>
+
+<img src="/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/faster_fast_rcnn.png" class="" title="faster_fast_rcnn">
+
+<hr>
+#### pipeleine
+
+<p>整个计算流程可以归纳如下</p>
+<ul>
+<li><p>对图像归一化并resize至固定尺寸$800 \times 600$</p>
+</li>
+<li><p>对图像进行<code>CNN</code>操作，对图像进行特征提取，在该部分，使用的是<code>CNN_3X3_SAME+MAX_POOL_2_2_VALID</code>，也就是说<code>CNN</code>的卷积核尺寸均为$3 \times 3$，并且<code>pooling=SAME</code>,不会改变输入图像的高度和宽度，并且输出的<code>feature map</code>的深度取决于卷积核的数量；使用了最大池化的处理，并且池化的尺寸为$2 \times 2$，在高度和宽度方向上的步长为$2$，在深度方向上为$1$。在特征提取部分，一共存在$4$个最大池化层，假设输入的图像尺寸为$[N,H,W,C]$因此在下采样之后的<code>feature map</code>为$[N, {H}\div {2^{4}}, {W} \div {2^{4}},D]$</p>
+<img src="/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/faster_featuremap.png" class="" title="faster_featuremap">
+</li>
+<li><p>上部得到<code>feature_map</code>，之后对该特征图进行<code>ROI</code>提取，在<code>Faster_Rcnn</code>中，使用了一个<code>RPN</code>网络进行感兴趣区域的提取。具体可以参考下一部分的<code>RPN</code>的详细讲解</p>
+</li>
+<li><p><code>RPN</code>进行感兴趣区域的提取之后，进行分类计算和预测框回归</p>
+<p>分类计算</p>
+<ul>
+<li>在<code>RPN</code>这里只判断提取到的区域内是物体或不是物体，也就是说，这里只进行一个二分类，判断<code>foreground</code>还是<code>background</code></li>
+</ul>
+<p>预测框回归</p>
+<ul>
+<li>计算<code>RPN</code>提取到的区域用于真实目标区域的偏移量</li>
+</ul>
+</li>
+<li><p>由于<code>RPN</code>提取到的<code>ROI</code>很多，使用在<code>RPN</code>中提取到的<code>foreground</code>进行一定的删选限制，进行后去的第二次的分类和回归计算</p>
+</li>
+<li><p>分类和回归的计算方法与<code>fast_rcnn</code>相似</p>
+<p>分类计算</p>
+<ul>
+<li>计算提取到的区域对应的目标的类别</li>
+</ul>
+<p>回归计算</p>
+<ul>
+<li>再次对目标框进行回归计算，进一步精修目标检测框</li>
+</ul>
+</li>
+</ul>
+<h4 id="RPN网络"><a href="#RPN网络" class="headerlink" title="RPN网络"></a>RPN网络</h4><p>网络结构如图所示</p>
+<img src="/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/rpn_structure.png" class="" title="rpn_structure">
+
+<img src="/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/RPN.jpeg" class="" title="RPN">
+
+<p>在图<code>rpn_structure</code>中，模型输入的图片的尺寸为$[N,H,W,C]$，经过卷积(<code>vgg16</code>)进行特征提取，得到的<code>feature map</code>尺寸为$[N,H&#x2F;16,W&#x2F;16,D]$，此时$D&#x3D;512$，由最后一层卷积操作的卷积核输出的数量决定。对于该<code>feature map</code>会分开两条路径进行分类和预测框回归计算。</p>
+<ul>
+<li><p>分类计算</p>
+<ul>
+<li><p><code>RPN</code>分类概率<code>rpn_cls_score</code> $size&#x3D;[N,H,W,2A]$</p>
+<p><strong>由当前的<code>feature map</code>预测每个<code>cell</code>对应的是否为目标的概率。</strong></p>
+<p>由卷积网络得到的<code>feature map</code>经过$1 \times 1$卷积，此外卷积核数量为$2A$，$A$为每一个<code>cell</code>生成的<code>anchor box</code>的数量，得到了尺寸为$[N,H,W,2A]$，可以认为这是对<code>feature map</code>中的每个<code>cell</code>值，进行是否为目标的预测。对应图中<code>rpn_cls_score</code>。<strong>此处可以认为对feature进行卷积计算实际上就是一个预测的过程，并且设置卷积核的数量为$2A$，为后续进行计算是前景和背景的概率准备。</strong></p>
+</li>
+<li><p>生成<code>anchor box</code></p>
+<p>输入的<code>feature map</code>尺寸为$[N,H,W,2A]$，每一个<code>cell</code>生成<code>A</code>个<code>anchor box</code>，$A&#x3D;9$对应着三种长宽比例，<strong>这是一种多尺度预测的思想</strong>.</p>
+<ul>
+<li><p>分类损失计算<code>rpn_labels</code>，$size&#x3D;[H\times W\times A,1]$</p>
+<p><strong>得到featuremap中每个cell生成的<code>anchor box</code>是否为目标的标签</strong></p>
+<p>将生成的这些<code>anchor box</code>与输入的目标框<code>ground_truth</code>之间的重合面积作为删选标准，如果重合面积小于$0.3$认为这个<code>anchor box</code>是<code>background</code>，重合面积大于$0.7$的认为这个<code>anchor box</code> 是<code>foreground</code>。如此将<code>rpn_labels</code>中的背景类设为$0$，前景设为$1$。</p>
+</li>
+<li><p>目标框损失计算<code>rpn_bbox_targets</code>,$size&#x3D;[H \times W \times A,4]$</p>
+<p><strong>记录生成的<code>anchor box</code>目标框与<code>ground truth</code>之间的偏移量，可以认为偏移量就是损失</strong></p>
+<p>假设<code>anchor box</code>对应坐标为$<em>[x</em>{al},y_{al},x_{ar},y_{ar}]$，对应着该矩形框的左上角的坐标和右下角坐标，<code>ground truth</code>的矩形框的坐标为$[x_{l},y_{l},x_{r},y_{r}]$，由此可以得到矩形的宽度高度以及中心坐标为<br>$$<br>\begin{align}<br>width&amp;&#x3D;x_{r}-x_{l}+1.0 \<br>height&amp;&#x3D;y{r}-y_{l}+1.0 \<br>center_{x}&amp;&#x3D;x_{l}+0.5 \times width \<br>center_{y}&amp;&#x3D;y_{l}+0.5 \times height<br>\end{align}<br>$$<br>可以得到生成的<code>anchor box</code>和<code>ground truth </code>之间的偏移量，计算方法如下<br>$$<br>\begin{align}<br>target_{x}&amp;&#x3D;(groundtruth_{center_{x}}-anchor_{center_{x}}) &#x2F; groundtruth_{width}\<br>target_{y}&amp;&#x3D;(groundtruth_{center_{y}}-anchor_{center_{y}})  &#x2F; groundtruth_{height}\<br>target_{w}&amp;&#x3D;log(\frac{groundtruth_{width}}{anchor_{width}})\<br>target_{w}&amp;&#x3D;log(\frac{groundtruth_{height}}{anchor_{height}})<br>\end{align}<br>$$</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>通过该偏移量指标作为损失指标</strong></p>
+<ul>
+<li><p>回归损失权重</p>
+<p><code>rpn_bbox_inside_weights</code>：每个<code>anchor</code>的权重，前景为$1$，后景为$0$</p>
+<p><code>rpn_bbox_outside_weights</code>：因为后景物体相对前景数量多很多，该变量用来平衡前景和后景的数量。认为前景目标对应权重为$1$；背景目标对应权重为$0$，不计入损失。</p>
+</li>
+<li><p>回归计算</p>
+<p><strong>由当前的<code>feature map</code>预测每个<code>cell</code>对应<code>anchor box</code>的矩形框坐标</strong></p>
+<p>与<code>RPN</code>进行分类损失计算相似，同样适用$1 \times 1$卷积，卷积核数量为$4A$，可以认为在当前的<code>feature map</code>中，任一<code>cell</code>对应生成的<code>A</code>个<code>anchor</code>，每个<code>anchor</code>对应着$4$个值，这$4$个值认为是预测的目标的坐标值。</p>
+<p>至此，完成了<code>RPN</code>的中<code>anchor box</code>对应的分类和回归项的准备，对应图中名称</p>
+<ul>
+<li><code>rpn_label</code>：当前<code>anchor</code>是前景为$1$，后景为$0$</li>
+<li><code>rpn_cls_score</code>：预测当前<code>anchor</code>为前景和后景的概率</li>
+</ul>
+<p><strong>使用<code>softmax_logit</code>进行分类损失计算</strong></p>
+<hr>
+
+<ul>
+<li><code>rpn_box_target</code>：当前<code>anchor</code>与<code>ground truth</code>的偏移量</li>
+<li><code>rpn_box_inside_weight</code>,<code>rpn_bbox_outside_weights</code>权重变量</li>
+<li><code>rpn_box_pred</code>：预测当前<code>anchor</code>的矩形位置</li>
+</ul>
+<p><strong>使用$ Smooth_{L1}$进行预测框偏移量损失计算</strong>，其公式在fast rcnn中已然有写</p>
+</li>
+</ul>
+<h4 id="ROI-POOLING"><a href="#ROI-POOLING" class="headerlink" title="ROI_POOLING"></a>ROI_POOLING</h4><ul>
+<li><p>从<code>RPN</code>中得到<code>anchor box</code></p>
+<p>在该块中，输入的是在<code>RPN</code>得到的<code>anchor box</code>，因为产生的提议区域非常多，并且存在大比例的负样本，因此，使用经过<code>RPN</code>训练之后的<code>bounding box:[t_x,t_y,t_w,t_h]</code>(由于<code>RPN</code>使用提取的<code>anchor box</code>和<code>ground truth</code>之间的偏移量作为该阶段网络的损失训练指标，因此$[t_x,t_y,t_w,t_h]$对应着偏移量)和<code>anchor box</code>$[x_{al},y_{al},x_{ar},y_{ar}]$生成区域提议<code>proposal box:[xp,yp,wp,hp]</code>，对<code>anchor box</code>进行偏移量的修正，并生成经过<code>RPN</code>回归训练之后得到的修正的<code>anchor box</code>作为<code>proposal box</code>。</p>
+<p>对于原始<code>anchor box</code>来说，内部存储的是$[x_{al},y_{al},x_{ar},y_{ar}]$，因此可以得到<br>$$<br>\begin{align}<br>width&amp;&#x3D;x_{r}-x_{l}+1.0 \<br>height&amp;&#x3D;y{r}-y_{l}+1.0 \<br>center_{x}&amp;&#x3D;x_{l}+0.5 \times width \<br>center_{y}&amp;&#x3D;y_{l}+0.5 \times height<br>\end{align}<br>$$<br>加入<code>RPN</code>得到的偏移量，可以得到<code>ROI</code>的提议框<br>$$<br>\begin{align}<br>xl_{proposal}&amp;&#x3D;t_{x}*anchor_{width}+center_{x}-0.5 \times exp^{t_{width}} \times anchor_{width} \<br>yl_{proposal}&amp;&#x3D;t_{y}*anchor_{height}+center_{y}-0.5 \times exp^{t_{height}} \times anchor_{height} \<br>xr_{proposal}&amp;&#x3D;t_{x}*anchor_{width}+center_{x}+0.5 \times exp^{t_{width}} \times anchor_{width}\<br>yr_{proposal}&amp;&#x3D;t_{y}*anchor_{height}+center_{y}+0.5 \times exp^{t_{height}} \times anchor_{height}<br>\end{align}<br>$$<br>经过公示变换，至此得到了修正之后的<code>anchor box</code>作为初始提议框。</p>
+<p>由于<code>anchor box</code>的数量为$H \times W \times A$，即<code>CNN</code>卷积之后的<code>feature map</code>的长宽以及每个<code>cell</code>对应的<code>anchor</code>数量，为了降低运算量，设置了一些删选条件</p>
+<hr>
+
+<ul>
+<li>使用<code>RPN</code>得到的前景概率，进行排序并取对应的<code>pre_nms_topN</code>个<code>proposal box</code></li>
+<li>限制最小的<code>box</code>面积</li>
+<li>使用最大值抑制的方法，去除<code>nums&lt;0.7</code>的box</li>
+</ul>
+<hr>
+
+<p>通过上述的删选条件，对于每张图片，得到一个固定数量的<code>proposal box</code>，设数量为<code>n</code></p>
+</li>
+<li><p>固定<code>proposal box</code>尺寸</p>
+<p>由于<code>proposal box</code>的尺寸大小不一，而后续的分类计算和回归计算用的是全连接方式，因此使用<code>ROI POOLING</code>的方式将提取到的<code>proposal box</code>固定到同意尺寸，后续具体的做法与<code>fast rcnn</code>模型相同</p>
+</li>
+</ul>
+<h4 id="分类-回归"><a href="#分类-回归" class="headerlink" title="分类+回归"></a>分类+回归</h4><p>将<code>ROI</code>提取到的<code>proposal</code>使用全连接方式进行分类和回归计算，分类采用<code>softmax</code>，回归采用<code>smoothL1</code></p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>在<code>Faster Rcnn</code>中，使用<code>RPN</code>进行了初步的<code>ROI</code>的提取，在该部分进行分类计算和预测框的回归计算：</p>
+<ul>
+<li>分类主要是预测提取的<code>anchor box</code>是前景和背景的概率</li>
+<li>预测框回归主要是针对提取到的<code>anchor box</code>和<code>ground truth</code>的偏移量</li>
+</ul>
+<p><strong>训练<code>RPN</code>网络，得到了进行第一次预测的目标框，以及该目标框对应的前景和背景的概率</strong>。</p>
+<p>由<code>RPN</code>得到的<code>anchor box</code>的偏移量和前景的概率，使用前景概率，nms，最小面积等条件，进一步筛选得到要输入到<code>ROI POOLING</code>的<code>proposal</code></p>
+<p>使用<code>ROI POOLING</code>对<code>proposal</code>进行尺寸统一，之后进行全连接目标分类预测和预测框的再次精修</p>
+<p><strong>由于进行了两次的目标框提取以及分类计算，faster rcnn的模型准确率目前来讲也是非常高的，但是由此也带来了大量的计算量，计算效率不是太高</strong></p>
+<p><strong>代码参考：</strong><a href="https://github.com/xiaofengShi/CV/tree/master/Faster-RCNN_TF">https://github.com/xiaofengShi/CV/tree/master/Faster-RCNN_TF</a></p>
+<h2 id="SSD目标检测算法"><a href="#SSD目标检测算法" class="headerlink" title="SSD目标检测算法"></a>SSD目标检测算法</h2><p><code>SSD: Single Shot MultiBox Detector</code>目标检测，结合了<code>Faster rcnn</code>中多尺度检测的思想和<code>YOLO</code>使用单个深度网络进行检测方法，没有使用<code>faster rcnn</code>中在固定的<code>feature map</code>上进行<code>anchor box</code>生成，而是在多个下采样的<code>feature map</code>上进行预测框生成，并将多个<code>feature map</code>上的分类预测和目标框的回归预测进行合并，计算整个模型的总体损失。</p>
+<p><code>SSD</code>框架的核心思想：低层特征图感受野较小，用它去检测小物体，高层特征图感受野较大，用它去检测大物体。<strong>但是实际上这样存在一个问题，低层卷积语义信息很弱，无法对后续的分类有很好的帮助，导致小目标的检测提升其实不是很大。</strong></p>
+<p>论文链接：<a href="https://arxiv.org/abs/1512.02325">https://arxiv.org/abs/1512.02325</a></p>
+<p>代码链接：<a href="https://github.com/xiaofengShi/CV/tree/master/SDC-vehicle-dection">https://github.com/xiaofengShi/CV/tree/master/SDC-vehicle-dection</a></p>
+<p>网络结构如图所示</p>
+<img src="/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/SSD_architecture.png" class="" title="SSD_architecture">
+
+<p><code>SSD</code>的网络参数设置，代码来自<a href="https://github.com/xiaofengShi/CV/blob/master/SDC-vehicle-dection/nets/ssd_vgg_300.py">https://github.com/xiaofengShi/CV/blob/master/SDC-vehicle-dection/nets/ssd_vgg_300.py</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">Implementation of the SSD VGG-based 300 network.</span></span><br><span class="line"><span class="string">The default features layers with 300x300 image input are:</span></span><br><span class="line"><span class="string">    conv4 ==&gt; 38 x 38</span></span><br><span class="line"><span class="string">    conv7 ==&gt; 19 x 19</span></span><br><span class="line"><span class="string">    conv8 ==&gt; 10 x 10</span></span><br><span class="line"><span class="string">    conv9 ==&gt; 5 x 5</span></span><br><span class="line"><span class="string">    conv10 ==&gt; 3 x 3</span></span><br><span class="line"><span class="string">    conv11 ==&gt; 1 x 1</span></span><br><span class="line"><span class="string">The default image size used to train this network is 300x300.</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">default_params = SSDParams(</span><br><span class="line">            img_shape=(<span class="number">300</span>, <span class="number">300</span>), <span class="comment"># image size </span></span><br><span class="line">            num_classes=<span class="number">8</span>, <span class="comment"># classes want to predict</span></span><br><span class="line">            no_annotation_label=<span class="number">9</span>, <span class="comment"># label idx has no annotation</span></span><br><span class="line">            <span class="comment"># feature layer infos to generate anchors and predict </span></span><br><span class="line">            feat_layers=[<span class="string">&#x27;block4&#x27;</span>, <span class="string">&#x27;block7&#x27;</span>, <span class="string">&#x27;block8&#x27;</span>, <span class="string">&#x27;block9&#x27;</span>, <span class="string">&#x27;block10&#x27;</span>, <span class="string">&#x27;block11&#x27;</span>],</span><br><span class="line">            <span class="comment"># feature shape </span></span><br><span class="line">            feat_shapes=[(<span class="number">38</span>, <span class="number">38</span>), (<span class="number">19</span>, <span class="number">19</span>), (<span class="number">10</span>, <span class="number">10</span>), (<span class="number">5</span>, <span class="number">5</span>), (<span class="number">3</span>, <span class="number">3</span>), (<span class="number">1</span>, <span class="number">1</span>)],</span><br><span class="line">            <span class="comment"># 最底层anchor box 默认框和最顶层默认框的大小</span></span><br><span class="line">            anchor_size_bounds=[<span class="number">0.15</span>, <span class="number">0.90</span>],</span><br><span class="line">            <span class="comment"># anchor box size (min_size,max_size)</span></span><br><span class="line">            anchor_sizes=[(<span class="number">21.</span>, <span class="number">45.</span>),</span><br><span class="line">                          (<span class="number">45.</span>, <span class="number">99.</span>),</span><br><span class="line">                          (<span class="number">99.</span>, <span class="number">153.</span>),</span><br><span class="line">                          (<span class="number">153.</span>, <span class="number">207.</span>),</span><br><span class="line">                          (<span class="number">207.</span>, <span class="number">261.</span>),</span><br><span class="line">                          (<span class="number">261.</span>, <span class="number">315.</span>)],</span><br><span class="line">            <span class="comment"># anchor boax ratios for each feature layer</span></span><br><span class="line">            anchor_ratios=[[<span class="number">2</span>, <span class="number">.5</span>],</span><br><span class="line">                           [<span class="number">2</span>, <span class="number">.5</span>, <span class="number">3</span>, <span class="number">1.</span>/<span class="number">3</span>],</span><br><span class="line">                           [<span class="number">2</span>, <span class="number">.5</span>, <span class="number">3</span>, <span class="number">1.</span>/<span class="number">3</span>],</span><br><span class="line">                           [<span class="number">2</span>, <span class="number">.5</span>, <span class="number">3</span>, <span class="number">1.</span>/<span class="number">3</span>],</span><br><span class="line">                           [<span class="number">2</span>, <span class="number">.5</span>],</span><br><span class="line">                           [<span class="number">2</span>, <span class="number">.5</span>]],</span><br><span class="line">    		<span class="comment"># anchor_steps is the result origin image shape divide current feature </span></span><br><span class="line">            anchor_steps=[<span class="number">8</span>, <span class="number">16</span>, <span class="number">32</span>, <span class="number">64</span>, <span class="number">100</span>, <span class="number">300</span>],</span><br><span class="line">            anchor_offset=<span class="number">0.5</span>,</span><br><span class="line">            <span class="comment"># if normalization or not for each feature map, if bigger than 0 yes ,else no </span></span><br><span class="line">            normalizations=[<span class="number">20</span>, -<span class="number">1</span>, -<span class="number">1</span>, -<span class="number">1</span>, -<span class="number">1</span>, -<span class="number">1</span>],</span><br><span class="line">            prior_scaling=[<span class="number">0.1</span>, <span class="number">0.1</span>, <span class="number">0.2</span>, <span class="number">0.2</span>])</span><br></pre></td></tr></table></figure>
+
+<p>从<code>SSD</code>的模型结构中，可以看出，整体结构使用的是<code>VGG16</code>作为特征提取生成层<code>feature layer</code>，直接代码说话。在<code>SSD</code>的网络搭建中，使用的是<a href="https://github.com/tensorflow/tensorflow/tree/master/tensorflow/contrib/slim">slim</a>，这是一个tensorflow中封装的一个轻量级库，可以提高工程速度，<code>tensorflow</code>使用熟悉之后可以使用<code>slim</code>的<code>API</code>，但是有个不好的地方就是相应的API文档不够完善，对于<code>VGG16</code>等具有代表性的卷积模型，<code>tensorflow models</code> 已经进行了编写，内部存储着常用的已然完成编写的高质量代码轮子。<a href="https://github.com/tensorflow/models/tree/master/research/slim/nets">https://github.com/tensorflow/models/tree/master/research/slim/nets</a></p>
+<p>补充卷积尺寸计算公式</p>
+<p>如果<code>padding=SAME</code>，计算公式为<br>$$<br>\begin{align}<br>height_{out}&amp;&#x3D;ceil[height_{input} \div height_{stride}] \<br>width_{out}&amp;&#x3D;ceil[width_{input} \div width_{stride}]<br>\end{align}<br>$$<br>如果<code>padding=VALID</code>，计算公式为<br>$$<br>\begin{align}<br>height_{out}&amp;&#x3D;ceil[(height_{input}-height_{kernel}+1) \div height_{stride}] \<br>width_{out}&amp;&#x3D;ceil[(width_{input}-width_{kernel}+1) \div width_{stride}]<br>\end{align}<br>$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">ssd_net</span>(<span class="params">inputs,</span></span><br><span class="line"><span class="params">            num_classes=SSDNet.default_params.num_classes,</span></span><br><span class="line"><span class="params">            feat_layers=SSDNet.default_params.feat_layers,</span></span><br><span class="line"><span class="params">            anchor_sizes=SSDNet.default_params.anchor_sizes,</span></span><br><span class="line"><span class="params">            anchor_ratios=SSDNet.default_params.anchor_ratios,</span></span><br><span class="line"><span class="params">            normalizations=SSDNet.default_params.normalizations,</span></span><br><span class="line"><span class="params">            is_training=<span class="literal">True</span>,</span></span><br><span class="line"><span class="params">            dropout_keep_prob=<span class="number">0.5</span>,</span></span><br><span class="line"><span class="params">            prediction_fn=slim.softmax,</span></span><br><span class="line"><span class="params">            reuse=<span class="literal">None</span>,</span></span><br><span class="line"><span class="params">            scope=<span class="string">&#x27;ssd_300_vgg&#x27;</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    SSD net definition.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="comment"># End_points collect relevant activations for external use.</span></span><br><span class="line">    end_points = &#123;&#125;</span><br><span class="line">    <span class="keyword">with</span> tf.variable_scope(scope, <span class="string">&#x27;ssd_300_vgg&#x27;</span>, [inputs], reuse=reuse):</span><br><span class="line">        <span class="comment"># Original VGG-16 blocks.</span></span><br><span class="line">        <span class="comment"># two conv_3x3_1_64 and one max_pool_2x2_2</span></span><br><span class="line">        net = slim.repeat(inputs, <span class="number">2</span>, slim.conv2d, <span class="number">64</span>, [<span class="number">3</span>, <span class="number">3</span>], scope=<span class="string">&#x27;conv1&#x27;</span>)</span><br><span class="line">        end_points[<span class="string">&#x27;block1&#x27;</span>] = net</span><br><span class="line">        <span class="comment"># feature size [n,150,150,64] after maxpool</span></span><br><span class="line">        net = slim.max_pool2d(net, [<span class="number">2</span>, <span class="number">2</span>], scope=<span class="string">&#x27;pool1&#x27;</span>)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># Block 2.</span></span><br><span class="line">        <span class="comment"># two conv_3x3_1_128 and one max_pool_2x2_2</span></span><br><span class="line">        net = slim.repeat(net, <span class="number">2</span>, slim.conv2d, <span class="number">128</span>, [<span class="number">3</span>, <span class="number">3</span>], scope=<span class="string">&#x27;conv2&#x27;</span>)</span><br><span class="line">        end_points[<span class="string">&#x27;block2&#x27;</span>] = net</span><br><span class="line">        <span class="comment"># feature size [n,75,75,128] after maxpool</span></span><br><span class="line">        net = slim.max_pool2d(net, [<span class="number">2</span>, <span class="number">2</span>], scope=<span class="string">&#x27;pool2&#x27;</span>)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># Block 3.</span></span><br><span class="line">        <span class="comment"># three conv_3x3_1_256 and one max_pool_2_2</span></span><br><span class="line">        net = slim.repeat(net, <span class="number">3</span>, slim.conv2d, <span class="number">256</span>, [<span class="number">3</span>, <span class="number">3</span>], scope=<span class="string">&#x27;conv3&#x27;</span>)</span><br><span class="line">        end_points[<span class="string">&#x27;block3&#x27;</span>] = net</span><br><span class="line">        <span class="comment"># feature size [n,38,38,256] aft maxpool</span></span><br><span class="line">        net = slim.max_pool2d(net, [<span class="number">2</span>, <span class="number">2</span>], scope=<span class="string">&#x27;pool3&#x27;</span>)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># Block 4.</span></span><br><span class="line">        <span class="comment"># three conv_3x3_1_512 and one max_pool_2_2</span></span><br><span class="line">        net = slim.repeat(net, <span class="number">3</span>, slim.conv2d, <span class="number">512</span>, [<span class="number">3</span>, <span class="number">3</span>], scope=<span class="string">&#x27;conv4&#x27;</span>)</span><br><span class="line">        end_points[<span class="string">&#x27;block4&#x27;</span>] = net <span class="comment"># predict feature layer [n,38,38,512]</span></span><br><span class="line">        <span class="comment"># feature size [n,19,19,512] aft maxpool</span></span><br><span class="line">        net = slim.max_pool2d(net, [<span class="number">2</span>, <span class="number">2</span>], scope=<span class="string">&#x27;pool4&#x27;</span>)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># Block 5.</span></span><br><span class="line">        <span class="comment"># three conv_3x3_1_512 and one max_pool_3_1 </span></span><br><span class="line">        net = slim.repeat(net, <span class="number">3</span>, slim.conv2d, <span class="number">512</span>, [<span class="number">3</span>, <span class="number">3</span>], scope=<span class="string">&#x27;conv5&#x27;</span>)</span><br><span class="line">        end_points[<span class="string">&#x27;block5&#x27;</span>] = net </span><br><span class="line">        <span class="comment"># feature size [n,19,19,512] aft maxpool</span></span><br><span class="line">        net = slim.max_pool2d(net, [<span class="number">3</span>, <span class="number">3</span>], <span class="number">1</span>, scope=<span class="string">&#x27;pool5&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Additional SSD blocks.</span></span><br><span class="line">        <span class="comment"># Block 6: let&#x27;s dilate the hell out of it!</span></span><br><span class="line">        <span class="comment"># one conv_3x3_1_1024, rate is the dilation rate to use for atrous convolution</span></span><br><span class="line">        net = slim.conv2d(net, <span class="number">1024</span>, [<span class="number">3</span>, <span class="number">3</span>], rate=<span class="number">6</span>, scope=<span class="string">&#x27;conv6&#x27;</span>)</span><br><span class="line">        end_points[<span class="string">&#x27;block6&#x27;</span>] = net  <span class="comment"># feature size is [n,19,19,1024]</span></span><br><span class="line">        <span class="comment"># Block 7: 1x1 conv. Because the fuck.</span></span><br><span class="line">        net = slim.conv2d(net, <span class="number">1024</span>, [<span class="number">1</span>, <span class="number">1</span>], scope=<span class="string">&#x27;conv7&#x27;</span>)</span><br><span class="line">        end_points[<span class="string">&#x27;block7&#x27;</span>] = net <span class="comment"># feature size is [n,19,19,1024]</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># Block 8/9/10/11: 1x1 and 3x3 convolutions stride 2 (except lasts).</span></span><br><span class="line">        end_point = <span class="string">&#x27;block8&#x27;</span></span><br><span class="line">        <span class="comment"># input feature size is [n,19,19,1024]</span></span><br><span class="line">        <span class="comment"># out feature size is [n,10,10,512]</span></span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(end_point):</span><br><span class="line">            net = slim.conv2d(net, <span class="number">256</span>, [<span class="number">1</span>, <span class="number">1</span>], scope=<span class="string">&#x27;conv1x1&#x27;</span>)</span><br><span class="line">            net = slim.conv2d(net, <span class="number">512</span>, [<span class="number">3</span>, <span class="number">3</span>], stride=<span class="number">2</span>, scope=<span class="string">&#x27;conv3x3&#x27;</span>)</span><br><span class="line">        end_points[end_point] = net</span><br><span class="line">        end_point = <span class="string">&#x27;block9&#x27;</span></span><br><span class="line">        <span class="comment"># input feature size is [n,10,10,512]</span></span><br><span class="line">        <span class="comment"># out feature size is [n,5,5,256]</span></span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(end_point):</span><br><span class="line">            net = slim.conv2d(net, <span class="number">128</span>, [<span class="number">1</span>, <span class="number">1</span>], scope=<span class="string">&#x27;conv1x1&#x27;</span>)</span><br><span class="line">            net = slim.conv2d(net, <span class="number">256</span>, [<span class="number">3</span>, <span class="number">3</span>], stride=<span class="number">2</span>, scope=<span class="string">&#x27;conv3x3&#x27;</span>)</span><br><span class="line">        end_points[end_point] = net</span><br><span class="line">        end_point = <span class="string">&#x27;block10&#x27;</span></span><br><span class="line">        <span class="comment"># input feature size is [n,5,5,256]</span></span><br><span class="line">        <span class="comment"># out feature size is [n,3,3,256] </span></span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(end_point):</span><br><span class="line">            net = slim.conv2d(net, <span class="number">128</span>, [<span class="number">1</span>, <span class="number">1</span>], scope=<span class="string">&#x27;conv1x1&#x27;</span>)</span><br><span class="line">            net = slim.conv2d(net, <span class="number">256</span>, [<span class="number">3</span>, <span class="number">3</span>], scope=<span class="string">&#x27;conv3x3&#x27;</span>, padding=<span class="string">&#x27;VALID&#x27;</span>)</span><br><span class="line">        end_points[end_point] = net</span><br><span class="line">        end_point = <span class="string">&#x27;block11&#x27;</span></span><br><span class="line">        <span class="comment"># input feature size is [n,3,3,256]</span></span><br><span class="line">        <span class="comment"># out feature size is [n,1,1,256]</span></span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(end_point):</span><br><span class="line">            net = slim.conv2d(net, <span class="number">128</span>, [<span class="number">1</span>, <span class="number">1</span>], scope=<span class="string">&#x27;conv1x1&#x27;</span>)</span><br><span class="line">            net = slim.conv2d(net, <span class="number">256</span>, [<span class="number">3</span>, <span class="number">3</span>], scope=<span class="string">&#x27;conv3x3&#x27;</span>, padding=<span class="string">&#x27;VALID&#x27;</span>)</span><br><span class="line">        end_points[end_point] = net</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Prediction and localisations layers.</span></span><br><span class="line">        predictions = []</span><br><span class="line">        logits = []</span><br><span class="line">        localisations = []</span><br><span class="line">        <span class="comment"># copy parameters from above code</span></span><br><span class="line">        <span class="comment"># feat_layers=[&#x27;block4&#x27;, &#x27;block7&#x27;, &#x27;block8&#x27;, &#x27;block9&#x27;, &#x27;block10&#x27;, &#x27;block11&#x27;]</span></span><br><span class="line">        <span class="comment"># feat_shapes=[(38, 38), (19, 19), (10, 10), (5, 5), (3, 3), (1, 1)]</span></span><br><span class="line">        <span class="comment"># anchor_sizes=[(21., 45.),(45., 99.),(99., 153.),(153., 207.),(207., 261.),(261., 315.)],</span></span><br><span class="line">        <span class="comment"># anchor_ratios=[[2, .5],[2, .5, 3, 1./3],[2, .5, 3, 1./3],[2, .5, 3, 1./3],[2, .5],[2, .5]],</span></span><br><span class="line">        <span class="comment"># normalizations=[20, -1, -1, -1, -1, -1]</span></span><br><span class="line">        <span class="comment"># num_classes=8</span></span><br><span class="line">        <span class="keyword">for</span> i, layer <span class="keyword">in</span> <span class="built_in">enumerate</span>(feat_layers):</span><br><span class="line">            <span class="keyword">with</span> tf.variable_scope(layer + <span class="string">&#x27;_box&#x27;</span>):</span><br><span class="line">                <span class="comment"># predict the class and location for each feature layer</span></span><br><span class="line">                <span class="comment"># p is the class property</span></span><br><span class="line">                <span class="comment"># l is the location</span></span><br><span class="line">                <span class="comment"># for each cell in a feature layer use cnov to generate</span></span><br><span class="line">                	<span class="comment"># cls: k_anchor_percell*numclass</span></span><br><span class="line">                    <span class="comment"># loc: k_anchor_percell*4</span></span><br><span class="line">                p, l = ssd_multibox_layer(end_points[layer],</span><br><span class="line">                                          num_classes,</span><br><span class="line">                                          anchor_sizes[i],</span><br><span class="line">                                          anchor_ratios[i],</span><br><span class="line">                                          normalizations[i])</span><br><span class="line">            predictions.append(prediction_fn(p))</span><br><span class="line">            logits.append(p) <span class="comment"># predict class </span></span><br><span class="line">            localisations.append(l) <span class="comment"># predict location</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> predictions, localisations, logits, end_points</span><br></pre></td></tr></table></figure>
+
+<p>在代码中的<code>conv6</code>的计算过程中，使用了扩展卷积，可以实现不增加参数量的情况下扩大卷积的视野，<code>net = slim.conv2d(net, 1024, [3, 3], rate=6, scope=&#39;conv6&#39;)</code>，卷积核的尺寸为$3 \times 3$，扩张率为$6$，在图中<code>(a),(b),(c)</code>对应的是普通卷积，视野$3 \times 3$；扩张率为1，视野$7 \times 7$；以及扩张率为$3$，视野$15 \times 15$。</p>
+<hr>
+
+<img src="/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/ssd_dilate_conv.jpg" class="" title="ssd_dilate_conv">
+
+<hr>
+
+<h3 id="Anchor-box-generator"><a href="#Anchor-box-generator" class="headerlink" title="Anchor_box_generator"></a>Anchor_box_generator</h3><p>对于<code>SSD</code>网络结构中，使用多个<code>feature layer</code>进行预测以及默认框的生成，生成的方式和<code>faster rcnn</code>相似，同样是在每个<code>featur map</code>的每个<code>cell</code>为中心点进行<code>anchor box</code>的生成。由于使用了多个不同尺寸的<code>feature layer</code>进行多尺度预测，论文中给出了进行默认框生成的方法</p>
+<ol>
+<li><p><strong>默认框生成的个数</strong></p>
+<p>根据上述的<code>SSD</code>网络结构，一共使用了$6$个不同尺寸的<code>feature layer</code>进行预测，在每个<code>feature layer</code>中存在$h \times w$个中心点(<code>h、w</code>为<code>feature layer</code>的高度和宽度)，每个中线点会产生<code>k</code>个默认框，并且$6$个层中对应的$k&#x3D;[4,6,6,6,4,4]$,总共生成的默认框数量为$8732$个</p>
+<hr>
+
+<p>$$<br>\begin{align}<br>TotalBoxNums&#x3D;&amp;38<em>38</em>4+19<em>19</em>6+10<em>10</em>6+5<em>5</em>6+3<em>3</em>4+1<em>1</em>4 \<br>&#x3D;&amp;8732<br>\end{align}<br>$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># feature layer infos to generate anchors and predict </span></span><br><span class="line">feat_layers=[<span class="string">&#x27;block4&#x27;</span>, <span class="string">&#x27;block7&#x27;</span>, <span class="string">&#x27;block8&#x27;</span>, <span class="string">&#x27;block9&#x27;</span>, <span class="string">&#x27;block10&#x27;</span>, <span class="string">&#x27;block11&#x27;</span>],</span><br><span class="line"><span class="comment"># feature shape </span></span><br><span class="line">feat_shapes=[(<span class="number">38</span>, <span class="number">38</span>), (<span class="number">19</span>, <span class="number">19</span>), (<span class="number">10</span>, <span class="number">10</span>), (<span class="number">5</span>, <span class="number">5</span>), (<span class="number">3</span>, <span class="number">3</span>), (<span class="number">1</span>, <span class="number">1</span>)],</span><br><span class="line">anchor_ratios=[[<span class="number">2</span>, <span class="number">.5</span>],[<span class="number">2</span>, <span class="number">.5</span>, <span class="number">3</span>, <span class="number">1.</span>/<span class="number">3</span>],[<span class="number">2</span>, <span class="number">.5</span>, <span class="number">3</span>, <span class="number">1.</span>/<span class="number">3</span>],[<span class="number">2</span>, <span class="number">.5</span>, <span class="number">3</span>, <span class="number">1.</span>/<span class="number">3</span>],[<span class="number">2</span>, <span class="number">.5</span>],[<span class="number">2</span>, <span class="number">.5</span>]],</span><br></pre></td></tr></table></figure>
+
+<p><strong>中心点的计算公式为</strong><br>$$<br>\begin{align}<br>center_{x}&amp;&#x3D;\frac{i+0.5}{|feature_{k}|} ::::::::::::::: &amp; (1)\<br>center_{y}&amp;&#x3D;\frac{j+0.5}{|feature_{k}|} &amp; (2)\<br>where &amp; :::::: i,j \in[0,|feature_{k}|] &amp; condation<br>\end{align}<br>$$<br>其中$|feature_{k}|$ 为第$k$个<code>feature layer</code>的尺寸</p>
+</li>
+<li><p><strong>计算每个<code>feature layer</code>的<code>min_size</code>和<code>max_size</code></strong></p>
+<p>计算对应于<code>ssd</code>模型参数中的<code>anchor_size</code>，内部存储的是要生成默认框的尺寸参数，对于每层的<code>anchor_size</code>包含两个量，分别为<code>min_size</code>和<code>max_size</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">anchor_sizes=[(<span class="number">21.</span>, <span class="number">45.</span>),(<span class="number">45.</span>, <span class="number">99.</span>),(<span class="number">99.</span>, <span class="number">153.</span>),(<span class="number">153.</span>, <span class="number">207.</span>),(<span class="number">207.</span>, <span class="number">261.</span>),(<span class="number">261.</span>, <span class="number">315.</span>)],</span><br></pre></td></tr></table></figure>
+
+<p>根据论文所述默认框的尺度线性增加<br>$$<br>s_{k}&#x3D;s_{min}+\frac{s_{max}-s_{min}}{m-1}(k-1),:::::: k \in[1,m]<br>$$<br>其中$m$指特征图的数量，在<code>SSD</code>网络结构中$m&#x3D;5$，因为对于第一层<code>block4</code>中，是进行单独设置的，$s_{k}$表示默认框的大小相对于输入的图片的比例，$s_{min}$和$s_{max}$对应比例的最小值和最大值，对应着<code>SSD</code>参数中的<code>anchor_size_bounds=[0.15, 0.90]=[s_min,s_max]</code>,对于第一个特征图论文中给定的比例一般设置为$s_{min}&#x2F;2&#x3D;0.1$但是在代码中使用的是$0.07$，对于剩余的特征图，默认框按照上述所示的公式进行线性增加，可以计算得出，每一个<code>feature layer</code>对应的比例增加的步长为$floor(\frac{s_{max}-s_{min}}{m-1}*100)&#x3D;18$,可以得到剩余的<code>feature layer</code>的尺寸为$15,33,51,69,87$，这些数对应着默认框尺寸对应的图片尺寸的比例，可以最终得到各个特征图的默认框在输入图片尺寸为$300 \times 300$的时候为$45,99,153,207,261$，这就得到了<code>anchor_size</code>最小尺寸的值<code>min_size</code>。对应的<code>max_size</code>的尺寸为当前<code>min_size</code>加上步长所得，计算代码如下，</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 图像尺寸</span></span><br><span class="line">img_size = <span class="number">300</span>    </span><br><span class="line"><span class="comment"># feat_shapes=[(38, 38), (19, 19), (10, 10), (5, 5), (3, 3), (1, 1)], </span></span><br><span class="line">mbox_source_layers = [<span class="string">&#x27;block4&#x27;</span>, <span class="string">&#x27;block7&#x27;</span>, <span class="string">&#x27;block8&#x27;</span>, <span class="string">&#x27;block9&#x27;</span>, <span class="string">&#x27;block10&#x27;</span>, <span class="string">&#x27;block11&#x27;</span>] </span><br><span class="line"><span class="comment"># in percent %</span></span><br><span class="line"><span class="comment"># 论文中所说的Smin=0.2，Smax=0.9的初始值，经过下面的运算即可得到min_sizes，max_sizes  </span></span><br><span class="line">min_ratio = <span class="number">15</span></span><br><span class="line">max_ratio = <span class="number">90</span>  </span><br><span class="line"><span class="comment"># 计算步长 </span></span><br><span class="line">step = <span class="built_in">int</span>(math.floor((max_ratio - min_ratio) / (<span class="built_in">len</span>(mbox_source_layers) - <span class="number">2</span>)))</span><br><span class="line">min_sizes = []  </span><br><span class="line">max_sizes = []</span><br><span class="line"><span class="comment">####从min_ratio至max_ratio+1每隔step=18取一个值赋值给ratio。</span></span><br><span class="line"><span class="keyword">for</span> ratio <span class="keyword">in</span> <span class="built_in">range</span>(min_ratio, max_ratio + <span class="number">1</span>, step):  </span><br><span class="line">    min_sizes.append(min_dim * ratio / <span class="number">100.</span>)  </span><br><span class="line">    max_sizes.append(min_dim * (ratio + step) / <span class="number">100.</span>)  </span><br><span class="line"><span class="comment"># 添加第一层的尺寸</span></span><br><span class="line">min_sizes = [min_dim * <span class="number">7</span> / <span class="number">100.</span>] + min_sizes  </span><br><span class="line">max_sizes = [min_dim * <span class="number">15</span> / <span class="number">100.</span>] + max_sizes</span><br><span class="line">aspect_size=<span class="built_in">list</span>(<span class="built_in">zip</span>(min_sizes,max_sizes))</span><br></pre></td></tr></table></figure>
+
+<p>运算上面的代码可以得到</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">min_sizes=[21.0, 45.0, 99.0, 153.0, 207.0, 261.0]</span><br><span class="line">max_sizes=[45.0, 99.0, 153.0, 207.0, 261.0, 315.0]</span><br><span class="line">aspect_size=[(21.0, 45.0),(45.0, 99.0),(99.0, 153.0),(153.0, 207.0),(207.0, 261.0),				(261.0, 315.0)]</span><br></pre></td></tr></table></figure>
+
+<p>由此就得到了<code>SSD</code>模型参数中给定的<code>aspect_size</code>，一般在代码中直接给定了计算好的<code>aspect_size</code>但是并没有给出计算方法，在此进行重点分析，并理解其计算方法。</p>
+</li>
+<li><p>为每一个预测的<code>feature layer</code>生成默认框的计算大小</p>
+<p>根据上述计算得到的<code>aspect_ratios</code>和设定的默认框的比例<code>aspect_ratios</code>进行计算</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># aspect box which contain the min_size and max size for each feature layer</span></span><br><span class="line">aspect_size=[(<span class="number">21.0</span>, <span class="number">45.0</span>),(<span class="number">45.0</span>, <span class="number">99.0</span>),(<span class="number">99.0</span>, <span class="number">153.0</span>),(<span class="number">153.0</span>, <span class="number">207.0</span>),(<span class="number">207.0</span>, <span class="number">261.0</span>),				(<span class="number">261.0</span>, <span class="number">315.0</span>)]</span><br><span class="line"><span class="comment"># anchor boax ratios for each feature layer</span></span><br><span class="line">anchor_ratios=[[<span class="number">2</span>, <span class="number">.5</span>],[<span class="number">2</span>, <span class="number">.5</span>, <span class="number">3</span>, <span class="number">1.</span>/<span class="number">3</span>],[<span class="number">2</span>, <span class="number">.5</span>, <span class="number">3</span>, <span class="number">1.</span>/<span class="number">3</span>],[<span class="number">2</span>, <span class="number">.5</span>, <span class="number">3</span>, <span class="number">1.</span>/<span class="number">3</span>],[<span class="number">2</span>, <span class="number">.5</span>],[<span class="number">2</span>, <span class="number">.5</span>]],</span><br></pre></td></tr></table></figure>
+
+<p>每个中心点会根据<code>min_size</code>和<code>max_size</code>生成两个正方形的默认框，其边长分别为</p>
+<ul>
+<li>小正方形边长：<code>min_size</code></li>
+<li>大正方形边长：<code>sqrt(min_size*max_size)</code></li>
+</ul>
+<p>根据给定的边长比例，一个比例对应生成一个长方形矩形框，对应的长方形的高度和宽度为</p>
+<ul>
+<li>长方形的高：<code>min_size/sqrt(aspect_ratio)</code></li>
+<li>长方形的宽：<code>min_size*sqrt(aspect_ratio)</code></li>
+</ul>
+<p><code>anchor_box</code>的生成具体如图所示：</p>
+<hr>
+
+<img src="/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/ssd_anchor.png" class="" title="SSD_anchor">
+
+<hr>
+
+<p>根据给定<code>aspect_size</code>和<code>anchor_ratios</code>的参数，对于每个<code>feature layer</code>生成的<code>anchor box</code>的数量为<code>len(aspect_size)+len(anchor_ratios)</code>，对于每层生成<code>anchor box</code>的程序代码如下:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">ssd_anchor_one_layer</span>(<span class="params">img_shape,</span></span><br><span class="line"><span class="params">                         feat_shape,</span></span><br><span class="line"><span class="params">                         sizes,</span></span><br><span class="line"><span class="params">                         ratios,</span></span><br><span class="line"><span class="params">                         step,</span></span><br><span class="line"><span class="params">                         offset=<span class="number">0.5</span>,</span></span><br><span class="line"><span class="params">                         dtype=np.float32</span>):</span><br><span class="line">    	<span class="comment"># generate anchor centers for current feature layer</span></span><br><span class="line">    	y, x = np.mgrid[<span class="number">0</span>:feat_shape[<span class="number">0</span>], <span class="number">0</span>:feat_shape[<span class="number">1</span>]]</span><br><span class="line">        y = (y.astype(dtype) + offset) * step / img_shape[<span class="number">0</span>]</span><br><span class="line">        x = (x.astype(dtype) + offset) * step / img_shape[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Expand dims to support easy broadcasting.</span></span><br><span class="line">        y = np.expand_dims(y, axis=-<span class="number">1</span>)</span><br><span class="line">        x = np.expand_dims(x, axis=-<span class="number">1</span>)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># Compute relative height and width.</span></span><br><span class="line">        <span class="comment"># Tries to follow the original implementation of SSD for the order.</span></span><br><span class="line">        num_anchors = <span class="built_in">len</span>(sizes) + <span class="built_in">len</span>(ratios)</span><br><span class="line">        </span><br><span class="line">        h = np.zeros((num_anchors, ), dtype=dtype)</span><br><span class="line">        w = np.zeros((num_anchors, ), dtype=dtype)</span><br><span class="line">        <span class="comment"># Add first anchor boxes with ratio=1.</span></span><br><span class="line">        h[<span class="number">0</span>] = sizes[<span class="number">0</span>] / img_shape[<span class="number">0</span>]</span><br><span class="line">        w[<span class="number">0</span>] = sizes[<span class="number">0</span>] / img_shape[<span class="number">1</span>]</span><br><span class="line">        di = <span class="number">1</span></span><br><span class="line">        <span class="comment"># generate square </span></span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(sizes) &gt; <span class="number">1</span>:</span><br><span class="line">            h[<span class="number">1</span>] = math.sqrt(sizes[<span class="number">0</span>] * sizes[<span class="number">1</span>]) / img_shape[<span class="number">0</span>]</span><br><span class="line">            w[<span class="number">1</span>] = math.sqrt(sizes[<span class="number">0</span>] * sizes[<span class="number">1</span>]) / img_shape[<span class="number">1</span>]</span><br><span class="line">            di += <span class="number">1</span></span><br><span class="line">        <span class="comment"># generate rectangle based ratios </span></span><br><span class="line">        <span class="keyword">for</span> i, r <span class="keyword">in</span> <span class="built_in">enumerate</span>(ratios):</span><br><span class="line">            h[i+di] = sizes[<span class="number">0</span>] / img_shape[<span class="number">0</span>] / math.sqrt(r)</span><br><span class="line">            w[i + di] = sizes[<span class="number">0</span>] / img_shape[<span class="number">1</span>] * math.sqrt(r)</span><br><span class="line">        <span class="keyword">return</span> y, x, h, w</span><br></pre></td></tr></table></figure>
+
+<h3 id="ground-truth-处理"><a href="#ground-truth-处理" class="headerlink" title="ground truth 处理"></a>ground truth 处理</h3><p>在训练时将<code>label</code>中的信息（<code>ground_truth_box, ground_truth_category</code>）进行预处理，将其对应到上述生成的默认框上。根据默认框和<code>ground_truth_box</code>的<code>jaccard</code>重叠来确定默认框，在代码中使用<code>jaccard</code>重叠超过$0.5$的默认框为正样本，其余的为负样本。具体策略为：</p>
+<ul>
+<li>原则1：首先找到每个<code>ground_truth_box</code>对应的默认框中<code>IOU</code>最大的作为正样本，该默认框与其进行匹配；</li>
+<li>原则2：在剩余的默认框中找到与任意一个<code>ground_truth_box</code>的<code>IOU&gt;0.5</code>的默认框作为正样本；</li>
+</ul>
+<p>一个<code>ground_truth</code>对应着多个正样本默认框，但是反过来确实不行的，一个默认框只能匹配一个<code>ground truth</code>，如果多个<code>ground truth</code>与某个默认框的<code>IOU</code>都大于设定的阈值，该默认框只能匹配<code>IOU</code>最大的那个<code>ground truth</code>。</p>
+<p>特殊情形：如果某个<code>ground truth</code>对应的最大的<code>IOU</code>小于阈值，并且所匹配的默认框却与另一个<code>ground truth</code>的<code>IOU</code>大于阈值，那么该默认框应该匹配前者，以确保某个<code>ground truth</code>一定存在一个默认框与之匹配。此种情形出现的可能性不大，因为按照生成<code>anchor box</code>，全部覆盖了图像的各个区域，因此只实现第二个原则即可。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#label和bbox编码函数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">tf_ssd_bboxes_encode_layer</span>(<span class="params">labels,</span></span><br><span class="line"><span class="params">                               bboxes,</span></span><br><span class="line"><span class="params">                               anchors_layer,</span></span><br><span class="line"><span class="params">                               num_classes,</span></span><br><span class="line"><span class="params">                               no_annotation_label,</span></span><br><span class="line"><span class="params">                               ignore_threshold=<span class="number">0.5</span>,</span></span><br><span class="line"><span class="params">                               prior_scaling=[<span class="number">0.1</span>, <span class="number">0.1</span>, <span class="number">0.2</span>, <span class="number">0.2</span>],</span></span><br><span class="line"><span class="params">                               dtype=tf.float32</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Encode groundtruth labels and bounding boxes using SSD anchors from</span></span><br><span class="line"><span class="string">    one layer.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Arguments:</span></span><br><span class="line"><span class="string">      labels: 1D Tensor(int64) containing groundtruth labels;</span></span><br><span class="line"><span class="string">      bboxes: Nx4 Tensor(float) with bboxes relative coordinates;</span></span><br><span class="line"><span class="string">      anchors_layer: Numpy array with layer anchors;</span></span><br><span class="line"><span class="string">      matching_threshold: Threshold for positive match with groundtruth bboxes;</span></span><br><span class="line"><span class="string">      prior_scaling: Scaling of encoded coordinates.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Return:</span></span><br><span class="line"><span class="string">      (target_labels, target_localizations, target_scores): Target Tensors.</span></span><br><span class="line"><span class="string">      feat_localizations:shape is [h,w,k_box_percell,4]</span></span><br><span class="line"><span class="string">      feat_labels: shape is [h,w,k_box_percell]</span></span><br><span class="line"><span class="string">      feat_scores: shape is [h,w,k_box_percell]</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="comment"># Anchors coordinates and volume.</span></span><br><span class="line">    <span class="comment"># anchor_layer 对应着上面生成的anchor_box函数ssd_anchor_one_layer </span></span><br><span class="line">    yref, xref, href, wref = anchors_layer</span><br><span class="line">    ymin = yref - href / <span class="number">2.</span> <span class="comment"># 左上角y</span></span><br><span class="line">    xmin = xref - wref / <span class="number">2.</span> <span class="comment"># 左上角x</span></span><br><span class="line">    ymax = yref + href / <span class="number">2.</span> <span class="comment"># 右下角y</span></span><br><span class="line">    xmax = xref + wref / <span class="number">2.</span> <span class="comment"># 右下角x</span></span><br><span class="line">    vol_anchors = (xmax - xmin) * (ymax - ymin) <span class="comment"># 面积</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Initialize tensors...</span></span><br><span class="line">    shape = (yref.shape[<span class="number">0</span>], yref.shape[<span class="number">1</span>], href.size) <span class="comment"># (h,w,4)</span></span><br><span class="line">    feat_labels = tf.zeros(shape, dtype=tf.int64)  <span class="comment">#</span></span><br><span class="line">    feat_scores = tf.zeros(shape, dtype=dtype)</span><br><span class="line">    <span class="comment">#shape为（h,w,4）</span></span><br><span class="line">    feat_ymin = tf.zeros(shape, dtype=dtype)</span><br><span class="line">    feat_xmin = tf.zeros(shape, dtype=dtype)</span><br><span class="line">    feat_ymax = tf.ones(shape, dtype=dtype)</span><br><span class="line">    feat_xmax = tf.ones(shape, dtype=dtype)</span><br><span class="line"></span><br><span class="line">    <span class="comment">#计算jaccard重合</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">jaccard_with_anchors</span>(<span class="params">bbox</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Compute jaccard score a box and the anchors.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="comment"># Intersection bbox and volume.</span></span><br><span class="line">        int_ymin = tf.maximum(ymin, bbox[<span class="number">0</span>])</span><br><span class="line">        int_xmin = tf.maximum(xmin, bbox[<span class="number">1</span>])</span><br><span class="line">        int_ymax = tf.minimum(ymax, bbox[<span class="number">2</span>])</span><br><span class="line">        int_xmax = tf.minimum(xmax, bbox[<span class="number">3</span>])</span><br><span class="line">        h = tf.maximum(int_ymax - int_ymin, <span class="number">0.</span>)</span><br><span class="line">        w = tf.maximum(int_xmax - int_xmin, <span class="number">0.</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Volumes.</span></span><br><span class="line">        inter_vol = h * w</span><br><span class="line">        union_vol = vol_anchors - inter_vol \</span><br><span class="line">            + (bbox[<span class="number">2</span>] - bbox[<span class="number">0</span>]) * (bbox[<span class="number">3</span>] - bbox[<span class="number">1</span>])</span><br><span class="line">        jaccard = tf.div(inter_vol, union_vol)</span><br><span class="line">        <span class="keyword">return</span> jaccard</span><br><span class="line">    </span><br><span class="line">   	<span class="keyword">def</span> <span class="title function_">intersection_with_anchors</span>(<span class="params">bbox</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Compute intersection between score a box and the anchors.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        int_ymin = tf.maximum(ymin, bbox[<span class="number">0</span>])</span><br><span class="line">        int_xmin = tf.maximum(xmin, bbox[<span class="number">1</span>])</span><br><span class="line">        int_ymax = tf.minimum(ymax, bbox[<span class="number">2</span>])</span><br><span class="line">        int_xmax = tf.minimum(xmax, bbox[<span class="number">3</span>])</span><br><span class="line">        h = tf.maximum(int_ymax - int_ymin, <span class="number">0.</span>)</span><br><span class="line">        w = tf.maximum(int_xmax - int_xmin, <span class="number">0.</span>)</span><br><span class="line">        inter_vol = h * w</span><br><span class="line">        scores = tf.div(inter_vol, vol_anchors)</span><br><span class="line">        <span class="keyword">return</span> scores</span><br><span class="line">    <span class="comment">#条件函数 </span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">condition</span>(<span class="params">i, feat_labels, feat_scores,</span></span><br><span class="line"><span class="params">                  feat_ymin, feat_xmin, feat_ymax, feat_xmax</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Condition: check label index.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="comment">#tf.less函数 Returns the truth value of (x &lt; y) element-wise.</span></span><br><span class="line">        r = tf.less(i, tf.shape(labels))</span><br><span class="line">        <span class="keyword">return</span> r[<span class="number">0</span>]</span><br><span class="line">    <span class="comment">#主体</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">body</span>(<span class="params">i, feat_labels, feat_scores,</span></span><br><span class="line"><span class="params">             feat_ymin, feat_xmin, feat_ymax, feat_xmax</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Body: update feature labels, scores and bboxes.</span></span><br><span class="line"><span class="string">        Follow the original SSD paper for that purpose:</span></span><br><span class="line"><span class="string">          - assign values when jaccard &gt; 0.5;</span></span><br><span class="line"><span class="string">          - only update if beat the score of other bboxes.</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="comment"># Jaccard score.</span></span><br><span class="line">        label = labels[i]</span><br><span class="line">        bbox = bboxes[i]</span><br><span class="line">        jaccard = jaccard_with_anchors(bbox)</span><br><span class="line">        <span class="comment"># Mask: check threshold + scores + no annotations + num_classes.</span></span><br><span class="line">        mask = tf.greater(jaccard, feat_scores)</span><br><span class="line">        <span class="comment"># mask = tf.logical_and(mask, tf.greater(jaccard, matching_threshold))</span></span><br><span class="line">        mask = tf.logical_and(mask, feat_scores &gt; -<span class="number">0.5</span>)</span><br><span class="line">        mask = tf.logical_and(mask, label &lt; num_classes)</span><br><span class="line">        imask = tf.cast(mask, tf.int64)</span><br><span class="line">        fmask = tf.cast(mask, dtype)</span><br><span class="line">        <span class="comment"># Update values using mask.</span></span><br><span class="line">        feat_labels = imask * label + (<span class="number">1</span> - imask) * feat_labels</span><br><span class="line">        feat_scores = tf.where(mask, jaccard, feat_scores)</span><br><span class="line"></span><br><span class="line">        feat_ymin = fmask * bbox[<span class="number">0</span>] + (<span class="number">1</span> - fmask) * feat_ymin</span><br><span class="line">        feat_xmin = fmask * bbox[<span class="number">1</span>] + (<span class="number">1</span> - fmask) * feat_xmin</span><br><span class="line">        feat_ymax = fmask * bbox[<span class="number">2</span>] + (<span class="number">1</span> - fmask) * feat_ymax</span><br><span class="line">        feat_xmax = fmask * bbox[<span class="number">3</span>] + (<span class="number">1</span> - fmask) * feat_xmax</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Check no annotation label: ignore these anchors...</span></span><br><span class="line">        interscts = intersection_with_anchors(bbox)</span><br><span class="line">        mask = tf.logical_and(interscts &gt; ignore_threshold,</span><br><span class="line">                              label == no_annotation_label)</span><br><span class="line">        <span class="comment"># Replace scores by -1.</span></span><br><span class="line">        feat_scores = tf.where(mask, -tf.cast(mask, dtype), feat_scores)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> [i+<span class="number">1</span>, feat_labels, feat_scores,</span><br><span class="line">                feat_ymin, feat_xmin, feat_ymax, feat_xmax]</span><br><span class="line">    <span class="comment"># Main loop definition.</span></span><br><span class="line">    i = <span class="number">0</span></span><br><span class="line">    [i, feat_labels, feat_scores,</span><br><span class="line">     feat_ymin, feat_xmin,</span><br><span class="line">     feat_ymax, feat_xmax] = tf.while_loop(condition, body,</span><br><span class="line">                                           [i, feat_labels, feat_scores,</span><br><span class="line">                                            feat_ymin, feat_xmin,</span><br><span class="line">                                            feat_ymax, feat_xmax])   </span><br><span class="line">    <span class="comment"># Transform to center / size.</span></span><br><span class="line">    <span class="comment">#计算补偿后的中心</span></span><br><span class="line">    feat_cy = (feat_ymax + feat_ymin) / <span class="number">2.</span></span><br><span class="line">    feat_cx = (feat_xmax + feat_xmin) / <span class="number">2.</span></span><br><span class="line">    feat_h = feat_ymax - feat_ymin</span><br><span class="line">    feat_w = feat_xmax - feat_xmin</span><br><span class="line">    <span class="comment"># Encode features. </span></span><br><span class="line">    feat_cy = (feat_cy - yref) / href / prior_scaling[<span class="number">0</span>]</span><br><span class="line">    feat_cx = (feat_cx - xref) / wref / prior_scaling[<span class="number">1</span>]</span><br><span class="line">    feat_h = tf.log(feat_h / href) / prior_scaling[<span class="number">2</span>]</span><br><span class="line">    feat_w = tf.log(feat_w / wref) / prior_scaling[<span class="number">3</span>]</span><br><span class="line">    <span class="comment"># Use SSD ordering: x / y / w / h instead of ours.</span></span><br><span class="line">    <span class="comment"># feat_localizations shape is [h,w,k_box_percell,4]</span></span><br><span class="line">    <span class="comment"># feat_labels shape os [h,w,k_box_percell]</span></span><br><span class="line">    <span class="comment"># feat_scores shape is [h,w,k_box_percell]</span></span><br><span class="line">    feat_localizations = tf.stack([feat_cx, feat_cy, feat_w, feat_h], axis=-<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> feat_labels, feat_localizations, feat_scores</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#ground truth编码函数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">tf_ssd_bboxes_encode</span>(<span class="params">labels,<span class="comment">#ground truth标签，1D tensor</span></span></span><br><span class="line"><span class="params">                         bboxes,<span class="comment">#N×4 Tensor（float）</span></span></span><br><span class="line"><span class="params">                         anchors,<span class="comment">#anchors，为list</span></span></span><br><span class="line"><span class="params">                         matching_threshold=<span class="number">0.5</span>,<span class="comment">#阀值</span></span></span><br><span class="line"><span class="params">                         prior_scaling=[<span class="number">0.1</span>, <span class="number">0.1</span>, <span class="number">0.2</span>, <span class="number">0.2</span>],<span class="comment">#缩放</span></span></span><br><span class="line"><span class="params">                         dtype=tf.float32,</span></span><br><span class="line"><span class="params">                         scope=<span class="string">&#x27;ssd_bboxes_encode&#x27;</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Encode groundtruth labels and bounding boxes using SSD net anchors.</span></span><br><span class="line"><span class="string">    Encoding boxes for all feature layers.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Arguments:</span></span><br><span class="line"><span class="string">      labels: 1D Tensor(int64) containing groundtruth labels;</span></span><br><span class="line"><span class="string">      bboxes: Nx4 Tensor(float) with bboxes relative coordinates;</span></span><br><span class="line"><span class="string">      anchors: List of Numpy array with layer anchors;</span></span><br><span class="line"><span class="string">      matching_threshold: Threshold for positive match with groundtruth bboxes;</span></span><br><span class="line"><span class="string">      prior_scaling: Scaling of encoded coordinates.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Return:</span></span><br><span class="line"><span class="string">      (target_labels, target_localizations, target_scores):</span></span><br><span class="line"><span class="string">        Each element is a list of target Tensors.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">with</span> tf.name_scope(scope):</span><br><span class="line">        target_labels = []</span><br><span class="line">        target_localizations = []</span><br><span class="line">        target_scores = []</span><br><span class="line">        <span class="keyword">for</span> i, anchors_layer <span class="keyword">in</span> <span class="built_in">enumerate</span>(anchors):</span><br><span class="line">            <span class="keyword">with</span> tf.name_scope(<span class="string">&#x27;bboxes_encode_block_%i&#x27;</span> % i):</span><br><span class="line">                <span class="comment">#将label和bbox进行编码</span></span><br><span class="line">                t_labels, t_loc, t_scores = \</span><br><span class="line">                    tf_ssd_bboxes_encode_layer(labels, bboxes, anchors_layer,</span><br><span class="line">                                               matching_threshold, prior_scaling, dtype)</span><br><span class="line">                target_labels.append(t_labels)</span><br><span class="line">                target_localizations.append(t_loc)</span><br><span class="line">                target_scores.append(t_scores)</span><br><span class="line">        <span class="keyword">return</span> target_labels, target_localizations, target_scores</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="hard-negative-mining"><a href="#hard-negative-mining" class="headerlink" title="hard_negative_mining"></a>hard_negative_mining</h3><p>尽管一个<code>ground truth</code>可以与多个先验框匹配，但是<code>ground truth</code>相对先验框还是太少了，所以负样本相对正样本会很多。为了保证正负样本尽量平衡，<code>SSD</code>采用了<code>hard negative mining</code>，就是对负样本进行抽样，抽样时按照置信度误差（预测背景的置信度越小，误差越大）进行降序排列，选取误差的较大的<code>top-k</code>作为训练的负样本，以保证正负样本比例接近$1:3$，这样做能提高$4 %$左右。</p>
+<h3 id="Data-augmentation"><a href="#Data-augmentation" class="headerlink" title="Data_augmentation"></a>Data_augmentation</h3><p>为了模型更加鲁棒，需要使用不同尺寸的输入和形状，作者对数据进行了如下方式的随机采样：</p>
+<ul>
+<li>使用整张图片</li>
+<li>使用<code>IOU</code>和目标物体为<code>0.1, 0.3，0.5, 0.7, 0.9</code>的<code>patch</code> （这些 <code>patch</code> 在原图的大小的 <code>[0.1,1] </code>之间， 相应的宽高比在<code>[1/2,2]</code>之间）</li>
+<li>随机采取一个<code>patch</code></li>
+<li>当<code>ground truth box</code>的 中心（center）在采样的<code> patch</code> 中时，我们保留重叠部分。在这些采样步骤之后，每一个采样的<code> patch</code> 被 <strong>resize</strong> 到固定的大小，并且以 $0.5$ 的概率随机的 水平翻转（<code>horizontally flipped</code>）。用数据增益通过实验证明，能够将数据<code>mAP</code>增加$8.8%$。</li>
+</ul>
+<h3 id="LOSS"><a href="#LOSS" class="headerlink" title="LOSS"></a>LOSS</h3><p>对每个<code>feature layer</code>上的每个匹配过的默认框进行分类损失和目标框回归损失计算，目标函数为<br>$$<br>L(x,c,l,g)&#x3D;\frac{1}{N}(L_{conf}(x,c)+\alpha L_{loc}(x,l,g))<br>$$<br>其中$N$为匹配的默认框，正样本数目，如果$N&#x3D;0$，$loss&#x3D;0$，$L_{conf}$为预测框<code>l</code>和<code>ground truth</code>$g$的<code>SmoothL1 </code>损失，$\alpha$为平衡参数。</p>
+<p><code>smoothL1计算公式为</code><br>$$<br>\begin{align*}<br>smooth_{L_{1}}&#x3D;<br>\begin{cases}<br>0.5|x|^{2}::::::::::&amp; if |x|&lt;1 \<br>|x|-0.5 &amp; otherwise<br>\end{cases}<br>\end{align*}<br>$$</p>
+<p>$$<br>\begin{align*}<br>&amp; L_{loc}(x,l,g)&#x3D;\sum_{i \in Pos} \sum_{m \in \lbrace cx,cy,w,h \rbrace}x_{ij}^{k}smooth_{L1}(l_{i}^{m}-g_{j}^{m}) \</p>
+<p>\end{align*}<br>$$</p>
+<p>对于式中的参数，$\hat{g}$为<code>ground truth</code>与匹配的默认框进行编码所得 ，’l’为预测的目标框，<code>cx,cy</code>为经过补偿之后的默认框<code>d</code>的中心，<code>w,h</code>为默认框的宽度和高度。<br>$$<br>\begin{align}<br>&amp; \hat{g}<em>{j}^{cx}&#x3D;(g^{cx}</em>{j}-d_{j}^{cx})&#x2F;d_{i}^{w} :::::::::::::::::: &amp; \hat{g}<em>{j}^{cy}&#x3D;(g^{cy}</em>{j}-d_{j}^{cy})&#x2F;d_{i}^{h} \<br>&amp; \hat{g}<em>{j}^{w}&#x3D;log(\frac{g</em>{j}^{w}}{d_{i}^{w}}) &amp; \hat{g}<em>{j}^{h}&#x3D;log(\frac{g</em>{j}^{h}}{d_{i}^{h}})<br>\end{align}<br>$$<br>由此可以得出，损失是减小<code>ground truth</code>的编码值与预测值的之间的差异，因此在模型预测时，要对得到的模型进行反向解码才能得到对应的目标框在图像中的位置。</p>
+<p>对于分类损失一般使用<code>softmax</code>交叉熵损失：<br>$$<br>L_{conf}(x,c)&#x3D;-\sum_{i \in Pos}^{N}x_{ij}^{p}log(c_{i}^{p})-\sum_{i \in Neg}log(c_{i}^{0} :::::::::: where :::::::c_{i}^{p}&#x3D;\frac{exp(c_{i}^{p})}{\sum_{p}exp(c_{i}^{p})})<br>$$<br>具体代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">ssd_losses</span>(<span class="params">logits, localisations,</span></span><br><span class="line"><span class="params">               gclasses, glocalisations, gscores,</span></span><br><span class="line"><span class="params">               match_threshold=<span class="number">0.5</span>,</span></span><br><span class="line"><span class="params">               negative_ratio=<span class="number">3.</span>,</span></span><br><span class="line"><span class="params">               alpha=<span class="number">1.</span>,</span></span><br><span class="line"><span class="params">               label_smoothing=<span class="number">0.</span>,</span></span><br><span class="line"><span class="params">               scope=<span class="string">&#x27;ssd_losses&#x27;</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Loss functions for training the SSD 300 VGG network.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    This function defines the different loss components of the SSD, and</span></span><br><span class="line"><span class="string">    adds them to the TF loss collection.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Arguments:</span></span><br><span class="line"><span class="string">      logits: (list of) predictions logits Tensors;</span></span><br><span class="line"><span class="string">      localisations: (list of) localisations Tensors;</span></span><br><span class="line"><span class="string">      gclasses: (list of) groundtruth labels Tensors;</span></span><br><span class="line"><span class="string">      glocalisations: (list of) groundtruth localisations Tensors;</span></span><br><span class="line"><span class="string">      gscores: (list of) groundtruth score Tensors;</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">with</span> tf.name_scope(scope):</span><br><span class="line">        l_cross_pos = []</span><br><span class="line">        l_cross_neg = []</span><br><span class="line">        l_loc = []</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(logits)):</span><br><span class="line">            dtype = logits[i].dtype</span><br><span class="line">            <span class="keyword">with</span> tf.name_scope(<span class="string">&#x27;block_%i&#x27;</span> % i):</span><br><span class="line">                <span class="comment"># Determine weights Tensor.</span></span><br><span class="line">                pmask = gscores[i] &gt; match_threshold</span><br><span class="line">                fpmask = tf.cast(pmask, dtype)</span><br><span class="line">                n_positives = tf.reduce_sum(fpmask)</span><br><span class="line"></span><br><span class="line">                <span class="comment"># Select some random negative entries.</span></span><br><span class="line">                <span class="comment"># n_entries = np.prod(gclasses[i].get_shape().as_list())</span></span><br><span class="line">                <span class="comment"># r_positive = n_positives / n_entries</span></span><br><span class="line">                <span class="comment"># r_negative = negative_ratio * n_positives / (n_entries - n_positives)</span></span><br><span class="line"></span><br><span class="line">                <span class="comment"># Negative mask.</span></span><br><span class="line">                no_classes = tf.cast(pmask, tf.int32)</span><br><span class="line">                predictions = slim.softmax(logits[i])</span><br><span class="line">                nmask = tf.logical_and(tf.logical_not(pmask),</span><br><span class="line">                                       gscores[i] &gt; -<span class="number">0.5</span>)</span><br><span class="line">                fnmask = tf.cast(nmask, dtype)</span><br><span class="line">                nvalues = tf.where(nmask,</span><br><span class="line">                                   predictions[:, :, :, :, <span class="number">0</span>],</span><br><span class="line">                                   <span class="number">1.</span> - fnmask)</span><br><span class="line">                nvalues_flat = tf.reshape(nvalues, [-<span class="number">1</span>])</span><br><span class="line">                <span class="comment"># Number of negative entries to select.</span></span><br><span class="line">                n_neg = tf.cast(negative_ratio * n_positives, tf.int32)</span><br><span class="line">                n_neg = tf.maximum(n_neg, tf.size(nvalues_flat) // <span class="number">8</span>)</span><br><span class="line">                n_neg = tf.maximum(n_neg, tf.shape(nvalues)[<span class="number">0</span>] * <span class="number">4</span>)</span><br><span class="line">                max_neg_entries = <span class="number">1</span> + tf.cast(tf.reduce_sum(fnmask), tf.int32)</span><br><span class="line">                n_neg = tf.minimum(n_neg, max_neg_entries)</span><br><span class="line"></span><br><span class="line">                val, idxes = tf.nn.top_k(-nvalues_flat, k=n_neg)</span><br><span class="line">                minval = val[-<span class="number">1</span>]</span><br><span class="line">                <span class="comment"># Final negative mask.</span></span><br><span class="line">                nmask = tf.logical_and(nmask, -nvalues &gt; minval)</span><br><span class="line">                fnmask = tf.cast(nmask, dtype)</span><br><span class="line"></span><br><span class="line">                <span class="comment"># Add cross-entropy loss.</span></span><br><span class="line">                <span class="keyword">with</span> tf.name_scope(<span class="string">&#x27;cross_entropy_pos&#x27;</span>):</span><br><span class="line">                    loss = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logits[i],</span><br><span class="line">                                                                          labels=gclasses[i])</span><br><span class="line">                    loss = tf.contrib.losses.compute_weighted_loss(loss, fpmask)</span><br><span class="line">                    l_cross_pos.append(loss)</span><br><span class="line"></span><br><span class="line">                <span class="keyword">with</span> tf.name_scope(<span class="string">&#x27;cross_entropy_neg&#x27;</span>):</span><br><span class="line">                    loss = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logits[i],</span><br><span class="line">                                                                          labels=no_classes)</span><br><span class="line">                    loss = tf.contrib.losses.compute_weighted_loss(loss, fnmask)</span><br><span class="line">                    l_cross_neg.append(loss)</span><br><span class="line"></span><br><span class="line">                <span class="comment"># Add localization loss: smooth L1, L2, ...</span></span><br><span class="line">                <span class="keyword">with</span> tf.name_scope(<span class="string">&#x27;localization&#x27;</span>):</span><br><span class="line">                    <span class="comment"># Weights Tensor: positive mask + random negative.</span></span><br><span class="line">                    weights = alpha * fpmask</span><br><span class="line">                    loss = custom_layers.abs_smooth(localisations[i] - glocalisations[i])</span><br><span class="line">                    loss = tf.contrib.losses.compute_weighted_loss(loss, weights)</span><br><span class="line">                    l_loc.append(loss)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Total losses in summaries...</span></span><br><span class="line">        <span class="keyword">with</span> tf.name_scope(<span class="string">&#x27;total&#x27;</span>):</span><br><span class="line">            tf.summary.scalar(<span class="string">&#x27;cross_entropy_pos&#x27;</span>, tf.add_n(l_cross_pos))</span><br><span class="line">            tf.summary.scalar(<span class="string">&#x27;cross_entropy_neg&#x27;</span>, tf.add_n(l_cross_neg))</span><br><span class="line">            tf.summary.scalar(<span class="string">&#x27;cross_entropy&#x27;</span>, tf.add_n(l_cross_pos + l_cross_neg))</span><br><span class="line">            tf.summary.scalar(<span class="string">&#x27;localization&#x27;</span>, tf.add_n(l_loc))</span><br></pre></td></tr></table></figure>
+
+<h2 id="FPN"><a href="#FPN" class="headerlink" title="FPN"></a>FPN</h2><p><strong>对于卷积神经网络而言，不同深度对应着不同层次的语义特征，浅层网络分辨率高，学的更多是细节特征，深层网络分辨率低，学的更多是语义特征。</strong>针对<code>SSD</code>中所述的低层特征图包含的语义特征较少，无法对预测小物体提供明显的帮助，每层分别预测不同scale的目标，这样没有对不同层的语义信息加以考虑，并且直接强行让不同层学习同样的语义信息。</p>
+<p>多尺度物体检测面临的主要挑战是：</p>
+<ul>
+<li>如何学习具有强语义信息的多尺度特征表示</li>
+<li>如何设计通用的特征表示来解决物体检测过程中的多个子问题？如<code>proposal</code>, <code>box localization</code>, <code>instance segmentation</code></li>
+<li>如何高效计算多尺度的特征表示</li>
+</ul>
+<p>在<code>FPN</code>中提出了先下采样后上采样的的结构，并将特征图相同的上下采样的特征图进行跨步连接，使用融合之后的特征进行检测。</p>
+<p>论文地址：<a href="https://arxiv.org/abs/1612.03144">https://arxiv.org/abs/1612.03144</a></p>
+<p>网络结构如下所示</p>
+<img src="/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/fpn_model.png" class="" title="fpn_model">
+
+<p>从模型结构图中可以看出，整个模型先进行<strong>自底向上下采样</strong>，论文中使用的是<code>resnet</code>网络作为基础网络，在下采样过程中，一般将大小尺寸不变的<code>feature layer</code>层归为一个<code>stage</code>，因此每次抽取的特征是每个<code>stage</code>的最后一个层输出，由此，对于<code>resnet</code>抽取出4个大小不用的<code>feature layer</code>。</p>
+<p><strong>自顶向下上采样</strong>，该过程以下采样的最后一层<code>feature layer</code>为开始进行上采样，扩大<code>feature layer</code>的长宽尺寸，横向连接是将下采样结果和上采样结果中相同大小的<code>feature layer</code>进行<code>merge</code>，为了消除上采样带来的混叠效应(aliasing effect)，在<code>merge</code>之后使用<code>conv3x3</code>对融合的结果进行卷积操作，最终生成目标检测的<code>feature layer</code> 。</p>
+<h3 id="FPN-RPN"><a href="#FPN-RPN" class="headerlink" title="FPN-RPN"></a>FPN-RPN</h3><p>在FPN网络结构中，仍然使用<code>RPN</code>网络进行区域生成，在<code>FasteRcnn</code>中，<code>RPN</code>只接受主网络某个卷积层输出的<code>feature map</code>作为输入，只有一个尺度的<code>feature map</code>，但是在<code>FPN</code>中，将预测层均使用<code>RPN</code>进行区域生成，在每个<code>sacle</code>层都定义了大小不同的<code>anchor</code>尺寸，分别是$32^2$,$64^2$,$128^2$,$256^2$.$512^2$，并且每个<code>scale</code>层都有三个长宽比$1:2$,$1:1$,$2:1$三种，也就是说，总共会生成$15$中不同尺寸的<code>anchor</code>。</p>
+<p>正负样本的判定和<code>FasterRcnn</code>相差不多，如果某个<code>anchor</code>与<code>groundtruth</code>有最高的IOU或者和任意一个<code>groundtruth</code>的<code>IOU</code>都大于$0.7$，则为正样本，如果某个<code>anchor</code>与任意一个<code>groundtruth</code>的IOU都小于$0.3$，则判定为负样本。</p>
+<h3 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h3><p>在论文中对比了<code>FPN</code>中不同网络结构设计证实了该网络结构的对识别准确率的提升，同时利用低层特征高分辨率和高层特征的高语义信息，通过融合不同层的特征达到预测的效果，并且预测在每个融合后的特征层上单独进行，可以认为是对<code>SSD</code>的一种改进。</p>
+<h2 id="YOLOV1-V3"><a href="#YOLOV1-V3" class="headerlink" title="YOLOV1~V3"></a>YOLOV1~V3</h2><p><strong>为了表示对作者的致敬，先挂上作者的<a href="https://pjreddie.com/">主页</a>和<a href="https://www.ted.com/talks/joseph_redmon_how_a_computer_learns_to_recognize_objects_instantly">TED演讲</a>。</strong></p>
+<p>现在已经到<code>YOLO</code>的第三个版本了，个人认为是目前最棒的一个目标检测算法，本来早就该写了的，拖延症一直到现在才刚开始动笔。</p>
+<p>自诞生之日起，<code>YOLO</code>就被贴上了两个标签：</p>
+<ul>
+<li>速度快</li>
+<li>不擅长检测小物体</li>
+</ul>
+<h3 id="YOLOv1"><a href="#YOLOv1" class="headerlink" title="YOLOv1"></a>YOLOv1</h3><p>网络结构图如下</p>
+<img src="/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/yolov1.jpeg" class="" title="YOLOv1_model">
+
+<p><code>YOLOv1</code>中，只对最后一层的卷积输出，并使用全连接的方式进行预测输出，由于卷积结构中，我们老生常谈的问题：随着卷积层的增加，<code>feature layer</code>中包含的语义信息越来越多，但是对于小物体，在高层卷积层中几乎已经没有信息了，由此很难是被出来。</p>
+<img src="/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/yolov1_str.png" class="" title="YOLOv1_structure">
+
+<p>在最后一层中<code>feature map</code>的尺寸为$S\times S$，可以认为使用$S\times S$个网格对该层的<code>feature map</code>进行分割如果某个物体的<code>groundtruth</code>的中心位置落在某个格子中，那么这个各自就负责检测这个物体。对应于每个各自预测B个<code>boundingbox</code>及置信度<code>confidence score</code>以及<code>C</code>个类别概率。boundingbox为(x,yw,h)分别对应着和物体的中心位置相对格子位置的偏移和宽度，均被归一化。置信度反应是否包含物体以及包含物体情况下位置的准确性，定义为$P_{r}(Object) \times IOU_{pred}^{truth}$，也就是预测位置与<code>groundtruth</code>之间的<code>IOU</code>。</p>
+<p>整个网络结构包含$24$个卷积层，$2$个全连接层，相较于同时代的<code>faster</code>那是真的快，但是是被效果也是真的没法和<code>faster</code>比，但是这种网络结构的设计是的具有实时性的目标检测成为可能，算是<code>real-time detector</code>的鼻祖了，可以说是功在当代了，由于是被精度太差，因此在自动驾驶中，一般落地的用的是上面说的<code>FPN</code>。</p>
+<h3 id="YOLOv2"><a href="#YOLOv2" class="headerlink" title="YOLOv2"></a>YOLOv2</h3><p>在YOLOv1之后，第二年作者一系列的骚操作创造出了<code>Yolov2</code>，也叫<code>YOLO9000</code>。</p>
+<ul>
+<li><p><strong>维度聚类Dimension Clusters</strong></p>
+<ul>
+<li>引入了<code>anchor</code>机制，对VOC数据集和COCO数据集的bbox进行聚类分析，将原来常用的3尺寸，3比例的anchor进行删减，保留最常出现的5中anchor。</li>
+</ul>
+</li>
+<li><p>**直接位置预测Direct location prediction **</p>
+</li>
+</ul>
+<img src="/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/yolov2_loca.png" class="" title="YOLOv2_loca">
+
+<ul>
+<li><p>修改了常用的<code>FasterRcnn</code>那一套进行位置损失的计算方法，设计了新的位置位置偏移计算方式。</p>
+<p>在<code>FasterRcnn</code>中位置回归计算如下：</p>
+<p>边界框的实际中心位置$(x,y)$，需要根据预测的坐标偏移值$(t_x,t_y)$，先验框的尺度$(w_a,w_h)$以及中心坐标$(x_a,y_a)$来计算<br>$$<br>\begin{align}<br>x&amp;&#x3D;(t_x \times w_a)-x_a \<br>y&amp;&#x3D;(t_y \times h_a)-y_a<br>\end{align}<br>$$<br>但是对于上面的公式，由于不存在约束项，因此预测的边框有可能向任意一个方向产生偏移，当$t_x&#x3D;1$时边界框向有偏移先验框的一个宽度的大小，当$t_x&#x3D;-1$时边界框将向左偏移先验框的一个宽度大小，因此每个位置预测的边界框可以落在图片的任何一个位置，这就会导致整个模型不稳定，要训练很久才会收敛，预测出正确的offset。</p>
+<p><code>Yolov2</code>中没有使用这种预测方式，而是继续采用了<code>YOLOv1</code>中的方法，预测边框中心点相对于<code>cell</code>左上角位置的相对偏移值，为了将边界框中心店约束在当前的<code>cell</code>中，由于每个cell的尺度可以看做长宽皆为1，因此使用<code>sigmoid</code>进行偏移值处理，使偏移值在$(0~1)$之间。根据<code>anchor</code>预测得到的边界框$(t_x,t_y,t_w,t_h)$，边界框的实际位置和大小的计算方法如下：<br>$$<br>\begin{align}<br>b_x&amp;&#x3D;\sigma (t_x)+c_x\<br>b_y&amp;&#x3D;\sigma(t_y)+c_y\<br>b_w&amp;&#x3D;p_w \exp(t_w) \<br>b_h&amp;&#x3D;p_h \exp (t_h)<br>\end{align}<br>$$<br>其中$(c_x,c_y)$是当前cell的左上角的坐标，$\sigma$为<code>sigmoid</code>函数。在计算的时候每个<code>cell</code>的尺度都是1，<strong>如图YOLOv2_loca中所示</strong>，所以当前<code>cell</code>的左上角的坐标为$(1,1)$，由于使用的<code>sigmoid</code>函数，边界框的中心位置会约束在当前cell的内部，也就是图中的$b_x,b_y$坐标，$p_w,p_h$是先验框的宽度和长度，他们的值是相对于当前特征图大小进行过缩放的，在特征图中每个cell的长和宽都是1，此处特征图的大小记作$(W,H)$，（在论文中初始的输入图像为$416 \times 416$，经过$32$步下采样，最终得到的feature的尺寸为$13 \times 13$）这样对公式(38–41)稍加修改，就可以将边界框相对于整张图片的位置和大小计算出来(四个值均在$0-1$之间)<br>$$<br>\begin{align}<br>b_x&amp;&#x3D;(\sigma (t_x)+c_x)&#x2F;W\<br>b_y&amp;&#x3D;(\sigma(t_y)+c_y)&#x2F;H\<br>b_w&amp;&#x3D;(p_w \exp(t_w))&#x2F;W \<br>b_h&amp;&#x3D;(p_h \exp (t_h))&#x2F;H<br>\end{align}<br>$$<br>将上述的$4$个值分别乘以图片的宽度和高度就可以得到边界框的最终位置和大小了，这就是<code>YOLOv2</code>的解码过程。</p>
+</li>
+<li><p><strong>设计了新的basenet-DarkNet19</strong></p>
+<ul>
+<li>主要针对<code>vgg</code>的基础网络计算量过大的问题<code>30.69Billion</code>，新设计的网络在不降低精度的前提下计算量为<code>5.8Billion</code></li>
+</ul>
+</li>
+</ul>
+<img src="/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/yolov2_darknet19.png" class="" title="YOLOv2_darknet19">
+
+<ul>
+<li><strong>Fine-Grained Features</strong>-小物体检测<ul>
+<li>为了实现弥补<code>YOLOv1</code>中对小物体检测准确率较低的问题，在<code>YOLOv2</code>中进行了改进设计，初始输入图像尺寸为$416\times 416$，经过<code>DarkNet</code>下采样之后得到的特征图尺寸为$13 \times 13$，对于检测较大的物体这个尺寸是够的，<strong>但是对于小的物体，希望使用浅层的feature进行检测，浅层<code>feature</code>由于具有更高的分辨率，更利于小物体的检测</strong>。在网络设计中<code>YOLOv2</code>提出了一个<code>passthrough</code>层，类似于<code>resnet</code>中的<code>shortcut</code>或者<code>FPN</code>网络中的<code>skip-connection</code>，<code>YOLOv2</code>将$26 \times 26 \times 512$的特征图连接到最后一层$13 \times 13 \times 1024$的特征图上。<code>passthrough</code>层对$26 \times 26\times 512 $特征图分别按行和列进行隔点采样，得到4个$13 \times 13 \times 512$的特征图，然后把这四个特征图在维度方向上连接起来，由此将$26 \times 26 \times 512$ 转换为$ 13 \times 13 \times 2048$，特征图的大小降低了$4$倍，通道数增加了$4$倍，这样就可以和最后的$ 13 \times 13 \times 1024$的特征度进行连接，最终得到了$13 \times 13 \times 3072$的特征图，并在这个基础上进行卷积预测。</li>
+</ul>
+</li>
+</ul>
+<h3 id="YOLOv3"><a href="#YOLOv3" class="headerlink" title="YOLOv3"></a>YOLOv3</h3><h4 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h4><ul>
+<li><p>Train:PYTORCH_YOLO_V3](<a href="https://github.com/eriklindernoren/PyTorch-YOLOv3">https://github.com/eriklindernoren/PyTorch-YOLOv3</a>)</p>
+<ul>
+<li><a href="https://blog.paperspace.com/how-to-implement-a-yolo-object-detector-in-pytorch/">How to implement a YOLO (v3) object detector from scratch in PyTorch</a></li>
+<li><a href="https://github.com/ayooshkathuria/YOLO_v3_tutorial_from_scratch">YOLO_v3_tutorial_from_scratch</a></li>
+</ul>
+</li>
+<li><p><a href="https://github.com/maiminh1996/YOLOv3-tensorflow">Yolov3-tensorflow</a></p>
+</li>
+<li><p><a href="https://towardsdatascience.com/yolo-v3-object-detection-53fb7d3bfe6b">What’s new in YOLO v3?</a></p>
+</li>
+<li><p><a href="https://github.com/ayooshkathuria/pytorch-yolo-v3">A PyTorch implementation of a YOLO v3 Object Detector</a></p>
+</li>
+<li><p><a href="https://github.com/qqwweee/keras-yolo3">Keras_yolo_v3</a></p>
+</li>
+</ul>
+<p>终于来到了<code>YOLOv3</code>，在<code>YOLOv3</code>中对于小目标的识别，提升是非常明显的，在此处盗图一张，来对比<code>YOLOv2</code>和<code>YOLOv3</code>，可以明显的看到，<code>YOLOv3</code>对小物体的识别提升</p>
+<hr>
+
+<img src="/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/yolov2v3.jpg" class="" title="YoloV3_vs_YOLOV2_small">
+
+<hr>
+
+<p>在目标检测领域，对于重叠目标检测是很困难的，在这个方面<code>YOLOv3</code>相比于<code>YOLOv2</code>同样提升明显</p>
+<hr>
+
+<img src="/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/yolov2_v3_over.jpg" class="" title="YOLOv2_v3_overlap">
+
+<hr>
+
+<p>按照论文思路及个人理解对YOLOv3给出下面一些分析，在YOLOv2的基础上尝试了一些Trick，</p>
+<ol>
+<li>考虑到检测物体的重叠情况，用多标签的方式替代了之前softmax单标签方式；</li>
+<li>骨干架构使用了更为有效的残差网络，网络深度也更深；</li>
+<li>多尺度特征使用的是FPN的思想；</li>
+<li>锚点聚类成了9类。</li>
+</ol>
+<hr>
+yolov3模型结构如下所示
+
+<img src="/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/yolov3_graphic.png" class="" title="Yolov3 Graphic">
+
+<p>对应的模型参数如下</p>
+<img src="/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/yolov3_model.jpg" class="" title="YOLOv3_predict">
+
+<p>下面进行分点说明：</p>
+<ul>
+<li><p><strong>多标签任务</strong></p>
+<p>在检测任务中，对于目标之间相互重叠的场景是不可避免点，一个区域内可能会包含多个不同的物体，在以往的目标检测网络中选择和锚点<code>IoU</code>最大的<code>Ground Truth</code>作为匹配类别，使用<code>softmax</code>作为激活函数，这是基于一个区域内包含一个物体的假设。但是这和目标检测任务中常见的场景是不符合的。</p>
+<p>为了解决这一问题，在<code>YOLOv3</code>中提出了多标签的概念，也就是将原来的<code>softmax</code>函数改成了<code>logistics</code>函数，使用<code>sigmoid</code>分类器。原来每个分类器使用<code>softmax</code>，会使得每个类别的输出结果控制在总和在$[0,1]$之间，并且所有分类结果之和为1；修改为<code>sigmoid</code>之后，每个类别的得分仍然在$[0,1]$之间，但是所有分类结果之和不再是1。</p>
+<p>虽然<code>YOLOv3</code>改变了输出层的激活函数，但是其锚点和<code>Ground Truth</code>的匹配方法仍旧采用的是<code>YOLOv1</code> 的方法，即每个<code>Ground Truth</code>匹配且只匹配唯一一个与其<code>IoU</code>最大的锚点。但是在输出的时候由于各类的概率之和不再是1，只要置信度大于阈值，该锚点便被作为检测框输出。</p>
+<p><code>YOLOv3</code>多标签模型的提出，对于解决覆盖率高的图像的检测问题效果是十分显著的，就如同上面图片所显示的对于重叠目标的检测，<code>YOLOv3</code>不仅检测的更准确而且检测到了更多的重叠人物。</p>
+</li>
+<li><p><strong>basenet</strong></p>
+<p><code>YOLOv3</code>使用ResNet的残差模块构成的全卷积网络作为主干网络，整个网络层为53层，网络结构图如下所示</p>
+</li>
+</ul>
+
+
+<ul>
+<li><p><strong>多尺度检测</strong></p>
+<p>在<code>YOLOv2</code>中，使用了一个<code>passthrough</code>层来实现小目标检测，在<code>YOLOv3</code>中，受<code>FPN</code>的启发，使用了多尺度预测，使用最后三个尺寸的<code>feature layer</code>层进行预测，并且每个<code>cell</code>预测三个<code>boundingbox</code>。</p>
+<p>初始图片输出尺寸为$416 \times 416$，用于预测的<code>feature layer</code>的尺寸为$[13 \times 13, 26 \times 26, 52 \times 52]$，首先在$13 \times 13$尺寸上使用<code>conv1x1</code>进行预测，在每个<code>cell</code>上预测3个<code>boundingbox</code>，之后使用$13 \times 13$上采样至尺寸$26 \times 26$并与下采样的$26 \times 26$的<code>feature layer</code>进行<code>merge</code>，作为预测层，同样使用<code>conv1x1</code>预测，之后再对该层进行上采样并与下采样的$52 \times 52$的<code>feature layer</code>进行<code>merge</code>之后预测。整个网络的<code>boundingbox</code>的数量为<br>$$<br>(13 \times 13+26 \times 26+52 \times 52) \times 3&#x3D;10647<br>$$</p>
+<p>在每层的检测数量为$1 \times 1 \times (B \times (5 +C))$,其中$B$对应着每个cell上的预测框的数量，“5”对应着4个预测框和1个目标置信度得分，$C$为检测任务对应的目标种类。每个cell的预测输出的维度中的排列顺序如下所示</p>
+<img src="/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/Yolov3ImageGrid.png" class="" title="Yolov3ImageGrid">
+
+<p>每一个<code>boundingbox</code>的向量信息为$[center_{x},center_{y},width,height,object_{score},cls_{1},cls_{2},…cls_{C}]$</p>
+</li>
+</ul>
+<hr>
+
+<ul>
+<li><p><strong>锚点聚类</strong></p>
+<p>在<code>YOLOv2</code>中使用的是聚类的方法得到5个<code>anchor</code>，在<code>YOLOv3</code>中使用了9组锚点，模型中的输入尺寸为$416 \times 416$，经过下采样之后，对应的图像尺寸被缩小的幅度为$32,16,8$，也就是下采样至的图像尺寸为$13\times 13$,$26 \times 26$,$52 \times 52$，对应的anchor的尺寸为</p>
+<ul>
+<li>$13 \times 13$ 尺寸：$116 \times 90,::: 156 \times 198, ::: 373 \times 326 $</li>
+<li>$26 \times 26 $ 尺寸：$30  \times 61 ,::: 62 \times 45, ::: 59 \times 119 $</li>
+<li>$52 \times 52$ 尺寸：$10 \times 13,::: 16 \times 30, ::: 33 \times 23 $</li>
+</ul>
+<p>可以看到，在大的<code>featurelayer</code>检测设置的<code>anchor</code>较小，用来对小目标进行检测。</p>
+</li>
+</ul>
+<h3 id="总结-2"><a href="#总结-2" class="headerlink" title="总结"></a>总结</h3><p>从<code>YOLOv1</code>到<code>YOLOv3</code>，首先实现了速度非飞跃，之后引入了RPN中的锚点机制，提高准确度，参考<code>FPN</code>的多尺度机制，提高了对小目标的检测效果，至此实现了对<code>RCNN</code>系列的碾压。<code>YOLO</code>因为强大的性能优势，在工业界具有很大的应用场景。貌似现在作者的兴趣点转向了<code>GAN</code>，应该<code>YOLO</code>系列短期不会有更大的更新了。</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>赏杯咖啡！</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat.jpeg" alt="ShiXiaofeng 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpeg" alt="ShiXiaofeng 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>ShiXiaofeng
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://xiaofengshi.com/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/" title="深度学习-目标检测">http://xiaofengshi.com/2018/11/12/深度学习-目标检测/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/" rel="tag"># 目标检测</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/" rel="prev" title="机器学习-常用知识点">
+      <i class="fa fa-chevron-left"></i> 机器学习-常用知识点
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/11/11/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-SVM/" rel="next" title="机器学习-SVM">
+      机器学习-SVM <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E4%B8%89%E9%83%A8%E6%9B%B2"><span class="nav-number">1.</span> <span class="nav-text">目标检测三部曲</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Rcnn"><span class="nav-number">1.1.</span> <span class="nav-text">Rcnn</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#pipeline"><span class="nav-number">1.1.1.</span> <span class="nav-text">pipeline</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RCN%E7%BC%BA%E7%82%B9"><span class="nav-number">1.1.2.</span> <span class="nav-text">RCN缺点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FastRcnn"><span class="nav-number">1.2.</span> <span class="nav-text">FastRcnn</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Pipeline"><span class="nav-number">1.2.1.</span> <span class="nav-text">Pipeline</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Tricks"><span class="nav-number">1.2.2.</span> <span class="nav-text">Tricks</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FasterRcnn"><span class="nav-number">1.3.</span> <span class="nav-text">FasterRcnn</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#RPN%E7%BD%91%E7%BB%9C"><span class="nav-number">1.3.1.</span> <span class="nav-text">RPN网络</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ROI-POOLING"><span class="nav-number">1.3.2.</span> <span class="nav-text">ROI_POOLING</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E7%B1%BB-%E5%9B%9E%E5%BD%92"><span class="nav-number">1.3.3.</span> <span class="nav-text">分类+回归</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.3.4.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SSD%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E7%AE%97%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">SSD目标检测算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Anchor-box-generator"><span class="nav-number">2.1.</span> <span class="nav-text">Anchor_box_generator</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ground-truth-%E5%A4%84%E7%90%86"><span class="nav-number">2.2.</span> <span class="nav-text">ground truth 处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hard-negative-mining"><span class="nav-number">2.3.</span> <span class="nav-text">hard_negative_mining</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Data-augmentation"><span class="nav-number">2.4.</span> <span class="nav-text">Data_augmentation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LOSS"><span class="nav-number">2.5.</span> <span class="nav-text">LOSS</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FPN"><span class="nav-number">3.</span> <span class="nav-text">FPN</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#FPN-RPN"><span class="nav-number">3.1.</span> <span class="nav-text">FPN-RPN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93-1"><span class="nav-number">3.2.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#YOLOV1-V3"><span class="nav-number">4.</span> <span class="nav-text">YOLOV1~V3</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#YOLOv1"><span class="nav-number">4.1.</span> <span class="nav-text">YOLOv1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#YOLOv2"><span class="nav-number">4.2.</span> <span class="nav-text">YOLOv2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#YOLOv3"><span class="nav-number">4.3.</span> <span class="nav-text">YOLOv3</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Reference"><span class="nav-number">4.3.1.</span> <span class="nav-text">Reference</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93-2"><span class="nav-number">4.4.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ShiXiaofeng"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">ShiXiaofeng</p>
+  <div class="site-description" itemprop="description">LLM,搜索,数据挖掘,深度学习相关技术记录分享</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xiaofengShi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xiaofengShi" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sxf1052566766@163.com" title="E-Mail → mailto:sxf1052566766@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ShiXiaofeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v7.1.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+  
+      
+<script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el: '#valine-comments',
+      verify: false,
+      notify: false,
+      appId: 'rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz',
+      appKey: 'zJasiQnAqgUwf4kiHhHyXwOP',
+      placeholder: "Leave Your Message and Contact Details",
+      avatar: 'mm',
+      meta: guest,
+      pageSize: '10' || 10,
+      visitor: true,
+      lang: '' || 'zh-cn',
+      path: location.pathname,
+      recordIP: false,
+      serverURLs: ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

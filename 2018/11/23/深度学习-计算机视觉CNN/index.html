@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/panda_32px.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/panda_16px.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://xiaofengshi.com').hostname,
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="本篇主要分析CV领域的主要代表性CNN网络结构，这些网络结构一般是在图像识别的任务上开发设计的，并迁移应用到其他的计算机视觉任务上。 对于计算机视觉而言，从简单到复杂一般包括：  图像识别 目标检测 图像分割 图像翻译&#x2F;描述  所谓图像识别，就是识别一张图像的类别，比如说猫狗大战，图像识别是最基础的计算机视觉任务。对于图像识别任务中，待识别的照片类似于大头贴的形式，即目标基本覆盖整张图像">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习-计算机视觉CNN">
+<meta property="og:url" content="http://xiaofengshi.com/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/index.html">
+<meta property="og:site_name" content="做一个有用的人">
+<meta property="og:description" content="本篇主要分析CV领域的主要代表性CNN网络结构，这些网络结构一般是在图像识别的任务上开发设计的，并迁移应用到其他的计算机视觉任务上。 对于计算机视觉而言，从简单到复杂一般包括：  图像识别 目标检测 图像分割 图像翻译&#x2F;描述  所谓图像识别，就是识别一张图像的类别，比如说猫狗大战，图像识别是最基础的计算机视觉任务。对于图像识别任务中，待识别的照片类似于大头贴的形式，即目标基本覆盖整张图像">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/cv.jpeg">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/pipeline.jpg">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/cnn_framework.png">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/AlexNet-1.png">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/vgg.jpg">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/inception.jpg">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/googlenet.png">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/resnet.png">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/densenet.png">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/compare.jpg">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/densenet_Archi.jpg">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/Denseblock.jpg">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/firemodule.png">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/FireVsCnov.jpg">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/squeezenet.png">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/squeezenet_result.png">
+<meta property="article:published_time" content="2018-11-23T08:17:27.000Z">
+<meta property="article:modified_time" content="2020-02-09T06:52:37.000Z">
+<meta property="article:author" content="ShiXiaofeng">
+<meta property="article:tag" content="深度学习">
+<meta property="article:tag" content="CV">
+<meta property="article:tag" content="卷积神经网络">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://xiaofengshi.com/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/cv.jpeg">
+
+<link rel="canonical" href="http://xiaofengshi.com/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>深度学习-计算机视觉CNN | 做一个有用的人</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">做一个有用的人</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">LLM And Search</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-guestbook">
+
+    <a href="/guestbook/" rel="section"><i class="fa fa-fw fa-commenting"></i>guestbook</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/xiaofengShi" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ShiXiaofeng">
+      <meta itemprop="description" content="LLM,搜索,数据挖掘,深度学习相关技术记录分享">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="做一个有用的人">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          深度学习-计算机视觉CNN
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-11-23 16:17:27" itemprop="dateCreated datePublished" datetime="2018-11-23T16:17:27+08:00">2018-11-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-02-09 14:52:37" itemprop="dateModified" datetime="2020-02-09T14:52:37+08:00">2020-02-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/CV/" itemprop="url" rel="index">
+                    <span itemprop="name">CV</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/" class="post-meta-item leancloud_visitors" data-flag-title="深度学习-计算机视觉CNN" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本篇主要分析CV领域的主要代表性CNN网络结构，这些网络结构一般是在图像识别的任务上开发设计的，并迁移应用到其他的计算机视觉任务上。</p>
+<p>对于计算机视觉而言，从简单到复杂一般包括：</p>
+<ul>
+<li>图像识别</li>
+<li>目标检测</li>
+<li>图像分割</li>
+<li>图像翻译&#x2F;描述</li>
+</ul>
+<p>所谓图像识别，就是识别一张图像的类别，比如说猫狗大战，图像识别是最基础的计算机视觉任务。对于图像识别任务中，待识别的照片类似于大头贴的形式，即目标基本覆盖整张图像的大部分区域。对于机器学习任务，网络的搭建以及模型的训练过程，实际上就是学习输入数据到标签之间的映射的过程，假设输入的数据为<code>X</code>，对应的标签为<code>Y</code>,网络模型为<code>f(.)</code>，训练的过程就是为了找到合适的参数使得满足关系式$Y&#x3D;f(x)$。</p>
+<img src="/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/cv.jpeg" class="" title="cv_tasks">
+
+<span id="more"></span>
+
+<h2 id="图像识别原理及技术"><a href="#图像识别原理及技术" class="headerlink" title="图像识别原理及技术"></a>图像识别原理及技术</h2><h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>人类识别图像的过程可以描述为：当看到一张图片时，我们的大脑会迅速感应到是否见过此图片或与其相似的图片。其实在“看到”与“感应到”的中间经历了一个迅速识别过程，这个识别的过程和搜索有些类似。在这个过程中，我们的大脑会根据存储记忆中已经分好的类别进行识别，查看是否有与该图像具有相同或类似特征的存储记忆，从而识别出是否见过该图像。</p>
+<p>机器的图像识别实际和人对图像的识别方法类似：通过分类并提取重要特征而排除多余的信息来识别图像。机器所提取出的这些特征有时会非常明显，有时又是很普通，这在很大的程度上影响了机器识别的速率。总之，在计算机的视觉识别中，图像的内容通常是用图像特征进行描述。</p>
+<h3 id="技术过程"><a href="#技术过程" class="headerlink" title="技术过程"></a>技术过程</h3><p>图像识别技术的过程分以下几步：信息的获取、预处理、特征抽取和选择、分类器设计和分类决策。其中这几个过程具体化到深度学习中的属于可以为</p>
+<ul>
+<li>信息的获取-数据集的准备及制作</li>
+<li>预处理：图像预处理及增强，统一图像尺寸，去除噪声，图像数据归一化等处理</li>
+<li>特征抽取：卷积网络进行图像的卷积计算</li>
+<li>分类器设计：选择何种分类损失计算函数，对于神经网络一般使用的是<code>softmax</code></li>
+<li>分类决策：选择何种标准作为类别输出，一般为<code>top1</code></li>
+</ul>
+<p>之所以选用图像识别作为其他CV的基础任务，是因为在最大规模的CV数据集ImageNet是图片识别数据，并且图片识别任务最简单，可以很好的向其他任务迁移。</p>
+<h2 id="CNN网络框架"><a href="#CNN网络框架" class="headerlink" title="CNN网络框架"></a>CNN网络框架</h2><img src="/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/pipeline.jpg" class="" title="pipeline">
+
+<p>在图中非常清晰的说明了对于图像分类任务的pipeline，实际上对于相关从业者或者工程实践而言，整个模型的设计主要集中在输入与输出之间，即图中的绿色括号范围。</p>
+<p>目前而言，对于图像分类任务，公认的是使用卷积神经网络进行模型设计。这些年以来，逐步发展起来了<code>Alexnet</code>，<code>Vggnet</code>，<code>GoogleNet/Inception</code>，<code>Resnet</code>。模型的深度不断增加，正确率已在不断提升</p>
+<img src="/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/cnn_framework.png" class="" title="cnn_framework">
+
+<h3 id="AlexNet-GPU加速"><a href="#AlexNet-GPU加速" class="headerlink" title="AlexNet-GPU加速"></a>AlexNet-GPU加速</h3><p>2012年的Imagenet冠军，这个网络结构的提出具有非常重要的意义，首先验证了<code>cnn</code>在复杂模型下的有效性，此外，使用<code>gpu</code>实现训练使得训练时间大幅度缩减，为以后不断提出的<code>cnn</code>和<code>gpu</code>计算都是极大的推动。</p>
+<p>网络结构如下</p>
+<img src="/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/AlexNet-1.png" class="" title="Alexnet">
+
+<p>图中显示的是两块<code>gpu</code>显卡的训练过程，将输入图片经过第一步的卷积之后得到的<code>feature map</code>分割成两部分进行两块<code>gpu</code>训练，对于目前来讲，已经可以实现单块显卡进行整个模型的训练。输入数据为<code>227x227x3</code>，整个结构中使用了<code>11x11,5x5,3x3</code>的卷积核，最大池化，全连接后面添加了<code>droupout</code>策略抑制过拟合，并且使用的是<code>relu</code>激活函数(之前使用的激活函数为<code>sigmoid</code>或<code>tanh</code>)，优化方法为<code>SGD+momentum</code>(带动量的随机梯度下降)。</p>
+<p>一篇特别好的博客链接 <a href="https://www.learnopencv.com/number-of-parameters-and-tensor-sizes-in-convolutional-neural-network/">https://www.learnopencv.com/number-of-parameters-and-tensor-sizes-in-convolutional-neural-network/</a></p>
+<h3 id="Vgg-小卷积更有效"><a href="#Vgg-小卷积更有效" class="headerlink" title="Vgg-小卷积更有效"></a>Vgg-小卷积更有效</h3><p><code>vgg</code>是相比于<code>Alexnet</code>的改进，使用的是多个的<code>3x3</code>的卷积核代替了原来的<code>11x11,5x5</code>卷积核，增加了网络的深度的同时，减小了模型的参数量。</p>
+<p>对于一个<code>5x5</code>的卷积对应的参数量为$25c^{2}$的参数量，其中$c$为输出入和输出的通道数；如果使用2个<code>3x3</code>步长为1的卷积核，参数量为$2 \times (9c^{2})&#x3D;18c^{2}$，从而降低了参数量。</p>
+<ul>
+<li>一个<code>7x7</code>卷积的感受野$\Leftrightarrow$3个<code>3x3</code>卷积步长为1<ul>
+<li>参数量为 $49c^{2}$ $\rightarrow$ $3 \times 9c^{2}&#x3D;27c^2$</li>
+</ul>
+</li>
+</ul>
+<p>Vgg 网络包含多种不同层数的结构，常用的有vgg16和vgg19</p>
+<img src="/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/vgg.jpg" class="" title="vgg_strueture">
+
+<p>从图中可以看出，在vgg进行分块设计，每一个块内，使用的都是相同的卷积核及卷积数量，这种块结构<code>block/modules</code>之后经常使用。模型在ImageNet数据集上的<code>top-5</code>正确率为<code>92.3%</code></p>
+<h3 id="GoogleNet-Inception-模型变宽一些"><a href="#GoogleNet-Inception-模型变宽一些" class="headerlink" title="GoogleNet&#x2F;Inception-模型变宽一些"></a>GoogleNet&#x2F;Inception-模型变宽一些</h3><p>一般认为featuremap的通道数代表着模型的宽度。</p>
+<p><strong><code>googlenet</code>证明了网络的深度比宽度更加有效，使用更深的网络结构，更多的卷积，可以得到更好的效果。</strong></p>
+<p>由于<code>vgg</code>的结构设计，其在内存和时间上的计算要求较高，并且由于卷积层的通道数过多，<code>vgg</code>并不是足够高效。加入对于一个<code>conv_3-512</code>对应的计算量为<code>3x3x512</code>，计算量很大，此外在<code>vgg</code>的结构设计中多个<code>conv_3-512</code>相连构成<code>block</code>，会带来大量计算。</p>
+<blockquote>
+<p><code>googlenet</code>基于的理念是：在深度网络中大部分的激活值是没有必要的，或者由于相关性是冗余的，因此最高效的神经网络架构应该是激活值之间是稀疏连接的，这就意味着在<code>vgg</code>中的多个512的输出特征图之间是没有必要进行完全连接的。</p>
+</blockquote>
+<p>基于此，**<code>googlenet</code>提出了<code>inception module</code>，使用了一种密集结构来近似一个稀疏连接，在整个模型中使用了多个<code>inception module</code>进行连接从此构建了整个网络。只有很少一部分神经元真正有效，设计了<code>1x1</code>卷积，在保持尺寸不变的同时对通道数进行改变，增加了特征的融合可能性，此外大幅度减少了参数量，可以使模型设计的更加深。**</p>
+<img src="/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/inception.jpg" class="" title="inception module">
+
+<p>此外，**<code>googlenet</code>对原来的最后的全连接进行开了改进设计，使用了全局均值池化（在整个2D特征图上计算均值）代替了全连接层**，此举大幅度减少了模型的总参数量。相比<code>vgg</code>准确率有所提升，但是速度相比更快，<code>top-5</code>准确率为<code>93.3%</code></p>
+<img src="/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/googlenet.png" class="" title="googlenet">
+
+<h3 id="ResNet-更深网络的可能性"><a href="#ResNet-更深网络的可能性" class="headerlink" title="ResNet-更深网络的可能性"></a>ResNet-更深网络的可能性</h3><p>随着模型的层数加深，模型的准确率应该是同步增加的，<strong>但是随着网络层数的增加，根据梯度反向传播的优化策略，在逐渐远离输出层时，会出现梯度逐渐变小甚至消失的情况，导致浅层处的网络无法进行参数更新导致学习失败，这就是梯度消失的问题；另一个问题就是，随着网络加深，意味着参数空间更大，优化问题更困难，因此如果简单的单纯增加网络深度有可能会出现更高的训练误差。</strong></p>
+<p>深度残差网络(deep residual network)正是针对深层次网络出现的梯度消失问题进行的网络结构改进设计。</p>
+<p>对于传统的神经网络而言，图中左侧所示，输入<code>x</code>经过两个网络层之后得到<code>H(x)</code>，激活函数为<code>relu</code>，在反向求倒时，在距离输入近的网络层要涉及多个网络层的导数进行交叉相乘，容易引起梯度消失。<code>resnet</code>将网络结构进行了修改，既然距离输入更近，距离输出更远的层会容易出现梯度消失，何不将距离输出更远的层短接到距离输出更近的层上，如图中右侧所示，经过网络传输之后得到的输出变为$H(x)&#x3D;F(x)+x$，如此以来$F(x)$被设计为拟合输入$x$与目标输出$H(x)$之间的残差$H(x)-x$，残差网络的名称也由此而来。设想如果某一层的输出已经可以很好的拟合期望的结果，那么在此之后再增加一层也不会是的网络变得更差，因为该层输出将直接被短接到两层之后，相当于把学习了一个恒等变换，而跳过的两层之间只需要拟合上层的输出和目标之间的残差即可，学习残差相比于直接拟合新的特征会更加容易。因此可以适应更深层次的网络的同时避免了梯度消失的情形。</p>
+<p><code>resnet</code>主要使用的是<code>3x3</code>卷积，与<code>vgg</code>类似，在<code>vgg</code>的基础上，使用短路连接插入进入形成残差网络，目前可以训练152深度的网络，并且相比传统网络结构正确率更好。</p>
+<img src="/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/resnet.png" class="" title="resnet结构示意图">
+
+<h3 id="Densenet-2017-参数再少一点"><a href="#Densenet-2017-参数再少一点" class="headerlink" title="Densenet(2017)-参数再少一点"></a>Densenet(2017)-参数再少一点</h3><p><a href="https://arxiv.org/abs/1608.06993">论文链接</a> </p>
+<p><a href="https://www.leiphone.com/news/201708/0MNOwwfvWiAu43WO.html">参考博客:CVPR 2017最佳论文作者解读：DenseNet 的“what”、“why”和“how”｜CVPR 2017</a></p>
+<p>强推tensorflow implemention : <a href="https://github.com/taki0112/Densenet-Tensorflow">https://github.com/taki0112/Densenet-Tensorflow</a>, <a href="https://github.com/xiaofengShi/Densenet-Tensorflow">https://github.com/xiaofengShi/Densenet-Tensorflow</a></p>
+<p>Torch implementation: <a href="https://github.com/liuzhuang13/DenseNet/tree/master/models">https://github.com/liuzhuang13/DenseNet/tree/master/models</a></p>
+<p>PyTorch implementation: <a href="https://github.com/gpleiss/efficient_densenet_pytorch">https://github.com/gpleiss/efficient_densenet_pytorch</a></p>
+<p>MxNet implementation: <a href="https://github.com/taineleau/efficient_densenet_mxnet">https://github.com/taineleau/efficient_densenet_mxnet</a></p>
+<p>Keras implemention: <a href="https://github.com/flyyufelix/DenseNet-Keras">https://github.com/flyyufelix/DenseNet-Keras</a></p>
+<p>非常棒的网络结构，论文中拿来和<code>resnet</code>和<code>inception</code>进行对比，设计了全新的结构，简单却有效。前面所述<code>resnet</code>通过残差的设计实现了网络更深的可能性，解决了网络更深的时候的梯度消失问题；<code>inception</code>探究了不同的<code>inception module</code>使网络变得更宽。</p>
+<p>在深度学习网络中，随着网络深度的加深，梯度消失问题会愈加明显，目前很多论文都针对这个问题提出了解决方案，比如<code>ResNet</code>，<code>Highway Networks</code>，<code>Stochastic depth</code>，<code>FractalNets</code>等，尽管这些算法的网络结构有差别，但是核心都在于：<code>create short paths from early layers to later layers</code>。<strong>对于<code>Densenet</code>延续这个思路，那就是在保证网络中层与层之间最大程度的信息传输的前提下，进行了极限连接，网络的每一层的输入都是前面所有层输出的并集，该层学习的特征图也会直接传给其他后面的所有层作为输入。</strong></p>
+<img src="/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/densenet.png" class="" title="densenet structure">
+
+<p>图中显示的是包含5个<code>dense block</code>，假设第$l$层的变换函数为$H_{l}$(对应一组或两组的<code>BN</code>,<code>Relu</code>,<code>conv</code>的操作)，输出为$x_{l}$，对于第$l$层接受所有之前靠近输入端的特征图$x_{0},x_{1}…,x_{l-1}$作为输入，由此可以得到第$l$特征图的输出为<br>$$<br>x_{l}&#x3D;H_{l}([x_{0},x_{1}…,x_{l-1}])<br>$$<br>其中$[x_{0},x_{1}…,x_{l-1}]$表示从层$0,1,…,l-1$之间的连接。</p>
+<p><code>densenet</code>与<code>resnet</code>和<code>cnn</code>的对比如下所示</p>
+<img src="/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/compare.jpg" class="" title="compare">
+
+<h4 id="网络提出的启发"><a href="#网络提出的启发" class="headerlink" title="网络提出的启发"></a>网络提出的启发</h4><ul>
+<li><p><code>Stochastic depth</code>中训练过程中随机drop一些层，可以显著提高resnet的泛化性能，由此可以得出结论神经网络之间其实不一定是一个层级递进的结构，在整个模型结构中，某一层可以不仅仅依赖于近紧邻的上一层的特征，而是可以依赖更前面层学习到的特征。</p>
+</li>
+<li><p>训练过程中，随机droup很多层也不会破坏算法的收敛性，这说明了深层的<code>resnet</code>有明显的冗余，残差只提取了层间的很少特征，既然每层学习的特征很少，能否降低它的计算量来减少冗余呢？</p>
+</li>
+</ul>
+<p><code>DenseNet</code>的设计正是基于此，</p>
+<ul>
+<li>让每一层都与前面的层进行直接可连接，实现特征的重复利用</li>
+<li>网络的每一层设计的很窄，只学习非常少的特征，以实现降低冗余。</li>
+</ul>
+<p>第一点是第二点的前提，没有密集连接的话，不可能吧网络设计的很窄，不然网络无法收敛，造成欠拟合。</p>
+<h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><ul>
+<li>参数减少，计算开销降低但是精度没变差</li>
+<li>抗过拟合，<code>DenseNet</code>可以利用千层复杂度低的特征，更容易得到光滑的且具有更好泛华性能的决策函数</li>
+</ul>
+<h4 id="有可能的问题"><a href="#有可能的问题" class="headerlink" title="有可能的问题"></a>有可能的问题</h4><ul>
+<li>密集连接带来冗余？：网库每层计算量的减少和特征的重复利用，<code>DenseNet</code>每层只学习很少的特征，使得参数量和计算量显著减少</li>
+<li>耗费显存？：网络结构存在反复的拼接，将之前的输出和当前层拼接在一起传递给下一层，每次拼接都将会使用新的内存保存拼接够的特征，由此，一个<code>n</code>层的网络会消耗<code>n(n+1)/2</code>层网络的内存</li>
+</ul>
+<h4 id="实现细节"><a href="#实现细节" class="headerlink" title="实现细节"></a>实现细节</h4><ol>
+<li>每层开始的瓶颈层（1x1 卷积）对于减少参数量和计算量非常有用。</li>
+<li>像 <code>VGG</code> 和 <code>ResNet</code> 那样每做一次下采样（<code>down-sampling</code>）之后都把层宽度（<code>growth rate</code>) 增加一倍，可以提高 <code>DenseNet</code> 的计算效率（<code>FLOPS efficiency</code>）。</li>
+<li>与其他网络一样，<code>DenseNet</code> 的深度和宽度应该均衡的变化，当然 <code>DenseNet</code> 每层的宽度要远小于其他模型。</li>
+<li>每一层设计得较窄会降低 <code>DenseNet</code> 在 <code>GPU</code> 上的运算效率，但可能会提高在 <code>CPU</code> 上的运算效率</li>
+</ol>
+<h4 id="代码详解"><a href="#代码详解" class="headerlink" title="代码详解"></a>代码详解</h4><p>参考链接</p>
+<ol>
+<li><p><a href="https://github.com/taki0112/Densenet-Tensorflow">https://github.com/taki0112/Densenet-Tensorflow</a></p>
+</li>
+<li><p><a href="https://github.com/xiaofengShi/Densenet-Tensorflow">https://github.com/xiaofengShi/Densenet-Tensorflow</a></p>
+</li>
+</ol>
+<ul>
+<li>densenet architecture</li>
+</ul>
+<img src="/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/densenet_Archi.jpg" class="" title="densenet_Archi">
+
+<p>在每个<code>densenet block</code>内部进行不同feature 的连接</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">Dense_net</span>(<span class="params">self, input_x</span>):</span><br><span class="line">        <span class="comment"># input_X=[224，224，3]，self.filters=12</span></span><br><span class="line">        <span class="comment"># 输入图片首先进行conv7-2</span></span><br><span class="line">        <span class="comment"># 输出为：[112,112,24]</span></span><br><span class="line">        x = conv_layer(input_x, <span class="built_in">filter</span>=<span class="number">2</span> * self.filters, kernel=[<span class="number">7</span>,<span class="number">7</span>], stride=<span class="number">2</span>, layer_name=<span class="string">&#x27;conv0&#x27;</span>)</span><br><span class="line">        <span class="comment"># maxpool3-2 输出[56,56,24]</span></span><br><span class="line">        x = Max_Pooling(x, pool_size=[<span class="number">3</span>,<span class="number">3</span>], stride=<span class="number">2</span>)</span><br><span class="line">        <span class="comment"># block+transition</span></span><br><span class="line">        x = self.dense_block(input_x=x, nb_layers=<span class="number">6</span>, layer_name=<span class="string">&#x27;dense_1&#x27;</span>)</span><br><span class="line">        x = self.transition_layer(x, scope=<span class="string">&#x27;trans_1&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        x = self.dense_block(input_x=x, nb_layers=<span class="number">12</span>, layer_name=<span class="string">&#x27;dense_2&#x27;</span>)</span><br><span class="line">        x = self.transition_layer(x, scope=<span class="string">&#x27;trans_2&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        x = self.dense_block(input_x=x, nb_layers=<span class="number">48</span>, layer_name=<span class="string">&#x27;dense_3&#x27;</span>)</span><br><span class="line">        x = self.transition_layer(x, scope=<span class="string">&#x27;trans_3&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        x = self.dense_block(input_x=x, nb_layers=<span class="number">32</span>, layer_name=<span class="string">&#x27;dense_final&#x27;</span>) </span><br><span class="line"></span><br><span class="line">        x = Batch_Normalization(x, training=self.training, scope=<span class="string">&#x27;linear_batch&#x27;</span>)</span><br><span class="line">        x = Relu(x)</span><br><span class="line">        x = Global_Average_Pooling(x)</span><br><span class="line">        x = Linear(x)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>Dense block</p>
+<img src="/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/Denseblock.jpg" class="" title="Denseblock">
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 模型核心代码</span></span><br><span class="line"><span class="comment"># 每个densenet block内部存在多个bottleneck层，并且多个在block内部</span></span><br><span class="line"><span class="comment"># 前面的bottleneck输出传递到后面的bottleneck中</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">dense_block</span>(<span class="params">self, input_x, nb_layers, layer_name</span>):</span><br><span class="line">        <span class="keyword">with</span> tf.name_scope(layer_name):</span><br><span class="line">            layers_concat = <span class="built_in">list</span>()</span><br><span class="line">            layers_concat.append(input_x)</span><br><span class="line">			<span class="comment"># 进入bottlebneck 层</span></span><br><span class="line">            <span class="comment"># conv1-4n --&gt; conv3-n</span></span><br><span class="line">            x = self.bottleneck_layer(input_x, scope=layer_name + <span class="string">&#x27;_bottleN_&#x27;</span> + <span class="built_in">str</span>(<span class="number">0</span>))</span><br><span class="line"></span><br><span class="line">            layers_concat.append(x)</span><br><span class="line">			<span class="comment"># layers_concat 包含</span></span><br><span class="line">            	<span class="comment"># 原始输入x</span></span><br><span class="line">                <span class="comment"># bottleneck层计算之后的特征</span></span><br><span class="line">            <span class="comment"># nb_layers 对应着denseblock内的包含多少个bottleneck</span></span><br><span class="line">            <span class="comment"># 每增加一个bottleneck整个densenet block输出的层数增加</span></span><br><span class="line">            <span class="comment"># 同时layers_concat保存当前bottleneck的输出并传递到下次计算中</span></span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(nb_layers - <span class="number">1</span>):</span><br><span class="line">                x = Concatenation(layers_concat)</span><br><span class="line">                x = self.bottleneck_layer(x, scope=layer_name + <span class="string">&#x27;_bottleN_&#x27;</span> + <span class="built_in">str</span>(i + <span class="number">1</span>))</span><br><span class="line">                layers_concat.append(x)</span><br><span class="line">			</span><br><span class="line">            x = Concatenation(layers_concat)</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Bottleneck layer</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 瓶颈层</span></span><br><span class="line">  <span class="keyword">def</span> <span class="title function_">bottleneck_layer</span>(<span class="params">self, x, scope</span>):</span><br><span class="line">      <span class="keyword">with</span> tf.name_scope(scope):</span><br><span class="line">          x = Batch_Normalization(x, training=self.training, scope=scope+<span class="string">&#x27;_batch1&#x27;</span>)</span><br><span class="line">          x = Relu(x)</span><br><span class="line">          x = conv_layer(x, <span class="built_in">filter</span>=<span class="number">4</span> * self.filters, kernel=[<span class="number">1</span>,<span class="number">1</span>], layer_name=scope+<span class="string">&#x27;_conv1&#x27;</span>)</span><br><span class="line">          x = Drop_out(x, rate=dropout_rate, training=self.training)</span><br><span class="line">  </span><br><span class="line">          x = Batch_Normalization(x, training=self.training, scope=scope+<span class="string">&#x27;_batch2&#x27;</span>)</span><br><span class="line">          x = Relu(x)</span><br><span class="line">          x = conv_layer(x, <span class="built_in">filter</span>=self.filters, kernel=[<span class="number">3</span>,<span class="number">3</span>], layer_name=scope+<span class="string">&#x27;_conv2&#x27;</span>)</span><br><span class="line">          x = Drop_out(x, rate=dropout_rate, training=self.training)</span><br><span class="line">          </span><br><span class="line">          <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>transition layer</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 两个densenet block之间的传递层，使用bn+relu+conv1+dropuout+avg_pool</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">transition_layer</span>(<span class="params">self, x, scope</span>):</span><br><span class="line">        <span class="keyword">with</span> tf.name_scope(scope):</span><br><span class="line">            x = Batch_Normalization(x, training=self.training, scope=scope+<span class="string">&#x27;_batch1&#x27;</span>)</span><br><span class="line">            x = Relu(x)</span><br><span class="line">            x = conv_layer(x, <span class="built_in">filter</span>=self.filters, kernel=[<span class="number">1</span>,<span class="number">1</span>], layer_name=scope+<span class="string">&#x27;_conv1&#x27;</span>)</span><br><span class="line">            x = Drop_out(x, rate=dropout_rate, training=self.training)</span><br><span class="line">            x = Average_pooling(x, pool_size=[<span class="number">2</span>,<span class="number">2</span>], stride=<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h4><p>图像分割，图像翻译，目标检测任务，本人使用densenet实现过不定长字符的识别任务，效果相当不错，相比于传统的图像encode+RNN_decode的方式训练快速很多并且正确率一点不差。</p>
+<h3 id="SqueezeNet-2016-移动平台运行"><a href="#SqueezeNet-2016-移动平台运行" class="headerlink" title="SqueezeNet(2016) -移动平台运行"></a>SqueezeNet(2016) -移动平台运行</h3><p><strong><code>SqueezeNet</code>的设计初衷不是为了提高<code>CNN</code>的精度，而是为了简化模型复杂度的同时能够达到可用的网络识别精度，在正确率和参数量之间进行平衡，方便能够在移动端运行。</strong></p>
+<p><a href="https://arxiv.org/pdf/1602.07360.pdf">论文连接</a></p>
+<h4 id="设计原则"><a href="#设计原则" class="headerlink" title="设计原则"></a>设计原则</h4><p>在模型设计时，主要从模型压缩，卷积核尺寸，下采样方面着手，并且设计了全新的模块Firemodel，这是squeezenet最显著的贡献。</p>
+<h5 id="模型压缩"><a href="#模型压缩" class="headerlink" title="模型压缩"></a>模型压缩</h5><p>主要采用的技术有</p>
+<h6 id="SVD"><a href="#SVD" class="headerlink" title="SVD"></a>SVD</h6><p>使用SVD奇异值分解，减少网络参数。</p>
+<h6 id="NetworkPruning"><a href="#NetworkPruning" class="headerlink" title="NetworkPruning"></a>NetworkPruning</h6><p>网络剪枝（<code>network pruning</code>）：在<code>weight</code>中设置一个阈值，低于这个阈值就设为0，从而将<code>weight</code>变成系数矩阵，可以采用比较高效的稀疏存储方式，进而降低模型大小</p>
+<h6 id="DeepCompression"><a href="#DeepCompression" class="headerlink" title="DeepCompression"></a>DeepCompression</h6><p>DeepCompression，其包括网络剪枝，权重共享以及<code>Huffman</code>编码技术。简单说一下权重共享，其实就是对一个<code>weight</code>进行聚类，比如采用<code>k-means</code>分为<code>256</code>类，那么对这个<code>weight</code>只需要存储<code>256</code>个值就可以了，然后可以采用8 bit存储类别索引，其中用到了<code>codebook</code>来实现。关于<code>Deep Compression</code>详细技术可以参考文献[<a href="http://link.zhihu.com/?target=https://arxiv.org/abs/1510.00149">deep compression]</a>。</p>
+<h6 id="Quantization"><a href="#Quantization" class="headerlink" title="Quantization"></a>Quantization</h6><p>量化（<code>quantization</code>）: 对参数降低位数，比如从<code>float32</code>变成<code>int8</code>，这样是有道理，因为训练时采用高位浮点是为了梯度计算，而真正做<code>inference</code>时也许并不需要这么高位的浮点，<code>TensorFlow</code>中是提供了量化工具的，采用更低位的存储不仅降低模型大小，还可以结合特定硬件做<code>inference</code>加速。</p>
+<h5 id="CNNKernel"><a href="#CNNKernel" class="headerlink" title="CNNKernel"></a>CNNKernel</h5><p>替换$3 \times 3$卷积核为$1 \times 1$卷积核</p>
+<h5 id="延迟下采样"><a href="#延迟下采样" class="headerlink" title="延迟下采样"></a>延迟下采样</h5><p>延迟下采样（<code>downsample</code>），前面的<code>layers</code>可以有更大的特征图，有利于提升模型准确度。目前下采样一般采用<code>strides&gt;1</code>的卷积层或者<code>pool layer</code></p>
+<h5 id="FireModule"><a href="#FireModule" class="headerlink" title="FireModule"></a>FireModule</h5><p>设计<code>Fire Module</code>减少$3 \times 3$卷积的<code>feature map</code>数量，卷积核的参数为<code>(number of input channels) * (number of filters) * 3 * 3</code></p>
+<p>示意图如下所示，也是<code>squeezenet</code>的核心组件，设计思想是将原来的一层<code>conv</code>变成两层</p>
+<ul>
+<li><p><code>squeeze</code>层+<code>relu</code></p>
+<p>在<code>squeeze</code>中使用$1 \times 1$的卷积核，卷积核的数量为<code>S11</code>，使用$1\times 1$的卷积核可以看做这一步是将当前输入的<code>featuremap</code>在卷积核数量的维度上进行压缩，提取当前<code>featuremap</code>的显著特征；</p>
+</li>
+<li><p><code>expand</code>层+<code>relu</code></p>
+<p>在<code>expand</code>中存在$1 \times 1$和$3 \times 3$的卷积核，数量分别为<code>E11</code>和<code>E33</code>，将二者在维度的方向上进行拼接，并且保证<code>S11&lt;E11+E33</code>，这一步可以理解在featuremap上提取不同的感受野情况下的特征，并且如此设计减少了原来输入到下一层的<code>feature map</code>的数量</p>
+</li>
+<li><p>具体的示意图如下所示</p>
+<img src="/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/firemodule.png" class="" title="FireModule">
+</li>
+<li><p>举个🌰</p>
+<p>假设输入为<code>H,W,C</code>,</p>
+<ul>
+<li><p>如果使用的是普通的卷积方式为<code>conv3-16</code>+<code>conv3-128</code>,</p>
+<ul>
+<li>参数量为：</li>
+</ul>
+<p>$$16<em>3</em>3<em>C+128</em>3<em>3</em>16&#x3D;144*(128+C)&#x3D;18432+144C$$</p>
+<ul>
+<li>计算量为：</li>
+</ul>
+<p>$$H<em>W</em>16*(3<em>3</em>C)+H<em>W</em>128*(3<em>3</em>16)&#x3D;HW(18432+144C)$$</p>
+</li>
+<li><p>如果使用的是<code>FireModule</code>的卷积方式，<code>conv1-16</code>+<code>conv1-64</code>+<code>conv3-64</code></p>
+<ul>
+<li>参数量为：</li>
+</ul>
+<p>$$16<em>1</em>1<em>C+64</em>1<em>1</em>16+64<em>3</em>3*16&#x3D;10240+16C$$</p>
+<ul>
+<li>计算量为(<code>expand</code>中的<code>contact</code>计算为加法运算，可以忽略，只考虑乘法)：</li>
+</ul>
+<p>$$<br>\begin{align}<br>H<em>W</em>16*(1<em>1</em>C)+H<em>W</em>64*(1<em>1</em>16)&amp;+H<em>W</em>64*(3<em>3</em>16) \<br>&amp;&#x3D;HW(10240+16C)<br>\end{align}<br>$$</p>
+</li>
+</ul>
+<p><strong>可以看到相比于普通卷积<code>FireModule</code>具有更少的参数和计算量</strong></p>
+<img src="/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/FireVsCnov.jpg" class="" title="FireVsCnov"></li>
+</ul>
+<h4 id="模型结构"><a href="#模型结构" class="headerlink" title="模型结构"></a>模型结构</h4><p>整个模型实际上就是使用了<code>FireModule</code>进行堆叠形成，网络结构如图所示。左侧是标准模式，最开始是一个卷积层，之后就是一堆<code>FireModule</code>的堆叠，中间穿插着<code>stride=2</code>的<code>maxpool</code>进行下采样并采用了延迟策略，尽量使前面拥有较大的<code>feature map</code>。中间和右侧结构是借鉴了<code>resnet</code>引入了不同短路机制的<code>squeezenet</code>。</p>
+<img src="/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/squeezenet.png" class="" title="squeezenet">
+
+<p>下面说一下<code>SqueezeNet</code>的一些具体的实现细节：</p>
+<p>（1）在<code>FireModule</code>模块中，<code>expand</code>层采用了混合卷积核<code>1x1</code>和<code>3x3</code>，其<code>stride</code>均为1，对于<code>1x1</code>卷积核，其输出<code>feature map</code>与原始一样大小，但是由于它要和<code>3x3</code>得到的<code>feature map</code>做<code>concat</code>，所以<code>3x3</code>卷积进行了<code>padding=1</code>的操作，实现的话就设置padding&#x3D;”same”；</p>
+<p>（2）<code>Fire</code>模块中所有卷积层的激活函数采用<code>ReLU</code>；</p>
+<p>（3）<code>Fire9</code>层后采用了<code>dropout</code>，其中<code>keep_prob=0.5</code>；</p>
+<p>（4）<code>SqueezeNet</code>没有全连接层，而是采用了全局的<code>avgpool</code>层，即<code>pool size</code>与输入<code>feature map</code>大小一致；</p>
+<p>（5）训练采用线性递减的学习速率，初始学习速率为0.04。</p>
+<ul>
+<li><p>模型效果</p>
+<img src="/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/squeezenet_result.png" class="" title="squeezenet_result">
+
+<p>在论文中和<code>alexnet</code>进行了对比，<code>squeezenet</code>在性能相同的情况下，模型的的参数量大为减少。为移动端部署提供了支持，本人在看到这个效果时，不禁对<code>deep compression</code>的压缩方法产生了浓厚的兴趣，不自觉的爆了粗口：我靠，真的假的，接下来要试试自己的模型能否进行这种极限压缩。</p>
+</li>
+<li><p>代码实现<code>tensorflow</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">SqueezeNet</span>(<span class="title class_ inherited__">object</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, inputs, nb_classes=<span class="number">1000</span>, is_training=<span class="literal">True</span></span>):</span><br><span class="line">        <span class="comment"># conv1</span></span><br><span class="line">        net = tf.layers.conv2d(inputs, <span class="number">96</span>, [<span class="number">7</span>, <span class="number">7</span>], strides=[<span class="number">2</span>, <span class="number">2</span>],</span><br><span class="line">                                 padding=<span class="string">&quot;SAME&quot;</span>, activation=tf.nn.relu,</span><br><span class="line">                                 name=<span class="string">&quot;conv1&quot;</span>)</span><br><span class="line">        <span class="comment"># maxpool1</span></span><br><span class="line">        net = tf.layers.max_pooling2d(net, [<span class="number">3</span>, <span class="number">3</span>], strides=[<span class="number">2</span>, <span class="number">2</span>],</span><br><span class="line">                                      name=<span class="string">&quot;maxpool1&quot;</span>)</span><br><span class="line">        <span class="comment"># fire2</span></span><br><span class="line">        net = self._fire(net, <span class="number">16</span>, <span class="number">64</span>, <span class="string">&quot;fire2&quot;</span>)</span><br><span class="line">        <span class="comment"># fire3</span></span><br><span class="line">        net = self._fire(net, <span class="number">16</span>, <span class="number">64</span>, <span class="string">&quot;fire3&quot;</span>)</span><br><span class="line">        <span class="comment"># fire4</span></span><br><span class="line">        net = self._fire(net, <span class="number">32</span>, <span class="number">128</span>, <span class="string">&quot;fire4&quot;</span>)</span><br><span class="line">        <span class="comment"># maxpool4</span></span><br><span class="line">        net = tf.layers.max_pooling2d(net, [<span class="number">3</span>, <span class="number">3</span>], strides=[<span class="number">2</span>, <span class="number">2</span>],</span><br><span class="line">                                      name=<span class="string">&quot;maxpool4&quot;</span>)</span><br><span class="line">        <span class="comment"># fire5</span></span><br><span class="line">        net = self._fire(net, <span class="number">32</span>, <span class="number">128</span>, <span class="string">&quot;fire5&quot;</span>)</span><br><span class="line">        <span class="comment"># fire6</span></span><br><span class="line">        net = self._fire(net, <span class="number">48</span>, <span class="number">192</span>, <span class="string">&quot;fire6&quot;</span>)</span><br><span class="line">        <span class="comment"># fire7</span></span><br><span class="line">        net = self._fire(net, <span class="number">48</span>, <span class="number">192</span>, <span class="string">&quot;fire7&quot;</span>)</span><br><span class="line">        <span class="comment"># fire8</span></span><br><span class="line">        net = self._fire(net, <span class="number">64</span>, <span class="number">256</span>, <span class="string">&quot;fire8&quot;</span>)</span><br><span class="line">        <span class="comment"># maxpool8</span></span><br><span class="line">        net = tf.layers.max_pooling2d(net, [<span class="number">3</span>, <span class="number">3</span>], strides=[<span class="number">2</span>, <span class="number">2</span>],</span><br><span class="line">                                      name=<span class="string">&quot;maxpool8&quot;</span>)</span><br><span class="line">        <span class="comment"># fire9</span></span><br><span class="line">        net = self._fire(net, <span class="number">64</span>, <span class="number">256</span>, <span class="string">&quot;fire9&quot;</span>)</span><br><span class="line">        <span class="comment"># dropout</span></span><br><span class="line">        net = tf.layers.dropout(net, <span class="number">0.5</span>, training=is_training)</span><br><span class="line">        <span class="comment"># conv10</span></span><br><span class="line">        net = tf.layers.conv2d(net, <span class="number">1000</span>, [<span class="number">1</span>, <span class="number">1</span>], strides=[<span class="number">1</span>, <span class="number">1</span>],</span><br><span class="line">                               padding=<span class="string">&quot;SAME&quot;</span>, activation=tf.nn.relu,</span><br><span class="line">                               name=<span class="string">&quot;conv10&quot;</span>)</span><br><span class="line">        <span class="comment"># avgpool10</span></span><br><span class="line">        net = tf.layers.average_pooling2d(net, [<span class="number">13</span>, <span class="number">13</span>], strides=[<span class="number">1</span>, <span class="number">1</span>],</span><br><span class="line">                                          name=<span class="string">&quot;avgpool10&quot;</span>)</span><br><span class="line">        <span class="comment"># squeeze the axis</span></span><br><span class="line">        net = tf.squeeze(net, axis=[<span class="number">1</span>, <span class="number">2</span>])</span><br><span class="line"></span><br><span class="line">        self.logits = net</span><br><span class="line">        self.prediction = tf.nn.softmax(net)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_fire</span>(<span class="params">self, inputs, squeeze_depth, expand_depth, scope</span>):</span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(scope):</span><br><span class="line">            squeeze = tf.layers.conv2d(inputs, squeeze_depth, [<span class="number">1</span>, <span class="number">1</span>],</span><br><span class="line">                                       strides=[<span class="number">1</span>, <span class="number">1</span>], padding=<span class="string">&quot;SAME&quot;</span>,</span><br><span class="line">                                       activation=tf.nn.relu, name=<span class="string">&quot;squeeze&quot;</span>)</span><br><span class="line">            <span class="comment"># squeeze</span></span><br><span class="line">            expand_1x1 = tf.layers.conv2d(squeeze, expand_depth, [<span class="number">1</span>, <span class="number">1</span>],</span><br><span class="line">                                          strides=[<span class="number">1</span>, <span class="number">1</span>], padding=<span class="string">&quot;SAME&quot;</span>,</span><br><span class="line">                                          activation=tf.nn.relu, name=<span class="string">&quot;expand_1x1&quot;</span>)</span><br><span class="line">            expand_3x3 = tf.layers.conv2d(squeeze, expand_depth, [<span class="number">3</span>, <span class="number">3</span>],</span><br><span class="line">                                          strides=[<span class="number">1</span>, <span class="number">1</span>], padding=<span class="string">&quot;SAME&quot;</span>,</span><br><span class="line">                                          activation=tf.nn.relu, name=<span class="string">&quot;expand_3x3&quot;</span>)</span><br><span class="line">            <span class="keyword">return</span> tf.concat([expand_1x1, expand_3x3], axis=<span class="number">3</span>)</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>赏杯咖啡！</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat.jpeg" alt="ShiXiaofeng 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpeg" alt="ShiXiaofeng 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>ShiXiaofeng
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://xiaofengshi.com/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/" title="深度学习-计算机视觉CNN">http://xiaofengshi.com/2018/11/23/深度学习-计算机视觉CNN/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag"># 深度学习</a>
+              <a href="/tags/CV/" rel="tag"># CV</a>
+              <a href="/tags/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" rel="tag"># 卷积神经网络</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/11/25/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-EM%E7%AE%97%E6%B3%95/" rel="prev" title="机器学习-EM算法">
+      <i class="fa fa-chevron-left"></i> 机器学习-EM算法
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/" rel="next" title="机器学习-常用知识点">
+      机器学习-常用知识点 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E5%83%8F%E8%AF%86%E5%88%AB%E5%8E%9F%E7%90%86%E5%8F%8A%E6%8A%80%E6%9C%AF"><span class="nav-number">1.</span> <span class="nav-text">图像识别原理及技术</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E7%90%86"><span class="nav-number">1.1.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%80%E6%9C%AF%E8%BF%87%E7%A8%8B"><span class="nav-number">1.2.</span> <span class="nav-text">技术过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CNN%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6"><span class="nav-number">2.</span> <span class="nav-text">CNN网络框架</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AlexNet-GPU%E5%8A%A0%E9%80%9F"><span class="nav-number">2.1.</span> <span class="nav-text">AlexNet-GPU加速</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Vgg-%E5%B0%8F%E5%8D%B7%E7%A7%AF%E6%9B%B4%E6%9C%89%E6%95%88"><span class="nav-number">2.2.</span> <span class="nav-text">Vgg-小卷积更有效</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GoogleNet-Inception-%E6%A8%A1%E5%9E%8B%E5%8F%98%E5%AE%BD%E4%B8%80%E4%BA%9B"><span class="nav-number">2.3.</span> <span class="nav-text">GoogleNet&#x2F;Inception-模型变宽一些</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ResNet-%E6%9B%B4%E6%B7%B1%E7%BD%91%E7%BB%9C%E7%9A%84%E5%8F%AF%E8%83%BD%E6%80%A7"><span class="nav-number">2.4.</span> <span class="nav-text">ResNet-更深网络的可能性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Densenet-2017-%E5%8F%82%E6%95%B0%E5%86%8D%E5%B0%91%E4%B8%80%E7%82%B9"><span class="nav-number">2.5.</span> <span class="nav-text">Densenet(2017)-参数再少一点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E6%8F%90%E5%87%BA%E7%9A%84%E5%90%AF%E5%8F%91"><span class="nav-number">2.5.1.</span> <span class="nav-text">网络提出的启发</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BC%98%E7%82%B9"><span class="nav-number">2.5.2.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%89%E5%8F%AF%E8%83%BD%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">2.5.3.</span> <span class="nav-text">有可能的问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E7%BB%86%E8%8A%82"><span class="nav-number">2.5.4.</span> <span class="nav-text">实现细节</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E8%AF%A6%E8%A7%A3"><span class="nav-number">2.5.5.</span> <span class="nav-text">代码详解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%94%E7%94%A8"><span class="nav-number">2.5.6.</span> <span class="nav-text">应用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SqueezeNet-2016-%E7%A7%BB%E5%8A%A8%E5%B9%B3%E5%8F%B0%E8%BF%90%E8%A1%8C"><span class="nav-number">2.6.</span> <span class="nav-text">SqueezeNet(2016) -移动平台运行</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99"><span class="nav-number">2.6.1.</span> <span class="nav-text">设计原则</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9"><span class="nav-number">2.6.1.1.</span> <span class="nav-text">模型压缩</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#SVD"><span class="nav-number">2.6.1.1.1.</span> <span class="nav-text">SVD</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#NetworkPruning"><span class="nav-number">2.6.1.1.2.</span> <span class="nav-text">NetworkPruning</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#DeepCompression"><span class="nav-number">2.6.1.1.3.</span> <span class="nav-text">DeepCompression</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Quantization"><span class="nav-number">2.6.1.1.4.</span> <span class="nav-text">Quantization</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#CNNKernel"><span class="nav-number">2.6.1.2.</span> <span class="nav-text">CNNKernel</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BB%B6%E8%BF%9F%E4%B8%8B%E9%87%87%E6%A0%B7"><span class="nav-number">2.6.1.3.</span> <span class="nav-text">延迟下采样</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#FireModule"><span class="nav-number">2.6.1.4.</span> <span class="nav-text">FireModule</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E7%BB%93%E6%9E%84"><span class="nav-number">2.6.2.</span> <span class="nav-text">模型结构</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ShiXiaofeng"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">ShiXiaofeng</p>
+  <div class="site-description" itemprop="description">LLM,搜索,数据挖掘,深度学习相关技术记录分享</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xiaofengShi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xiaofengShi" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sxf1052566766@163.com" title="E-Mail → mailto:sxf1052566766@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ShiXiaofeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v7.1.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+  
+      
+<script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el: '#valine-comments',
+      verify: false,
+      notify: false,
+      appId: 'rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz',
+      appKey: 'zJasiQnAqgUwf4kiHhHyXwOP',
+      placeholder: "Leave Your Message and Contact Details",
+      avatar: 'mm',
+      meta: guest,
+      pageSize: '10' || 10,
+      visitor: true,
+      lang: '' || 'zh-cn',
+      path: location.pathname,
+      recordIP: false,
+      serverURLs: ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

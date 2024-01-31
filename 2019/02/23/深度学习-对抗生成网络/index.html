@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/panda_32px.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/panda_16px.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://xiaofengshi.com').hostname,
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="GAN(Generative Adversary Networks)的思想是是一种二人零和博弈思想（two-player game），博弈双方的利益之和是一个常数，比如两个人掰手腕，假设总的空间是一定的，你的力气大一点，那你就得到的空间多一点，相应的我的空间就少一点，相反我力气大我就得到的多一点，但有一点是确定的就是，我两的总空间是一定的，这就是二人博弈，但是总利益是一定的。 引申到GAN里面就是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习-对抗生成网络">
+<meta property="og:url" content="http://xiaofengshi.com/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/index.html">
+<meta property="og:site_name" content="做一个有用的人">
+<meta property="og:description" content="GAN(Generative Adversary Networks)的思想是是一种二人零和博弈思想（two-player game），博弈双方的利益之和是一个常数，比如两个人掰手腕，假设总的空间是一定的，你的力气大一点，那你就得到的空间多一点，相应的我的空间就少一点，相反我力气大我就得到的多一点，但有一点是确定的就是，我两的总空间是一定的，这就是二人博弈，但是总利益是一定的。 引申到GAN里面就是">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://xiaofengshi.com/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/gans.jpg">
+<meta property="og:image" content="http://xiaofengshi.com/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/dis_curve.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/DCGAN.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/pix2pix.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/pix2pix_model.jpg">
+<meta property="og:image" content="http://xiaofengshi.com/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/pix2pix_dis.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/pix2pix_g.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/pix2pix_unet.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/pix2pix_train_dis.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/pix2pix_train_gen.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/cyclegan.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/noise_cube.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/gans_sphere.png">
+<meta property="article:published_time" content="2019-02-23T12:23:04.000Z">
+<meta property="article:modified_time" content="2019-03-05T09:02:38.000Z">
+<meta property="article:author" content="ShiXiaofeng">
+<meta property="article:tag" content="深度学习">
+<meta property="article:tag" content="Gan">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://xiaofengshi.com/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/gans.jpg">
+
+<link rel="canonical" href="http://xiaofengshi.com/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>深度学习-对抗生成网络 | 做一个有用的人</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">做一个有用的人</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">LLM And Search</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-guestbook">
+
+    <a href="/guestbook/" rel="section"><i class="fa fa-fw fa-commenting"></i>guestbook</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/xiaofengShi" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ShiXiaofeng">
+      <meta itemprop="description" content="LLM,搜索,数据挖掘,深度学习相关技术记录分享">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="做一个有用的人">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          深度学习-对抗生成网络
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-02-23 20:23:04" itemprop="dateCreated datePublished" datetime="2019-02-23T20:23:04+08:00">2019-02-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-03-05 17:02:38" itemprop="dateModified" datetime="2019-03-05T17:02:38+08:00">2019-03-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Gan/" itemprop="url" rel="index">
+                    <span itemprop="name">Gan</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/" class="post-meta-item leancloud_visitors" data-flag-title="深度学习-对抗生成网络" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>GAN(Generative Adversary Networks)的思想是是一种二人零和博弈思想（two-player game），博弈双方的利益之和是一个常数，比如两个人掰手腕，假设总的空间是一定的，你的力气大一点，那你就得到的空间多一点，相应的我的空间就少一点，相反我力气大我就得到的多一点，但有一点是确定的就是，我两的总空间是一定的，这就是二人博弈，但是总利益是一定的。</p>
+<p>引申到GAN里面就是可以看成，GAN中有两个这样的博弈者，一个人名字是生成模型(G)，另一个人名字是判别模型(D)。他们各自有各自的功能。</p>
+<img src="/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/gans.jpg" class="" title="Gan">
+
+<span id="more"></span>
+
+<p>首先说明什么是生成模型：</p>
+<ul>
+<li>密度估计：在事先不了解事件概率分布的情况下，先假设随机分布，然后用过数据观测来确定真实的概率密度，就想极大似然估计。</li>
+<li>样本生成：手上存在一个训练样本集，通过训练之后生成类似的样本</li>
+</ul>
+<p>对抗生成网络主要是解决生成类型的任务，比如风格迁移任务，将黑白图像生成彩色图像；修复破损的图片，生成超分辨率图像，性别转变，表情转变，发型转变等等。在对抗生成网络中包含生成器和判别器，生成器用于生成任务需要的数据，而判别器用于判断生成的样本是否为真，两个网络使用的是博弈论的思想，<strong>一般情况下，我们的目的是得到一个最优的生成器，判别器是用来辅助我们得到该生成器的手段。</strong></p>
+<h2 id="生成网络基本原理"><a href="#生成网络基本原理" class="headerlink" title="生成网络基本原理"></a>生成网络基本原理</h2><p>生成网络主要针对生成类型的任务，对于最初始的Gan，输入一个噪声，模拟得到一个人的图像，并且希望这个图像足以以假乱真。针对这样的任务，设计一个生成器和一个判别器，使用生成器，输入噪声数据输出一个生成的图像，而判别器用来判断生成的图像是否是一张人像，判别器是一个二分类网络。</p>
+<ul>
+<li><p>判别网络的目的：就是能判别出来属于的一张图它是来自真实样本集还是假样本集。假如输入的是真样本，网络输出就接近1，输入的是假样本，网络输出接近0，那么很完美，达到了很好判别的目的。</p>
+</li>
+<li><p>生成网络的目的：生成网络是造样本的，它的目的就是使得自己造样本的能力尽可能强，强到什么程度呢，判别网络没法判断我是真样本还是假样本。</p>
+</li>
+</ul>
+<p>通俗理解对抗生成网络就是，判别器会说，我很强，来一个样本我就会知道这个样本是真是假(来源于数据集的数据认为是真的，生成器生成的任务是假的)，但是生成器也很不服气，他也认为自己很强，我能生成一个假样本，虽然我知道是真的，但是你判别器判断不出来。Gan的目的就是通过这种博弈的思想得到最优的生成器。</p>
+<p>总地来说，Goodfellow 等人提出来的 GAN 是通过对抗过程估计生成模型的新框架。在这种框架下，我们需要同时训练两个模型，即一个能捕获数据分布的生成模型G 和一个能估计数据来源于真实样本概率的判别模型D。生成器G的训练过程是最大化判别器犯错误的概率，即判别器误以为数据是真实样本而不是生成器生成的假样本。因此，这一框架就对应于两个参与者的极小极大博弈（minimax game）。在所有可能的函数G和D中，我们可以求出唯一均衡解，即G可以生成与训练样本相同的分布，而D判断的概率处处为 1&#x2F;2，无法分辨数据是来源于真实样本还是生成器生成的数据，这一过程的推导与证明将在后文详细解释。</p>
+<p>目前对于生成器G和判别器D使用的是神经网络的方式。为了学习到生成器在输入数据x上的分布$p_G$，对于生成器来说，最初的框架中输入的是噪声信号，假设分布为$p_z(t)$，然后根据$G(z;\theta_g)$将其映射到数据空间中，对于$G(z;\theta_g)$表示生成器所表征的函数变换。同理，定义判别器的函数为$D(s,\theta_d)$它的输出是单个标量，$D(x)$表示数据来源于真实数据而不是生成器生成的假数据的概率。我们训练D以最大化正确分配真实样本和生成样本的概率，因此我们就可以通过最小化$ log(1-D(G(z)))$而同时训练G，也就是说判别器D和生成器对价值函数V(G,D)进行了极小极大化博弈。</p>
+<p>判别器D会判断数据是否为真实数据的概率，那么我们可以认为数据分为两类，一类是真实样本的数据$x$，另一类是生成器生成的数据$G(x)​$，对于一个最优的判别器来说，肯定是能够争取分辨出数据的真假，对于分类任务我们一般使用交叉熵作为优化目标，对于真实数据，判别器会给出1的评价，对于生成器的数据，判别器会给出0的评价，那么参考交叉熵的损失函数</p>
+<blockquote>
+<p>假设$y$表示真实类别为$(0,1)$，$a$为模型的预测值，那么交叉熵可以表述为<br>$$<br>Crossentropy(a)&#x3D;-\frac{1}{n}\sum [yln(a)+(1-y)ln(1-a)]<br>$$</p>
+</blockquote>
+<p>交叉熵表述从极大似然估计而来，表述的是预测值和真实值之间的差距，训练的过程是最小化损失函数的过程。</p>
+<p>在生成对抗的网络框架中，对于判别器的训练，可以认为是真实数据的判别结果逼近于1，而生成数据的判别结果逼近于0，由此可以得到<br>$$<br>V ( G , D ) : &#x3D; E _ { x \sim p _ { d a t a } ( x ) } \log ( D ( x ) ) + E _ { z \sim p _ { z } ( z ) } \log ( 1 - D ( G ( z ) ) )<br>$$<br>式子中的$E_{p_{data}}$和$E_{P_{generate}}$表示的是$x​$期望，</p>
+<p>期望的定义为，对于离散变量<br>$$<br>\mathbb{E}<em>{\mathrm{x} \sim P}[f(x)]&#x3D;\sum</em>{x} P(x) f(x)<br>$$<br>对于连续变量<br>$$<br>\mathbb{E}_{\mathbf{x} \sim p}[f(x)]&#x3D;\int p(x) f(x) d x<br>$$<br>期望的定义告诉我们上面的式子和交叉熵是等价的，对于对抗生成网络的判别器的优化目标就是最大化目标函数<br>$$<br>D _ { G } ^ { * } &#x3D; \operatorname { argmax } _ { D } V ( G , D )<br>$$<br>最优的判别器通过最大化目标函数得到。</p>
+<p>当得到最优的判别器之后，来对生成器进行优化，生成器的目的是生成和真实数据相似的样本，相似到让判别器难分真假，对于上面的目标函数最小化，就可以得到最优的生成器。在目标函数$V(G,D)$的第二项，当$D(G(x))$接近于1时，表示判别器会判断$D(G(x))$为真，也就是得到了最优的生成器，此时的整个优化目标函数为0，即最小化优化目标得到最优的生成器<br>$$<br>G^{*}&#x3D;argmin_G :: E_{p_{data}}\log D(x)+E_{P_{generate}}\log(1-D(G(x)))<br>$$<br>进行联立，可以得到论文中的公式<br>$$<br>\min _ { G } \max _ { D } V ( D , G ) &#x3D; \mathbb { E } _ { \boldsymbol { x } \sim p _ { \mathrm { data } } ( \boldsymbol { x } ) } [ \log D ( \boldsymbol { x } ) ] + \mathbb { E } _ { \boldsymbol { z } \sim p _ { \boldsymbol { z } } ( \boldsymbol { z } ) } [ \log ( 1 - D ( G ( \boldsymbol { z } ) ) ) ]<br>$$</p>
+<h2 id="原始GAN详细理论推导"><a href="#原始GAN详细理论推导" class="headerlink" title="原始GAN详细理论推导"></a>原始GAN详细理论推导</h2><h3 id="KL散度"><a href="#KL散度" class="headerlink" title="KL散度"></a>KL散度</h3><p>引用《深度学习》对KL散度的说明</p>
+<blockquote>
+<p>KL散度是信息论中的概念，定义一个数据的自信息$\mathrm{x}&#x3D;x$为$I(x)&#x3D;-\log P(x)$，单位为奈特。使用信息熵对整个概率分布中的不确定性进行量化，信息熵的定义为<br>$$<br>H(x)&#x3D;- \mathbb { E } _ { \mathbf { x } \sim P } [ \log P ( x ) ]<br>$$<br>KL散度衡量不同分布之间的差异<br>$$<br>D _ { \mathrm { KL } } ( P | Q ) &#x3D; \mathbb { E } _ { \mathrm { x } \sim P } \left[ \log \frac { P ( x ) } { Q ( x ) } \right] &#x3D; \mathbb { E } _ { \mathrm { x } \sim P } [ \log P ( x ) - \log Q ( x ) ]<br>$$<br>式子中的$P(x)$和$Q(x)$表示不同的分布。</p>
+<p><strong>KL散度最重要的性质是它是非负的，当且仅当两个分布相等或者非常接近的时候对应的KL散度为0。这个性质可以用来在当做不同分布之间的距离。但是，KL散度不是严格对称的，对于某些P和Q分布存在$D_{-} K L(P | Q)  \neq D_{-} K L(Q| | P)$，因此KL不是真正的距离。</strong></p>
+<p>和KL散度关系紧密的量是交叉熵，$H(P, Q)&#x3D;-\mathbb{E}_{\mathrm{x} \sim P} \log Q(x)$和KL散度相比，交叉熵为最小化Q进行最小化，等价于最小化$D _ { \mathrm { KL } } ( P | Q )$，因为在计算交叉熵时Q并不会参与被省略的一项。</p>
+</blockquote>
+<p>KL散度可以从极大似然估计中推导而出。若给定一个样本数据的分布 $P_{data}(x) $和生成的数据分布$P_{G}(x;\theta)$，那么 GAN 希望能找到一组参数$\theta$使分布 $p_G(x;\theta)$ 和$ P_{data}(x)$ 之间的距离最短，也就是找到一组生成器参数而使得生成器能生成十分逼真的图片。</p>
+<h3 id="极大似然估计"><a href="#极大似然估计" class="headerlink" title="极大似然估计"></a>极大似然估计</h3><p>从极大似然估计的角度来解释对抗生成网络的优化目标。</p>
+<p>数据样本的分布为$P_{data}(x) ​$那么从该分布中抽取m个真实的样本${𝑥^1,𝑥^2,…,𝑥^𝑚}​$，那么这m个真实的样本在生成数据分布$ P_G(x;\theta)​$中全部出现的概率为<br>$$<br>L &#x3D; \prod _ { i &#x3D; 1 } ^ { m } P _ { G } \left( x ^ { i } ; \theta \right)<br>$$<br>上述的概率被称为似然函数。</p>
+<p>如果生成数据分布$ P_G(x;\theta)$和数据样本的分布$P_{data}(x) $相同，那么真实的数据就有极大的可能性出现在生成数据分布中，也就是$m$个数据出现在生成数据分布中的概率非常大。这样，就可以通过极大化似然函数得到离真实数据分布最近的分布，也就是最优的参数$\theta​$，由此得到生成数据分布的参数<br>$$<br>\begin{aligned} \theta ^ { * } &amp; &#x3D; \arg \max _ { \theta } \prod _ { i &#x3D; 1 } ^ { m } P _ { G } \left( x ^ { i } ; \theta \right) &#x3D; \arg \max _ { \theta } \log \prod _ { i &#x3D; 1 } ^ { m } P _ { G } \left( x ^ { i } ; \theta \right) \ &amp; &#x3D; \arg \max _ { \theta } \sum _ { i &#x3D; 1 } ^ { m } \log P _ { G } \left( x ^ { i } ; \theta \right) \quad \left{ x ^ { 1 } , x ^ { 2 } , \ldots , x ^ { m } \right} \text { from } P _ { d a t a } ( x ) \ &amp; \approx \arg \max _ { \theta } E _ { x \sim P _ { d a t a } } \left[ \log P _ { G } ( x ; \theta ) \right] \</p>
+<p>\end{aligned}<br>$$</p>
+<p>上式就是极大似然的过程，将似然函数变为对数似然函数，这样原来似然函数中的连乘就变成了求和。对于期望的计算方式上文已经进行了说明 ，对于离散型随机变量，期望为$E(X)&#x3D;\sum_{i}x_{i}p_{i}$，其中$p_i$为对应的概率，那么对于上述的极大似然的过程，可以将近似为求解期望，这就是求解交叉熵的过程。</p>
+<p>因为上述的过程的目的是为了查找最优的参数$\theta$，因此可以对上述公式进一步推导<br>$$<br>\begin{aligned} \theta ^ { * } &amp;&#x3D;\arg \max _ { \theta } E _ { x \sim P _ { d a t a } } \left[ \log P _ { G } ( x ; \theta ) \right] \<br>&amp; &#x3D;\arg \max <em>{\theta} \int P</em>{d a t a}(x) \log P_{G}(x ; \theta) d x-\int P_{d a t a}(x) \log P_{d a t a}(x) d x \<br>&amp;&#x3D;\arg \min \int_{x} P_{d a t a}(x) \log \frac{P_{G}(x, \theta)}{P_{d a t a}(x)} dx\</p>
+<p>&amp;&#x3D;\arg \min <em>{\theta} K L\left(P</em>{d a t a}(x)| | P_{G}(x ; \theta)\right) </p>
+<p>\end{aligned}<br>$$<br>对上述的期望公式添加不包含$\theta$的一项，这一项的添加并不会改变最优$\theta$的求解，合并这两个积分就可以得到$KL​$的形式。</p>
+<p>求取最优的参数$\theta$就可以使得生成数据分布$P _ { G } ( x ; \theta )$和数据样本$P_{d a t a}(x) $相似或接近，也就是令KL散度取得最小的参数$\theta$，在得到最优参数$\theta$时，就意味着生成器生成的数据和原始数据非常接近。</p>
+<p>上述部分就从极大似然估计的角度对优化目标进行了分析，在深度学习领域，很多的优化目标都可以从极大似然估计的角度进行分析得到最终的优化目标。</p>
+<h3 id="最优的判别器"><a href="#最优的判别器" class="headerlink" title="最优的判别器"></a>最优的判别器</h3><p>正如上文所述，判别器用来判断输入样本的真假，对于最优的判别器应该能够有效的判别出输入的样本为真或为假，我们认为来源于数据样本的数据为真，来源于生成器的生成数据为假。不论是从极大似然估计的角度还是从KL散度的角度，可以得到判别器的优化目标，最大化优化目标对应着判别器对样本分布$p_G​$和分布$p_{data}​$之间的差异或距离的评判能力。</p>
+<p>按照原论文所述，价值函数可写成在$x$上的积分方式，对数学期望进行展开，可以得到<br>$$<br>V(G, D)&#x3D;\int_{x} p_{\text { data }}(x) \log (D(x))+p_{G}(x) \log (1-D(x)) d x<br>$$<br>求解积分的最大值可以转换为被积分函数的最大值，而求解被积分函数的最大值是为了得到最优判别器D，由此，不涉及判别器的项就可以看成是常数项，在被积分函数中$p_{ data }(x) \log (D(x))+p_{G}(x) \log (1-D(x))$，$p_{data}$和$p_G(x)$都可以看作是常数项，由此被积分函数可以看做<br>$$<br>p_{\text { data }}(x) \log (D(x))+p_{g}(x) \log (1-D(x))&#x3D;a^{<em>} \log (D(x))+b^{</em>} \log (1-D(x))<br>$$<br>对于式子中的常数项为$$a^*&#x3D;p_{data}(x)​$$和$b^{*}&#x3D;p_{G}(x)​$。</p>
+<p>令式中$y&#x3D;D(x)​$，可以得到<br>$$<br>f(y)&#x3D;a^{<em>} \log y+b^{</em>} \log (1-y)<br>$$<br>可以查看$f(y)​$的曲线</p>
+<img src="/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/dis_curve.png" class="" title="Dis_curve">
+
+<p>为了找到使得$f(y)​$得到最大值的y，对$f(y)​$求偏导，得到其极值点<br>$$<br>f^{\prime}(y)&#x3D;0 \Rightarrow \frac{a}{y}-\frac{b}{1-y}&#x3D;0 \Rightarrow y&#x3D;\frac{a}{a+b}<br>$$<br>由此可以得到最优的判别器为<br>$$<br>D(x)&#x3D;\frac{P_{data}(x)}{P_{data}(x)+P_G(x)}<br>$$<br>这是从理论上对最优解进行的推导，实际上该最优解是无法计算得到的，因为一开始我们并不知道数据样本分布$p_{data}(x)​$，但是该理论证明了最优的生成器$G​$是存在的，因此在实际的训练过程中我们只需要逼近最优的判别器D。</p>
+<h3 id="最优的生成器"><a href="#最优的生成器" class="headerlink" title="最优的生成器"></a>最优的生成器</h3><p>对于对抗生成网络，目的就是得到最优的生成器，用来生成和数据样本数据相似的数据。这就意味着最优的生成器会满足<br>$$<br>p_{G}(x)&#x3D;p_{data}(x)<br>$$<br>如此，最优的判别器为<br>$$<br>D(x)&#x3D;\frac{P_{data}(x)}{P_{data}(x)+P_G(x)} &#x3D;\frac{1}{2}<br>$$<br>这种情况意味着判别器已经无法分别何为真实的数据何为生成器生成的数据，对于来源于生成器的数据何数据样本的数据，判别器都会给出概率为$\frac{1}{2}​$，实际上这就体现了对抗生成网络中的极大极小博弈，<strong>当且仅当$p_{G}(x)&#x3D;p_{data}(x)​$时，优化目标$V ( G , D )​$达到全局最优点。</strong></p>
+<p>当$p_{G}(x)&#x3D;p_{data}(x)​$时，就是使优化目标$V ( G , D ^{*})​$取得最小值的生成器，在这个时候$p_{G}(x)​$和$p_{data}(x)​$的JS散度为零。</p>
+<p>将上一步得到的最优的判别器带入到优化目标中，进行整理可以得到如下公式条推导<br>$$<br>\begin{align}<br>V(G, D^{*})<br>&amp;&#x3D;\int_{x} p_{\text { data }}(x) \log (D(x))+p_{G}(x) \log (1-D(x)) d x \<br>&amp;&#x3D;\int_{x} p_{d a t a}(x) \log \left(\frac{p_{\text {data}}(x)}{p_{G}(x)+p_{\text {data}}(x)}\right)+p_{G}(x) \log \left(\frac{p_{G}(x)}{p_{G}(x)+p_{\text {data}}(x)}\right) \mathrm{d} x \<br>&amp;&#x3D;\int_{x}(\log 2-\log 2) p_{d a t a}(x)+p_{d a t a}(x) \log \left(\frac{p_{d a t a}(x)}{p_{G}(x)+p_{d a t a}(x)}\right) \<br>&amp;:::::+(\log 2-\log 2) p_{G}(x)+p_{G}(x) \log \left(\frac{p_{G}(x)}{p_{G}(x)+p_{d a t a}(x)}\right) \mathrm{d} x \<br>&amp; &#x3D;-\log 2[\int_{x}P_G(x)dx+\int_{x}p_{data}(x)dx]+\int_{x}p_{data}(x)[\log2+\log \left(\frac{p_{d a t a}(x)}{p_{G}(x)+p_{d a t a}(x)}\right) ]dx\<br>&amp;:::::+\int_{x}p_G(x)[\log2+\log \left(\frac{p_{G}(x)}{p_{G}(x)+p_{d a t a}(x)}\right)]dx \<br>&amp;&#x3D;-\log2(1+1)+\int_{x}p_{data}(x)\log \left(\frac{p_{d a t a}(x)}{[p_{G}(x)+p_{d a t a}(x)]&#x2F;2}\right)dx\<br>&amp;:::::+\int_{x}p_{G}(x)\log \left(\frac{p_{G}(x)}{[p_{G}(x)+p_{d a t a}(x)]&#x2F;2}\right)dx \<br>&amp;&#x3D;-\log 4+K L\left(p_{\text {data}} | \frac{p_{\text {data}}+p_{G}}{2}\right)+K L\left(p_{G} | \frac{p_{\text {data}}+p_{G}}{2}\right)<br>\end{align}<br>$$<br>上述的推导清晰的显示了在得到最优的判别器之后求解最优的生成器的过程。</p>
+<p>因为KL散度是非负的，可以得到最优的生成器可以使优化目标取得的全局最优值为$-\log 4​$。接下来推导证明$p_{G}(x)&#x3D;p_{data}(x)​$是优化目标取得最优解的唯一解，就可以证明，$p_{G}(x)&#x3D;p_{data}(x)​$是优化目标取得最小值的充分必要条件。</p>
+<blockquote>
+<p>根据JS散度的定义，可以得到<br>$$<br>\begin{array}{r}{\mathrm{JSD}(P | Q)&#x3D;\frac{1}{2} KL(P | M)+\frac{1}{2} KL(Q | M)} \  where :::{M&#x3D;\frac{1}{2}(P+Q)}\end{array}<br>$$<br>假设存在两个分布 P 和 Q，且这两个分布的平均分布 M&#x3D;(P+Q)&#x2F;2，那么这两个分布之间的 JS 散度为 P 与 M 之间的 KL 散度加上 Q 与 M 之间的 KL 散度再除以 2。</p>
+<p>JS散度的值的范围为$0-\log 2$，如果两个分布完全没有关系，那么JS散度取得最大值$\log2$，如果两个分布完全相同，那么JS散度取得最大值0。</p>
+</blockquote>
+<p>根据JS散度的性质，可以对上述的最优目标进一步优化<br>$$<br>\begin{align}<br>V(G, D^{*})&amp;&#x3D;-\log 4+K L\left(p_{\text {data}} | \frac{p_{\text {data}}+p_{G}}{2}\right)+K L\left(p_{G} | \frac{p_{\text {data}}+p_{G}}{2}\right)\<br>&amp;&#x3D;-\log4+2JS(p_{data}|p_G)</p>
+<p>\end{align}<br>$$<br>当分布满足$p_{G}(x)&#x3D;p_{data}(x)$的条件下$JS(p_{data}|p_G)&#x3D;0$。</p>
+<p>综上可以得到，当且仅当生成数据分布和数据样本分布相等时，可以得到最优的生成器。</p>
+<h3 id="网络训练过程"><a href="#网络训练过程" class="headerlink" title="网络训练过程"></a>网络训练过程</h3><p>上述是从理论的角度进行最优生成器和最优判别器的推导，先求出最优判别器，再使用最优判别器计算最优的生成器。优化目标如下<br>$$<br>V(G, D)&#x3D;E _ { x \sim p _ { d a t a } ( x ) } \log ( D ( x ) ) + E _ { z \sim p _ { z } ( z ) } \log ( 1 - D ( G ( z ) ) ) \<br>$$<br>这是在最开始的时候提出的优化目标，其中涉及两个求解期望的过程，在实际训练中使用SGD的方法，针对每个batch的数据，假设存在数据数量为m。</p>
+<ul>
+<li><p>从真实数据$p_{data}​$中采样$m​$个样本，$\left{x^{1}, x^{2}, \ldots, x^{m}\right}​$为正样本</p>
+</li>
+<li><p>从先验分布$p_{prior}$噪声样本中抽取$m$个噪声样本$\left{z^{1}, z^{2}, \ldots, z^{m}\right}$</p>
+</li>
+<li><p>将噪声样本输入生成器G中，生成数据$\left{\tilde{x}^{1}, \widetilde{x}^{2}, \ldots, \tilde{x}^{m}\right}, \widetilde{x}^{i}&#x3D;G\left(z^{i}\right)$，通过最大化目标函数<br>$$<br>\tilde{V}&#x3D;\frac{1}{m} \sum_{i&#x3D;1}^{m} \log D\left(x^{i}\right)+\frac{1}{m} \sum_{i&#x3D;1}^{m} \log \left(1-D\left(\tilde{x}^{i}\right)\right)<br>$$<br>更新判别器D的参数$$\theta_d$$，参数的更新方式为$\theta_{d} \leftarrow \theta_{d}+\eta \nabla \widetilde{V}\left(\theta_{d}\right)$</p>
+</li>
+</ul>
+<p>上述为判别器的更新方式，我们希望最大化目标函数</p>
+<ul>
+<li><p>从先验分布$p_{prior}$中采样个$m$噪声样本$\left{\tilde{z}^{1}, \widetilde{z}^{2}, \ldots, \tilde{z}^{m}\right}$</p>
+</li>
+<li><p>通过极小化目标函数<br>$$<br>\widetilde{V}&#x3D;\frac{1}{m} \sum_{i&#x3D;1}^{m} \log \left(1-D\left(G\left(z^{i}\right)\right)\right)<br>$$<br>更新生成器G的参数$\theta_g$，生成器参数的更新方式为$\theta_{g} \leftarrow \theta_{g}-\eta \nabla \tilde{V}\left(\theta_{g}\right)$</p>
+</li>
+</ul>
+<p>以上是生成器的训练过程，该过程 在一次迭代中只进行一次更新，可以避免更新太多使JS散度上升。</p>
+<p><strong>NOTE</strong>:</p>
+<ul>
+<li><u><strong>在进行判别器参数更新时，因为是最大化优化目标，更新方式为</strong></u>$\theta_{d} \leftarrow \theta_{d}+\eta \nabla \widetilde{V}\left(\theta_{d}\right)​$</li>
+<li><strong><u>在进行生成器参数更新时，因为是最小化优化目标，更新方式为</u></strong>$\theta_{g} \leftarrow \theta_{g}-\eta \nabla \tilde{V}\left(\theta_{g}\right)$</li>
+<li><strong><u>判别器和生成器的更新方式：没对判别器更新一次接着对生成器更新一次，或者多判别器更新k次后对生成器更新一次。</u></strong></li>
+</ul>
+<h3 id="代码说明"><a href="#代码说明" class="headerlink" title="代码说明"></a>代码说明</h3><p>代码地址<a href="https://github.com/jiqizhixin/ML-Tutorial-Experiment">https://github.com/jiqizhixin/ML-Tutorial-Experiment</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#下面在满足epoch条件下进行训练</span></span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">30</span>):</span><br><span class="line"></span><br><span class="line">    <span class="comment">#计算一个epoch所需要的迭代数量，即训练样本数除批量大小数的值取整；其中shape[0]就是读取矩阵第一维度的长度</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Number of batches&quot;</span>, <span class="built_in">int</span>(X_train.shape[<span class="number">0</span>]/BATCH_SIZE))</span><br><span class="line"></span><br><span class="line">    <span class="comment">#在一个epoch内进行迭代训练</span></span><br><span class="line">    <span class="keyword">for</span> index <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">int</span>(X_train.shape[<span class="number">0</span>]/BATCH_SIZE)):</span><br><span class="line"></span><br><span class="line">        <span class="comment">#随机生成的噪声服从均匀分布，且采样下界为-1、采样上界为1，输出BATCH_SIZE×100个样本；即抽取一个批量的随机样本</span></span><br><span class="line">        noise = np.random.uniform(-<span class="number">1</span>, <span class="number">1</span>, size=(BATCH_SIZE, <span class="number">100</span>))</span><br><span class="line"></span><br><span class="line">        <span class="comment">#抽取一个批量的真实图片</span></span><br><span class="line">        image_batch = X_train[index*BATCH_SIZE:(index+<span class="number">1</span>)*BATCH_SIZE]</span><br><span class="line"></span><br><span class="line">        <span class="comment">#生成的图片使用生成器对随机噪声进行推断；verbose为日志显示，0为不在标准输出流输出日志信息，1为输出进度条记录</span></span><br><span class="line">        <span class="comment"># 使用噪声数据生成图片,g为生成器</span></span><br><span class="line">        generated_images = g.predict(noise, verbose=<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment">#每经过100次迭代输出一张生成的图片</span></span><br><span class="line">        <span class="keyword">if</span> index % <span class="number">100</span> == <span class="number">0</span>:</span><br><span class="line">            image = combine_images(generated_images)</span><br><span class="line">            image = image*<span class="number">127.5</span>+<span class="number">127.5</span></span><br><span class="line">            Image.fromarray(image.astype(np.uint8)).save(</span><br><span class="line">                <span class="string">&quot;./GAN/&quot;</span>+<span class="built_in">str</span>(epoch)+<span class="string">&quot;_&quot;</span>+<span class="built_in">str</span>(index)+<span class="string">&quot;.png&quot;</span>)</span><br><span class="line"></span><br><span class="line">            <span class="comment">#将真实的图片和生成的图片以多维数组的形式拼接在一起，真实图片在上，生成图片在下</span></span><br><span class="line">            X = np.concatenate((image_batch, generated_images))</span><br><span class="line"></span><br><span class="line">            <span class="comment">#生成图片真假标签，即一个包含两倍批量大小的列表；前一个批量大小都是1，代表真实图片，后一个批量大小都是0，代表伪造图片</span></span><br><span class="line">            y = [<span class="number">1</span>] * BATCH_SIZE + [<span class="number">0</span>] * BATCH_SIZE</span><br><span class="line"></span><br><span class="line">            <span class="comment">#判别器的损失；在一个batch的数据上进行一次参数更新</span></span><br><span class="line">            d_loss = d.train_on_batch(X, y)</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;batch %d d_loss : %f&quot;</span> % (index, d_loss))</span><br><span class="line"></span><br><span class="line">            <span class="comment">#随机生成的噪声服从均匀分布</span></span><br><span class="line">            noise = np.random.uniform(-<span class="number">1</span>, <span class="number">1</span>, (BATCH_SIZE, <span class="number">100</span>))</span><br><span class="line"></span><br><span class="line">            <span class="comment">#固定判别器，此时判别器参数被固定不再更新</span></span><br><span class="line">            d.trainable = <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">#计算生成器损失；在一个batch的数据上进行一次参数更新</span></span><br><span class="line">            g_loss = d_on_g.train_on_batch(noise, [<span class="number">1</span>] * BATCH_SIZE)</span><br><span class="line"></span><br><span class="line">            <span class="comment">#令判别器可训练</span></span><br><span class="line">            d.trainable = <span class="literal">True</span></span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;batch %d g_loss : %f&quot;</span> % (index, g_loss))</span><br><span class="line"></span><br><span class="line">            <span class="comment">#每100次迭代保存一次生成器和判别器的权重</span></span><br><span class="line">            <span class="keyword">if</span> index % <span class="number">100</span> == <span class="number">9</span>:</span><br><span class="line">                g.save_weights(<span class="string">&#x27;generator&#x27;</span>, <span class="literal">True</span>)</span><br><span class="line">                d.save_weights(<span class="string">&#x27;discriminator&#x27;</span>, <span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+
+<p>查看上述的代码可以看出，在每个Batch中，选择一个批次的数据和同样数量的噪声数据，认为真实数据标签为1，生成器生成的噪声数据标签为0，使用交叉熵损失来训练判别器；之后固定判别器参数，再次选择一个批次数量的噪声，此时认为生成器生成的噪声数据标签为1，同样通过交叉熵损失来更新生成器参数。由此反复，不断更新判别器和生成器的参数。</p>
+<p>再借鉴DCGAN中的代码<a href="https://github.com/carpedm20/DCGAN-tensorflow">https://github.com/carpedm20/DCGAN-tensorflow</a></p>
+<p>生成网络结构为</p>
+<img src="/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/DCGAN.png" class="" title="DCGAN_Generator">
+
+<p>G的输入是一个100位的向量z，也就是噪声向量，首先经过全连接层，将100维的向量变成$4\times4\times1024$的向量，从第二层开始，使用反卷积进行上采样，增大尺寸并减小通道数量，最后得到的输出为$64\times64\times3$。</p>
+<p>实现细节</p>
+<ul>
+<li>不使用池化层，在判别器中使用带有步长的卷积代替池化</li>
+<li>在G,D中均使用BN防止过拟合</li>
+<li>G中除了最后一层都是用relu激活函数，最后一层使用tanh</li>
+<li>D中激活函数都是用Leaky Relu激活函数</li>
+</ul>
+<p>如下是判别器的代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">discriminator</span>(<span class="params">self, image, y=<span class="literal">None</span>, reuse=<span class="literal">False</span></span>):</span><br><span class="line">    <span class="keyword">with</span> tf.variable_scope(<span class="string">&quot;discriminator&quot;</span>) <span class="keyword">as</span> scope:</span><br><span class="line">      <span class="keyword">if</span> reuse:</span><br><span class="line">        scope.reuse_variables()</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> <span class="keyword">not</span> self.y_dim:</span><br><span class="line">        h0 = lrelu(conv2d(image, self.df_dim, name=<span class="string">&#x27;d_h0_conv&#x27;</span>))</span><br><span class="line">        h1 = lrelu(self.d_bn1(conv2d(h0, self.df_dim*<span class="number">2</span>, name=<span class="string">&#x27;d_h1_conv&#x27;</span>)))</span><br><span class="line">        h2 = lrelu(self.d_bn2(conv2d(h1, self.df_dim*<span class="number">4</span>, name=<span class="string">&#x27;d_h2_conv&#x27;</span>)))</span><br><span class="line">        h3 = lrelu(self.d_bn3(conv2d(h2, self.df_dim*<span class="number">8</span>, name=<span class="string">&#x27;d_h3_conv&#x27;</span>)))</span><br><span class="line">        h4 = linear(tf.reshape(h3, [self.batch_size, -<span class="number">1</span>]), <span class="number">1</span>, <span class="string">&#x27;d_h4_lin&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> tf.nn.sigmoid(h4), h4</span><br><span class="line">      <span class="keyword">else</span>:</span><br><span class="line">        yb = tf.reshape(y, [self.batch_size, <span class="number">1</span>, <span class="number">1</span>, self.y_dim])</span><br><span class="line">        x = conv_cond_concat(image, yb)</span><br><span class="line"></span><br><span class="line">        h0 = lrelu(conv2d(x, self.c_dim + self.y_dim, name=<span class="string">&#x27;d_h0_conv&#x27;</span>))</span><br><span class="line">        h0 = conv_cond_concat(h0, yb)</span><br><span class="line"></span><br><span class="line">        h1 = lrelu(self.d_bn1(conv2d(h0, self.df_dim + self.y_dim, name=<span class="string">&#x27;d_h1_conv&#x27;</span>)))</span><br><span class="line">        h1 = tf.reshape(h1, [self.batch_size, -<span class="number">1</span>])      </span><br><span class="line">        h1 = concat([h1, y], <span class="number">1</span>)</span><br><span class="line">        </span><br><span class="line">        h2 = lrelu(self.d_bn2(linear(h1, self.dfc_dim, <span class="string">&#x27;d_h2_lin&#x27;</span>)))</span><br><span class="line">        h2 = concat([h2, y], <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        h3 = linear(h2, <span class="number">1</span>, <span class="string">&#x27;d_h3_lin&#x27;</span>)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> tf.nn.sigmoid(h3), h3</span><br></pre></td></tr></table></figure>
+
+<p>最后一层实现线性连接，将$NHWC$转变为$N,1$并经过sigmoid激活转化为概率</p>
+<h2 id="pix2pix"><a href="#pix2pix" class="headerlink" title="pix2pix"></a>pix2pix</h2><p>上面部分是对原始的Gan进行了推导和说明，输入的数据是噪声数据，这显然会带来一个问题，<strong>给定一个噪声虽然能生成新样本，但是我们无法控制生成的图像的类型</strong>，以Minist举例，使用噪声数据训练，只能得到类似于Minist相似的数据，但是无法控制具体是实现哪个数字，整个数据的生成过程的是随机的。</p>
+<p><strong>NOTE: 对于pix2pix来说，训练时的输入图片和输出图片必须是成对出现的</strong>。</p>
+<p>原来的Gan的输入和输出</p>
+<ul>
+<li>生成器：输入一个噪声z，输出一个图像G(z)</li>
+<li>判别器：输入一个图像x，输出该图像的真实的概率$D(x)​$</li>
+</ul>
+<p>针对上面所述的问题，引入了条件对抗生成网络。</p>
+<p>对于cGan的输入输出为：</p>
+<ul>
+<li>生成器：输入一个噪声z，一个条件y，输出符合该条件的图像$G(z|y)$</li>
+<li>判别器：输入一张图像x，一个条件y，输出该图像在该条件下的真实的概率$D(x|y)​$</li>
+</ul>
+<p>Pix2Pix就是这种网络架构。pix2pix可以用来为线稿图上色，表情转换，性别转换等任务。</p>
+<img src="/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/pix2pix.png" class="" title="pix2pix">
+
+<p>正如图中所示，整个数据集中存在着成对的图像，分别为线稿的形式和上色的形式，线稿图输入生成网络生成假的彩色图，判别器判别该生成数据为假，判别真实的上色图为真来优判别器，使用真实的上色图和生成网络生成的彩色图之间的的差距来优化生成器。</p>
+
+
+<p>上图为pix2pix在tensorflow训练之后的graphic，可以从整个图中看出整个模型包含一个生成器一个判别器，包含3个损失函数，对上面的图形进行简化，如下图所示。</p>
+<img src="/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/pix2pix_model.jpg" class="" title="pix2pix model">
+
+<p>如上图所示为pix2pix的模型结构，数据集中存储中成对的数据RealA和RealB，也就是上文所述的X,Y类型的图片。生成网络输入生成网络G中生成Fake_B。</p>
+<p>对于判别网络</p>
+<ul>
+<li>输入RealA和RealB，使判别器认为该类型为真</li>
+<li>输入RealA和FakeB，使判别器认为该类型为假</li>
+</ul>
+<p>对于生成器，固定判别器参数</p>
+<ul>
+<li>输入Real和FakeB，使判别器认为该类型为真</li>
+<li>FakeB和RealB之间的L1损失</li>
+</ul>
+<p>###优化目标</p>
+<p>和传统的使用对抗生成网络不同，对于pix2pix使用了两个优化目标，一个为Gan优化目标<br>$$<br>\begin{aligned} \mathcal{L}<em>{c G A N}(G, D)&#x3D;&amp; \mathbb{E}</em>{x, y}[\log D(x, y)]+\ &amp; \mathbb{E}<em>{x, z}[\log (1-D(x, G(x, z))]\end{aligned}<br>$$<br>该优化目标和传统的损失函数略有不同，其中$x$为观察数据，$y$为对应的上色图，也就是label，$z$为噪声数据。<br>$$<br>\mathcal{L}</em>{L 1}(G)&#x3D;\mathbb{E}<em>{x, y, z}\left[|y-G(x, z)|</em>{1}\right]<br>$$<br>判别器的优化目标还是尽可能的对数据进行划分，而生成器的优化目标不仅仅是欺骗判别器，而且还加入了和数据集中样本的差距，并且经过衡量之后L1损失相比L1损失更能生成边缘清晰的图像。</p>
+<p>整个模型的优化目标就是<br>$$<br>G^{*}&#x3D;\arg \min <em>{G} \max <em>{D} \mathcal{L}</em>{c G A N}(G, D)+\lambda \mathcal{L}</em>{L 1}(G)<br>$$</p>
+<h3 id="判别器设计"><a href="#判别器设计" class="headerlink" title="判别器设计"></a>判别器设计</h3><p>判别器的结构如下所示<a href="https://medium.com/@ManishChablani/cyclegans-and-pix2pix-5e6a5f0159c4%">reference</a></p>
+<img src="/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/pix2pix_dis.png" class="" title="pix2pix discriminator">
+
+<p>在判别器设计中，由于是条件对抗生成网络，在判别器阶段输入时是两类图像合并之后的数据，在pix2pix中，进行的将Y类图像转化为X类图像，在判别器中输入的是$[X,Y]$的合并之后的数据，并且经过Unet卷积之后得到的图像为$NHW1$的数据维度，并且最后一层使用的Sigmoid激活函数，这是在pix2pix中引入的PathcGan机制，对每张图像使用$H\times W$的小块来计算输入图像的概率，这样的设计可以加快计算速度和收敛，代码如下所示</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">create_discriminator</span>(<span class="params">discrim_inputs, discrim_targets</span>):</span><br><span class="line">    n_layers = <span class="number">3</span></span><br><span class="line">    layers = []</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 2x [batch, height, width, in_channels] =&gt; [batch, height, width, in_channels * 2]</span></span><br><span class="line">    <span class="built_in">input</span> = tf.concat([discrim_inputs, discrim_targets], axis=<span class="number">3</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># layer_1: [batch, 256, 256, in_channels * 2] =&gt; [batch, 128, 128, ndf]</span></span><br><span class="line">    <span class="keyword">with</span> tf.variable_scope(<span class="string">&quot;layer_1&quot;</span>):</span><br><span class="line">        convolved = conv(<span class="built_in">input</span>, a.ndf, stride=<span class="number">2</span>)</span><br><span class="line">        rectified = lrelu(convolved, <span class="number">0.2</span>)</span><br><span class="line">        layers.append(rectified)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># layer_2: [batch, 128, 128, ndf] =&gt; [batch, 64, 64, ndf * 2]</span></span><br><span class="line">        <span class="comment"># layer_3: [batch, 64, 64, ndf * 2] =&gt; [batch, 32, 32, ndf * 4]</span></span><br><span class="line">        <span class="comment"># layer_4: [batch, 32, 32, ndf * 4] =&gt; [batch, 31, 31, ndf * 8]</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(n_layers):</span><br><span class="line">            <span class="keyword">with</span> tf.variable_scope(<span class="string">&quot;layer_%d&quot;</span> % (<span class="built_in">len</span>(layers) + <span class="number">1</span>)):</span><br><span class="line">                out_channels = a.ndf * <span class="built_in">min</span>(<span class="number">2</span>**(i+<span class="number">1</span>), <span class="number">8</span>)</span><br><span class="line">                stride = <span class="number">1</span> <span class="keyword">if</span> i == n_layers - <span class="number">1</span> <span class="keyword">else</span> <span class="number">2</span>  <span class="comment"># last layer here has stride 1</span></span><br><span class="line">                convolved = conv(layers[-<span class="number">1</span>], out_channels, stride=stride)</span><br><span class="line">                normalized = batchnorm(convolved)</span><br><span class="line">                rectified = lrelu(normalized, <span class="number">0.2</span>)</span><br><span class="line">                layers.append(rectified)</span><br><span class="line"></span><br><span class="line">                <span class="comment"># layer_5: [batch, 31, 31, ndf * 8] =&gt; [batch, 30, 30, 1]</span></span><br><span class="line">                <span class="keyword">with</span> tf.variable_scope(<span class="string">&quot;layer_%d&quot;</span> % (<span class="built_in">len</span>(layers) + <span class="number">1</span>)):</span><br><span class="line">                    convolved = conv(rectified, out_channels=<span class="number">1</span>, stride=<span class="number">1</span>)</span><br><span class="line">                    output = tf.sigmoid(convolved)</span><br><span class="line">                    layers.append(output)</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">return</span> layers[-<span class="number">1</span>]</span><br><span class="line"><span class="comment">## pix2pix网络搭建</span></span><br><span class="line"><span class="keyword">with</span> tf.variable_scope(<span class="string">&quot;generator&quot;</span>) <span class="keyword">as</span> scope:</span><br><span class="line">    out_channels = <span class="built_in">int</span>(targets.get_shape()[-<span class="number">1</span>])</span><br><span class="line">    <span class="comment"># output为生成器生成的图像</span></span><br><span class="line">    outputs = create_generator(inputs, out_channels)</span><br><span class="line"></span><br><span class="line"><span class="string">&quot;&quot;&quot; 使用目标图像创建真实判别器，使用generator生成的创建假判别器 &quot;&quot;&quot;</span></span><br><span class="line"><span class="comment"># create two copies of discriminator, one for real pairs and one for fake pairs</span></span><br><span class="line"><span class="comment"># they share the same underlying variables</span></span><br><span class="line"><span class="keyword">with</span> tf.name_scope(<span class="string">&quot;real_discriminator&quot;</span>):</span><br><span class="line">    <span class="keyword">with</span> tf.variable_scope(<span class="string">&quot;discriminator&quot;</span>):</span><br><span class="line">        <span class="comment"># 2x [batch, height, width, channels] =&gt; [batch, 30, 30, 1]</span></span><br><span class="line">        <span class="comment"># target为真实的图像</span></span><br><span class="line">        predict_real = create_discriminator(inputs, targets)</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.name_scope(<span class="string">&quot;fake_discriminator&quot;</span>):</span><br><span class="line">    <span class="keyword">with</span> tf.variable_scope(<span class="string">&quot;discriminator&quot;</span>, reuse=<span class="literal">True</span>):</span><br><span class="line">        <span class="comment"># 2x [batch, height, width, channels] =&gt; [batch, 30, 30, 1]</span></span><br><span class="line">        predict_fake = create_discriminator(inputs, outputs)</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.name_scope(<span class="string">&quot;discriminator_loss&quot;</span>):</span><br><span class="line">    <span class="comment"># minimizing -tf.log will try to get inputs to 1</span></span><br><span class="line">    <span class="comment"># predict_real =&gt; 1</span></span><br><span class="line">    <span class="comment"># predict_fake =&gt; 0</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot; 判别器损失，使用类似的交叉熵损失 &quot;&quot;&quot;</span></span><br><span class="line">    discrim_loss = tf.reduce_mean(-(tf.log(predict_real + EPS) + tf.log(<span class="number">1</span> - predict_fake + EPS)))</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.name_scope(<span class="string">&quot;generator_loss&quot;</span>):</span><br><span class="line">    <span class="comment"># predict_fake =&gt; 1</span></span><br><span class="line">    <span class="comment"># abs(targets - outputs) =&gt; 0</span></span><br><span class="line">    gen_loss_GAN = tf.reduce_mean(-tf.log(predict_fake + EPS))</span><br><span class="line">    gen_loss_L1 = tf.reduce_mean(tf.<span class="built_in">abs</span>(targets - outputs))</span><br><span class="line">    gen_loss = gen_loss_GAN * a.gan_weight + gen_loss_L1 * a.l1_weight</span><br></pre></td></tr></table></figure>
+
+<p>在涉及的模型<code>create_discriminator</code>中，如果输入的target是真实样本集中X类图像，那么判别器判定其为1，如果输入的是生成器生成的图像，那么判别器判定为假。</p>
+<p>从代码中可以看到，一共包含3个损失</p>
+<ul>
+<li>判别器：使用交叉熵损失</li>
+<li>生成器：L1损失和类别损失</li>
+</ul>
+<h3 id="生成器设计"><a href="#生成器设计" class="headerlink" title="生成器设计"></a>生成器设计</h3><p>对于生成器的设计，pix2pix使用的是Unet，结构如下图所示</p>
+<img src="/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/pix2pix_g.png" class="" title="Unet">
+
+<p>在Unet中，可以从结构图中看到，对于输入的图像，先进行Conv下采样，再TransConv上采样，并且连接上下采样中相同的尺寸。这样能够有效的保留图像的语义信息，并且输入数据的尺寸和输出数据的尺寸相等</p>
+<img src="/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/pix2pix_unet.png" class="" title="pix2pix_generator">
+
+<p>Unet最初被提出是用来解决图像分割任务，相关论文可以点击参考文献查看。在对抗生成网络中Unet一般被用来作为生成器。</p>
+<h4 id="Tensorflow-implement"><a href="#Tensorflow-implement" class="headerlink" title="Tensorflow implement"></a>Tensorflow implement</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">create_generator</span>(<span class="params">generator_inputs, generator_outputs_channels</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot; 输入为原始图像，首先进行卷积encode，之后进行反卷积decode最终生成与输入图像大小相等的图像 &quot;&quot;&quot;</span></span><br><span class="line">    layers = []</span><br><span class="line"></span><br><span class="line">    <span class="comment"># encoder_1: [batch, 256, 256, in_channels] =&gt; [batch, 128, 128, ngf]</span></span><br><span class="line">    <span class="keyword">with</span> tf.variable_scope(<span class="string">&quot;encoder_1&quot;</span>):</span><br><span class="line">        output = conv(generator_inputs, a.ngf, stride=<span class="number">2</span>)</span><br><span class="line">        layers.append(output)</span><br><span class="line"></span><br><span class="line">    layer_specs = [</span><br><span class="line">        a.ngf * <span class="number">2</span>,  <span class="comment"># encoder_2: [batch, 128, 128, ngf] =&gt; [batch, 64, 64, ngf * 2]</span></span><br><span class="line">        a.ngf * <span class="number">4</span>,  <span class="comment"># encoder_3: [batch, 64, 64, ngf * 2] =&gt; [batch, 32, 32, ngf * 4]</span></span><br><span class="line">        a.ngf * <span class="number">8</span>,  <span class="comment"># encoder_4: [batch, 32, 32, ngf * 4] =&gt; [batch, 16, 16, ngf * 8]</span></span><br><span class="line">        a.ngf * <span class="number">8</span>,  <span class="comment"># encoder_5: [batch, 16, 16, ngf * 8] =&gt; [batch, 8, 8, ngf * 8]</span></span><br><span class="line">        a.ngf * <span class="number">8</span>,  <span class="comment"># encoder_6: [batch, 8, 8, ngf * 8] =&gt; [batch, 4, 4, ngf * 8]</span></span><br><span class="line">        a.ngf * <span class="number">8</span>,  <span class="comment"># encoder_7: [batch, 4, 4, ngf * 8] =&gt; [batch, 2, 2, ngf * 8]</span></span><br><span class="line">        a.ngf * <span class="number">8</span>,  <span class="comment"># encoder_8: [batch, 2, 2, ngf * 8] =&gt; [batch, 1, 1, ngf * 8]</span></span><br><span class="line">    ]</span><br><span class="line">    <span class="string">&quot;&quot;&quot; encode首先使用一层卷积，之后添加7层卷积，一共8层进行encode卷积处理 &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">for</span> out_channels <span class="keyword">in</span> layer_specs:</span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(<span class="string">&quot;encoder_%d&quot;</span> % (<span class="built_in">len</span>(layers) + <span class="number">1</span>)):</span><br><span class="line">            rectified = lrelu(layers[-<span class="number">1</span>], <span class="number">0.2</span>)</span><br><span class="line">            <span class="comment"># [batch, in_height, in_width, in_channels] =&gt; [batch, in_height/2, in_width/2, out_channels]</span></span><br><span class="line">            convolved = conv(rectified, out_channels, stride=<span class="number">2</span>)</span><br><span class="line">            output = batchnorm(convolved)</span><br><span class="line">            layers.append(output)</span><br><span class="line"></span><br><span class="line">    layer_specs = [</span><br><span class="line">        (a.ngf * <span class="number">8</span>, <span class="number">0.5</span>),   <span class="comment"># decoder_8: [batch, 1, 1, ngf * 8] =&gt; [batch, 2, 2, ngf * 8 * 2]</span></span><br><span class="line">        (a.ngf * <span class="number">8</span>, <span class="number">0.5</span>),   <span class="comment"># decoder_7: [batch, 2, 2, ngf * 8 * 2] =&gt; [batch, 4, 4, ngf * 8 * 2]</span></span><br><span class="line">        (a.ngf * <span class="number">8</span>, <span class="number">0.5</span>),   <span class="comment"># decoder_6: [batch, 4, 4, ngf * 8 * 2] =&gt; [batch, 8, 8, ngf * 8 * 2]</span></span><br><span class="line">        (a.ngf * <span class="number">8</span>, <span class="number">0.0</span>),   <span class="comment"># decoder_5: [batch, 8, 8, ngf * 8 * 2] =&gt; [batch, 16, 16, ngf * 8 * 2]</span></span><br><span class="line">        <span class="comment"># decoder_4: [batch, 16, 16, ngf * 8 * 2] =&gt; [batch, 32, 32, ngf * 4 * 2]</span></span><br><span class="line">        (a.ngf * <span class="number">4</span>, <span class="number">0.0</span>),</span><br><span class="line">        <span class="comment"># decoder_3: [batch, 32, 32, ngf * 4 * 2] =&gt; [batch, 64, 64, ngf * 2 * 2]</span></span><br><span class="line">        (a.ngf * <span class="number">2</span>, <span class="number">0.0</span>),</span><br><span class="line">        (a.ngf, <span class="number">0.0</span>),       <span class="comment"># decoder_2: [batch, 64, 64, ngf * 2 * 2] =&gt; [batch, 128, 128, ngf * 2]</span></span><br><span class="line">    ]</span><br><span class="line"></span><br><span class="line">    num_encoder_layers = <span class="built_in">len</span>(layers)  <span class="comment"># 8</span></span><br><span class="line">    <span class="keyword">for</span> decoder_layer, (out_channels, dropout) <span class="keyword">in</span> <span class="built_in">enumerate</span>(layer_specs):</span><br><span class="line">        <span class="comment"># skip_layer in [7,6,5,...,1]</span></span><br><span class="line">        skip_layer = num_encoder_layers - decoder_layer - <span class="number">1</span>  <span class="comment"># 8-0-1,8-1-1,...8-6-1</span></span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(<span class="string">&quot;decoder_%d&quot;</span> % (skip_layer + <span class="number">1</span>)):</span><br><span class="line">            <span class="keyword">if</span> decoder_layer == <span class="number">0</span>:</span><br><span class="line">                <span class="comment"># first decoder layer doesn&#x27;t have skip connections</span></span><br><span class="line">                <span class="comment"># since it is directly connected to the skip_layer</span></span><br><span class="line">                <span class="built_in">input</span> = layers[-<span class="number">1</span>]</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="built_in">input</span> = tf.concat([layers[-<span class="number">1</span>], layers[skip_layer]], axis=<span class="number">3</span>)</span><br><span class="line"></span><br><span class="line">            rectified = tf.nn.relu(<span class="built_in">input</span>)</span><br><span class="line">            <span class="comment"># [batch, in_height, in_width, in_channels] =&gt; [batch, in_height*2, in_width*2, out_channels]</span></span><br><span class="line">            output = deconv(rectified, out_channels)</span><br><span class="line">            output = batchnorm(output)</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> dropout &gt; <span class="number">0.0</span>:</span><br><span class="line">                output = tf.nn.dropout(output, keep_prob=<span class="number">1</span> - dropout)</span><br><span class="line"></span><br><span class="line">            layers.append(output)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># decoder_1: [batch, 128, 128, ngf * 2] =&gt; [batch, 256, 256, generator_outputs_channels]</span></span><br><span class="line">    <span class="keyword">with</span> tf.variable_scope(<span class="string">&quot;decoder_1&quot;</span>):</span><br><span class="line">        <span class="built_in">input</span> = tf.concat([layers[-<span class="number">1</span>], layers[<span class="number">0</span>]], axis=<span class="number">3</span>)</span><br><span class="line">        rectified = tf.nn.relu(<span class="built_in">input</span>)</span><br><span class="line">        output = deconv(rectified, generator_outputs_channels)</span><br><span class="line">        <span class="comment"># in the last layer use tanh activation function to generate the color img</span></span><br><span class="line">        output = tf.tanh(output)</span><br><span class="line">        layers.append(output)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> layers[-<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="Keras-implement"><a href="#Keras-implement" class="headerlink" title="Keras implement"></a>Keras implement</h4><p>链接：<a href="https://github.com/zhixuhao/unet">https://github.com/zhixuhao/unet</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> skimage.io <span class="keyword">as</span> io</span><br><span class="line"><span class="keyword">import</span> skimage.transform <span class="keyword">as</span> trans</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> keras.models <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> keras.optimizers <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> keras.callbacks <span class="keyword">import</span> ModelCheckpoint, LearningRateScheduler</span><br><span class="line"><span class="keyword">from</span> keras <span class="keyword">import</span> backend <span class="keyword">as</span> keras</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">unet</span>(<span class="params">pretrained_weights = <span class="literal">None</span>,input_size = (<span class="params"><span class="number">256</span>,<span class="number">256</span>,<span class="number">1</span></span>)</span>):</span><br><span class="line">    inputs = Input(input_size)</span><br><span class="line">    conv1 = Conv2D(<span class="number">64</span>, <span class="number">3</span>, activation = <span class="string">&#x27;relu&#x27;</span>, padding = <span class="string">&#x27;same&#x27;</span>, kernel_initializer = <span class="string">&#x27;he_normal&#x27;</span>)(inputs)</span><br><span class="line">    conv1 = Conv2D(<span class="number">64</span>, <span class="number">3</span>, activation = <span class="string">&#x27;relu&#x27;</span>, padding = <span class="string">&#x27;same&#x27;</span>, kernel_initializer = <span class="string">&#x27;he_normal&#x27;</span>)(conv1)</span><br><span class="line">    pool1 = MaxPooling2D(pool_size=(<span class="number">2</span>, <span class="number">2</span>))(conv1)</span><br><span class="line">    conv2 = Conv2D(<span class="number">128</span>, <span class="number">3</span>, activation = <span class="string">&#x27;relu&#x27;</span>, padding = <span class="string">&#x27;same&#x27;</span>, kernel_initializer = <span class="string">&#x27;he_normal&#x27;</span>)(pool1)</span><br><span class="line">    conv2 = Conv2D(<span class="number">128</span>, <span class="number">3</span>, activation = <span class="string">&#x27;relu&#x27;</span>, padding = <span class="string">&#x27;same&#x27;</span>, kernel_initializer = <span class="string">&#x27;he_normal&#x27;</span>)(conv2)</span><br><span class="line">    pool2 = MaxPooling2D(pool_size=(<span class="number">2</span>, <span class="number">2</span>))(conv2)</span><br><span class="line">    conv3 = Conv2D(<span class="number">256</span>, <span class="number">3</span>, activation = <span class="string">&#x27;relu&#x27;</span>, padding = <span class="string">&#x27;same&#x27;</span>, kernel_initializer = <span class="string">&#x27;he_normal&#x27;</span>)(pool2)</span><br><span class="line">    conv3 = Conv2D(<span class="number">256</span>, <span class="number">3</span>, activation = <span class="string">&#x27;relu&#x27;</span>, padding = <span class="string">&#x27;same&#x27;</span>, kernel_initializer = <span class="string">&#x27;he_normal&#x27;</span>)(conv3)</span><br><span class="line">    pool3 = MaxPooling2D(pool_size=(<span class="number">2</span>, <span class="number">2</span>))(conv3)</span><br><span class="line">    conv4 = Conv2D(<span class="number">512</span>, <span class="number">3</span>, activation = <span class="string">&#x27;relu&#x27;</span>, padding = <span class="string">&#x27;same&#x27;</span>, kernel_initializer = <span class="string">&#x27;he_normal&#x27;</span>)(pool3)</span><br><span class="line">    conv4 = Conv2D(<span class="number">512</span>, <span class="number">3</span>, activation = <span class="string">&#x27;relu&#x27;</span>, padding = <span class="string">&#x27;same&#x27;</span>, kernel_initializer = <span class="string">&#x27;he_normal&#x27;</span>)(conv4)</span><br><span class="line">    drop4 = Dropout(<span class="number">0.5</span>)(conv4)</span><br><span class="line">    pool4 = MaxPooling2D(pool_size=(<span class="number">2</span>, <span class="number">2</span>))(drop4)</span><br><span class="line"></span><br><span class="line">    conv5 = Conv2D(<span class="number">1024</span>, <span class="number">3</span>, activation = <span class="string">&#x27;relu&#x27;</span>, padding = <span class="string">&#x27;same&#x27;</span>, kernel_initializer = <span class="string">&#x27;he_normal&#x27;</span>)(pool4)</span><br><span class="line">    conv5 = Conv2D(<span class="number">1024</span>, <span class="number">3</span>, activation = <span class="string">&#x27;relu&#x27;</span>, padding = <span class="string">&#x27;same&#x27;</span>, kernel_initializer = <span class="string">&#x27;he_normal&#x27;</span>)(conv5)</span><br><span class="line">    drop5 = Dropout(<span class="number">0.5</span>)(conv5)</span><br><span class="line"></span><br><span class="line">    up6 = Conv2D(<span class="number">512</span>, <span class="number">2</span>, activation = <span class="string">&#x27;relu&#x27;</span>, padding = <span class="string">&#x27;same&#x27;</span>, kernel_initializer = <span class="string">&#x27;he_normal&#x27;</span>)(UpSampling2D(size = (<span class="number">2</span>,<span class="number">2</span>))(drop5))</span><br><span class="line">    merge6 = concatenate([drop4,up6], axis = <span class="number">3</span>)</span><br><span class="line">    conv6 = Conv2D(<span class="number">512</span>, <span class="number">3</span>, activation = <span class="string">&#x27;relu&#x27;</span>, padding = <span class="string">&#x27;same&#x27;</span>, kernel_initializer = <span class="string">&#x27;he_normal&#x27;</span>)(merge6)</span><br><span class="line">    conv6 = Conv2D(<span class="number">512</span>, <span class="number">3</span>, activation = <span class="string">&#x27;relu&#x27;</span>, padding = <span class="string">&#x27;same&#x27;</span>, kernel_initializer = <span class="string">&#x27;he_normal&#x27;</span>)(conv6)</span><br><span class="line"></span><br><span class="line">    up7 = Conv2D(<span class="number">256</span>, <span class="number">2</span>, activation = <span class="string">&#x27;relu&#x27;</span>, padding = <span class="string">&#x27;same&#x27;</span>, kernel_initializer = <span class="string">&#x27;he_normal&#x27;</span>)(UpSampling2D(size = (<span class="number">2</span>,<span class="number">2</span>))(conv6))</span><br><span class="line">    merge7 = concatenate([conv3,up7], axis = <span class="number">3</span>)</span><br><span class="line">    conv7 = Conv2D(<span class="number">256</span>, <span class="number">3</span>, activation = <span class="string">&#x27;relu&#x27;</span>, padding = <span class="string">&#x27;same&#x27;</span>, kernel_initializer = <span class="string">&#x27;he_normal&#x27;</span>)(merge7)</span><br><span class="line">    conv7 = Conv2D(<span class="number">256</span>, <span class="number">3</span>, activation = <span class="string">&#x27;relu&#x27;</span>, padding = <span class="string">&#x27;same&#x27;</span>, kernel_initializer = <span class="string">&#x27;he_normal&#x27;</span>)(conv7)</span><br><span class="line"></span><br><span class="line">    up8 = Conv2D(<span class="number">128</span>, <span class="number">2</span>, activation = <span class="string">&#x27;relu&#x27;</span>, padding = <span class="string">&#x27;same&#x27;</span>, kernel_initializer = <span class="string">&#x27;he_normal&#x27;</span>)(UpSampling2D(size = (<span class="number">2</span>,<span class="number">2</span>))(conv7))</span><br><span class="line">    merge8 = concatenate([conv2,up8], axis = <span class="number">3</span>)</span><br><span class="line">    conv8 = Conv2D(<span class="number">128</span>, <span class="number">3</span>, activation = <span class="string">&#x27;relu&#x27;</span>, padding = <span class="string">&#x27;same&#x27;</span>, kernel_initializer = <span class="string">&#x27;he_normal&#x27;</span>)(merge8)</span><br><span class="line">    conv8 = Conv2D(<span class="number">128</span>, <span class="number">3</span>, activation = <span class="string">&#x27;relu&#x27;</span>, padding = <span class="string">&#x27;same&#x27;</span>, kernel_initializer = <span class="string">&#x27;he_normal&#x27;</span>)(conv8)</span><br><span class="line"></span><br><span class="line">    up9 = Conv2D(<span class="number">64</span>, <span class="number">2</span>, activation = <span class="string">&#x27;relu&#x27;</span>, padding = <span class="string">&#x27;same&#x27;</span>, kernel_initializer = <span class="string">&#x27;he_normal&#x27;</span>)(UpSampling2D(size = (<span class="number">2</span>,<span class="number">2</span>))(conv8))</span><br><span class="line">    merge9 = concatenate([conv1,up9], axis = <span class="number">3</span>)</span><br><span class="line">    conv9 = Conv2D(<span class="number">64</span>, <span class="number">3</span>, activation = <span class="string">&#x27;relu&#x27;</span>, padding = <span class="string">&#x27;same&#x27;</span>, kernel_initializer = <span class="string">&#x27;he_normal&#x27;</span>)(merge9)</span><br><span class="line">    conv9 = Conv2D(<span class="number">64</span>, <span class="number">3</span>, activation = <span class="string">&#x27;relu&#x27;</span>, padding = <span class="string">&#x27;same&#x27;</span>, kernel_initializer = <span class="string">&#x27;he_normal&#x27;</span>)(conv9)</span><br><span class="line">    conv9 = Conv2D(<span class="number">2</span>, <span class="number">3</span>, activation = <span class="string">&#x27;relu&#x27;</span>, padding = <span class="string">&#x27;same&#x27;</span>, kernel_initializer = <span class="string">&#x27;he_normal&#x27;</span>)(conv9)</span><br><span class="line">    conv10 = Conv2D(<span class="number">1</span>, <span class="number">1</span>, activation = <span class="string">&#x27;sigmoid&#x27;</span>)(conv9)</span><br><span class="line"></span><br><span class="line">    model = Model(<span class="built_in">input</span> = inputs, output = conv10)</span><br><span class="line"></span><br><span class="line">    model.<span class="built_in">compile</span>(optimizer = Adam(lr = <span class="number">1e-4</span>), loss = <span class="string">&#x27;binary_crossentropy&#x27;</span>, metrics = [<span class="string">&#x27;accuracy&#x27;</span>])</span><br><span class="line">    </span><br><span class="line">    <span class="comment">#model.summary()</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(pretrained_weights):</span><br><span class="line">    	model.load_weights(pretrained_weights)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> model</span><br><span class="line">model=unet()</span><br></pre></td></tr></table></figure>
+
+<h3 id="Training"><a href="#Training" class="headerlink" title="Training"></a>Training</h3><p>整个pix2pix中包含一个生成器一个判别器，并且数据集图像成对出现，整个训练过程如下</p>
+<img src="/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/pix2pix_train_dis.png" class="" title="pix2pix Training dircirminator">
+
+<p>训练判别器，判别器用来分辨输入样本的真假，在pix2pix中判别器的输入是两张图像拼接之后的新的图像，如果使用的都是数据集中的数据，那么判别器会判别为真；如果使用的是数据集的数据和生成器生成的数据，那么判别器会判别为假。</p>
+<img src="/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/pix2pix_train_gen.png" class="" title="pix2pix training generator">
+
+<p>训练生成器，包含了两个损失，一个是对判别器的迷惑，使用判别器生成的数据和数据集中的数据合并，输入判别器，并判断为真；判别器生成的数据和真实的目标数据进行比较，缩小生成器的生成数据和真实目标数据的差异。</p>
+<h2 id="CycleGan"><a href="#CycleGan" class="headerlink" title="CycleGan"></a>CycleGan</h2><p>顾名思义，CycleGan也是一种条件对抗生成网络，是对pix2pix的改进，<strong>在pix2pix模型中，是基于成对的数据类型的，但是在现实中一般没有这么多成对出现的数据，为了改进这个问题，CycleGan应运而生，只需要准备两种类型的数据，而不需要这些数据是成对出现的。</strong></p>
+<p>cyclegan可以使用不成对的数据训练处x与y之间的相互映射，比如可以搜集大量的照片和油画，可以实现二者的相会转化。</p>
+<p>直接看一下cyclegan的模型结构</p>
+<img src="/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/cyclegan.png" class="" title="cyclegan model">
+
+<p>在CycleGan模型中，训练数据集中包含两类图片(realA和realB)，我们最终想要的是能够实现对图像类别进行转换。在整个模型中存在两个生成器和两个判别器</p>
+<ul>
+<li>生成器<ul>
+<li>GAB，将类别A图像生成类别B图像</li>
+<li>GBA，将类别B图像生成类别A图像</li>
+</ul>
+</li>
+<li>判别器<ul>
+<li>DB，判别B类图像的真假</li>
+<li>DA，判别A类图像的真假</li>
+</ul>
+</li>
+</ul>
+<p>算法的目标是为了学习类别转换的映射函数。GAB将类别A的图像转换为类别B的图像GAB(X)，对于生成的图像会使用判别器DB判别其真假，由此构成对抗生成网络，和传统的DCGAN相似，得到优化目标<br>$$<br>\begin{aligned} \mathcal{L}<em>{\mathrm{GAN}}\left(G</em>{AB}, D_{B}, X, Y\right) &amp;&#x3D;\mathbb{E}<em>{y \sim p</em>{\text { data }}(y)}\left[\log D_{B}(y)\right] \ &amp;+\mathbb{E}<em>{x \sim p</em>{\text { data }}(x)}\left[\log \left(1-D_{B}(G_{AB}(x))\right]\right.\end{aligned}<br>$$<br>此处的优化目标和DCGAN是相同的，优化目标最大化来训练判别器$D_B$，优化目标最小化来训练生成器$G_{AB}$。</p>
+<p>因为提供的数据集中不同类别的数据不是成对出现的，因此只是用这个损失是不可行的，<strong>生成器可以将所有输入数据x都映射到目标类的同一张图像，也会使得生成器的优化目标最小，这样显然不可行。</strong>在Cyclegan中提出了循环损失，再设计一个生成器，可以将类别B的图片映射到类别A的图片$G_{BA}$，在整个模型中学习两个生成器，和两个判别器。定义一个循环损失<br>$$<br>\begin{aligned} \mathcal{L}<em>{\mathrm{cyc}}(G</em>{AB}, G_{BA}) &amp;&#x3D;\mathbb{E}<em>{x \sim p</em>{\text { data }}(x)}\left[|G_{BA}(G_{AB}(x))-x|<em>{1}\right] \ &amp;+\mathbb{E}</em>{y \sim p_{\text { data }}(y)}\left[|G_{AB}(G_{BA}(y))-y|_{1}\right] \end{aligned}<br>$$<br><strong>这样是为了将A类图片通过一个映射函数转换为B类图片之后，应该还可以通过另一个映射函数转换回来。</strong></p>
+<p>整个损失包含两个对抗生成损失和一个循环损失。<br>$$<br>\begin{aligned} \mathcal{L}\left(G_{AB}, G_{BA}, D_{A}, D_{B}\right) &amp;&#x3D;\mathcal{L}<em>{\mathrm{GAN}}\left(G</em>{AB}, D_{B}, X, Y\right) \ &amp;+\mathcal{L}<em>{\mathrm{GAN}}\left(G</em>{BA}, D_{A}, Y, X\right) \ &amp;+\lambda \mathcal{L}<em>{\mathrm{cyc}}(G</em>{AB}, G_{BA}) \end{aligned}<br>$$<br>在作者公布的代码中，还有一项损失，对于生成器$G_{AB}​$，将A类图像映射成B类图像，对于$G_{BA}​$将B类图像映射成$A​$类图像。那么如果输入是B类图像，使用生成器$G_{AB}​$应该映射成什么样子呢？正常讲，输入生成器为了实现更好的生成效果，生成器应该只负责映射一类的图像，也就是说，对于B类图像，使用生成器$G_{AB}​$应该生成的还是B类图像，生成器$G_{AB}​$对B类图像不起作用，这就引入了一个新的约束<br>$$<br>\begin{aligned} \mathcal{L}<em>{\mathrm{Ide}}(G</em>{AB}, G_{BA}) &amp;&#x3D;\mathbb{E}<em>{x \sim p</em>{\text { data }}(x)}\left[|G_{BA}(G_{AB}(x))-x|<em>{1}\right] \ &amp;+\mathbb{E}</em>{y \sim p_{\text { data }}(y)}\left[|G_{AB}(G_{BA}(y))-y|_{1}\right] \end{aligned}<br>$$</p>
+<h2 id="Gan训练技巧"><a href="#Gan训练技巧" class="headerlink" title="Gan训练技巧"></a>Gan训练技巧</h2><h3 id="输入归一化"><a href="#输入归一化" class="headerlink" title="输入归一化"></a>输入归一化</h3><ul>
+<li><p>对输入的数据进行归一化处理，一般归一化值$-1,1$之间</p>
+</li>
+<li><p>对于生成器，最后一层使用Tanh激活函数，使输出数据压缩至$-1,1$之间</p>
+</li>
+</ul>
+<h3 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h3><ul>
+<li>对于生成器的损失，论文中一般使用$\min \log(1-D)​$，使生成器的生成数据被判别器判定为真，但是这种方式会使得造成梯度消失</li>
+<li>实际中一般使用$\max \log(d(x))​$来优化生成器。</li>
+</ul>
+<h3 id="噪声数据的采样"><a href="#噪声数据的采样" class="headerlink" title="噪声数据的采样"></a>噪声数据的采样</h3><ul>
+<li>不要从标准分布中进行噪声的采样</li>
+</ul>
+<img src="/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/noise_cube.png" class="" title="noise_cube">
+
+<ul>
+<li>使用高斯分布进行采样</li>
+</ul>
+<img src="/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/gans_sphere.png" class="" title="sphere">
+
+<p>在进行插值操作时，使用大圆上的数据分布进行插值操作，而不是使用小圆的连接直线上进行插值。</p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ul>
+<li><a href="https://zh.wikipedia.org/wiki/%E7%94%9F%E6%88%90%E5%AF%B9%E6%8A%97%E7%BD%91%E7%BB%9C">wiki: 对抗生成网络</a></li>
+<li><a href="https://www.jiqizhixin.com/articles/2017-10-1-1">机器之心GitHub项目：GAN完整理论推导与实现，Perfect！</a></li>
+<li><a href="https://arxiv.org/abs/1505.04597">U-Net: Convolutional Networks for Biomedical Image Segmentation</a></li>
+<li><a href="https://junyanz.github.io/CycleGAN/">cycleGan_project</a></li>
+<li><a href="https://www.microsoft.com/developerblog/2017/06/12/learning-image-image-translation-cyclegans/">bolg: cyclegan tensorflow</a></li>
+<li><a href="https://affinelayer.com/pixsrv/">pix2pix_project</a></li>
+<li><a href="https://affinelayer.com/pix2pix/">blog: pix2pix</a></li>
+<li><a href="https://medium.com/@ManishChablani/cyclegans-and-pix2pix-5e6a5f0159c4">blog: CycleGANS and Pix2Pix </a></li>
+<li><a href="https://github.com/soumith/ganhacks">Gans trick</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>赏杯咖啡！</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat.jpeg" alt="ShiXiaofeng 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpeg" alt="ShiXiaofeng 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>ShiXiaofeng
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://xiaofengshi.com/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/" title="深度学习-对抗生成网络">http://xiaofengshi.com/2019/02/23/深度学习-对抗生成网络/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag"># 深度学习</a>
+              <a href="/tags/Gan/" rel="tag"># Gan</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/02/25/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF/" rel="prev" title="机器学习-朴素贝叶斯">
+      <i class="fa fa-chevron-left"></i> 机器学习-朴素贝叶斯
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/02/15/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-NLP-Attention_is_all_you_need/" rel="next" title="深度学习-NLP-Attention_is_all_you_need">
+      深度学习-NLP-Attention_is_all_you_need <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">生成网络基本原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E5%A7%8BGAN%E8%AF%A6%E7%BB%86%E7%90%86%E8%AE%BA%E6%8E%A8%E5%AF%BC"><span class="nav-number">2.</span> <span class="nav-text">原始GAN详细理论推导</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#KL%E6%95%A3%E5%BA%A6"><span class="nav-number">2.1.</span> <span class="nav-text">KL散度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%81%E5%A4%A7%E4%BC%BC%E7%84%B6%E4%BC%B0%E8%AE%A1"><span class="nav-number">2.2.</span> <span class="nav-text">极大似然估计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%80%E4%BC%98%E7%9A%84%E5%88%A4%E5%88%AB%E5%99%A8"><span class="nav-number">2.3.</span> <span class="nav-text">最优的判别器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%80%E4%BC%98%E7%9A%84%E7%94%9F%E6%88%90%E5%99%A8"><span class="nav-number">2.4.</span> <span class="nav-text">最优的生成器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E8%AE%AD%E7%BB%83%E8%BF%87%E7%A8%8B"><span class="nav-number">2.5.</span> <span class="nav-text">网络训练过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E8%AF%B4%E6%98%8E"><span class="nav-number">2.6.</span> <span class="nav-text">代码说明</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pix2pix"><span class="nav-number">3.</span> <span class="nav-text">pix2pix</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A4%E5%88%AB%E5%99%A8%E8%AE%BE%E8%AE%A1"><span class="nav-number">3.1.</span> <span class="nav-text">判别器设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E5%99%A8%E8%AE%BE%E8%AE%A1"><span class="nav-number">3.2.</span> <span class="nav-text">生成器设计</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Tensorflow-implement"><span class="nav-number">3.2.1.</span> <span class="nav-text">Tensorflow implement</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Keras-implement"><span class="nav-number">3.2.2.</span> <span class="nav-text">Keras implement</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Training"><span class="nav-number">3.3.</span> <span class="nav-text">Training</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CycleGan"><span class="nav-number">4.</span> <span class="nav-text">CycleGan</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gan%E8%AE%AD%E7%BB%83%E6%8A%80%E5%B7%A7"><span class="nav-number">5.</span> <span class="nav-text">Gan训练技巧</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E5%BD%92%E4%B8%80%E5%8C%96"><span class="nav-number">5.1.</span> <span class="nav-text">输入归一化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0"><span class="nav-number">5.2.</span> <span class="nav-text">损失函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%99%AA%E5%A3%B0%E6%95%B0%E6%8D%AE%E7%9A%84%E9%87%87%E6%A0%B7"><span class="nav-number">5.3.</span> <span class="nav-text">噪声数据的采样</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reference"><span class="nav-number">6.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ShiXiaofeng"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">ShiXiaofeng</p>
+  <div class="site-description" itemprop="description">LLM,搜索,数据挖掘,深度学习相关技术记录分享</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xiaofengShi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xiaofengShi" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sxf1052566766@163.com" title="E-Mail → mailto:sxf1052566766@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ShiXiaofeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v7.1.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+  
+      
+<script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el: '#valine-comments',
+      verify: false,
+      notify: false,
+      appId: 'rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz',
+      appKey: 'zJasiQnAqgUwf4kiHhHyXwOP',
+      placeholder: "Leave Your Message and Contact Details",
+      avatar: 'mm',
+      meta: guest,
+      pageSize: '10' || 10,
+      visitor: true,
+      lang: '' || 'zh-cn',
+      path: location.pathname,
+      recordIP: false,
+      serverURLs: ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

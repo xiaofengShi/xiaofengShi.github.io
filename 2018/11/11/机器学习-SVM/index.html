@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/panda_32px.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/panda_16px.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://xiaofengshi.com').hostname,
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="支持向量机是非常高效的一种有监督机器学习算法，是一个二类分类模型，他的基本模型是定义在特征空间上的间隔最大的现行分类器，间隔最大使它有别于感知机；此外核函数的应用，使该算法可以应用有非线性空间。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习-SVM">
+<meta property="og:url" content="http://xiaofengshi.com/2018/11/11/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-SVM/index.html">
+<meta property="og:site_name" content="做一个有用的人">
+<meta property="og:description" content="支持向量机是非常高效的一种有监督机器学习算法，是一个二类分类模型，他的基本模型是定义在特征空间上的间隔最大的现行分类器，间隔最大使它有别于感知机；此外核函数的应用，使该算法可以应用有非线性空间。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/11/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-SVM/svm.png">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/11/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-SVM/svm_softmargin.gif">
+<meta property="article:published_time" content="2018-11-11T11:38:05.000Z">
+<meta property="article:modified_time" content="2020-01-31T07:53:26.000Z">
+<meta property="article:author" content="ShiXiaofeng">
+<meta property="article:tag" content="机器学习">
+<meta property="article:tag" content="SVM">
+<meta property="article:tag" content="SMO">
+<meta property="article:tag" content="核函数">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://xiaofengshi.com/2018/11/11/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-SVM/svm.png">
+
+<link rel="canonical" href="http://xiaofengshi.com/2018/11/11/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-SVM/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>机器学习-SVM | 做一个有用的人</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">做一个有用的人</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">LLM And Search</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-guestbook">
+
+    <a href="/guestbook/" rel="section"><i class="fa fa-fw fa-commenting"></i>guestbook</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/xiaofengShi" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2018/11/11/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-SVM/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ShiXiaofeng">
+      <meta itemprop="description" content="LLM,搜索,数据挖掘,深度学习相关技术记录分享">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="做一个有用的人">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          机器学习-SVM
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-11-11 19:38:05" itemprop="dateCreated datePublished" datetime="2018-11-11T19:38:05+08:00">2018-11-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-01-31 15:53:26" itemprop="dateModified" datetime="2020-01-31T15:53:26+08:00">2020-01-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%9C%89%E7%9B%91%E7%9D%A3/" itemprop="url" rel="index">
+                    <span itemprop="name">有监督</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2018/11/11/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-SVM/" class="post-meta-item leancloud_visitors" data-flag-title="机器学习-SVM" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2018/11/11/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-SVM/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/11/11/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-SVM/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img src="/2018/11/11/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-SVM/svm.png" class="" title="SVM">
+
+<p>支持向量机是非常高效的一种有监督机器学习算法，是一个二类分类模型，他的基本模型是定义在特征空间上的间隔最大的现行分类器，间隔最大使它有别于感知机；此外核函数的应用，使该算法可以应用有非线性空间。</p>
+<span id="more"></span>
+
+<p>支持向量机由简入繁主要包含如下几种：</p>
+<ul>
+<li>线性可分支持向量机</li>
+<li>线性支持向量机</li>
+<li>非线性支持向量机</li>
+</ul>
+<h2 id="线性可分支持向量机"><a href="#线性可分支持向量机" class="headerlink" title="线性可分支持向量机"></a>线性可分支持向量机</h2><h3 id="函数间隔和几何间隔"><a href="#函数间隔和几何间隔" class="headerlink" title="函数间隔和几何间隔"></a>函数间隔和几何间隔</h3><p>给定数据集$T&#x3D;[(x_{1},y_{1}),(x_{2},y_{2}),(x_{3},y_{3}),…,(x_{n},y_{n})]$，其中$x_{i}\in R^{n}$，$y_{i} \in[-1,+1]$，$i&#x3D;1,2,…,N$，$x_{i}$为第$i$个特征向量，$y_{i}$为$x_{i}$的类标签。学习的目标是在特征空间内找到一个分离超平面，能够将实例分到不同的类，分离超平面对应于方程$\omega.x+b&#x3D;0$，它由法向量$\omega$以及对应的截距$b$构成。分离超平面将整个样本空间划分为两类，一类为正，即$y&#x3D;1$，另一类为负，即$y&#x3D;-1$。训练的过程根据间隔最大化来求得最优分离超平面的过程。</p>
+<p>一个点距离分离超平面的距离可以表示该分类预测的确信程度，可以使用$|\omega.x+b|$表示点$x$距离超平面的远近，此外，$\omega.x+b$与类标记$y$是否一致来表示分类的正确性。<strong>因此使用$y(\omega.x+b)$表示分类的正确性及确信度</strong>。这就是函数间隔的概念。</p>
+<p>函数间隔使用符号$\bar{\gamma_{i}}$存在如下公式<br>$$<br>\hat{\gamma_{i}}&#x3D;y_{i}(w.x_{i}+b)<br>$$<br>使用函数间隔可以表示实例预测的正确性和确信度，但是会存在一个问题，如果成比例的增加参数$w$和$b$，得到的函数间隔变大了两倍，但是对应的分离超平面没有变化，这是时候需要对参数进行规范化，使得对于一个实例来说其参数是确定的。此时函数间隔便成为几何间隔。</p>
+<p>使用符号$\gamma_{i}$表示，得到公式<br>$$<br>\gamma_{i}&#x3D;y_{i}(\frac{w}{||w||}.x_{i}+\frac{b}{||w||})<br>$$</p>
+<ul>
+<li>其中$||w||$为$w$的$L_{2}$范数</li>
+</ul>
+<p>定义超平面$(w,b)$关于训练数据集$T$的几何间隔为超平面(w,b)关于$T$所有样本点$(x_{i},y_{i})$的几何间隔的最小值，<br>$$<br>\gamma&#x3D;\min\limits_{i&#x3D;1,2,…,N}\gamma_{i}<br>$$<br>这也就是对训练集进行训练的过程。</p>
+<p>几何间隔和函数间隔的关系<br>$$<br>\begin{align*}<br>\gamma_{i}&amp;&#x3D;\frac{\hat{\gamma_{i}}}{||w||}\<br>\gamma&amp;&#x3D;\frac{\hat{\gamma}}{||w||}<br>\end{align*}<br>$$</p>
+<p>如果存下$||w||&#x3D;1$，则函数间隔和几何间隔相等。</p>
+<h3 id="间隔最大化"><a href="#间隔最大化" class="headerlink" title="间隔最大化"></a>间隔最大化</h3><p>对训练数据集进行训练的过程实际上就是求得满足几何间距最大化的过程，对于确定的数据集，几何间隔最大化的分离超平面是确定的，此时不仅正负实例被分开，并且距离分离超平面最近的点也具有足够大的确信度将其分开。</p>
+<p>得到目标函数和约束条件如下<br>$$<br>\begin{align*}<br>&amp; \max \limits_{w,b} ::::\ \gamma \<br>&amp; s.t. ::::\  y_{i}(\frac{w}{||w||}.x_{i}+\frac{b}{||w||}) \ge\gamma,::::\ i&#x3D;1,2,…,N<br>\end{align*}<br>$$<br>目标函数为最大化几何间隔，并且满足约束条件，样本即集中所有样本的几何间隔都不小于几何间隔。</p>
+<p>参考几何间隔和函数间隔之间存在的关系，可以对目标函数及约束条件进行修正<br>$$<br>\begin{align*}<br>&amp; \max \limits_{w,b} ::::\ \gamma&#x3D;\frac{\hat{\gamma}}{||w||}    \<br>&amp; s.t. ::::\  y_{i}(\frac{w}{||w||}.x_{i}+\frac{b}{||w||}) \ge \gamma&#x3D;\frac{\hat{\gamma}}{||w||},::::\ &amp; i&#x3D;1,2,…,N \ &amp;\Rightarrow  :::::\ y_{i}(w.x_{i}+b)\ge \hat{\gamma}, ::::\ &amp; i&#x3D;1,2,…,N </p>
+<p>\end{align*}<br>$$<br>因为目标函数和约束条件都存在函数间隔，因此函数间隔的取值最优化问题的解，设$\bar{\gamma}&#x3D;1$,至此，得到了线性可分支持向量机的最优化问题</p>
+<hr>
+
+<p>$$<br>\begin{align*}<br>&amp; \min \limits_{w,b} ::::\ \frac{1}{2}||w||^{2}    \<br>&amp; s.t. ::::\  y_{i}(w.x_{i}+b)-1 \ge 0 ::::\ i&#x3D;1,2,…,N<br>\end{align*}<br>$$</p>
+<hr>
+
+<h3 id="最大分离超平面的存在且唯一性"><a href="#最大分离超平面的存在且唯一性" class="headerlink" title="最大分离超平面的存在且唯一性"></a>最大分离超平面的存在且唯一性</h3><h4 id="存在性"><a href="#存在性" class="headerlink" title="存在性"></a>存在性</h4><p>样本集中包含正负类样本，也就是说最优解肯定不是$(w,b)&#x3D;(0,b)$，由此可以说明最大分离超平面的存在性</p>
+<h4 id="唯一性"><a href="#唯一性" class="headerlink" title="唯一性"></a>唯一性</h4><p>比较麻烦。。。，以后有空再来详细证明。</p>
+<h3 id="支持向量和间隔边界"><a href="#支持向量和间隔边界" class="headerlink" title="支持向量和间隔边界"></a>支持向量和间隔边界</h3><p>所谓支持向量就是满足$y_{i}(w.x_{i}+b)-1&#x3D;0$的实例，也就是说这些实例为最优化问题的约束条件的边界情形。</p>
+<p>对于类别为$y&#x3D;+1$的正点，支持向量在超所在的超平面为<br>$$<br>H_{1}:\ : :::\ w.x+b&#x3D;1<br>$$<br>对于类别为$y&#x3D;-1$的正点，支持向量在超所在的超平面为<br>$$<br>H_{2}:\ : :::\ w.x+b&#x3D;-1<br>$$<br>对于线性可分的样本集来说，没有实例会落在分离超平面$H_{1},H_{2}$之间，在超平面之间的距离称为<strong>间隔</strong>，间隔依赖于分离超平面的法向量$w$，等于$\frac{2}{||w||}$，两个超平面$H_{1}H_{2}$是<strong>间隔边界</strong>。</p>
+<p><strong>在进行分离超平面计算时，只有支持向量决定。任意线性可分的两组点，它们在SVM分类超平面上的有赢都是线性不可分的。</strong>在间隔边界之外的点不会影响最优解的计算，也就是说，分离超平面由支持向量来确定。</p>
+<h3 id="对偶算法"><a href="#对偶算法" class="headerlink" title="对偶算法"></a>对偶算法</h3><p>之所以使用对偶算法是因为</p>
+<ul>
+<li>对偶问题更容易求解</li>
+<li>可以引入核函数进而推广至非线性分类问题</li>
+</ul>
+<h4 id="对偶问题的定义"><a href="#对偶问题的定义" class="headerlink" title="对偶问题的定义"></a>对偶问题的定义</h4><p>如果存在这样的目标函数和约束条件<br>$$<br>\begin{align*}<br>&amp; \min \limits_{x\in R^{2}} &amp;::::\ f(x)    \<br>&amp; s.t. ::::\ &amp; g_{i}(x)\le0 ::::\ &amp; i&#x3D;1,2,…,k \<br>&amp; &amp; h_{j}(x)&#x3D;0 ::::\ &amp; j&#x3D;1,2,…,l</p>
+<p>\end{align*}<br>$$<br>得到其拉格朗日函数为<br>$$<br>L(x,\alpha,\beta)&#x3D;f(x)+\sum_{i&#x3D;1}^{k}\alpha_{i}g_{i}(x)+\sum_{j&#x3D;1}^{l}\beta_{j}h_{j}(x)<br>$$<br>并且有$\alpha_{i}\ge0$</p>
+<p>其对偶问题为<br>$$<br>\max \limits_{\alpha,\beta}\min\limits_{x}L(x,\alpha,\beta)<br>$$</p>
+<h4 id="svm优化函数的对偶问题"><a href="#svm优化函数的对偶问题" class="headerlink" title="svm优化函数的对偶问题"></a>svm优化函数的对偶问题</h4><p>根据对偶函数的定义可以应用到<strong>svm</strong>优化函数</p>
+<p>将优化函数的目标函数和约束条件创建拉个朗日函数<br>$$<br>\begin{align*}<br>L(w,b,\alpha)&amp;&#x3D;\frac{1}{2}||w||^{2}-\sum_{i&#x3D;1}^{N}\alpha_{i}y_{i}(w.x_{i}+b)+\sum_{i&#x3D;1}^{N}\alpha_{i}\<br>\alpha_{i}&amp;\ge0 ::::::::::\ i&#x3D;1,2,…,N<br>\end{align*}<br>$$</p>
+<p>根据拉格朗日对偶性，得到对偶问题的极大极小问题<br>$$<br>\max \limits_{\alpha}\min\limits_{w,b}L(w,b,\alpha)<br>$$<br>也就是先进行极小在进行极大计算<br>$$<br>\begin{align*}<br>\nabla_{w}L(w,b,\alpha)&#x3D;0 ::::::\ &amp; \Rightarrow w&#x3D;\sum_{i&#x3D;1}^{N}\alpha_{i}y_{i}x_{i} \<br>\nabla_{b}L(w,b,\alpha)&#x3D;0  ::::::\ &amp;\Rightarrow  \sum_{i&#x3D;1}^{N}\alpha_{i}y_{i}&#x3D;0 \<br>\nabla_{\alpha}L(w,b,\alpha)&#x3D;0 ::::::\ &amp;\Rightarrow  \max_{\alpha} :::-\frac{1}{2}\sum_{i&#x3D;1}^{N}\sum_{j&#x3D;1}^{N}\alpha_{i}\alpha_{j}y_{i}y_{j}(x_{i}.x_{j})+\sum_{i&#x3D;1}^{N}\alpha_{i}<br>\end{align*}\<br>$$</p>
+<h3 id="最优问题及其解"><a href="#最优问题及其解" class="headerlink" title="最优问题及其解"></a>最优问题及其解</h3><p>有上述的公式可以得到<strong>对偶问题的最优化问题</strong><br>$$<br>\begin{align*}<br>\min_{\alpha} :::::::::: &amp; \frac{1}{2}\sum_{i&#x3D;1}^{N}\sum_{j&#x3D;1}^{N}\alpha_{i}\alpha_{j}y_{i}y_{j}(x_{i}.x_{j})-\sum_{i&#x3D;1}^{N}\alpha_{i}\<br>s.t. :::::::::: &amp; \sum_{i&#x3D;1}^{N}\alpha_{i}y_{i}&#x3D;0\<br>&amp;\alpha_{i} \ge0 :::: i&#x3D;1,2,…,N<br>\end{align*}<br>$$<br>最优问题对应的解就是<br>$$<br>\begin{align*}<br>w^{<em>}&amp;&#x3D;\sum_{i&#x3D;1}^{N}\alpha_{i}^{</em>}y_{i}x_{i}\<br>b^{<em>}&amp;&#x3D;y_{j}-\sum_{i&#x3D;1}^{N}\alpha_{i}^{</em>}y_{i}(x_{i}.x_{j})<br>\end{align*}<br>$$<br>决策函数可以写成<br>$$<br>f(x)&#x3D;sign(w^{<em>}.x+b^{</em>})&#x3D;sign(\sum_{i&#x3D;1}^{N}\alpha_{i}^{<em>}y_{i}(x.x_{i})+b^{</em>})<br>$$</p>
+<h2 id="线性支持向量机"><a href="#线性支持向量机" class="headerlink" title="线性支持向量机"></a>线性支持向量机</h2><h3 id="软间隔"><a href="#软间隔" class="headerlink" title="软间隔"></a>软间隔</h3><p>对于线性可分的数据使用线性可分支持向量机可以完成任务，但是对于线性不可分的数据，这时候就要线性可分支持向量机的硬间隔变为软间隔，线性不可分实际上意味着在数据集中存在某些点不能满足函数间隔大于等于1的最优问题约束条件，修改约束条件<br>$$<br>y_{i}(w.x_{i}+b)\ge1-\xi_{i}<br>$$<br>同时目标函数修改为<br>$$<br>\frac{1}{2}||w||^{2}+C\sum_{i&#x3D;1}^{N}\xi_{i}<br>$$</p>
+<ul>
+<li>其中$C$是惩罚参数，类似于正则化的概念</li>
+</ul>
+<p>得到对于线性支持向量机的最优化问题<br>$$<br>\begin{align*}<br>\min_{w,b,\xi} ::::::: &amp; \frac{1}{2}||w||^{2}+C\sum_{i&#x3D;1}^{N}\xi_{i}\<br>s.t.::::::: &amp; y_{i}(w.x_{i}+b)\ge1-\xi_{i} ::::::: &amp; i&#x3D;1,2,…,N\<br>&amp;\xi_{i}\ge0  &amp;i&#x3D;1,2,…,N<br>\end{align*}<br>$$<br><strong>实际上线性支持向量机是对线性可分支持向量机的扩展，具有更好的适用性。</strong></p>
+<img src="/2018/11/11/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-SVM/svm_softmargin.gif" class="" title="软间隔示意图">
+
+<p>从图中可以看到，分离分离超平面将数据集分为两个部分，由于数据集为线性不可分，因此存在软间隔。数据集中的示例会存在三种情形，及其对应的存在对偶问题解与软间隔的关系如下：</p>
+<ul>
+<li><p>在间隔边界与分离超平面之间<br>$$<br>a_{i}^{*}&#x3D;C:::::::::: 0&lt;\xi_{i} &lt;1<br>$$</p>
+</li>
+<li><p>在间隔边界上<br>$$<br>a_{i}^{*}&lt;C:::::::::: \xi_{i} &#x3D;1<br>$$</p>
+</li>
+<li><p>在分离超平面误分的一侧<br>$$<br>a_{i}^{*}&lt;C:::::::::: \xi_{i} &gt;1<br>$$</p>
+</li>
+</ul>
+<h3 id="对偶算法-1"><a href="#对偶算法-1" class="headerlink" title="对偶算法"></a>对偶算法</h3><p>同样是首先得到拉格朗日函数<br>$$<br>\begin{align*}<br>L(w,b,\xi,\alpha,\mu)&amp;&#x3D;\frac{1}{2}||w||^{2}+C\sum_{i&#x3D;1}^{N}\xi_{i}-\sum_{i&#x3D;1}^{N}\alpha_{i}[y_{i}(w.x_{i}+b)-1+\xi_{i}]+\sum_{i&#x3D;1}^{N}\mu_{i}\xi_{i}\<br>\alpha_{i}&amp;\ge0  ::::::::::\ i&#x3D;1,2,…,N\<br>\mu_{i}&amp;\ge0  ::::::::::\ i&#x3D;1,2,…,N<br>\end{align*}<br>$$<br>然后对偶问题的极大极小问题<br>$$<br>\max \limits_{\alpha,\mu}\min\limits_{w,b,\xi}L(w,b,\alpha)<br>$$</p>
+<h3 id="最优问题及其解-1"><a href="#最优问题及其解-1" class="headerlink" title="最优问题及其解"></a>最优问题及其解</h3><p>所以极大极小问题进行求偏导并且偏导数为0，则可以得到对偶问题最优解<br>$$<br>\begin{align*}<br>\min_{\alpha} :::::::::: &amp; \frac{1}{2}\sum_{i&#x3D;1}^{N}\sum_{j&#x3D;1}^{N}\alpha_{i}\alpha_{j}y_{i}y_{j}(x_{i}.x_{j})-\sum_{i&#x3D;1}^{N}\alpha_{i}\<br>s.t. :::::::::: &amp; \sum_{i&#x3D;1}^{N}\alpha_{i}y_{i}&#x3D;0\<br>&amp;0\le \alpha_{i}\le C\ ::::::::::\ i&#x3D;1,2,…,N \<br>\end{align*}<br>$$<br>对应的最优解为<br>$$<br>\begin{align*}<br>w^{<em>}&amp;&#x3D;\sum_{i&#x3D;1}^{N}\alpha_{i}^{</em>}y_{i}x_{i}\<br>b^{<em>}&amp;&#x3D;y_{j}-\sum_{i&#x3D;1}^{N}\alpha_{i}^{</em>}y_{i}(x_{i}.x_{j})<br>\end{align*}<br>$$<br>可以看到最优解与线性可分支持向量机相同，只是最优解的约束条件里有原来的$a_{i} \ge 0 $ 增加了新的约束条件为$ 0\le \alpha_{i}\le C $</p>
+<p>线性支持向量机的决策函数可以写成<br>$$<br>f(x)&#x3D;sign(w^{<em>}.x+b^{</em>})&#x3D;sign(\sum_{i&#x3D;1}^{N}\alpha_{i}^{<em>}y_{i}(x.x_{i})+b</em>)<br>$$</p>
+<h3 id="最优化问题的Hinge损失函数等价形式"><a href="#最优化问题的Hinge损失函数等价形式" class="headerlink" title="最优化问题的Hinge损失函数等价形式"></a>最优化问题的Hinge损失函数等价形式</h3><p>Hinge损失函数，主要用于解决间隔最大化的问题，定义如下<br>$$<br>\begin{align*}<br>\iota(y_{i},\hat{y_{i}})&#x3D;&amp;\max \lbrace 0,1-y_{i}.\hat{y_{i}} \rbrace \<br>y_{i} \in &amp; \lbrace -1,1 \rbrace<br>\end{align*}<br>$$<br>那么如何将SVM的损失函数写成Hinge的格式，下面开始。</p>
+<p>对应于svm中，存在等式关系<br>$$<br>\hat{y}&#x3D;w.x+b<br>$$<br>则函数的定义可以写成如下形式<br>$$<br>\iota(y_{i},\hat{y_{i}})&#x3D;\max \lbrace 0,1-y(w.x+b) \rbrace<br>$$<br>可以写成如下形式<br>$$<br>\begin{align*}<br>\max \lbrace 0,1-y(w.x+b) \rbrace&#x3D;[1-y.(w.x+b)]<em>{+}\<br>\end{align*}<br>$$<br>其中存在关系如下<br>$$<br>[1-y.(w.x+b)]</em>{+}&#x3D;<br>\begin{cases}<br>1-y.(w.x+b) ::::::&amp; 1-y.(w.x+b)&gt;0 \ 0 &amp; 1-y.(w.x+b)\le0<br>\end{cases}<br>$$<br>也就是说，当SVM正确分类并且函数间隔$y.(w.x+b)&gt;1$时函数损失为0，否则函数损失为$1-y_{i}.(w.x_{i}+b)$</p>
+<p>根据上面部分得到的线性支持向量机的原始最优化问题<br>$$<br>\begin{align*}<br>\min_{w,b,\xi} ::::::: &amp; \frac{1}{2}||w||^{2}+C\sum_{i&#x3D;1}^{N}\xi_{i}\<br>s.t.::::::: &amp; y_{i}(w.x_{i}+b)\ge1-\xi_{i} ::::::: &amp; i&#x3D;1,2,…,N\<br>&amp;\xi_{i}\ge0  &amp;i&#x3D;1,2,…,N<br>\end{align*}<br>$$<br>观察最优化问题，存在约束条件$\xi_{i}\ge0 $，因此可以令$[1-y_{i}.(w.x_{i}+b)]<em>{+}&#x3D;\xi</em>{i}$，存在如下关系，当$1-y_{i}.(w.x_{i}+b)&gt;0$时存在$1-y_{i}.(w.x_{i}+b)&#x3D;\xi_{i}$，存在关系式$y_{i}.(w.x_{i}+b)&#x3D;1-\xi_{i}$；当$1-y_{i}.(w.x_{i}+b)\le0$时存在$1-y_{i}.(w.x_{i}+b)&#x3D;\xi_{i}&#x3D;0$同样存在关系式$y_{i}.(w.x_{i}+b)\ge1-\xi_{i}$因此当$1-y_{i}.(w.x_{i}+b)]<em>{+}&#x3D;\xi</em>{i}$时满足原始最优问题的约束条件。</p>
+<p>现在观察最优化问题的目标函数<br>$$<br>\max_{w,b,\xi} :::::::  \frac{1}{2}||w||^{2}+C\sum_{i&#x3D;1}^{N}\xi_{i}<br>$$<br>可以改写成如下形式<br>$$<br>\begin{align}<br>\min_{w,b,\xi} :::::::  \frac{1}{2}||w||^{2}+C\sum_{i&#x3D;1}^{N}\xi_{i} ::::: &amp; \Longleftrightarrow ::::: \min_{w,b} ::::::: \frac{1}{2}||w||^{2}+C\sum_{i&#x3D;1}^{N}[1-y_{i}.(w.x_{i}+b)]<em>{+} \<br>&amp;\Longleftrightarrow :::::  \min</em>{w,b} ::::::: \sum_{i&#x3D;1}^{N}[1-y_{i}.(w.x_{i}+b)]_{+}+\lambda||w||^{2}<br>\end{align}<br>$$<br>至此也就得到了SVM的最优化问题的Hinge损失函数的等价形式。</p>
+<h2 id="非线性支持向量机"><a href="#非线性支持向量机" class="headerlink" title="非线性支持向量机"></a>非线性支持向量机</h2><p>上面主要是说的线性可分支持向量机和线性支持向量机，在原始数据的向量空间存在分离超平面将数据划分，而算法学习的过程就是找到该分离超平面的过程。但是在实际中，数据绝大部分是非线性的，这时候可以利用核函数的技巧进行原始数据的非线性映射，将原始数据映射到线性可分的高维空间，并在高维空间上利用线性支持向量机的相关算法进行数据划分，在聚类计算中，同样有利用核函数的方法。</p>
+<p>对于非线性支持向量机来说，算法的目标就不是找到分离超平面了，而是找到分离超曲面。并且通过核函数的方法对原来的数据空间进行非线性变换，将其转换到线性空间，将非线性问题转换到线性问题。</p>
+<p>在原数据空间中，因为是分离超曲面，可以看做分离超平面的形式为<br>$$<br>w_{1}(x^{(1)})^{2}+w_{2}(x^{(2)})^{2}+b&#x3D;0<br>$$<br>假设给定的数据空间是$x \subset \textbf{R}^{2}$，样本为$x&#x3D;(x^{(1)},x^{(2)})\in \textbf{X} $，进行线性变换之后的数据空间为$z \subset \textbf{R}^{2}$，样本为$z&#x3D;(z^{(1)},z^{(2)})\in \textbf{Z}$，存在非线性变化<br>$$<br>z&#x3D;\phi(x)&#x3D;((x^{(1)})^{2},(x^{(2)})^{2})^{T}<br>$$<br>在新的数据空间中，原来的分离超曲面变换为<br>$$<br>w_{1}z^{(1)}+w_{2}z^{(2)}+b&#x3D;0<br>$$</p>
+<h3 id="核函数"><a href="#核函数" class="headerlink" title="核函数"></a>核函数</h3><p>假设$\textbf{X}$是输入空间，$\textbf{H}$是特征空间，假设存在一个输入空间到特征空间的映射$\phi(x)::\textbf{X} \rightarrow \textbf{H} $使得所有的$x,z\in\textbf{X}$，存在函数满足条件：<br>$$<br>\textbf{K}(x,z)&#x3D;\phi(x).\phi(z)<br>$$</p>
+<ul>
+<li>$\textbf{K}(x,z)$就是核函数，$\phi(x)$就是映射函数，$\phi(x).\phi(z)$表示二者的內积。</li>
+</ul>
+<p>核函数的思想：</p>
+<p>在学习和预测的时候只定义核函数$\textbf{K}(x,z)$，并不直接定义映射函数$\phi(x)$，一般来说直接计算$\textbf{K}(x,z)$更加简单。此外，核函数$\textbf{K}(x,z)$通常来讲并不是唯一的。</p>
+<h3 id="核函数与支持向量机"><a href="#核函数与支持向量机" class="headerlink" title="核函数与支持向量机"></a>核函数与支持向量机</h3><p>在线性支持向量机中，对偶算法最优问题为<br>$$<br>\begin{align*}<br>\min_{\alpha} :::::::::: &amp; \frac{1}{2}\sum_{i&#x3D;1}^{N}\sum_{j&#x3D;1}^{N}\alpha_{i}\alpha_{j}y_{i}y_{j}(x_{i}.x_{j})-\sum_{i&#x3D;1}^{N}\alpha_{i}\<br>s.t. :::::::::: &amp; \sum_{i&#x3D;1}^{N}\alpha_{i}y_{i}&#x3D;0\<br>&amp;0\le \alpha_{i}\le C\ ::::::::::\ i&#x3D;1,2,…,N \<br>\end{align*}<br>$$<br>其中$y&#x3D;\lbrace -1,+1 \rbrace$</p>
+<p>将內积$x_{i}.x_{j}$使用核函数代替$\textbf{K}(x_{i},x_{j})$，得到对偶问题为：<br>$$<br>\begin{align*}<br>\min_{\alpha} :::::::::: &amp; \frac{1}{2}\sum_{i&#x3D;1}^{N}\sum_{j&#x3D;1}^{N}\alpha_{i}\alpha_{j}y_{i}y_{j}\textbf{K}(x_{i},x_{j})-\sum_{i&#x3D;1}^{N}\alpha_{i}\<br>s.t. :::::::::: &amp; \sum_{i&#x3D;1}^{N}\alpha_{i}y_{i}&#x3D;0\<br>&amp;0\le \alpha_{i}\le C\ ::::::::::\ i&#x3D;1,2,…,N \<br>\end{align*}<br>$$<br>对应的决策函数为：<br>$$<br>\begin{align*}<br>f(x)&#x3D;sign(w^{<em>}.x+b^{</em>})&amp;&#x3D;sign(\sum_{i&#x3D;1}^{N}\alpha_{i}^{<em>}y_{i}(x.x_{i})+b^{</em>})\<br>&amp;&#x3D;sign(\sum_{i&#x3D;1}^{N}\alpha_{i}^{<em>}y_{i}\textbf{K}(x_{i},x_{j})+b^{</em>})<br>\end{align*}<br>$$<br>其中参数$w^{<em>}$和$b^{</em>}$为优化问题的解。</p>
+<p><strong>观察解题思路，实际上就是非线性数据空间进行核函数映射，将其映射到线性可分的高维空间，在高维空间上，使用线性支持向量的方法进行运算</strong></p>
+<h3 id="常用核函数"><a href="#常用核函数" class="headerlink" title="常用核函数"></a>常用核函数</h3><p><strong>通常所说的核函数指的是正定核函数</strong></p>
+<ul>
+<li><p>多项式核函数<br>$$<br>\textbf{K}(x,z)&#x3D;(x.z+1)^{p}<br>$$<br>这是一个一个$p$次多项式，在这种情形下，分类决策函数为<br>$$<br>\begin{align*}<br>f(x)&amp;&#x3D;sign(\sum_{i&#x3D;1}^{N}\alpha_{i}^{<em>}y_{i}\textbf{K}(x_{i},x_{j})+b^{</em>}) \<br>&amp;&#x3D;sign(\sum_{i&#x3D;1}^{N}\alpha_{i}^{<em>}y_{i}(x.z+1)^{p}+b^{</em>})<br>\end{align*}<br>$$</p>
+</li>
+<li><p>高斯核函数<br>$$<br>\textbf{K}(x,z)&#x3D;exp({-\frac{||x-z||^{2}}{2\sigma^{2}}})<br>$$<br>对应的分类决策函数为<br>$$<br>\begin{align*}<br>f(x)&amp;&#x3D;sign(\sum_{i&#x3D;1}^{N}\alpha_{i}^{<em>}y_{i}\textbf{K}(x_{i},x_{j})+b^{</em>}) \<br>&amp;&#x3D;sign(\sum_{i&#x3D;1}^{N}\alpha_{i}^{<em>}y_{i}exp({-\frac{||x-z||^{2}}{2\sigma^{2}}})+b^{</em>})<br>\end{align*}<br>$$</p>
+</li>
+</ul>
+<h2 id="SMO-序列最小最优化算法"><a href="#SMO-序列最小最优化算法" class="headerlink" title="SMO-序列最小最优化算法"></a>SMO-序列最小最优化算法</h2><p>线性支持向量机的最优化问题为<br>$$<br>\begin{align*}<br>\min_{\alpha} :::::::::: &amp; \frac{1}{2}\sum_{i&#x3D;1}^{N}\sum_{j&#x3D;1}^{N}\alpha_{i}\alpha_{j}y_{i}y_{j}(x_{i}.x_{j})-\sum_{i&#x3D;1}^{N}\alpha_{i}\<br>s.t. :::::::::: &amp; \sum_{i&#x3D;1}^{N}\alpha_{i}y_{i}&#x3D;0\<br>&amp;0\le \alpha_{i}\le C\ ::::::::::\ i&#x3D;1,2,…,N \<br>\end{align*}<br>$$<br>对应的最优解为<br>$$<br>\begin{align*}<br>w^{<em>}&amp;&#x3D;\sum_{i&#x3D;1}^{N}\alpha_{i}^{</em>}y_{i}x_{i}\<br>b^{<em>}&amp;&#x3D;y_{j}-\sum_{i&#x3D;1}^{N}\alpha_{i}^{</em>}y_{i}(x_{i}.x_{j})<br>\end{align*}<br>$$<br>这个问题中，变量是$\alpha_{i}$,一个变量对应一个实例$(x_{i},y_{i})$,变量的总数与样本集中实例的数量相等为$N$</p>
+<p>SMO算法包含两个部分</p>
+<ul>
+<li>两个变量二次规划的求解方法</li>
+<li>选择变量的启发式算法</li>
+</ul>
+<h3 id="两个变量二次规划的求解方法"><a href="#两个变量二次规划的求解方法" class="headerlink" title="两个变量二次规划的求解方法"></a>两个变量二次规划的求解方法</h3><p>先选择两个变量$\alpha_{1},\alpha_{2}$,固定其余的变量，最优化问题变为<br>$$<br>\begin{align*}<br>&amp;\min_{\alpha} :::::::::\ &amp; \frac{1}{2}\sum_{i&#x3D;1}^{N}\sum_{j&#x3D;1}^{N}\alpha_{i}\alpha_{j}y_{i}y_{j}(x_{i}.x_{j})-\sum_{i&#x3D;1}^{N}\alpha_{i}  \<br>\Rightarrow<br>&amp;\min_{\alpha_{1},\alpha_{2}} :::::::::: &amp; \frac{1}{2}K_{11}\alpha_{1}^{2}y_{1}^{2}+ \frac{1}{2}K_{22}\alpha_{2}^{2}y_{2}^{2}+y_{1}y_{2}K_{12}\alpha_{1}\alpha_{2}+y_{1}\alpha_{1}\sum_{i&#x3D;3}^{N}\alpha_{i}y_{i}K_{i1}+y_{2}\alpha_{2}\sum_{i&#x3D;3}^{N}\alpha_{i}y_{i}K_{i1} \<br>&amp; s.t. &amp; \alpha_{1}y_{1}+\alpha_{2}y_{2}&#x3D;-\sum_{i&#x3D;3}^{N}\alpha_{i}y_{i}&#x3D;\zeta \<br>&amp; &amp;0\le \alpha_{i} \le C</p>
+<p>\end{align*}<br>$$</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>赏杯咖啡！</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat.jpeg" alt="ShiXiaofeng 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpeg" alt="ShiXiaofeng 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>ShiXiaofeng
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://xiaofengshi.com/2018/11/11/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-SVM/" title="机器学习-SVM">http://xiaofengshi.com/2018/11/11/机器学习-SVM/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+              <a href="/tags/SVM/" rel="tag"># SVM</a>
+              <a href="/tags/SMO/" rel="tag"># SMO</a>
+              <a href="/tags/%E6%A0%B8%E5%87%BD%E6%95%B0/" rel="tag"># 核函数</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/" rel="prev" title="深度学习-目标检测">
+      <i class="fa fa-chevron-left"></i> 深度学习-目标检测
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/11/09/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%86%B3%E7%AD%96%E6%A0%91/" rel="next" title="机器学习-决策树">
+      机器学习-决策树 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E6%80%A7%E5%8F%AF%E5%88%86%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA"><span class="nav-number">1.</span> <span class="nav-text">线性可分支持向量机</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E9%97%B4%E9%9A%94%E5%92%8C%E5%87%A0%E4%BD%95%E9%97%B4%E9%9A%94"><span class="nav-number">1.1.</span> <span class="nav-text">函数间隔和几何间隔</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%B4%E9%9A%94%E6%9C%80%E5%A4%A7%E5%8C%96"><span class="nav-number">1.2.</span> <span class="nav-text">间隔最大化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%80%E5%A4%A7%E5%88%86%E7%A6%BB%E8%B6%85%E5%B9%B3%E9%9D%A2%E7%9A%84%E5%AD%98%E5%9C%A8%E4%B8%94%E5%94%AF%E4%B8%80%E6%80%A7"><span class="nav-number">1.3.</span> <span class="nav-text">最大分离超平面的存在且唯一性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%98%E5%9C%A8%E6%80%A7"><span class="nav-number">1.3.1.</span> <span class="nav-text">存在性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%94%AF%E4%B8%80%E6%80%A7"><span class="nav-number">1.3.2.</span> <span class="nav-text">唯一性</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E5%92%8C%E9%97%B4%E9%9A%94%E8%BE%B9%E7%95%8C"><span class="nav-number">1.4.</span> <span class="nav-text">支持向量和间隔边界</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E5%81%B6%E7%AE%97%E6%B3%95"><span class="nav-number">1.5.</span> <span class="nav-text">对偶算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9%E5%81%B6%E9%97%AE%E9%A2%98%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-number">1.5.1.</span> <span class="nav-text">对偶问题的定义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#svm%E4%BC%98%E5%8C%96%E5%87%BD%E6%95%B0%E7%9A%84%E5%AF%B9%E5%81%B6%E9%97%AE%E9%A2%98"><span class="nav-number">1.5.2.</span> <span class="nav-text">svm优化函数的对偶问题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%80%E4%BC%98%E9%97%AE%E9%A2%98%E5%8F%8A%E5%85%B6%E8%A7%A3"><span class="nav-number">1.6.</span> <span class="nav-text">最优问题及其解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E6%80%A7%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA"><span class="nav-number">2.</span> <span class="nav-text">线性支持向量机</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AF%E9%97%B4%E9%9A%94"><span class="nav-number">2.1.</span> <span class="nav-text">软间隔</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E5%81%B6%E7%AE%97%E6%B3%95-1"><span class="nav-number">2.2.</span> <span class="nav-text">对偶算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%80%E4%BC%98%E9%97%AE%E9%A2%98%E5%8F%8A%E5%85%B6%E8%A7%A3-1"><span class="nav-number">2.3.</span> <span class="nav-text">最优问题及其解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%80%E4%BC%98%E5%8C%96%E9%97%AE%E9%A2%98%E7%9A%84Hinge%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E7%AD%89%E4%BB%B7%E5%BD%A2%E5%BC%8F"><span class="nav-number">2.4.</span> <span class="nav-text">最优化问题的Hinge损失函数等价形式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%9E%E7%BA%BF%E6%80%A7%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA"><span class="nav-number">3.</span> <span class="nav-text">非线性支持向量机</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%87%BD%E6%95%B0"><span class="nav-number">3.1.</span> <span class="nav-text">核函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%87%BD%E6%95%B0%E4%B8%8E%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA"><span class="nav-number">3.2.</span> <span class="nav-text">核函数与支持向量机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E6%A0%B8%E5%87%BD%E6%95%B0"><span class="nav-number">3.3.</span> <span class="nav-text">常用核函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SMO-%E5%BA%8F%E5%88%97%E6%9C%80%E5%B0%8F%E6%9C%80%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95"><span class="nav-number">4.</span> <span class="nav-text">SMO-序列最小最优化算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%A4%E4%B8%AA%E5%8F%98%E9%87%8F%E4%BA%8C%E6%AC%A1%E8%A7%84%E5%88%92%E7%9A%84%E6%B1%82%E8%A7%A3%E6%96%B9%E6%B3%95"><span class="nav-number">4.1.</span> <span class="nav-text">两个变量二次规划的求解方法</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ShiXiaofeng"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">ShiXiaofeng</p>
+  <div class="site-description" itemprop="description">LLM,搜索,数据挖掘,深度学习相关技术记录分享</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xiaofengShi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xiaofengShi" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sxf1052566766@163.com" title="E-Mail → mailto:sxf1052566766@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ShiXiaofeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v7.1.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+  
+      
+<script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el: '#valine-comments',
+      verify: false,
+      notify: false,
+      appId: 'rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz',
+      appKey: 'zJasiQnAqgUwf4kiHhHyXwOP',
+      placeholder: "Leave Your Message and Contact Details",
+      avatar: 'mm',
+      meta: guest,
+      pageSize: '10' || 10,
+      visitor: true,
+      lang: '' || 'zh-cn',
+      path: location.pathname,
+      recordIP: false,
+      serverURLs: ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

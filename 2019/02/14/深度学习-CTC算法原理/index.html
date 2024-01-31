@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/panda_32px.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/panda_16px.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://xiaofengshi.com').hostname,
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="本来以前深入看过CTC的相关论文，前段时间有人问我相关算法原理，瞬间懵逼，以前看过的东西愣是一点没记起来，这就很尴尬了，本人在ocr任务的文字识别中还用过相关的解码方式，一定要搞明白为什么这种方法是可行的。在这里对CTC进行分析和总结，还是验证是否掌握的最好方法就是看能否做到有效的输出，主要参考论文和相关讲解博客。 先上图">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习-CTC算法原理">
+<meta property="og:url" content="http://xiaofengshi.com/2019/02/14/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-CTC%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="做一个有用的人">
+<meta property="og:description" content="本来以前深入看过CTC的相关论文，前段时间有人问我相关算法原理，瞬间懵逼，以前看过的东西愣是一点没记起来，这就很尴尬了，本人在ocr任务的文字识别中还用过相关的解码方式，一定要搞明白为什么这种方法是可行的。在这里对CTC进行分析和总结，还是验证是否掌握的最好方法就是看能否做到有效的输出，主要参考论文和相关讲解博客。 先上图">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://xiaofengshi.com/2019/02/14/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-CTC%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/CTC.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/02/14/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-CTC%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/nmt-model-fast.gif">
+<meta property="og:image" content="http://xiaofengshi.com/2019/02/14/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-CTC%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/mfcc_dnn_ctc.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/02/14/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-CTC%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/ctc_forward.png">
+<meta property="og:image" content="http://xiaofengshi.com/2019/02/14/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-CTC%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/recurrent_ctc_forward.jpg">
+<meta property="og:image" content="http://xiaofengshi.com/2019/02/14/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-CTC%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/deroate.jpg">
+<meta property="article:published_time" content="2019-02-14T02:47:32.000Z">
+<meta property="article:modified_time" content="2020-02-03T13:34:13.000Z">
+<meta property="article:author" content="ShiXiaofeng">
+<meta property="article:tag" content="nlp">
+<meta property="article:tag" content="不定长字符识别">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://xiaofengshi.com/2019/02/14/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-CTC%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/CTC.png">
+
+<link rel="canonical" href="http://xiaofengshi.com/2019/02/14/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-CTC%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>深度学习-CTC算法原理 | 做一个有用的人</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">做一个有用的人</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">LLM And Search</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-guestbook">
+
+    <a href="/guestbook/" rel="section"><i class="fa fa-fw fa-commenting"></i>guestbook</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/xiaofengShi" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2019/02/14/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-CTC%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ShiXiaofeng">
+      <meta itemprop="description" content="LLM,搜索,数据挖掘,深度学习相关技术记录分享">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="做一个有用的人">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          深度学习-CTC算法原理
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-02-14 10:47:32" itemprop="dateCreated datePublished" datetime="2019-02-14T10:47:32+08:00">2019-02-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-02-03 21:34:13" itemprop="dateModified" datetime="2020-02-03T21:34:13+08:00">2020-02-03</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/seq2seq/" itemprop="url" rel="index">
+                    <span itemprop="name">seq2seq</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2019/02/14/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-CTC%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/" class="post-meta-item leancloud_visitors" data-flag-title="深度学习-CTC算法原理" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2019/02/14/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-CTC%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2019/02/14/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-CTC%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本来以前深入看过CTC的相关论文，前段时间有人问我相关算法原理，瞬间懵逼，以前看过的东西愣是一点没记起来，这就很尴尬了，本人在ocr任务的文字识别中还用过相关的解码方式，一定要搞明白为什么这种方法是可行的。在这里对CTC进行分析和总结，还是验证是否掌握的最好方法就是看能否做到有效的输出，主要参考论文和相关讲解博客。</p>
+<p>先上图</p>
+<img src="/2019/02/14/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-CTC%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/CTC.png" class="" title="CTC对语音进行对齐与文本对齐方式比较">
+
+<span id="more"></span>
+
+<h2 id="NLP解码方式"><a href="#NLP解码方式" class="headerlink" title="NLP解码方式"></a>NLP解码方式</h2><p>在NLP相关任务中，如机器翻译，语音识别中，输入和输出均为序列，目前主要存在着两种模型架构方式，<strong>一种是基于seq2seq的模型框架（目前的主流方式），另一种是基于CTC的解码方式(方法更老一些，在一些任务重仍然在使用，语音识别，不定长文字识别等)。</strong></p>
+<hr>
+
+<ul>
+<li>Seq2seq</li>
+</ul>
+<img src="/2019/02/14/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-CTC%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/nmt-model-fast.gif" class="" title="nmt-model">
+
+<p>如图中所示，对于seq2seq框架分为encoder和decoder，encoder部分对输入序列进行编码，decoder部分对编码之后的序列进行解码输出。使用seq2seq的方式可以解码输入序列和输出序列不一致的任务，并且不需要对训练数据的label进行对于，只需要保证长度一致即可，例如，输入的是一段语音，输出的是对应的文字，一般情况下输入的序列长度和输出的序列长度是不一样的，在seq2seq模型中，首先将输入的语音序列进行mfcc提取因素，之后进行编码，编码之后的序列长度和输入的序列长度相同；在传统的seq2seq中使用编码之后的最后一个时间步的隐藏层输出(认为该隐藏层中保存着输入序列的全部信息，显然对序列较长的情况下，会造成大量的信息丢失，因此也就有了之后的attention机制)作为decoder的初始输入，输出的序列长度由数据中的label的序列长度决定，这样就可以解决输入输出序列长度不同的情况，并且不需要对数据进行对齐，只需要知道输入的语音中对应的文字是什么，而不需要具体知道每个音节是什么。</p>
+<hr>
+
+<ul>
+<li>CTC</li>
+</ul>
+<p>另一种解码方式是基于CTC的解码策略，在没有提出CTC策略之前，对于语音识别任务，要对输入的语音和目标文本进行对齐，这就需要繁琐的特征工程。而CTC策略就是针对该任务提出的，不需要对输入的序列进行label对齐，将原来的单音节的正确率的计算转义到输出序列的正确率计算上，比较的是输入的序列数据经过神经网络之后得到的预测输出和真实的输出之间的差距。</p>
+<p><strong>此外有一点需要格外明确，CTC只能处理输出序列比输入序列短的任务</strong></p>
+<h2 id="CTC详解"><a href="#CTC详解" class="headerlink" title="CTC详解"></a>CTC详解</h2><h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><p>如下这些参数会在下面介绍中出现，再次先进行一下声明，本文中所用参数符号和论文一致。</p>
+<ul>
+<li><p>输入</p>
+<p>输入样本数据$x$</p>
+<p>输入样本数据$T$</p>
+</li>
+<li><p>输出集合</p>
+<p>$L$正常的label</p>
+<p>$LL&#x3D;L \cup {blank }$CTC输出的label全集</p>
+</li>
+<li><p>输出序列</p>
+<p>$\pi$输出的序列路径</p>
+<p>$I$输出的label序列</p>
+<p>$B$路径多对一映射关系，将不同的路径去除空格去除重复字符</p>
+</li>
+<li><p>概率说明</p>
+<p>$y_k^t$在时间步t输出k的概率</p>
+<p>$u_k^t$在时间步t的在节点k上神经网络的输出，满足关系式$y_k^t&#x3D;\exp u_k^t$</p>
+<p>$p(\pi|x)&#x3D; \prod_{t&#x3D;1}^{T}y_{\pi_t}^t$表示在输入数据为x的情况下输出路径$\pi$的概率</p>
+<p>$p(I|x)&#x3D; \sum_{ \pi \in B^{-1}(I)} p(\pi |x)$表示输出label序列的概率是满足$B$变换条件的多条路径的概率之和</p>
+</li>
+<li><p>前向传播和后向传播</p>
+<p>$\alpha _t(s)$表示时刻t在节点s的前向概率值</p>
+<p>$\beta_t(s)$表示时刻t在节点s的后向概率值</p>
+</li>
+</ul>
+<p>在语音识别任务中，输入的序列为$x$，对应的长度为$T$，定义一个神经网络$N_\omega(x)$来代表对输入数据的处理过程，实现对输入序列的特征提取和非线性变换，使用$y&#x3D;N_\omega(x)$表示神经网络经过<code>softmax</code>标准化之后的输出，令$y_k^t$表示在时间步t输出为$k$的概率，$k$属于整个字表和观察字符的并集中。使用$L$表示整个字表，那么在<code>CTC</code>中在原字表基础上加入一个空格字符表示观察字符，由此，模型的字表为$LL&#x3D;L \cup {blank }$，满足关系式$k \in LL$。</p>
+<p>对于输出的$y_k^t$满足关系式$\sum _{t-1}^T y_k^t&#x3D;1$，此处使用的是<code>softmax</code>进行处理。具体过程如下图所示。</p>
+<img src="/2019/02/14/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-CTC%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/mfcc_dnn_ctc.png" class="" title="mfcc_dnn_ctc">
+
+<p>给定数据$x$，预测的序列为$\pi$，也就是在每个时间步预测的结果的连乘<br>$$<br>p(\pi |x)&#x3D; \prod_{t&#x3D;1}^{T}y_{\pi_t}^t, ::\forall \pi \in LL^{T}<br>$$</p>
+<h3 id="路径-pi-和-B-变换"><a href="#路径-pi-和-B-变换" class="headerlink" title="路径$\pi$和$B$变换"></a>路径$\pi$和$B$变换</h3><p>使用$\pi$表示经过预测输出的序列，表示一条由$LL$中的元素组成的长度为$T$的路径，而对于$B$变换为一个多对一的映射函数，满足<br>$$<br>B(a-ab-)&#x3D;B(-aa–abb)&#x3D;aab<br>$$<br>将输入的字符串中的空格和重复字符删除来实现对输入数据的压缩，使用$I \in L^{\leq T}$表示给定序列的<code>label</code>，<strong>对于模型的预测输出有很多种，输出路径经过$B$变换之后与给定<code>label</code>的路径有很多，由此可以得到给定输入数据$x$之后模型的预测输出与<code>label</code>一致的概率就等于所有满足经过$B$变换之后与给定<code>label</code>相同的可能路径的总和，</strong>满足如下关系式<br>$$<br>p(I|x)&#x3D;\sum_{\pi \in B^{-1}(I)}p(\pi |x)<br>$$<br>其中$B^{-1}(I)$表示路径经过变化之后和给定的label一致，也就是满足$B(\pi)&#x3D;I$</p>
+<p>假如给定的<code>label</code>为“nihao”,那么可能的路径为</p>
+<p><strong>“nniihhaaaaaoooo”</strong></p>
+<p><strong>“nnnnniiiihhhaaao”</strong></p>
+<p><strong>“nniiiiiihhhhhaaao”</strong>等等</p>
+<p>路径的长度均为$T$，这些路径经过$B$变换之后都能变为给定的<code>label</code>，也就是都可以变为<strong>“nihao”</strong>。因此目标函数就应该是在给定输入序列的情况下输出满足$B$变换之后与给定的<code>label</code>相同所有序列的概率之和的最大值，也就是使得预测的序列跟给定的<code>label</code>最大概率<br>$$<br>\arg \max_{I \in L^{\leq T}}p(I|x)&#x3D;\max \sum_{B( \pi)&#x3D;&#x3D;label}p(\pi |x)<br>$$<br>但是这里存在一个问题，那就是对于给定的<code>label</code>，那么满足B变换之后和给定<code>label</code>相同的可能的序列的数量实在是太多。</p>
+<p>输入序列的长度为$T$，整个词表的大小为$L$，当前<code>label</code>中包含的的<code>label</code>的数量为$n$，那么可能的序列数量为$C_{T-1}^{n}$，这么多的数量显然是无法计算的，并且随着输入序列的长度的增加，计算量指数级增加。</p>
+<h3 id="CTC模型的训练"><a href="#CTC模型的训练" class="headerlink" title="CTC模型的训练"></a>CTC模型的训练</h3><h4 id="forward前向预测过程"><a href="#forward前向预测过程" class="headerlink" title="forward前向预测过程"></a>forward前向预测过程</h4><p>为了保证模型能够进行训练，使用了DP动态规划的方法。引入一个变量$\alpha_{t}(s)$表示从初始时刻到当前时刻$t$所有可能的正向路径的概率之和(到当前时刻之前输出的序列经过B变换之后和给定的<code>label</code>之间是相同的)，公式如下<br>$$<br>\alpha_{t}(s)&#x3D;\sum_{\pi \in N^T，B(\pi <em>{1:t})&#x3D;I</em>{1:s}} \prod <em>{t^{*}&#x3D;1}^t y</em>{\pi <em>{t^*}}^{t^*}<br>$$<br>这显然就是一个动态规划的问题，如果在时刻t的预测的字符为$s$，那么在上一个时刻可能是字符$s$或者可能是$s-1$的，也就是满足递归关系式，其中$s$表示在label中的第$s$个字符<br>$$<br>\alpha</em>{t}(s)&#x3D;\alpha_{t-1}(s)+\alpha_{t-1}(s-1)<br>$$<br>在<code>CTC</code>处理中，为了区分实现对label字符之间的分割，对<code>label</code>进行了插入空格符的处理，在给定的<code>label</code>的前后及相邻字符之间插入空格符，新的<code>label</code>变为$\widetilde {I}$，那么新的<code>label</code>为$\widetilde {I}$的长度变为$2|I|+1$。</p>
+<p>在前向传播整个生成过程为从左向右生成，时间步1生成的字符只允许为空格(<strong>使用b表示</strong>)$y_b^1$，或者为原来<code>label</code>中的第一个字符$y_{I_1}^1$，因为在时间步$1$的左侧已经不存在其他的字符预测，因此在时间步$1$上，进行了如下的限制：<br>$$<br>\begin{align}<br>&amp; \alpha_{1}(1)&#x3D;y_b^1 \<br>&amp; \alpha_{1}(2)&#x3D;y_{I_{1}}^1 \<br>&amp; \alpha_{1}(s)&#x3D;0,::\forall s&gt;2<br>\end{align}<br>$$</p>
+<p>在其他时刻满足如下关系式<br>$$<br>\begin{equation}</p>
+<p>\alpha_{t}(s)&#x3D; \left{<br>\begin{array}{}<br>&amp; [{\alpha}<em>{t-1}(s)+\alpha</em>{t-1}(s-1)] y_{\widetilde {I}<em>s}^t  &amp; if :::\widetilde {I}<em>s&#x3D;blank ::: or ::: \widetilde {I}</em>{s-2}&#x3D;\widetilde {I}<em>s  \<br>&amp; [({\alpha}</em>{t-1}(s)+\alpha</em>{t-1}(s-1)+\alpha_{t-1}(s-2)]y_{\widetilde {I}_s}^t &amp; otherwise<br>\end{array}<br>\right. </p>
+<p>\end{equation}<br>$$</p>
+<img src="/2019/02/14/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-CTC%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/ctc_forward.png" class="" title="CTC_FORWARD">
+
+<p>对上面的公式进行说明：</p>
+<p>由于对原始的<code>label</code>进行了插入空格的处理，</p>
+<p>例如原始为<strong>“abbd”</strong>，经过处理之后变成了<strong>“-a-b-b-d-”</strong>，<code>label</code>发生了变化。</p>
+<p>在计算$\alpha_t(s)$时，对于时刻$t$取到新的<code>label</code>中第$s$个字符的计算要进行特殊处理，如果第s个字符是空格，或者当前字符$s$和$s-2$字符相等，那么当前$t$取到字符$s$，上一个时刻只能取到字符s或者s-1，也就对应着方程组中第一个式子，即$\alpha_{t}(s)&#x3D;\alpha_{t-1}(s)+\alpha_{t-1}(s-1)$</p>
+<p>使用<strong>“-a-b-b-d-”</strong>举例说明</p>
+<ul>
+<li>当在时刻$t$取到字符第二个$b$的时候，那么上个时刻可能取到$b$之前的一个空格，或者当前的第$2$个$b$，只有这样，经过$B$变换，才能得到“bb”这样的输出；</li>
+<li>如果$t$时刻取到了空格字符，那么上一个时刻只能取到前一个字符或者当前同样位置的空格；</li>
+</ul>
+<p>当然也存在另外的情况，那就是当前时刻取到的不是空格字符并且当前字符$s$也不和$s-2$相同，那么在时刻$t$取到字符$s$,在上一个时刻可能取到$s,s-1,s-2$中的三种可能，即$ \alpha_t(s)&#x3D; \alpha_{t-1}(s)+\alpha_{t-1}(s-1)+\alpha_{t-1}(s-2)$</p>
+<p>同样使用例子<strong>“-a-b-b-d-”</strong>说明，</p>
+<ul>
+<li>如果当前时刻取到的既不是空格字符，也不满足$I_s&#x3D;&#x3D;I_{S-2}$，在例子中，可以看成在时刻t取到字符“d”那么上一课时刻可能取到的是当前位置的“d”，也有可能是上一位的空格字符，也有可能是再上一位的“b”，也就是对应着公式中的第二种情况</li>
+</ul>
+<p>在前向过程中，传播过程如图所示</p>
+<img src="/2019/02/14/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-CTC%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/recurrent_ctc_forward.jpg" class="" title="ctc_forward_recurrent">
+
+<p>红色线所示为第一种的情况，黑色线所示为第二种情况。经过上面所述的前向传播迭代，最终可以得到在给定输入数据x的情况下得到目标label序列的概率，也就是<br>$$<br>p(I|x)&#x3D;\alpha_T(|\widetilde{I}|)+\alpha_T(|\widetilde{I}|-1)<br>$$<br>也就是在最后的时间步$T$，预测的只能是$\widetilde {I}$中的最后一个字符（空格符）或倒数第二个字符（真实字符）。</p>
+<h4 id="反向传播"><a href="#反向传播" class="headerlink" title="反向传播"></a>反向传播</h4><p>和前向传播过程相同，将箭头反转就可以得到<code>CTC</code>的反向传播过程，同样定义$\beta_t(s)$表示在时刻$t$，预测序列取到的字符为<code>label</code>中第<code>s</code>个字符的所有可能的路径的概率之和<br>$$<br>\beta_{t}(s)&#x3D;\sum_{\pi \in N^T，B(\pi <em>{t:T})&#x3D;I</em>{s:|I|}} \prod <em>{t^{*}&#x3D;t}^T y</em>{\pi _{t^*}}^{t^*}<br>$$</p>
+<p>那么存在的递归关系式实际上和前向过程相同，就是将$t-1$改变成$t+1$即可。同样对于左右侧的预测输出，必须是最后一个空格或者最后<code>label</code>中的最后一个字符，公式如下所示<br>$$<br>\begin{align}<br>&amp; \beta_{T}(|\widetilde {I}|)&#x3D;y_b^T \<br>&amp; \beta_{T}(|\widetilde {I}|-1)&#x3D;y_{I_{|I|}}^T \<br>&amp; \beta_{T}(s)&#x3D;0,::\forall s&lt;|\widetilde {I}|-1<br>\end{align}<br>$$</p>
+<p>对于小于时间$T$的情况，公式如下所示</p>
+<p>$$<br>\begin{equation}</p>
+<p>\beta_{t}(s)&#x3D; \left{<br>\begin{array}{}<br>&amp; [{\beta}<em>{t+1}(s)+\beta</em>{t+1}(s+1)] y_{\widetilde {I}<em>s}^t  &amp; if :::\widetilde {I}<em>s&#x3D;blank ::: or ::: \widetilde {I}</em>{s+2}&#x3D;\widetilde {I}<em>s  \<br>&amp; [({\beta}</em>{t+1}(s)+\beta</em>{t+1}(s+1)+\beta_{t+1}(s+2)]y_{\widetilde {I}_s}^t &amp; otherwise<br>\end{array}<br>\right. </p>
+<p>\end{equation}<br>$$</p>
+<p>整个后向的传播过程实际上就是前向传播过程的箭头反转</p>
+<h4 id="存在的问题"><a href="#存在的问题" class="headerlink" title="存在的问题"></a>存在的问题</h4><p>由于序列预测过程中，按照上述的递归过程，每个时间步上对结果的预测时基于上一步预测的结果，<em><em>为了求得序列的概率，因此这就是一个概率连乘的情形$\prod _{t^{</em>}&#x3D;1}^t y_{\pi _{t^*}}^{t^</em>}$，非常多个小于1的数相乘，在计算时很容易造成数据下溢，导致无法计算。**在论文中提出的解决方式是，在每个时刻t预测得到$\alpha_t(s)$之后进行尺度缩放，将当前时刻能够取到的所有$\alpha_t(s)$求和作为当前时刻取得的所有序列的概率之和，之后再当前时刻得到的每个$\alpha_t(s)$与和概率作比作为下一层的概率进行写一个时刻的迭代<br>$$<br>\begin{align}<br>&amp;C_t&#x3D;\sum_s\alpha_t(s)\<br>&amp; \hat {\alpha}_t(s)&#x3D;\frac{\alpha_t(s)}{C_t}<br>\end{align}<br>$$<br>其中$\hat {\alpha}_t(s)$代表经过缩放之后进行下一时刻传递计算的概率</p>
+<p>加入在时间步$t$预测的字符包含$s,s-1,s-2$三种<br>$$<br>\begin{align}<br>&amp; \alpha_t(s)&#x3D;0.05 \<br>&amp; \alpha_t(s-1)&#x3D;0.03 \<br>&amp; \alpha_t(s-2)&#x3D;0.08 \<br>\end{align}<br>$$<br>因为概率是从上一步基于上面所述的正向传播的传递方式传递过来的，因此概率值会非常小，在此处对得到的概率进行缩放，但是并不影响当前时间步预测的不同字符之间的相对概率的大小（因为在此处的概率的变化是线性的），因此对后续时间步的计算不会产生负面影响。</p>
+<p>对反向传播进行同样的缩放<br>$$<br>\begin{align}<br>&amp; D_t&#x3D;\sum_{s}\beta_t(s) \<br>&amp; \hat{\beta}_{t}(s)&#x3D;\frac{\beta_t(s)}{D_t}<br>\end{align}<br>$$</p>
+<h3 id="优化目标"><a href="#优化目标" class="headerlink" title="优化目标"></a>优化目标</h3><p>在训练的过程的优化目标就是最大化似然估计，对于给定的输入数据为$x$，得到的预测序列经过$B$变换之后与标准<code>label</code>相同的概率，使用最大似然估计的方法得到优化目标<br>$$<br>L(S)&#x3D;\sum_{(x,z) \in S}L(x,I)<br>$$<br>其中$S$对应着整个训练集，$x$输入的样本，$I$为对应的label</p>
+<p>针对每个样本，对于给定样本$x$，输出数据与<code>label</code>相等的概率为<br>$$<br>L(x,I)&#x3D;- \ln p(I|x)<br>$$<br>使用对数似然是为了将概率连乘变为连加。</p>
+<p>在分析前向传播和后向传播是，定义了两个表示在时间步序列概率的式子$\alpha_{t}(s)$和$\beta_{t}(s)$，对两个式子进行相乘即可表示整个序列的概率<br>$$<br>\alpha_{t}(s)\beta_{t}(s)&#x3D;\sum_{\pi \in N^T，B(\pi)&#x3D;I} y_{\widetilde{I}_{s}}^t \prod <em>{t&#x3D;1}^T y</em>{\pi _{t}}^{t}<br>$$<br>表示预测的输出序列经过B变换之后和给定的label相同的概率之和</p>
+<p>由于存在关系式<br>$$<br>p(\pi |x)&#x3D; \prod_{t&#x3D;1}^{T}y_{\pi_t}^t, ::\forall \pi \in LL^{T}<br>$$<br>因此对上面的式子进行整理可以得到如下<br>$$<br>\begin{align}<br>&amp; \alpha_{t}(s)\beta_{t}(s) &#x3D; &amp; \sum_{\pi \in N^T，B(\pi)&#x3D;I} y_{\widetilde{I}<em>{s}}^t \prod <em>{t&#x3D;1}^T y</em>{\pi <em>{t}}^{t} \<br>&amp; \frac{\alpha</em>{t}(s)\beta</em>{t}(s)}{y_{\widetilde{I}<em>{s}}^t}  &#x3D; &amp;\sum</em>{\pi \in N^T，B(\pi)&#x3D;I}  \prod <em>{t&#x3D;1}^T y</em>{\pi <em>{t}}^{t} \<br>\because &amp; &amp; p(\pi |x)&#x3D; \prod</em>{t&#x3D;1}^{T}y_{\pi_t}^t \<br>\therefore  &amp;\frac{\alpha_{t}(s)\beta_{t}(s)}{y_{\widetilde{I}<em>{s}}^t} &#x3D;  &amp; \sum</em>{\pi \in N^T，B(\pi)&#x3D;I} p(\pi |x)<br>\end{align}<br>$$<br>有因为存在着<br>$$<br>p(I|x)&#x3D;\sum_{\pi \in B^{-1}(I)}p(\pi |x)<br>$$<br>可以得到<br>$$<br>p(I|x)&#x3D;\sum_{s&#x3D;1}^{|\widetilde {I}|}\frac{\alpha_{t}(s)\beta_{t}(s)}{y_{\widetilde{I}_{s}}^t}<br>$$</p>
+<p>上式就对应着优化目标，只考虑在时刻t经过节点k的路径，对上式求偏导<br>$$<br>\frac{\partial p(I|x)}{\partial y_k^t}&#x3D;\frac{1}{(y_k^t)^2} \sum _{s \in label(1,k)} \alpha_t(s)\beta_t(s)<br>$$</p>
+<h3 id="误差反向传播"><a href="#误差反向传播" class="headerlink" title="误差反向传播"></a>误差反向传播</h3><p>整理前面部分的优化目标<br>$$<br>\begin{align}<br>&amp; L(S)&#x3D;\sum_{(x,z) \in S}L(x,z)&#x3D; \sum_{(x,z) \in S} - \ln p(I|x) \<br>\Rightarrow &amp; \frac{\partial L(S)}{\partial y_k^t} &#x3D; -\frac{\partial \ln(p(I|x))}{\partial y_k^t}&#x3D;-\frac{1}{p(I|x)} \frac{\partial p(I|x)}{\partial y_k^t} \<br>&amp; &#x3D;-\frac{1}{p(I|x)} \frac{1}{(y_k^t)^2} \sum <em>{s \in label(1,k)} \alpha_t(s)\beta_t(s) \<br>&amp; &#x3D; -\frac{1}{\sum</em>{s&#x3D;1}^{|\widetilde {I}|}\frac{\alpha_{t}(s)\beta_{t}(s)}{y_{\widetilde{I}_{s}}^t}} \frac{1}{(y_k^t)^2} \sum _{s \in label(1,k)} \alpha_t(s)\beta_t(s) </p>
+<p>\end{align}<br>$$<br>因为在此处$y_k^t$对应的是在时刻$t$输出为$k$的概率，是根据神经网络的输出经过<code>softmax</code>变换之后得到的概率值，这是一个固定变换，没有学习参数需要反向更新，神经网络的输出为$u_k^t$，则存在着变换关系式<br>$$<br>y_k^t&#x3D; \frac{\exp {u_k^t}}{ \sum_{k \in I} \exp u_k^t}<br>$$<br>由此可以得到</p>
+<img src="/2019/02/14/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-CTC%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/deroate.jpg" class="" title="求导过程">
+
+<p>因此对上面的优化目标进行再次整理为<br>$$<br>\begin{align}<br>\frac{\partial L(S)}{\partial u_k^t} &amp; &#x3D;\frac{\partial L(S)}{\partial y_k^t}  \frac{\partial y_k^t}{\partial u_k^t} &#x3D;y_k^t \frac{\partial L(S)}{\partial y_k^t} \<br>&amp;&#x3D; - y_k^t \frac{1}{\sum_{s&#x3D;1}^{|\widetilde {I}|}\frac{\alpha_{t}(s)\beta_{t}(s)}{y_{\widetilde{I}<em>{s}}^t}} \frac{1}{(y_k^t)^2} \sum <em>{s \in label(1,k)} \alpha_t(s)\beta_t(s)  \<br>&amp; &#x3D; -\frac{1}{\sum</em>{s&#x3D;1}^{|\widetilde {I}|}\frac{\alpha</em>{t}(s)\beta_{t}(s)}{y_{\widetilde{I}_{s}}^t}} \frac{1}{y_k^t} \sum _{s \in label(1,k)} \alpha_t(s)\beta_t(s)<br>\end{align}<br>$$</p>
+<p>由此得到在训练的时候每一步对参数的更新，此时的$u_k^t$对应着神经网络的输出，对于之后的网络使用BPTT或者BP进行更新</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
+<li><a href="https://distill.pub/2017/ctc/">Sequence ModelingWith CTC</a></li>
+<li><a href="https://blog.csdn.net/luodongri/article/details/80100297">语音识别中的CTC算法的基本原理解释</a></li>
+<li><a href="https://blog.csdn.net/xmdxcsj/article/details/51763886">CTC公式推导</a></li>
+<li></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>赏杯咖啡！</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat.jpeg" alt="ShiXiaofeng 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpeg" alt="ShiXiaofeng 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>ShiXiaofeng
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://xiaofengshi.com/2019/02/14/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-CTC%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/" title="深度学习-CTC算法原理">http://xiaofengshi.com/2019/02/14/深度学习-CTC算法原理/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/nlp/" rel="tag"># nlp</a>
+              <a href="/tags/%E4%B8%8D%E5%AE%9A%E9%95%BF%E5%AD%97%E7%AC%A6%E8%AF%86%E5%88%AB/" rel="tag"># 不定长字符识别</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/02/15/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-NLP-Attention_is_all_you_need/" rel="prev" title="深度学习-NLP-Attention_is_all_you_need">
+      <i class="fa fa-chevron-left"></i> 深度学习-NLP-Attention_is_all_you_need
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/01/25/Boosting-And-Bagging/" rel="next" title="Boosting_And_Bagging">
+      Boosting_And_Bagging <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#NLP%E8%A7%A3%E7%A0%81%E6%96%B9%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">NLP解码方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CTC%E8%AF%A6%E8%A7%A3"><span class="nav-number">2.</span> <span class="nav-text">CTC详解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E"><span class="nav-number">2.1.</span> <span class="nav-text">参数说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%AF%E5%BE%84-pi-%E5%92%8C-B-%E5%8F%98%E6%8D%A2"><span class="nav-number">2.2.</span> <span class="nav-text">路径$\pi$和$B$变换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CTC%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%AE%AD%E7%BB%83"><span class="nav-number">2.3.</span> <span class="nav-text">CTC模型的训练</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#forward%E5%89%8D%E5%90%91%E9%A2%84%E6%B5%8B%E8%BF%87%E7%A8%8B"><span class="nav-number">2.3.1.</span> <span class="nav-text">forward前向预测过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD"><span class="nav-number">2.3.2.</span> <span class="nav-text">反向传播</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">2.3.3.</span> <span class="nav-text">存在的问题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E5%8C%96%E7%9B%AE%E6%A0%87"><span class="nav-number">2.4.</span> <span class="nav-text">优化目标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%AF%E5%B7%AE%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD"><span class="nav-number">2.5.</span> <span class="nav-text">误差反向传播</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">3.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ShiXiaofeng"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">ShiXiaofeng</p>
+  <div class="site-description" itemprop="description">LLM,搜索,数据挖掘,深度学习相关技术记录分享</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xiaofengShi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xiaofengShi" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sxf1052566766@163.com" title="E-Mail → mailto:sxf1052566766@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ShiXiaofeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v7.1.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+  
+      
+<script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el: '#valine-comments',
+      verify: false,
+      notify: false,
+      appId: 'rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz',
+      appKey: 'zJasiQnAqgUwf4kiHhHyXwOP',
+      placeholder: "Leave Your Message and Contact Details",
+      avatar: 'mm',
+      meta: guest,
+      pageSize: '10' || 10,
+      visitor: true,
+      lang: '' || 'zh-cn',
+      path: location.pathname,
+      recordIP: false,
+      serverURLs: ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

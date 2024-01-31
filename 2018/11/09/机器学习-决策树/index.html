@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/panda_32px.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/panda_16px.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://xiaofengshi.com').hostname,
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="决策树是机器学习中非常容易理解机模型，是最基础最常见的有监督学习模型，被用于分类或者回归，由于树结构与销售、教育、医疗诊断场景决策过程相似，因此在该领域应用广泛。 决策树的生成包括三个部分：特征选择，构造树，树剪枝">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习-决策树">
+<meta property="og:url" content="http://xiaofengshi.com/2018/11/09/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%86%B3%E7%AD%96%E6%A0%91/index.html">
+<meta property="og:site_name" content="做一个有用的人">
+<meta property="og:description" content="决策树是机器学习中非常容易理解机模型，是最基础最常见的有监督学习模型，被用于分类或者回归，由于树结构与销售、教育、医疗诊断场景决策过程相似，因此在该领域应用广泛。 决策树的生成包括三个部分：特征选择，构造树，树剪枝">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/09/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%86%B3%E7%AD%96%E6%A0%91/tree.png">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/09/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%86%B3%E7%AD%96%E6%A0%91/CART_reg.png">
+<meta property="article:published_time" content="2018-11-09T09:18:31.000Z">
+<meta property="article:modified_time" content="2019-04-20T09:53:11.000Z">
+<meta property="article:author" content="ShiXiaofeng">
+<meta property="article:tag" content="机器学习">
+<meta property="article:tag" content="决策树">
+<meta property="article:tag" content="ID3">
+<meta property="article:tag" content="C4.5">
+<meta property="article:tag" content="CART">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://xiaofengshi.com/2018/11/09/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%86%B3%E7%AD%96%E6%A0%91/tree.png">
+
+<link rel="canonical" href="http://xiaofengshi.com/2018/11/09/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%86%B3%E7%AD%96%E6%A0%91/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>机器学习-决策树 | 做一个有用的人</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">做一个有用的人</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">LLM And Search</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-guestbook">
+
+    <a href="/guestbook/" rel="section"><i class="fa fa-fw fa-commenting"></i>guestbook</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/xiaofengShi" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2018/11/09/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%86%B3%E7%AD%96%E6%A0%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ShiXiaofeng">
+      <meta itemprop="description" content="LLM,搜索,数据挖掘,深度学习相关技术记录分享">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="做一个有用的人">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          机器学习-决策树
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-11-09 17:18:31" itemprop="dateCreated datePublished" datetime="2018-11-09T17:18:31+08:00">2018-11-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-04-20 17:53:11" itemprop="dateModified" datetime="2019-04-20T17:53:11+08:00">2019-04-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%9C%89%E7%9B%91%E7%9D%A3/" itemprop="url" rel="index">
+                    <span itemprop="name">有监督</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2018/11/09/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%86%B3%E7%AD%96%E6%A0%91/" class="post-meta-item leancloud_visitors" data-flag-title="机器学习-决策树" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2018/11/09/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%86%B3%E7%AD%96%E6%A0%91/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/11/09/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%86%B3%E7%AD%96%E6%A0%91/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>决策树是机器学习中非常容易理解机模型，是最基础最常见的有监督学习模型，被用于分类或者回归，由于树结构与销售、教育、医疗诊断场景决策过程相似，因此在该领域应用广泛。</p>
+<p>决策树的生成包括三个部分：特征选择，构造树，树剪枝</p>
+<img src="/2018/11/09/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%86%B3%E7%AD%96%E6%A0%91/tree.png" class="" title="decision tree">
+
+<span id="more"></span>
+
+<p>决策树算法的特点</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">优点：计算复杂度不高，输出结果易于理解，对中间值的缺失不敏感，可以处理不相关特征数据。</span><br><span class="line">缺点：可能会产生过度匹配问题。</span><br><span class="line">适用数据类型：数值型和标称型。</span><br></pre></td></tr></table></figure>
+
+<h2 id="样例"><a href="#样例" class="headerlink" title="样例"></a>样例</h2><table>
+<thead>
+<tr>
+<th align="right">姓名</th>
+<th>年龄</th>
+<th>长相</th>
+<th>工资</th>
+<th>写代码</th>
+<th>类别</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">A</td>
+<td>老</td>
+<td>帅</td>
+<td>高</td>
+<td>不会</td>
+<td>不见</td>
+</tr>
+<tr>
+<td align="right">B</td>
+<td>年轻</td>
+<td>一般</td>
+<td>中等</td>
+<td>会</td>
+<td>见</td>
+</tr>
+<tr>
+<td align="right">C</td>
+<td>年轻</td>
+<td>丑</td>
+<td>高</td>
+<td>不会</td>
+<td>不见</td>
+</tr>
+<tr>
+<td align="right">D</td>
+<td>年轻</td>
+<td>一般</td>
+<td>高</td>
+<td>会</td>
+<td>见</td>
+</tr>
+<tr>
+<td align="right">E</td>
+<td>年轻</td>
+<td>一般</td>
+<td>低</td>
+<td>不会</td>
+<td>不见</td>
+</tr>
+</tbody></table>
+<p>这是一个典型的是否进行约会的样例，数据中包含A-E五个人，包含年龄，长相，工资，会写代码五个属性，通过这五个属性来确定是否进行约会。整个数据集中包含特征为$A$&#x3D;[年龄，长相，工资，写代码]&#x3D;$$[A1,A2,A3,A4]$$</p>
+<p>对于构建决策树过程中的第一步：特征选择，目前存在三种特征选择的启发函数：<strong>最大信息增益，信息增益比，基尼指数。</strong>接下来的几个计算实例都是使用这个样例。</p>
+<h2 id="ID3-最大信息增益"><a href="#ID3-最大信息增益" class="headerlink" title="ID3-最大信息增益"></a>ID3-最大信息增益</h2><h3 id="熵"><a href="#熵" class="headerlink" title="熵"></a>熵</h3><p>熵是一种信息的度量方式，表示信息的混乱程度，也就是说：<strong>信息越有序，信息熵越低</strong>。例如：火柴有序放在火柴盒里，熵值很低，相反，熵值很高。假设样本空间D中的的概率分布为：<br>$$<br>p_{i}&#x3D;\frac{|C_{i}|}{D}<br>$$</p>
+<ul>
+<li>$C_{i}$为样本集合D中属于第$i$类标签的样本子集</li>
+<li>$|C_{i}|$表示该子集的样本个数</li>
+<li>$|D_{i}|$表示整个样本集的个数</li>
+</ul>
+<p>数据集$D$的熵为<br>$$<br>H(D)&#x3D;-\sum_{i&#x3D;1}^{n}p_{i}log_{2}p_{i}<br>$$</p>
+<ul>
+<li>一定要注意前面的负号</li>
+<li>$n$表示标签数</li>
+<li>指数可以使用以$2$位底或以$e$为底</li>
+</ul>
+<hr>
+
+<p>在样例中，包含去见的2人，不去见的为3人，总共为5人，因此可以得到数据集$D$的熵为：<br>$$<br>H(D)&#x3D;-(\frac{3}{5}*log_{2}\frac{3}{5}+\frac{2}{5}*log_{2}\frac{2}{5})&#x3D;0.971<br>$$</p>
+<hr>
+为了决定创建决策树时使用哪个特征，这个时候就要针对不同的特征计算该特征的信息熵，由此引入条件熵，其计算公式为：
+$$
+H(D|A)=-\sum_{i=1}^{n}\frac{|D_{i}|}{|D|}(\sum_{k=1}^{k}\frac{|D_{ik}|}{|D_{i}|}log_{2}\frac{|D_{ik}|}{|D_{i}|})
+$$
+
+<ul>
+<li>$D_{i}$表示$D$中特征$A$取第$i$个值的样本子集</li>
+<li>$D_{ik}$表示$D_{i}$中属于第k类的样本子集</li>
+<li>存在等式关系$D_{i}&#x3D;\sum_{k&#x3D;1}^{k}D_{ik}$和$D&#x3D;\sum_{i&#x3D;1}^{n}D_{i}$</li>
+</ul>
+<hr>
+
+<p>计算$A1$的条件熵，<u>$A1$包含两个值$$[A11,A12]$$&#x3D;[年龄:老, 年龄:年轻]，其中年龄老的会见的在整个样本中的人数为1，其中人数0，不见的人数为1；年龄年轻的在整个样本的人数为4，其中会见的人数为2，不见的人数为2。</u>由此分析，求得特征$A1$对应的条件熵</p>
+<p>$$<br>\begin{equation}<br>\begin{aligned}<br>H(D|A_{1})&amp;&#x3D;-\sum_{i&#x3D;1}^{n}\frac{|D_{i}|}{|D|}(\sum_{k&#x3D;1}^{k}\frac{|D_{ik}|}{|D_{i}|}log_{2}\frac{|D_{ik}|}{|D_{i}|})<br>\&amp;&#x3D;-(\frac{1}{5}H(D_{1})+\frac{4}{5}H(D_{2}))<br>\&amp;&#x3D;-[\frac{1}{5}*(-0)+\frac{4}{5}(-\frac{2}{4}log_{2}\frac{2}{4}-\frac{2}{4}log_{2}\frac{2}{4})]<br>\&amp;&#x3D;0.8<br>\end{aligned}<br>\end{equation}<br>$$</p>
+<hr>
+
+<p>由此可以得到所有特征对应的条件熵。</p>
+<p>在ID3算法，使用的是启发函数为信息增益，所谓信息增益是针对样本内的特征而言的，对于不同的特征，使用样本集的熵与特征的条件熵的差作为该特征的信息增益。因此信息增益的定义如下</p>
+<p>数据集的熵减去特征的条件熵<br>$$<br>g(D,A)&#x3D;H(D)-H(D|A)<br>$$</p>
+<h3 id="算法流程"><a href="#算法流程" class="headerlink" title="算法流程"></a>算法流程</h3><ul>
+<li><p>给定样本集$D$以及提取存在的特征$A$</p>
+</li>
+<li><p>根据整个样本集$D$以及标签计算$H(D)$</p>
+</li>
+<li><p>根据特征$A_{i}$，求解特征对应的条件熵$H(D|A_{i})$，及信息增益$g(D,A_{i})$</p>
+</li>
+<li><p>选择最大的信息增益对应的特征作为当前节点的划分标准</p>
+</li>
+</ul>
+<h3 id="不足"><a href="#不足" class="headerlink" title="不足"></a>不足</h3><p>使用增大信息增益作为节点的划分规则，由于信息增益反应的是数据不确定性减小的程度，所以<strong>对于取值较多的特征，这就意味着该特征的确定性越高，对应的条件熵也就越低，信息增益越大。因此使用最大信息增益偏向取值较多的特征。</strong></p>
+<h2 id="C4-5-信息增益率"><a href="#C4-5-信息增益率" class="headerlink" title="C4.5-信息增益率"></a>C4.5-信息增益率</h2><p>为了改进使用最大信息增益偏向取值较多的特征这一个不足，引入了<strong>信息增益率</strong>。</p>
+<h3 id="信息增益率"><a href="#信息增益率" class="headerlink" title="信息增益率"></a>信息增益率</h3><p>定义如下<br>$$<br>g_{g}(D,A)&#x3D;\frac{g(D,A)}{H_{A}(D)}<br>$$<br>式子中的$H_{A}(D)$如下所示</p>
+<p>$$<br>H_{A}(D)&#x3D;-\sum_{i&#x3D;1}^{n}\frac{|D_{i}|}{|D|}log_{2}\frac{|D_{i}|}{|D|}<br>$$<br>求得信息增益之后，将信息增益与数据集关于特征$A$的取值的熵作比，得到信息增益率。</p>
+<hr>
+
+<p>对于示例，继续条件熵的计算，$H_{A_{1}}(D)$表示数据集关于年龄这个特征的，对于年龄这个特征，在整个样本空间内有4个年轻的去见，一个年老的不去见，因此该特征的熵为：<br>$$<br>H_{A_{1}}(D)&#x3D;-\frac{1}{5}log_{2}\frac{1}{5}-\frac{4}{5}log_{2}\frac{4}{5}&#x3D;0.722<br>$$</p>
+<hr>
+取值较多的特征对应的信息增益较大，但是对应的特征的取值的熵也较大，一定程度上对取值较多的特征进行了惩罚和抑制。
+
+<h3 id="C4-5算法流程"><a href="#C4-5算法流程" class="headerlink" title="C4.5算法流程"></a>C4.5算法流程</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">输入：数据集D，特征集A,类别集C,阈值thresh</span><br><span class="line">输出：决策树T</span><br><span class="line"><span class="keyword">if</span> any(D) <span class="keyword">in</span> Ci: T为单节点树，ci作为该节点的类，返回T；</span><br><span class="line"><span class="keyword">elif</span> A is None: T为单节点树，D中实例数最大的类别Ci作为该节点的类，返回T；</span><br><span class="line"><span class="keyword">elif</span> Ai=max(cal_info_gain_ratio(A)) </span><br><span class="line">	<span class="keyword">if</span> Ai&lt;thresh: T为单节点树，D中实例数最大的类别Ci作为该节点的类，返回T</span><br><span class="line">	<span class="keyword">else</span>：计算Ai总每个可能只ai，使用Ai=ai将D划分若干非空Di，将Di中实例最多的类别Ci作为标记构建子节点，有节点及子节点构成的数T，返回Ti；</span><br><span class="line">对节点i，以Di为训练集，以A-Ai为特征集，递归上述步数得到子树Ti</span><br></pre></td></tr></table></figure>
+
+<h2 id="CART"><a href="#CART" class="headerlink" title="CART"></a>CART</h2><p><strong>CART-classification and regression tree分类回归树</strong></p>
+<p>该算法即可用于回归又可以用于分类。构建树时使用特征的取值对样本空间进行二值划分，不仅可以处理离散数据同时可以处理连续数据。</p>
+<h3 id="CART分类-Gini指数"><a href="#CART分类-Gini指数" class="headerlink" title="CART分类-Gini指数"></a>CART分类-Gini指数</h3><p>与信息熵相似，信息熵描述的是数据的混乱程度，基尼指数描述的是数据的纯度，基尼指数越小，对应的信息纯度越高。分类决策树使用基尼指数进行最优特征的选择，同时决定改特征的最优二值切分点。</p>
+<h4 id="Gini定义"><a href="#Gini定义" class="headerlink" title="Gini定义"></a>Gini定义</h4><p>分类问题中，假设存在$K$个类，样本点属于$k$的概率为$p_{k}$，则概率分布的基尼指数为<br>$$<br>\begin{align}<br>Gini(p)&#x3D;\sum_{k&#x3D;1}^{K}p_{k}(1-p_{k})&amp; &#x3D;1-\sum_{k&#x3D;1}^{K}p_{k}^{2}\<br>&amp; where :::::: p_{k}&#x3D;\frac{|C_k|}{D}<br>\end{align}<br>$$<br>对于二分类问题，如果样本属于第1个类的概率为$p$，则概率分布的基尼指数可以表示为<br>$$<br>\begin {equation}<br>Gini(p)&#x3D;2p(1-p)<br>\end{equation}<br>$$<br>假设存在$K$个类，则数据集$D$的基尼指数为：<br>$$<br>Gini(D)&#x3D;1-\sum_{k&#x3D;1}^{K}(\frac{|C_{k}|}{|D|})^{2}<br>$$</p>
+<ul>
+<li><p>公式内的符号定义与熵的公式中的含义相应。</p>
+</li>
+<li><p>$|C_{k}|$为样本集合$D$中属于第$k$类标签的样本子集的样本数量，$K$是类的个数</p>
+</li>
+</ul>
+<p>特征$A$的$Gini$指数为：<br>$$<br>Gini(D|A)&#x3D;\sum_{k&#x3D;1}^{K}\frac{|D_{k}|}{|D|}Gini(D_{k})<br>$$<br>每次选择$Gini$指数最小的特征及其对应的切分点进行分类</p>
+<p>如果样本$D$根据特征$A$是否取某一可能值$a$被分割成$D_{1}$和$D_{2}$两部分，则$D_{1}&#x3D;{(x,y)\in D|A&#x3D;a}$并且$D_{2}&#x3D;D-D_{1}$则在特征条件$A$的条件下，集合$D$的基尼指数可以定义为：<br>$$<br>Gini(D|A)&#x3D;\frac{|D_{1}|}{|D|}Gini(D_{1})+\frac{|D_{2}|}{|D|}Gini(D_{2})<br>$$<br>基尼指数值越大，对应的样本的不确定性越大，与熵相似，因此选择最小的基尼指数作为划分标准。</p>
+<hr>
+
+<p>同样是上面的例子，计算特征$A_{1}$对应的基尼指数，当$A_{1}$中的特征为年轻时，会将样本集一分为2，一部分为年轻，对应4人；一部分为年老，对应1人，基于此进行该特征值下的基尼指数的计算<br>$$<br>\begin{equation}<br>\begin{aligned}<br>Gini(D|A_{1}&#x3D;年轻)&amp;&#x3D;\frac{1}{5}<em>Gini(D_{1})+\frac{4}{5}<em>Gini(D_{2})<br>\&amp;&#x3D;\frac{1}{5}</em>[2</em>1*(1-1)]+\frac{4}{5}<em>(2</em>\frac{2}{4}<em>[1-\frac{2}{4})]<br>\&amp;&#x3D;\frac{2}{5}<br>\end{aligned}<br>\end{equation}<br>$$<br>同理，可以得到<br>$$<br>\begin{equation}<br>\begin{aligned}<br>Gini(D|A_{1}&#x3D;老)&amp;&#x3D;\frac{1}{5}<em>Gini(D_{1})+\frac{4}{5}<em>Gini(D_{2})<br>\&amp;&#x3D;\frac{1}{5}</em>[2</em>1</em>(1-1)]+\frac{4}{5}<em>(2</em>\frac{2}{4}*[1-\frac{2}{4})]<br>\&amp;&#x3D;\frac{2}{5}<br>\end{aligned}<br>\end{equation}<br>$$<br>依次可以得到不同特征值取值下的$Gini$指数，并选择最小的$Gini$指数作为特征进行决策树创建。</p>
+<hr>
+
+<h3 id="CART回归-最小平方差损失"><a href="#CART回归-最小平方差损失" class="headerlink" title="CART回归-最小平方差损失"></a>CART回归-最小平方差损失</h3><p>给定训练数据集<br>$$<br>D&#x3D;{ (x_1,y_2),(X_2,y_2),…,(x_N,y_N) }<br>$$<br>对于决策树的核心问题是：<strong>如何选择划分点?如何决定节点的输出值？</strong></p>
+<img src="/2018/11/09/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%86%B3%E7%AD%96%E6%A0%91/CART_reg.png" class="" title="CART Regression Tree">
+
+<p>对于上面的分类树使用的是信息论中的评价指标，信息增益，信息增益率，基尼指数；而对于回归树使用的是启发式的方法。假设数据中存在$n​$个特征，每个特征有$s_{i}(i \in (1,n))​$个取值，选择第j个变量$x^{(j)}​$和它的取值s作为切分变量和切分点并将整个数据集划分为两个数据空间<br>$$<br>R_j(j,s)&#x3D; { x|x^{(j)} \leq s } :::::::: R_j(j,s)&#x3D; { x|x^{(j)} &gt; s }<br>$$<br>如上图所示，每个节点将数据空间划分为两个部分，划分点的选择基于最小平方差损失。遍历所有的特征，并尝试该特征的所有取值对空间进行划分，直到特征j的取值s使的损失函数最小，对于CART回归树使用最小平方差损失，具体的求解方式为<br>$$<br>\min <em>{j,s} [\min</em>{c_1} \sum <em>{x_i \in R</em>{1}(j,s)}(y_i-c_1)^2+\min_{c_2} \sum <em>{x_i \in R</em>{2}(j,s)}(y_i-c_2)^2]<br>$$<br>式中的$c_m&#x3D;ave(y_i|x_i \in R_m)​$</p>
+<p>遍历所有的变量$j​$，对固定的切分变量$j​$扫描切分点$s​$，选择使得上述公式取值最小的$(j,s)​$</p>
+<p>假设输入空间被划分为M个单元$R_2,R_2,R_3,R_m​$，那么每个区域的输出值就是该区域内所有点$y​$值的平均值$c_m&#x3D;ave(y_i|x_i \in R_m)​$，也就是<br>$$<br>\begin{align}<br>&amp; R_1(j,s)&#x3D;{x|x^{(j)} \ge s }, :::::: R_2(j,s)&#x3D;{x|x^{(j)} &gt; s } \<br>&amp; c_m&#x3D;\frac{1}{N_m} \sum_{x_i \in R_m(i,s)}y_i, ::::x \in R_m, :::m&#x3D;1,2<br>\end{align}<br>$$</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><table>
+<thead>
+<tr>
+<th align="center">决策树算法名称</th>
+<th align="left">算法特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">ID3</td>
+<td align="left">只用于分类<br />只处理离散数据<br />偏向样本较多的特征<br />泛化能力较差，容易过拟合<br />对于缺失值比较敏感<br />节点下生成多叉分支，特征在层间不会复用<br />通过剪枝权衡数的准确性和泛化能力</td>
+</tr>
+<tr>
+<td align="center">C4.5</td>
+<td align="left">只用于分类<br />可以处理离散和连续数据<br />添加取值较多的特征惩罚<br />泛化能力相较ID3较好<br />节点下生成多叉分支，特征在层间不会复用<br />通过剪枝权衡数的准确性和泛化能力</td>
+</tr>
+<tr>
+<td align="center">CART</td>
+<td align="left">用于分类和回归<br />可以处理离散和连续数据<br />回归使用最小平方差，分类使用最小基尼指数<br />每个节点产生两个分支，最后形成一个二叉树，特征层间复用<br />利用全部数据发现所有可能的树结构</td>
+</tr>
+</tbody></table>
+<hr>
+
+
+
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
+<li><a href="https://github.com/xiaofengShi/MachineLearning/blob/master/blog/ml/3.%E5%86%B3%E7%AD%96%E6%A0%91.md">机器学习实战-决策树</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>赏杯咖啡！</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat.jpeg" alt="ShiXiaofeng 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpeg" alt="ShiXiaofeng 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>ShiXiaofeng
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://xiaofengshi.com/2018/11/09/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%86%B3%E7%AD%96%E6%A0%91/" title="机器学习-决策树">http://xiaofengshi.com/2018/11/09/机器学习-决策树/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+              <a href="/tags/%E5%86%B3%E7%AD%96%E6%A0%91/" rel="tag"># 决策树</a>
+              <a href="/tags/ID3/" rel="tag"># ID3</a>
+              <a href="/tags/C4-5/" rel="tag"># C4.5</a>
+              <a href="/tags/CART/" rel="tag"># CART</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/11/11/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-SVM/" rel="prev" title="机器学习-SVM">
+      <i class="fa fa-chevron-left"></i> 机器学习-SVM
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/11/09/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%81%9A%E7%B1%BB/" rel="next" title="机器学习-聚类">
+      机器学习-聚类 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B7%E4%BE%8B"><span class="nav-number">1.</span> <span class="nav-text">样例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ID3-%E6%9C%80%E5%A4%A7%E4%BF%A1%E6%81%AF%E5%A2%9E%E7%9B%8A"><span class="nav-number">2.</span> <span class="nav-text">ID3-最大信息增益</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%86%B5"><span class="nav-number">2.1.</span> <span class="nav-text">熵</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E6%B5%81%E7%A8%8B"><span class="nav-number">2.2.</span> <span class="nav-text">算法流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8D%E8%B6%B3"><span class="nav-number">2.3.</span> <span class="nav-text">不足</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C4-5-%E4%BF%A1%E6%81%AF%E5%A2%9E%E7%9B%8A%E7%8E%87"><span class="nav-number">3.</span> <span class="nav-text">C4.5-信息增益率</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E5%A2%9E%E7%9B%8A%E7%8E%87"><span class="nav-number">3.1.</span> <span class="nav-text">信息增益率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#C4-5%E7%AE%97%E6%B3%95%E6%B5%81%E7%A8%8B"><span class="nav-number">3.2.</span> <span class="nav-text">C4.5算法流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CART"><span class="nav-number">4.</span> <span class="nav-text">CART</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CART%E5%88%86%E7%B1%BB-Gini%E6%8C%87%E6%95%B0"><span class="nav-number">4.1.</span> <span class="nav-text">CART分类-Gini指数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Gini%E5%AE%9A%E4%B9%89"><span class="nav-number">4.1.1.</span> <span class="nav-text">Gini定义</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CART%E5%9B%9E%E5%BD%92-%E6%9C%80%E5%B0%8F%E5%B9%B3%E6%96%B9%E5%B7%AE%E6%8D%9F%E5%A4%B1"><span class="nav-number">4.2.</span> <span class="nav-text">CART回归-最小平方差损失</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">6.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ShiXiaofeng"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">ShiXiaofeng</p>
+  <div class="site-description" itemprop="description">LLM,搜索,数据挖掘,深度学习相关技术记录分享</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xiaofengShi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xiaofengShi" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sxf1052566766@163.com" title="E-Mail → mailto:sxf1052566766@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ShiXiaofeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v7.1.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+  
+      
+<script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el: '#valine-comments',
+      verify: false,
+      notify: false,
+      appId: 'rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz',
+      appKey: 'zJasiQnAqgUwf4kiHhHyXwOP',
+      placeholder: "Leave Your Message and Contact Details",
+      avatar: 'mm',
+      meta: guest,
+      pageSize: '10' || 10,
+      visitor: true,
+      lang: '' || 'zh-cn',
+      path: location.pathname,
+      recordIP: false,
+      serverURLs: ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

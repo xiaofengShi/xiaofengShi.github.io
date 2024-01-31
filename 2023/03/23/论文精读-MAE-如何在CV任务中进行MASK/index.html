@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/panda_32px.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/panda_16px.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://xiaofengshi.com').hostname,
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="恺明大神在2021年的时候发布了论文MAE(Masked Autoencoders Are Scalable Vision Learners)，给大家指出了如何在cv预训练任务中设计无监督任务。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[论文精读]MAE-如何在CV任务中进行MASK">
+<meta property="og:url" content="http://xiaofengshi.com/2023/03/23/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-MAE-%E5%A6%82%E4%BD%95%E5%9C%A8CV%E4%BB%BB%E5%8A%A1%E4%B8%AD%E8%BF%9B%E8%A1%8CMASK/index.html">
+<meta property="og:site_name" content="做一个有用的人">
+<meta property="og:description" content="恺明大神在2021年的时候发布了论文MAE(Masked Autoencoders Are Scalable Vision Learners)，给大家指出了如何在cv预训练任务中设计无监督任务。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://xiaofengshi.com/2023/03/23/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-MAE-%E5%A6%82%E4%BD%95%E5%9C%A8CV%E4%BB%BB%E5%8A%A1%E4%B8%AD%E8%BF%9B%E8%A1%8CMASK/vit_self_supervised.png">
+<meta property="og:image" content="http://xiaofengshi.com/2023/03/23/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-MAE-%E5%A6%82%E4%BD%95%E5%9C%A8CV%E4%BB%BB%E5%8A%A1%E4%B8%AD%E8%BF%9B%E8%A1%8CMASK/mae_model.png">
+<meta property="og:image" content="http://xiaofengshi.com/2023/03/23/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-MAE-%E5%A6%82%E4%BD%95%E5%9C%A8CV%E4%BB%BB%E5%8A%A1%E4%B8%AD%E8%BF%9B%E8%A1%8CMASK/mae_result.png">
+<meta property="og:image" content="http://xiaofengshi.com/2023/03/23/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-MAE-%E5%A6%82%E4%BD%95%E5%9C%A8CV%E4%BB%BB%E5%8A%A1%E4%B8%AD%E8%BF%9B%E8%A1%8CMASK/mae_mask_method.png">
+<meta property="og:image" content="http://xiaofengshi.com/2023/03/23/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-MAE-%E5%A6%82%E4%BD%95%E5%9C%A8CV%E4%BB%BB%E5%8A%A1%E4%B8%AD%E8%BF%9B%E8%A1%8CMASK/mae_mask_ratio.png">
+<meta property="og:image" content="http://xiaofengshi.com/2023/03/23/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-MAE-%E5%A6%82%E4%BD%95%E5%9C%A8CV%E4%BB%BB%E5%8A%A1%E4%B8%AD%E8%BF%9B%E8%A1%8CMASK/decoder_depth_width.png">
+<meta property="og:image" content="http://xiaofengshi.com/2023/03/23/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-MAE-%E5%A6%82%E4%BD%95%E5%9C%A8CV%E4%BB%BB%E5%8A%A1%E4%B8%AD%E8%BF%9B%E8%A1%8CMASK/decoder_depth_width.png">
+<meta property="og:image" content="http://xiaofengshi.com/2023/03/23/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-MAE-%E5%A6%82%E4%BD%95%E5%9C%A8CV%E4%BB%BB%E5%8A%A1%E4%B8%AD%E8%BF%9B%E8%A1%8CMASK/loss.png">
+<meta property="og:image" content="http://xiaofengshi.com/2023/03/23/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-MAE-%E5%A6%82%E4%BD%95%E5%9C%A8CV%E4%BB%BB%E5%8A%A1%E4%B8%AD%E8%BF%9B%E8%A1%8CMASK/data_aug.png">
+<meta property="article:published_time" content="2023-03-23T06:11:59.000Z">
+<meta property="article:modified_time" content="2023-03-28T12:10:44.000Z">
+<meta property="article:author" content="ShiXiaofeng">
+<meta property="article:tag" content="多模态">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://xiaofengshi.com/2023/03/23/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-MAE-%E5%A6%82%E4%BD%95%E5%9C%A8CV%E4%BB%BB%E5%8A%A1%E4%B8%AD%E8%BF%9B%E8%A1%8CMASK/vit_self_supervised.png">
+
+<link rel="canonical" href="http://xiaofengshi.com/2023/03/23/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-MAE-%E5%A6%82%E4%BD%95%E5%9C%A8CV%E4%BB%BB%E5%8A%A1%E4%B8%AD%E8%BF%9B%E8%A1%8CMASK/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>[论文精读]MAE-如何在CV任务中进行MASK | 做一个有用的人</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">做一个有用的人</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">LLM And Search</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-guestbook">
+
+    <a href="/guestbook/" rel="section"><i class="fa fa-fw fa-commenting"></i>guestbook</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/xiaofengShi" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2023/03/23/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-MAE-%E5%A6%82%E4%BD%95%E5%9C%A8CV%E4%BB%BB%E5%8A%A1%E4%B8%AD%E8%BF%9B%E8%A1%8CMASK/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ShiXiaofeng">
+      <meta itemprop="description" content="LLM,搜索,数据挖掘,深度学习相关技术记录分享">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="做一个有用的人">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          [论文精读]MAE-如何在CV任务中进行MASK
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-03-23 14:11:59" itemprop="dateCreated datePublished" datetime="2023-03-23T14:11:59+08:00">2023-03-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-03-28 20:10:44" itemprop="dateModified" datetime="2023-03-28T20:10:44+08:00">2023-03-28</time>
+              </span>
+
+          
+            <span id="/2023/03/23/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-MAE-%E5%A6%82%E4%BD%95%E5%9C%A8CV%E4%BB%BB%E5%8A%A1%E4%B8%AD%E8%BF%9B%E8%A1%8CMASK/" class="post-meta-item leancloud_visitors" data-flag-title="[论文精读]MAE-如何在CV任务中进行MASK" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2023/03/23/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-MAE-%E5%A6%82%E4%BD%95%E5%9C%A8CV%E4%BB%BB%E5%8A%A1%E4%B8%AD%E8%BF%9B%E8%A1%8CMASK/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2023/03/23/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-MAE-%E5%A6%82%E4%BD%95%E5%9C%A8CV%E4%BB%BB%E5%8A%A1%E4%B8%AD%E8%BF%9B%E8%A1%8CMASK/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>恺明大神在2021年的时候发布了论文<a href="https://arxiv.org/pdf/2111.06377.pdf">MAE</a>(Masked Autoencoders Are Scalable Vision Learners)，给大家指出了如何在cv预训练任务中设计无监督任务。</p>
+<span id="more"></span>
+
+<hr>
+<p>受知乎大佬<a href="https://www.zhihu.com/people/rumor-lee">李rumor</a>启发，重新堵了vision transformer的附录部分(之前没读过附录部分-_-||)，在VIT论文中作者探究了无监督任务的表现，但是指标不如有监督任务，所以在附录中给出来但是正文中没写。</p>
+<img src="/2023/03/23/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-MAE-%E5%A6%82%E4%BD%95%E5%9C%A8CV%E4%BB%BB%E5%8A%A1%E4%B8%AD%E8%BF%9B%E8%A1%8CMASK/vit_self_supervised.png" class="" title="vit_self_supervised">
+
+<p>翻译翻译这一段</p>
+<p>首先选择50%的patch，然后在这部分patch中80%使用可学习的[mask]替代，10%使用随机其他的patch替代，10%保持不变。这部分设计和BERT的MLM的设计很像，在MLM中是选了15%的token，在这里用了50%的patch，是因为对于NLP任务，少量的mask就可以保证任务的难度，但是在CV中，信息是很冗余的，要更多的MASK比例才能保证任务的难度，让模型学习到有用的信息。任务设计主要有3种</p>
+<ul>
+<li>预测mask的patch的均值</li>
+<li>预测16*16的原始patch下采样之后的4x4的patch的值</li>
+<li>对所有patch使用L2回归计算，</li>
+</ul>
+<p>这三种方式第一种表现最好，第三张最差，但是还是不如有监督任务下的指标，现在回过头来看，第三个任务设计与本文的主角MAE非常相似，那么为啥当时在VIT中没能做出效果来呢？稍后分解。</p>
+<p>在BEIT中提出了MIM任务(<strong>在后面的EVA论文中发现MIM任务并不是很有效</strong>)，使用dvae对patch进行离散化，然后使用训练好的dvae的patch特征作为mask_patch的学习target，去掉dvae部分，BEIT就跟BERT基本一模一样。在BEIT中使用的事40%的mask比例，此外在论文中尝试了复原pixel，但是效果并不好，和我之前在vlbert任务重使用MRM任务负向的表现基本一致，对于图像来说，我们需要的是图像的全局的，高维的信息，回归pixel任务会使模型过多的关注非常局部的细节，缺少了对全局的刻画(<strong>在GLIP中给出开了一种不一样的任务设计，使模型能cover图片的全局信息和局部的object信息</strong>)。</p>
+<h2 id="使什么导致视觉和文本的mask-autoencoing不一样"><a href="#使什么导致视觉和文本的mask-autoencoing不一样" class="headerlink" title="使什么导致视觉和文本的mask autoencoing不一样"></a>使什么导致视觉和文本的mask autoencoing不一样</h2><ul>
+<li>模型结构的问题，在传统的CNN结构中，很难将mask标记集成到卷积网络中，随着VIT的提出，这部分算是被解决了，可以很好的使用transformer来做视觉任务</li>
+<li>信息密度的不同，在NLP中语言是高度语义化并且信息密度很高，少量的mask就可以保证任务的难度，使模型学习到有效信息，但是图片的信息是很冗余的，mask的视觉patch可以被周边的patch很好的复原，这就意味着，要对视觉patch更高比例的mask才能保证任务的难度，只有这样模型才能学习到有效信息。</li>
+<li>decoder的设计很关键，将mask的向量进行复原在图文任务中发挥的作用不同。在视觉任务中，decoder用来重建像素值，这个任务输出的语义是显著低于常见的视觉任务的，比如图像分类任务，需要获取全局语义，而对于patch的重建语义信息显然更低维度。在NLP中decoder用来恢复mask的token，使用MLP实现，decoder没那么重要，所以在视觉任务中decoder要更精细的设计。<ul>
+<li>在BEIT中，使用encoder，如果太关注细节就会丧失高维的语义抽象能力，所以恺明大神在encoder后面加了一个decoder，让encoder负责高维语义的抽取，让decoder负责低纬的细粒度还原，如此训练得到的encoder就能具有高维语义的能力了，这也是我们想让视觉encoder做到的。</li>
+</ul>
+</li>
+</ul>
+<img src="/2023/03/23/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-MAE-%E5%A6%82%E4%BD%95%E5%9C%A8CV%E4%BB%BB%E5%8A%A1%E4%B8%AD%E8%BF%9B%E8%A1%8CMASK/mae_model.png" class="" title="mae_model">
+
+<hr>
+<ul>
+<li>PIPELINE<ul>
+<li>encoder只处理没有进mask的patch</li>
+<li>encoder输出的结果中插入mask的patch的embedding</li>
+<li>encoder处理后的embedding输入到decoder中</li>
+<li>对decoder的输出进行reshape，复原到原始图片的尺寸</li>
+<li>计算mask的patch的和重建之后的patch的MSE Loss</li>
+</ul>
+</li>
+<li>总结起来，有两个特点<ul>
+<li>非对称的encoder decoder设计<ul>
+<li>输入上，encoder接收没有mask的视觉patch，decoder部分接收全部的图像块</li>
+<li>参数上，encoder使用多层堆叠的transformer，decoder使用较少层甚至一层即可</li>
+</ul>
+</li>
+<li>使用较高的MASK设计，75%<ul>
+<li>对比NLP任务的15%mask比例，在视觉任务要更高比例的mask才能保证任务的难度。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<img src="/2023/03/23/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-MAE-%E5%A6%82%E4%BD%95%E5%9C%A8CV%E4%BB%BB%E5%8A%A1%E4%B8%AD%E8%BF%9B%E8%A1%8CMASK/mae_result.png" class="" title="mae_result">
+
+<p>模型的效果过于惊艳，每3列是一组，每组中最左侧是mask之后的图片，mask的比例是80%，中间是重建之后的图片，右侧是原始图片。给大佬来杯卡布奇诺。</p>
+<h2 id="MASK策略"><a href="#MASK策略" class="headerlink" title="MASK策略"></a>MASK策略</h2><h3 id="mask的方式"><a href="#mask的方式" class="headerlink" title="mask的方式"></a>mask的方式</h3><p>mask方式对结果的影响非常重要，论文中给出了不同的mask方式得到的结果的差异</p>
+<img src="/2023/03/23/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-MAE-%E5%A6%82%E4%BD%95%E5%9C%A8CV%E4%BB%BB%E5%8A%A1%E4%B8%AD%E8%BF%9B%E8%A1%8CMASK/mae_mask_method.png" class="" title="mae_mask_method">
+
+<hr>
+<p>可以看到random的时候表现最好，“block”表示mask掉大块的patch，gride是表示网格的方式mask</p>
+<h3 id="mask的比例"><a href="#mask的比例" class="headerlink" title="mask的比例"></a>mask的比例</h3><img src="/2023/03/23/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-MAE-%E5%A6%82%E4%BD%95%E5%9C%A8CV%E4%BB%BB%E5%8A%A1%E4%B8%AD%E8%BF%9B%E8%A1%8CMASK/mae_mask_ratio.png" class="" title="mae_mask_ratio">
+
+<p>不同的mask比例意味着不同难度的任务，从曲线中可以看出，随着mask比例的增加可以看到指标是逐渐提升的，在80%的时候指标出现下降。</p>
+<p>在finetune任务和linear probing任务中，趋势不是很一致，在finetune任务中，mask在30%-40%的时候指标激增，然后就趋于饱和了，而在linear probing任务中几乎是线性递增的。</p>
+<p>这是为啥呢？</p>
+<ul>
+<li>linear probe，仅调整模型最后的几层分类头(fix 住其它部分，如 Encoder)。因此，mask比例越高，在预训练时得到的 Encoder 就越强，但这部分在下游任务中是不能够再被训练的了，所以其性能就随着 mask 比例的增加呈线性增涨的趋势，体现的事encoder的模型能力。</li>
+<li>finetune，继续训练 Encoder 的参数去适配下游任务，因此在 mask 比例超过一定程度后，对于下游任务的性能提升就不那么明显了，因为finetune的数据毕竟是较少的，上游的encoder不太容易提升。</li>
+</ul>
+<h2 id="ENCODER"><a href="#ENCODER" class="headerlink" title="ENCODER"></a>ENCODER</h2><p>在MAE中encoder只用来处理没有被mask掉的视觉patch，模型默认用的是VIT，由于unmasked的区域很少(mask的比例是75%)，encoder的计算消耗会变得很小，也就是可以训练更大的模型。</p>
+<p>为啥encoder中要抛弃掉masked token呢？论文中给出了encoder使用masked的指标</p>
+<img src="/2023/03/23/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-MAE-%E5%A6%82%E4%BD%95%E5%9C%A8CV%E4%BB%BB%E5%8A%A1%E4%B8%AD%E8%BF%9B%E8%A1%8CMASK/decoder_depth_width.png" class="" title="decoder_depth_width">
+
+<p>可以看到，添加masked的token之后模型存在掉点，至于原因，这是因为上游任务和下游任务存在着gap，在下游任务中没有masked token。</p>
+<h2 id="DECODER"><a href="#DECODER" class="headerlink" title="DECODER"></a>DECODER</h2><p>在decoder中不仅要处理encoder的输出，还要处理masked的patch特征，这部分masked的特征是怎么来的呢？这里用的是一个可学习的共享向量来表示，全部的masked-patch都用一个向量来表征，再加上masked的位置特征，这就构造了masked的特征。</p>
+<p>DEcoder的目的是为了重建图像，因此在这里就和encoder进行了解耦，并且encoder才是后面我们想要的部分，所以decoder完全可以设计的轻量化一些，让模型更多的去学习encoder部分，如此encoder模型参数可以很多，但是输入的数据少；decoder接收的数据很多，要处理全量的token，但是模型可以设计的很轻量化，这就实现了efficient，真是牛掰。</p>
+<p>论文中给出了decoder的深度和宽度对下游任务的影响</p>
+<img src="/2023/03/23/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-MAE-%E5%A6%82%E4%BD%95%E5%9C%A8CV%E4%BB%BB%E5%8A%A1%E4%B8%AD%E8%BF%9B%E8%A1%8CMASK/decoder_depth_width.png" class="" title="decoder_depth_width">
+
+<p>可以看出来，decoder的深度和宽度对linear probing有更大的影响，对于finetune的影响不太显著。</p>
+<p>这里的原因实际上跟mask对下游任务的影响基本一致。</p>
+<ul>
+<li>decoder更深更宽，那么他就有更好的特征重建能力，这样encoder就能更好的专注特征的提取，也就是能得到有更好能力的encoder</li>
+<li>在linear probing任务中，encoder是固定住的，也就是更多的体现的是encoder的能力，encoder越强，下游表现越好；</li>
+<li>在finetune任务中，encoder是开放学习的，可以继续训练encoder参数。</li>
+</ul>
+<h2 id="任务目标：像素重建"><a href="#任务目标：像素重建" class="headerlink" title="任务目标：像素重建"></a>任务目标：像素重建</h2><p>MAE中的任务是对masked的patch进行像素值重建，LOSS就是简单的MSE，为什么不计算全部的patch的mse，而只计算masked的mase呢？论文中给出的结论是如果计算全部patch的mse loss会出现掉点。</p>
+<img src="/2023/03/23/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-MAE-%E5%A6%82%E4%BD%95%E5%9C%A8CV%E4%BB%BB%E5%8A%A1%E4%B8%AD%E8%BF%9B%E8%A1%8CMASK/loss.png" class="" title="loss">
+
+<p>对比了像素重建任务(有无归一化)，PCA的方式(对 patch 空间实施 PCA 并预测最大的因子)，BEIT类似的预测dVAE的token的方式，从指标上可以看出来，像素重建+归一化表现最好，Beit的搞法表现也不错。</p>
+<p>为啥归一化的像素重建可行呢？</p>
+<p>每个patch都独立统计各自的均值和方差，如此将每个patch都归一化到不同的表征空间，相比于使用全局均值和方差的归一化方式，每个patch经过归一化之后的差异性更强，有更多的高频信息，相当于将各个patch构成了边缘和纹理，从cv的角度上看，对比度更高。从而使得模型更有针对性地学习各个patch的特征模式。同时，数值上由于做了归一化，因此又不会使得模型在这方面有所偏倚。</p>
+<p>高频性质的目标能够“迫使”特征提取器(Encoder)编码出来的各类特征更有差异性和区分性，它们之间的margin更大。</p>
+<h2 id="数据增强"><a href="#数据增强" class="headerlink" title="数据增强"></a>数据增强</h2><p>论文中探究了数据增强对模型的影响，都是常用的老套路，剪裁，固定尺寸&#x2F;随机尺寸，颜色扰动，可以看到固定尺寸和随机尺寸对指标的影响不大，但是原色扰动会带来指标下降。</p>
+<p>这里结合MAE的过程，在MAE中对patch进行mask，然后进行像素值预测，这里已经相当于是一种数据增强，因此不需要过分的额外数据增强就可以取得不错的效果（颜色扰动，在mask掉一些patch之后，还扰乱原来的像素值，对模型来说太难搞了）</p>
+<img src="/2023/03/23/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-MAE-%E5%A6%82%E4%BD%95%E5%9C%A8CV%E4%BB%BB%E5%8A%A1%E4%B8%AD%E8%BF%9B%E8%A1%8CMASK/data_aug.png" class="" title="data_aug">
+
+<h2 id="linear-probe的调整"><a href="#linear-probe的调整" class="headerlink" title="linear probe的调整"></a>linear probe的调整</h2><p>Linear probe一直是比较流行的搞法，预训练完成好，下游固定住backbone，只训练下面几层fc来适配不同的任务。它和finetune的不同是，finetune在下游开放encoder的权重，encoder部分始终保持学习。在论文中能看到Linear probe和Finetune总是会存在一些偏差，例如decoder的深度和宽度对linear probe的影响很大，但是对finetune影响不大。</p>
+<p>在论文里面，作者将linear prob和finetune进行了融合，即“放开encoder后几层”，这种搞法在工业界算是基操了。因为只靠几层的fc是很难捕捉高层的非线性特征的。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
+<li><a href="https://zhuanlan.zhihu.com/p/439554945">https://zhuanlan.zhihu.com/p/439554945</a></li>
+<li><a href="https://www.zhihu.com/zvideo/1452458167968251904">https://www.zhihu.com/zvideo/1452458167968251904</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>赏杯咖啡！</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat.jpeg" alt="ShiXiaofeng 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpeg" alt="ShiXiaofeng 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>ShiXiaofeng
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://xiaofengshi.com/2023/03/23/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-MAE-%E5%A6%82%E4%BD%95%E5%9C%A8CV%E4%BB%BB%E5%8A%A1%E4%B8%AD%E8%BF%9B%E8%A1%8CMASK/" title="[论文精读]MAE-如何在CV任务中进行MASK">http://xiaofengshi.com/2023/03/23/论文精读-MAE-如何在CV任务中进行MASK/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%A4%9A%E6%A8%A1%E6%80%81/" rel="tag"># 多模态</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/03/30/%E8%A7%86%E8%A7%89%E7%BC%96%E7%A0%81%E5%99%A8%E7%9A%84%E5%8F%91%E5%B1%95/" rel="prev" title="视觉编码器的发展">
+      <i class="fa fa-chevron-left"></i> 视觉编码器的发展
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/02/13/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-BLIP-%E5%A4%9A%E4%BB%BB%E5%8A%A1%E7%BB%93%E6%9E%84%E7%BB%9F%E4%B8%80%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%AD%9B%E9%80%89%E7%AD%96%E7%95%A5/" rel="next" title="[论文精读]BLIP-多任务结构统一与数据筛选策略">
+      [论文精读]BLIP-多任务结构统一与数据筛选策略 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E4%BB%80%E4%B9%88%E5%AF%BC%E8%87%B4%E8%A7%86%E8%A7%89%E5%92%8C%E6%96%87%E6%9C%AC%E7%9A%84mask-autoencoing%E4%B8%8D%E4%B8%80%E6%A0%B7"><span class="nav-number">1.</span> <span class="nav-text">使什么导致视觉和文本的mask autoencoing不一样</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MASK%E7%AD%96%E7%95%A5"><span class="nav-number">2.</span> <span class="nav-text">MASK策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mask%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-number">2.1.</span> <span class="nav-text">mask的方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mask%E7%9A%84%E6%AF%94%E4%BE%8B"><span class="nav-number">2.2.</span> <span class="nav-text">mask的比例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ENCODER"><span class="nav-number">3.</span> <span class="nav-text">ENCODER</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DECODER"><span class="nav-number">4.</span> <span class="nav-text">DECODER</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E7%9B%AE%E6%A0%87%EF%BC%9A%E5%83%8F%E7%B4%A0%E9%87%8D%E5%BB%BA"><span class="nav-number">5.</span> <span class="nav-text">任务目标：像素重建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA"><span class="nav-number">6.</span> <span class="nav-text">数据增强</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#linear-probe%E7%9A%84%E8%B0%83%E6%95%B4"><span class="nav-number">7.</span> <span class="nav-text">linear probe的调整</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">8.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ShiXiaofeng"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">ShiXiaofeng</p>
+  <div class="site-description" itemprop="description">LLM,搜索,数据挖掘,深度学习相关技术记录分享</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xiaofengShi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xiaofengShi" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sxf1052566766@163.com" title="E-Mail → mailto:sxf1052566766@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ShiXiaofeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v7.1.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+  
+      
+<script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el: '#valine-comments',
+      verify: false,
+      notify: false,
+      appId: 'rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz',
+      appKey: 'zJasiQnAqgUwf4kiHhHyXwOP',
+      placeholder: "Leave Your Message and Contact Details",
+      avatar: 'mm',
+      meta: guest,
+      pageSize: '10' || 10,
+      visitor: true,
+      lang: '' || 'zh-cn',
+      path: location.pathname,
+      recordIP: false,
+      serverURLs: ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

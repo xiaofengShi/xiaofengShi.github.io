@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/panda_32px.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/panda_16px.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://xiaofengshi.com').hostname,
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="本篇涉及机器学习炼丹过程中的一些必须知道的知识点，比如评价指标，损失函数，激活函数，正则化，卷积，RNN等，envolving…">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习-常用知识点">
+<meta property="og:url" content="http://xiaofengshi.com/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/index.html">
+<meta property="og:site_name" content="做一个有用的人">
+<meta property="og:description" content="本篇涉及机器学习炼丹过程中的一些必须知道的知识点，比如评价指标，损失函数，激活函数，正则化，卷积，RNN等，envolving…">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/logo.jpeg">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/loss_function.jpg">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/sigmoid.jpg">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/tanh.jpg">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/relu.jpg">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/leaky_relu.jpg">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/elus.jpg">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/swish.jpg">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/L1.jpg">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/L1_para.jpg">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/L2.jpg">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/adversarial.png">
+<meta property="article:published_time" content="2018-11-20T11:53:14.000Z">
+<meta property="article:modified_time" content="2023-11-13T08:12:04.000Z">
+<meta property="article:author" content="ShiXiaofeng">
+<meta property="article:tag" content="机器学习">
+<meta property="article:tag" content="深度学习">
+<meta property="article:tag" content="神经网络">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://xiaofengshi.com/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/logo.jpeg">
+
+<link rel="canonical" href="http://xiaofengshi.com/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>机器学习-常用知识点 | 做一个有用的人</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">做一个有用的人</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">LLM And Search</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-guestbook">
+
+    <a href="/guestbook/" rel="section"><i class="fa fa-fw fa-commenting"></i>guestbook</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/xiaofengShi" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ShiXiaofeng">
+      <meta itemprop="description" content="LLM,搜索,数据挖掘,深度学习相关技术记录分享">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="做一个有用的人">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          机器学习-常用知识点
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-11-20 19:53:14" itemprop="dateCreated datePublished" datetime="2018-11-20T19:53:14+08:00">2018-11-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-11-13 16:12:04" itemprop="dateModified" datetime="2023-11-13T16:12:04+08:00">2023-11-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/" class="post-meta-item leancloud_visitors" data-flag-title="机器学习-常用知识点" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img src="/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/logo.jpeg" class="" title="Machine Learning">
+
+<p>本篇涉及机器学习炼丹过程中的一些必须知道的知识点，比如评价指标，损失函数，激活函数，正则化，卷积，RNN等，envolving…</p>
+<span id="more"></span>
+
+<h2 id="多层感知机和布尔函数"><a href="#多层感知机和布尔函数" class="headerlink" title="多层感知机和布尔函数"></a>多层感知机和布尔函数</h2><ul>
+<li>只是用一个隐藏层，实现$n$元输入的任意布尔函数，需要的隐藏节点数量：**$2^{n-1}$**</li>
+<li>多个隐藏层，实现$n$元输入的任意布尔函数，需要的隐藏节点数量为(包含输出层节点)<strong>$3(n-1)$<strong>，</strong>使用多个隐藏层的方式，可以有效减少节点数量</strong>，这些节点数量对应着$2(n-1)$网络层，对每层使用二分思想，两两分组进行异或运算，最少需要的网络层数为**$2log_{2}N$**向上取整。</li>
+</ul>
+<h2 id="评价指标"><a href="#评价指标" class="headerlink" title="评价指标"></a>评价指标</h2><h3 id="分类问题"><a href="#分类问题" class="headerlink" title="分类问题"></a>分类问题</h3><h4 id="混淆矩阵"><a href="#混淆矩阵" class="headerlink" title="混淆矩阵"></a>混淆矩阵</h4><p>分类器在测试集数据集上预测或正确或不正确，总共会出现四种情况</p>
+<ul>
+<li>TP： true positive–将正类样本预测为正</li>
+<li>TN：true negative—将负类样本预测为负</li>
+<li>FP：false positive—将负类样本预测为正</li>
+<li>FN：false negative–将正类样本预测为负</li>
+</ul>
+<h4 id="准确率"><a href="#准确率" class="headerlink" title="准确率"></a>准确率</h4><p>对于分类问题，评价指标一般是分类**准确率(ACC:accuracy)**，对于给定的测试数据集，分类器正确分类的样本数占据总样本数量之比，，也就是损失函数是0-1损失时测试数据集上的准确率，分类正确为1，分类错误为0，计算公式为<br>$$<br>ACC&#x3D;\frac{1}{N} \sum_{i&#x3D;1}^{N}I(y_{i}&#x3D;f(x_{i}))<br>$$<br>使用混淆矩阵表示为<br>$$<br>ACC&#x3D;\frac{预测为正}{所有样本}&#x3D;\frac{TP+FP}{TP+FP+TN+FN}<br>$$</p>
+<p>对于类别分布不均与的样本集，占比较多的类别通常会对准确率有更大的影响，而对于自然存在的样本集来说，大概率是样本类别分布不均匀的，因此一般使用各个类别小的样本准确率的算数平均来作为模型评估标准。</p>
+<h4 id="召回率"><a href="#召回率" class="headerlink" title="召回率"></a>召回率</h4><p>对于二分类的评价指标一般使用召回率(recall)，精确率(precision)，对于多分类，可以认为关注的类为正类，其余类为父类。</p>
+<p>召回率又称作查全率。召回率的意思是，<strong>在样本中为正类的样本有多少被预测为真，针对实际样本而言</strong>。计算公式为<br>$$<br>Recall&#x3D;\frac{正例预测为正}{样本中所有正例}&#x3D;\frac{TP}{TP+FN}<br>$$</p>
+<h4 id="精确率"><a href="#精确率" class="headerlink" title="精确率"></a>精确率</h4><p>精确率又称作查准率，精确率表示的是，<strong>预测为真的样本中有多少为真的真样本，针对预测结果而言</strong>。计算公式为<br>$$<br>Precision&#x3D;\frac{正例预测为正}{所有预测为正的样本}&#x3D;\frac{TP}{TP+FP}<br>$$</p>
+<h4 id="F值"><a href="#F值" class="headerlink" title="F值"></a>F值</h4><p>F值是召回率和精确率的调和平均，当召回率和精确率都高时，F值也会高<br>$$<br>\frac{2}{F}&#x3D;\frac{1}{Recall}+\frac{1}{Precision}<br>$$<br>查准率和查全率是一对矛盾的度量，一般来说，查准率高的时候，查全率就会偏低，而查全率高时查准率就会偏低。</p>
+<h4 id="PR曲线"><a href="#PR曲线" class="headerlink" title="PR曲线"></a>PR曲线</h4><p>可以使用查准率为纵轴，查全率为横轴绘制PR曲线，如果一个学习的PR曲线被另一个学习器包住，可以认为后者的性能优于前者。</p>
+<p>带入P和R的公式<br>$$<br>\begin{align}<br>P&amp;&#x3D;\frac{TP}{TP+FP}\<br>R&amp;&#x3D;\frac{TP}{TP+FN}\<br>\frac{P}{R}&amp;&#x3D;\frac{TP+FN}{TP+FP}<br>\end{align}<br>$$<br>分析公式(39)，可以看到，对于数据集来说，如果增加负样本的数量，对应的FP数值就会出现变化，从而会使得PR曲线发生变化。</p>
+<h4 id="ROC曲线"><a href="#ROC曲线" class="headerlink" title="ROC曲线"></a>ROC曲线</h4><p><strong>ROC的纵轴为真正率TPR和召回率相同，表示将正例分类正确的概率；横轴为假正率FPR，表示将负例预测为正的概率，</strong>二者的定义为：<br>$$<br>\begin{align}<br>TPR&amp;&#x3D;\frac{正例预测为正}{样本中所有正例}&#x3D;\frac{TP}{TP+FN} \<br>FPR&amp;&#x3D;\frac{负例预测为正}{样本中所有的负例}&#x3D;\frac{FP}{TN+FP}<br>\end{align}<br>$$<br>和PR曲线类似，如果一个学习器的ROC曲线被另一个学习器包住，那么可以认为后者的性能更优。</p>
+<h4 id="PR-VS-ROC"><a href="#PR-VS-ROC" class="headerlink" title="PR_VS_ROC"></a>PR_VS_ROC</h4><p>显然P-R曲线和ROC曲线都能对模型的性能进行评价，二者比较ROC曲线适应性更好，对于正负样本分布比例变化时，P-R曲线会发生剧烈的变化，但是ROC曲线基本保持不变，也就是说ROC描述的更偏向与分类器的属性，能尽量降低不同的数据集测试对模型效果测试带来的影响，一般情况下都是使用该曲线来评价模型；而P-R曲线描述的和数据集有很大的关系，除了针对特定场景的特定数据集使用PR曲线，一般不会优先使用。</p>
+<h2 id="激活函数"><a href="#激活函数" class="headerlink" title="激活函数"></a>激活函数</h2><p>博客中曲线均使用<code>Mac</code>自带应用<code> Grapher</code>绘制</p>
+<hr>
+
+<img src="/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/loss_function.jpg" class="" title="激活函数曲线">
+
+<hr>
+
+<h3 id="sigmoid函数"><a href="#sigmoid函数" class="headerlink" title="sigmoid函数"></a><code>sigmoid</code>函数</h3><p>函数公式<br>$$<br>f(x)&#x3D;\frac{1}{1+exp(-x)}<br>$$<br>该函数限制了<code>f(X)</code>的取值为$[0,1]$之间，x为正无穷时，<code>f(x)=1</code>，<code>x</code>取值为负无穷时<code>f(X)=0</code>，对<code>sigmod</code>激活函数进行求导可以得到<br>$$<br>\begin{align}<br>\bar{f}(x)&amp;&#x3D;\frac{e^{-x}}{(1+e^{-x})^{2}}&#x3D;f(x)(1-f(x))<br>\end{align}<br>$$</p>
+<img src="/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/sigmoid.jpg" class="" title="sigmoid">
+
+<p>从曲线中可以看到，当$|x| \rightarrow \infty $，对应的导数为$0$，根据机器学习中梯度反向求导的训练策略，激活函数的特性会导致梯度接近于$0$，造成梯度消失的情况，导致训练无法进行。</p>
+<p>由于<code>sigmoid</code>函数，会将输出控制在$[0,1]$之间，有时候会在多分类任务中，使用<code>sigmoid</code>的值代表分类的概率值，如<code>yolov3</code>目标检测模型，为了适应<code>coco</code>数据集中存在的类别重叠情形，如人，女人这两类，使用<code>sigmoid</code>作为模型类别的预测输出，而没有直接使用<code>softmax</code>的方式(softmax会默认类别见相互独立，只取得最大的一个值)</p>
+<h3 id="Tanh函数"><a href="#Tanh函数" class="headerlink" title="Tanh函数"></a><code>Tanh</code>函数</h3><p>函数公式<br>$$<br>f(x)&#x3D;tanh(x)&#x3D;\frac{e^{x}-e^{-x}}{e^x+e^{-x}}<br>$$</p>
+<p>该函数限制了<code>f(X)</code>的取值为$[-1,1]$之间，x为正无穷时，<code>f(x)=1</code>，<code>x</code>取值为负无穷时<code>f(X)=-1</code>，对<code>tanh</code>激活函数进行求导可以得到<br>$$<br>\bar{f}(x)&#x3D;1-\frac{(e^x-e^{-x})^2}{(e^x+e^{-x})^2}&#x3D;1-(f(x))^{2}<br>$$</p>
+<img src="/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/tanh.jpg" class="" title="tanh">
+
+<p>从曲线中可以看出，和<code>sigmoid</code>函数及其导函数类似，当$|x| \rightarrow \infty $，对应的导数为$0$。同样会导致出现梯度消失的情况。</p>
+<p>对于<code>Tanh</code>函数实际上可以看做是对<code>sigmoid</code>函数的平移和拉伸，二者具有相同的函数特性，只是<code>sigmid</code>将输出值控制在$[0,1]$之间，而<code>Tanh</code>函数将输出控制在了<code>[-1,1]</code>之间，是一个偶函数。</p>
+<h3 id="Relu-整流线性函数"><a href="#Relu-整流线性函数" class="headerlink" title="Relu 整流线性函数"></a><code>Relu</code> 整流线性函数</h3><p>函数公式<br>$$<br>f(x)&#x3D;max(0,x)<br>$$</p>
+<img src="/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/relu.jpg" class="" title="relu">
+
+<p>从<code>relu</code>的函数曲线可以看出，在一半的定义域上输出为$0$，这使得只要整流线性单元处于激活状态，它的导数都能保持较大并且导数一致。</p>
+<ul>
+<li>优点<ol>
+<li>相比于<code>sigmoid</code>和<code>Tanh</code>均需要计算指数而言，<code>relu</code>只需要一个阈值就能够得到激活值，计算量更小</li>
+<li><code>relu</code>可以有效解决梯度消失的问题，提供相对宽的激活边界；</li>
+<li><code>relu</code>的单侧抑制，提供了网络的稀疏表达能力，提高了泛化能力；</li>
+</ol>
+</li>
+<li>缺点<ol>
+<li>由于单侧抑制会导致训练时神经网络的死亡问题，在负梯度经过<code>relu</code>单元时，会被置为0，并且之后再也不会被任何数据激活，也就是经过该神经元的梯度会永远变为0，不对任何数据产生响应；</li>
+<li>在训练过程中如果学习率设置的过大，会导致超过一定比例的神经元死亡，导致训练失败</li>
+</ol>
+</li>
+</ul>
+<h4 id="relu改进型"><a href="#relu改进型" class="headerlink" title="relu改进型"></a>relu改进型</h4><ul>
+<li><p>leaky relu渗透整流单元<br>$$<br>f(x)&#x3D;<br>\begin{cases}<br>\alpha x ::::::::: &amp; if :::::::: &amp; x \leq 0 \<br>x  &amp; if &amp; x &gt; 0<br>\end{cases}<br>$$<br>一般$\alpha&#x3D;0.01$一个较小的值</p>
+<img src="/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/leaky_relu.jpg" class="" title="leaky_relu">
+</li>
+<li><p>elus<br>$$<br>f(x)&#x3D;<br>\begin{cases}<br>\alpha (e^{x}-1) ::::::::: &amp; if :::::::: &amp; x &lt; 0 \<br>x  &amp; if &amp; x \ge 0<br>\end{cases}<br>$$<br>一般$\alpha&#x3D;0.01$一个较小的值</p>
+<img src="/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/elus.jpg" class="" title="elus">
+
+<p><strong>实验表明，<code>Elus</code>激活函数和<code>Relu</code>相似，都是不带参数的，并且收敛速度比<code>Relu</code>更快。使用<code>Elus</code>时，不使用批处理比使用批处理能够得到更好的效果，同时<code>Elus</code>函数不使用批处理的效果比使用<code>Relu</code>加批处理的效果更好。</strong></p>
+</li>
+</ul>
+<h3 id="swish函数"><a href="#swish函数" class="headerlink" title="swish函数"></a>swish函数</h3><p>由Google提出的效果更优于<code>Relu</code>的激活函数，在保持其余参数不变的情形下，将模型的<code>Relu</code>激活函数修改成<code>Swish</code>模型正确率均有提升<br>$$<br>f(x)&#x3D;x \times sigmoid(\beta x)<br>$$<br>其中$\beta$为缩放参数，一般设置为$1$，在使用<code>BN</code>时，还要对缩放系数$\beta$进行设置。</p>
+<img src="/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/swish.jpg" class="" title="swish">
+
+<h2 id="softmax-处理分类处理问题"><a href="#softmax-处理分类处理问题" class="headerlink" title="softmax-处理分类处理问题"></a>softmax-处理分类处理问题</h2><p><code>softmax</code>主要针对多分类，并且类别互斥，一个样本只能对应其中的一类。</p>
+<p><code>sigmoid</code>可以进行类别重叠的分类任务。<br>$$<br>softmax(x_{i})&#x3D;\frac{e^{x_{i}}}{\sum e^{x_{i}}}<br>$$<br>保证所有类别之和为$1$，可以认为是一种概率表示。</p>
+<p>对于<code>softmax</code>标签一般使用的是<code>onehot</code>的编码形式，并且最后一层的节点数等于类别数。</p>
+<h2 id="Loss-Fuction"><a href="#Loss-Fuction" class="headerlink" title="Loss_Fuction"></a>Loss_Fuction</h2><p>损失函数用于描述模型预测值和真实值之间的差距。</p>
+<h3 id="MSE"><a href="#MSE" class="headerlink" title="MSE"></a>MSE</h3><p>一般用于回归问题</p>
+<p>均方差损失函数，<code>L2</code>损失函数<br>$$<br>MSE&#x3D;\frac{1}{n}\sum_{i&#x3D;1}^{n}(observed-predict)^{2}<br>$$<br>类似的还有</p>
+<ul>
+<li><p>均方根误差<code>RMSE</code>：将<code>MSE</code>开平方</p>
+</li>
+<li><p>平均绝对值<code>MAD</code>：$MAD&#x3D;\frac{1}{n}\sum |observed-predict|$，真实值与预测值相减的绝对值求平均，**<code>L1</code>损失函数**</p>
+</li>
+<li><p><code>SmoothL1</code>：该损失函数比<code>L2</code>损失函数，其对离群点、异常值不敏感，可控制梯度的量级使训练时不容易跑飞。<br>$$<br>\begin{align*}<br>Smooth_{L_{1}}&#x3D;<br>\begin{cases}<br>0.5|x|^{2}::::::::::&amp; if |x|&lt;1 \<br>|x|-0.5 &amp; otherwise<br>\end{cases}<br>\end{align*}<br>$$</p>
+</li>
+</ul>
+<p>要控制模型的预测和真实值具有同样的数据分布。</p>
+<ul>
+<li>SmoothL1损失带超参数，这是SmoothL1损失的优化，也是一般形式<br>$$<br>\begin{align*}<br>Smooth_{L_{\sigma}}&#x3D;<br>\begin{cases}<br>0.5(\sigma x)^{2}::::::::::&amp; if |x|&lt; 1&#x2F;\sigma^2\<br>|x|-0.5&#x2F; \sigma &amp; otherwise<br>\end{cases}<br>\end{align*}<br>$$</li>
+</ul>
+<p>式子中的$\sigma$是设置的超参数</p>
+<h3 id="crossentropy"><a href="#crossentropy" class="headerlink" title="crossentropy"></a>crossentropy</h3><p>预测的样本属于某一类的概率，</p>
+<p>假设<code>y</code>代表真实类别$(0,1)$，<code>a</code>代表预测值<br>$$<br>Crossentropy(a)&#x3D;-\frac{1}{n}\sum [yln(a)+(1-y)ln(1-a)]<br>$$<br><strong>公式前面有负号</strong></p>
+<p>假设预测值和真实值非常接近，预测的越准，那么对应的交叉熵很小。</p>
+<h3 id="平方差损失函数为何不适合最后一层含有sigmoid或softmax"><a href="#平方差损失函数为何不适合最后一层含有sigmoid或softmax" class="headerlink" title="平方差损失函数为何不适合最后一层含有sigmoid或softmax"></a>平方差损失函数为何不适合最后一层含有sigmoid或softmax</h3><p>对于平方差损失函数其反向求导过程为<br>$$<br>\begin{align}<br>MSE&amp;&#x3D;\frac{1}{n}\sum_{i&#x3D;1}^{n}(observed-predict)^{2} \<br>\delta ^{L}&amp;&#x3D;-(observed-predict) \bar{f}(z^{L})<br>\end{align}<br>$$<br>其中$z^L$为第<code>L</code>层节点的输出，满足关系式$predict&#x3D;f(z^L)$</p>
+<p>如果激活函数$f(.)$为<code>sigmoid</code>时，如果$z^L$的绝对值较大，函数的梯度会趋于饱和接近于$0$，即$\bar{f}(z^L)$的绝对值非常小，导致反向求导时$\delta ^L$取值会非常小，使得基于梯度的学习速度非常缓慢。而如果在<code>sigmoid</code>之后使用的是交叉熵损失函数，不会出现这种问题。</p>
+<h2 id="防止过拟合"><a href="#防止过拟合" class="headerlink" title="防止过拟合"></a>防止过拟合</h2><h3 id="所谓正则化"><a href="#所谓正则化" class="headerlink" title="所谓正则化"></a>所谓正则化</h3><p>在神经网络计算损失的过程中，在损失后面增加一项，如此损失值所代表的输出与标准结果之间的误差就会受到干扰，导致学习到的参数<code>w</code>和<code>b</code>无法按照目标方向进行调整，实现模型无法与样本无法完全拟合的结果，从此实现了防止过拟合的效果，使原来的优化目标由训练误差变为了泛化误差。</p>
+<ul>
+<li>模型欠拟合时，希望正则化对模型误差的影响越小越好，以便模型快速拟合</li>
+<li>模型过拟合时，希望正则化对模型影响越大越好，以便模型不要发生过拟合</li>
+</ul>
+<p>正则化的一般形式为<br>$$<br>\min <em>{f \in F} \frac{1}{N} \sum <em>{i&#x3D;1}^{N}	L(y</em>{i},f(x</em>{i}))+\lambda J(f)<br>$$<br>其中第一项<code>L</code>是经验损失，第二项<code>J</code>为正则化项，$\lambda$为平衡系数</p>
+<p>对于常用的正则，一般为<code>L1</code>正则和<code>L2</code>正则<br>$$<br>L_{1}&#x3D;less(0)+\lambda\sum_{W}^{n}|W| \<br>L_{2}&#x3D;less(0)+\frac{\lambda}{2}\sum_{W}^{n}W^2<br>$$<br><code>L1</code>：所有学习参数<code>w</code>的绝对值的和</p>
+<p><code>L2</code>：所有学习参数<code>w</code>的平方和然后再求平方根</p>
+<p>$\lambda$为设置的超参数。</p>
+<ul>
+<li><p>注意</p>
+<p>一般我们只对权重参数进行正则化约束，而不对偏置项进行正则约束。精确拟合偏置所需的数据通常比拟合权重少得多，每个权重会指定两个变量如何相互作用。我们需要在各种条件下观察这两个变量才能良好地拟合权重，而每个偏置仅控制一个单变量，这意味着,我们不对其进行正则化也不会导致太大的方差。</p>
+</li>
+</ul>
+<h3 id="L1正则化"><a href="#L1正则化" class="headerlink" title="L1正则化"></a>L1正则化</h3><p>对于添加正则化的优化问题，可以认为是在原有优化目标的基础上增加了一个约束项,</p>
+<p>对于<code>L1</code>正则化<br>$$<br>\begin{align}<br>&amp; \min_{w} ::::::: &amp; \frac{1}{N}\sum_{i&#x3D;1}^{N} (f(x,w)-y)^{2} \<br>&amp; s.t &amp; \lambda\sum_{W}^{n}|W| \le a<br>\end{align}<br>$$<br>对应的拉格朗日问题为<br>$$<br>L(x,\beta)&#x3D;\frac{1}{N}\sum_{i&#x3D;1}^{N} (f(x,w)-y)^{2}+\beta(\lambda\sum_{W}^{n}|W|- a)<br>$$<br>根据KKT条件可以得到：<br>$$<br>\begin{align}<br>&amp; |W| \le \frac{a}{\lambda}<br>\end{align}<br>$$<br>同理对于<code>L2</code>正则化KK条件可以得到：<br>$$<br>W^{2} \le \frac{a}{\lambda}<br>$$<br>由此可以看出，约束条件限制了神经网络参数的取值空间。对于二维情况下，权值为$w^{1}$和$w^{2}$，此时解空间的约束为$|w^{1}|+|w^{2}| \le A$，此时的<code>L1</code>约束可以得到$w^{1}$和$w^{2}$的约束空间与目标函数的学习参数的解</p>
+<img src="/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/L1.jpg" class="" title="L1">
+
+<p>可以看出，对于<code>L1</code>正则的目标函数，会在正则项的解空间和经验损失的解空间的交点处，得到模型的参数。</p>
+<p><strong>L1损失函数会产生稀疏模型并防止过拟合</strong></p>
+<p>对于<code>L1</code>正则化，平衡参数$\lambda$越大，可以使得代价函数在参数为$0$时取得最小值。</p>
+<img src="/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/L1_para.jpg" class="" title="L1_lambda">
+
+<h3 id="L2正则化"><a href="#L2正则化" class="headerlink" title="L2正则化"></a>L2正则化</h3><p>L2一般也称作权重衰减，或者岭回归。</p>
+<p>对于<code>L2</code>损失函数，同样进行如此分析，解空间的约束为$(w^{1})^{2}+(w^2)^{2}&lt;A$</p>
+<img src="/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/L2.jpg" class="" title="L2">
+
+<p>对于<code>L2</code>的目标函数，正则项约束了解的空间为一个圆形，与经验损失的解空间的交集出于<code>L1</code>相比，没有尖角特性，因此不会对模型的稀疏性产生影响。</p>
+<h3 id="两种正则的效果"><a href="#两种正则的效果" class="headerlink" title="两种正则的效果"></a>两种正则的效果</h3><p><strong>L2正则函数只会对参数的值产生限制，但并不会使模型产生稀疏性</strong></p>
+<p>对于模型训练，一般认为得到的模型参数数值小的模型更简单，并且能够更好的适应不同的数据集，在一定程度上能够避免过拟合的现象。对于<code>L2</code>正则化可以使得模型获得更小的参数值，</p>
+<p>对于模型训练，假设代价函数为$E_{k}&#x3D;\frac{1}{2}\sum_{j&#x3D;1}^{l}(\bar{y}-y)^2$，进行反向求导可以得到参数更新的方法为$\delta <em>{hj}&#x3D;\delta</em>{hj}-\eta\frac{\partial{E_{k}}}{\partial{w_{hj}}}$，其中参数$\eta$为学习率，控制参数更新幅度，如果模型的代价函数加上了<code>L2</code>正则化，则参数更新方法为$\delta <em>{hj}&#x3D;\delta</em>{hj}(1-a\lambda)-\eta\frac{\partial{E_{k}}}{\partial{w_{hj}}}$，在进行训练时，当前的参数都会乘以一个小于1的因子，使得更新之后的参数$\delta_{hj}$不断减小，因此L2正则又称作权重衰减。</p>
+<p>L1正则会产生更稀疏的最优解，稀疏指的是在最优值中的一些参数为0，和L2相比，L1正则化的洗稀疏性具有本质的不同，L2正则不会使得参数变得稀疏，而L1正则有可能设置足够大的参数$\lambda$实现稀疏性。</p>
+<h3 id="Dropuout-防止过拟合"><a href="#Dropuout-防止过拟合" class="headerlink" title="Dropuout-防止过拟合"></a>Dropuout-防止过拟合</h3><p>在神经网络训练时，以一定的概率随机的丢弃一部分神经元节点，<code>Droupout</code>作用于每份小批量训练数据，相当于每次迭代都会在训练不同结构的神经网络，实际上这是一种<code>Bagging</code>集成学习的一种方法，在训练时，减弱了全体神经元之间的级联性，减少了过拟合的风险，增强了泛化能力。</p>
+<p>在训练阶段，droupout会随机选择一定比例数量的神经元作为下一层网络的输入，这个时候显然会改变原来的数据分布，那么在预测的时候，droupout设置为1，也就是保留了全部的神经元，使用权重比例推断规则将训练阶段得到的权重处以训练时droupout的比例。</p>
+<p>实际上可以这么认为，假设原来的数据分布是p，现在使用droupout的方法，随机的选择和抛弃一些点传递到下一层，因为选择的过程是一个完全随机的过程，可以认为得到的数据分布为q，那么显然原来数据的期望进行了缩放但是方差没变。</p>
+<h3 id="批归一化BN-防止过拟合"><a href="#批归一化BN-防止过拟合" class="headerlink" title="批归一化BN-防止过拟合"></a>批归一化BN-防止过拟合</h3><p>神经网络训练的过程就是学习数据分布的过程，因此在训练之前对输入数据进行归一化处理。随着训练数据的增加，数据的分布随之该改变，致使网络在每次迭代时需要拟合不同的数据分布，这就增大了训练的复杂度和过拟合的风险。</p>
+<p>批归一化针对每一批次输入的训练数据，在网络的每层输入之前加入归一化处理(均值为0，标准化为1)，将所有批数据强制在统一的数据分布之下，对该层的每一个神经元<br>$$<br>\bar{x}^{k}&#x3D;\frac{x^{k}-E(x^{k})}{\sqrt{Var[x^{k}]}}<br>$$<br>其中$x^{k}$为第$k$层神经元的原始数据，$E[x^{k}]$为这一批次的数据在第$k$个神经元的均值，$\sqrt{Var[x^{k}]}$为这一批次数据在第$k$个神经元的标准差。</p>
+<p>批标准化相当于对数据分布增加了额外的约束，从而增加了模型的泛化能力，但是这样也会降低模型的拟合能力。归一化之后的数据被强制为0均值1标准差，为了恢复原始数据的分布，引入两个学习参数$\beta$和$\gamma$<br>$$<br>y^{k}&#x3D;\gamma ^{k} \bar{x}^{k}+\beta ^{k}<br>$$<br>$\gamma ^{k}$ 和$\beta ^{k}$分别为输入数据分布的方差和标准差，为学习参数。使用这两个参数进行反向变换，得到了原始数据的分布。</p>
+<p>在卷积网络之中使用<code>BN</code>，由于卷积神经网络的参数共享机制，每一个卷积核参数在不同位置的神经元中是共享的，每一个卷积核对应一组待学习的<code>BN</code>参数$\gamma ,\beta $</p>
+<p><code>BN</code>在一定程度上可以代替<code>Droupout</code></p>
+<h3 id="正则化与欠约束的问题"><a href="#正则化与欠约束的问题" class="headerlink" title="正则化与欠约束的问题"></a>正则化与欠约束的问题</h3><p>大多形式的正则化能够保证应用于欠定问题的迭代方法收敛。例如，当似然的斜率等于权重衰减的稀疏的时候，权重衰减将阻止梯度下降继续增加权重的大小。</p>
+<h3 id="数据集增强"><a href="#数据集增强" class="headerlink" title="数据集增强"></a>数据集增强</h3><h4 id="图像数据"><a href="#图像数据" class="headerlink" title="图像数据"></a>图像数据</h4><p>在图像相关领域，一般使用随机旋转，水平翻转，垂直翻转，缩放，平移，拉伸，增加白噪声，对比度，亮度等等处理，目前在目标检测领域还有mixup的处理方法(将两个图像进行合并)</p>
+<h4 id="语音序列数据"><a href="#语音序列数据" class="headerlink" title="语音序列数据"></a>语音序列数据</h4><p>输入数据加入噪声</p>
+<h3 id="噪声鲁棒性"><a href="#噪声鲁棒性" class="headerlink" title="噪声鲁棒性"></a>噪声鲁棒性</h3><ul>
+<li><p>在输入中加入方差极小的噪声等价于对权重施加范数惩罚</p>
+</li>
+<li><p>在权重中加入噪声，主要用于循环神经网络</p>
+</li>
+<li><p>输出目标中加入噪声</p>
+<p>多数情况下标签存在一定的错误，错误的标签y不利于最大化似然函数$\log(y|x)$，可以使用标签平滑的方法吧确切的目标从0到1变成$\frac{\delta}{k-1}$和$1-\delta$，正则化具有k出输出的softmax函数的模型</p>
+</li>
+</ul>
+<h3 id="提前终止"><a href="#提前终止" class="headerlink" title="提前终止"></a>提前终止</h3><p>在训练阶段防止过拟合的方法，也就是早停的技术，在训练完每个轮次的训练集之后，在验证集上运行，得到模型的而评估效果，如果在指定的循环次数内验证集上没有进一步改善，算法提前终止，结束训练。</p>
+<p>提前终止也是一种正则化的策略，可以认为提前终止可以将优化过程的参数空间限制在初始参数$\theta_{0}$的小邻域内</p>
+<h3 id="对抗训练"><a href="#对抗训练" class="headerlink" title="对抗训练"></a>对抗训练</h3><p>目前深度学习一般是基于神经网络进行搭建，例如在目标识别领域，目前很多深度学习模型已经超过了人眼识别的准确率。但是当对原始样本添加扰动之后，得到的对抗样本在人来看适合原来的样本一致的，但是神经网络就出出现错误的识别结果，就如下图所示。</p>
+<p>可以通过对抗训练（adversarial training）减少原有独立同分布的测试集的错误率——在对抗扰动的训练集样本上训练网络。</p>
+<img src="/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/adversarial.png" class="" title="对抗学习示例">
+
+<p>如图中所示，原始为一张熊猫的图片，并且神经网络给出了正确的输出，添加噪声扰动形成对抗样本，在人眼看来还是一张熊猫的照片，但是神经网络预测出现错误。</p>
+<hr>
+
+<h2 id="卷积网络"><a href="#卷积网络" class="headerlink" title="卷积网络"></a>卷积网络</h2><h3 id="卷积输出的尺寸计算公式"><a href="#卷积输出的尺寸计算公式" class="headerlink" title="卷积输出的尺寸计算公式"></a>卷积输出的尺寸计算公式</h3><p>卷积有两种<code>padding</code>表示是否要对输出的<code>feature map</code>进行边框补零操作，如果<code>padding=SAME</code>并且卷积的移动步长为1是生成的<code>feature map</code>与输入的尺寸相等。</p>
+<p>如果<code>padding=SAME</code>，计算公式为<br>$$<br>\begin{align}<br>height_{out}&amp;&#x3D;ceil[height_{input} \div height_{stride}] \<br>width_{out}&amp;&#x3D;ceil[width_{input} \div width_{stride}]<br>\end{align}<br>$$<br>如果<code>padding=VALID</code>，计算公式为<br>$$<br>\begin{align}<br>height_{out}&amp;&#x3D;ceil[(height_{input}-height_{kernel}+1) \div height_{stride}] \<br>width_{out}&amp;&#x3D;ceil[(width_{input}-width_{kernel}+1) \div width_{stride}]<br>\end{align}<br>$$<br><code>ceil</code>表示向上取整</p>
+<h3 id="卷积操作的本质特征"><a href="#卷积操作的本质特征" class="headerlink" title="卷积操作的本质特征"></a>卷积操作的本质特征</h3><p>本质特征：稀疏交互，参数共享</p>
+<h4 id="稀疏交互"><a href="#稀疏交互" class="headerlink" title="稀疏交互"></a>稀疏交互</h4><p>对于全连接来说，任何一对输入与输出神经元之间都产生交互，形成稠密连接结构。</p>
+<p>卷积网络中，卷积核尺度远小于输入的维度，每个输出神经元金鱼前一层特定区域内（卷积核感受野区域）的神经元存在连接，成为稀疏交互</p>
+<p>相对全连接来说，模型的参数量会减小几个数量级，会改善过拟合的情况</p>
+<p><strong>物理意义：对于图像，文本，语言等数据都具有局部的特征结构，可以先学习局部特征，再将局部特征组合成更复杂和抽象的特征。底层特征抽取的是边缘特征，高层抽取的是组合特征。</strong></p>
+<h4 id="参数共享"><a href="#参数共享" class="headerlink" title="参数共享"></a>参数共享</h4><p>在同一个模型的不同模块中使用相同的参数，这是卷积运算的固有属性。</p>
+<p>卷积核中的每个元素将作用于每一次局部输入的特定位置上，只需要学习一组参数，而不需要去学习每个位置的每个参数，降低了模型的存储需求和参数量</p>
+<p><strong>参数共享的物理意义：使卷积层具有平移不变形，假设一张图像中有一只🐱，不论这只猫在什么位置，都应该识别出来是🐱。当$f(g(x))&#x3D;g(f(x))$时，乘坐$f(x)$关于变换$g$具有不变性，将$g$视为输入的任意平移函数。</strong></p>
+<h3 id="池化操作"><a href="#池化操作" class="headerlink" title="池化操作"></a>池化操作</h3><p>池化主要针对非重叠区域，包括均值池化和最大池化。<strong>其本质是进行降采样。</strong></p>
+<ul>
+<li>均值池化：对区域内数值求平均值，能够抑制由于邻域大小受限造成的估值方差增大的现象，<strong>对背景保留较好；</strong></li>
+<li>最大池化：提取区域内的最大值，能够抑制网络参数误差造成估计均值偏差的现象，<strong>能更好提取问题信息；</strong></li>
+<li>相邻重叠区域池化：采用的是比池化窗口更小的步长，在窗口每次滑动时存在重叠区域；</li>
+<li>空间金字塔池化：多尺度池化，使用不同尺寸的矩阵进行池化，之后将所有结果拼接在一起作为整个池化的结果输出；</li>
+</ul>
+<p>池化不但能够显著降低模型的参数量，还能够对模型保持平移、伸缩、旋转操作的不变性。</p>
+<ul>
+<li><p>平移不变性：输出的结果对输入的小量平移基本保持不变</p>
+</li>
+<li><p>伸缩不变性：池化主要感受的是邻域范围内的值，并不是某个确定的值，当输入尺度变换之后，输出保持不变；</p>
+</li>
+<li><p>旋转不变性：当池化之前的卷积核学习到不同角度的旋转时，对于之后的池化都会产生激活</p>
+</li>
+</ul>
+<h3 id="卷积应用于文本分类"><a href="#卷积应用于文本分类" class="headerlink" title="卷积应用于文本分类"></a>卷积应用于文本分类</h3><p>在图像上，卷积操作捕捉局部特征，对于文本来说，可以看做高度为$1$，宽度为<code>L</code>的序列。</p>
+<p>对于文本分来任务，局部特征可以看做由若干个单词组成的滑动窗口，类似于<code>N-gram</code>。卷积能够实现对<code>N-gram</code>特征进行组合和删选，获取不同层次的语义信息，由于卷积操作共享权重，因此参数量更小，训练速度快。</p>
+<p>具体实现：</p>
+<ul>
+<li>输入为$N \times K$的矩阵，$N$为文章对应的单词总数，$K$表示每个词对应的表示向量的维度。每个词的$K$维向量可以从其它从语料库中训练好的，类似于加载预训练参数，也可以使用词向量<code>word embeding</code>的方式进行生成。</li>
+<li>由于<code>N</code>对应着文章中所有的单词，一般情况下<code>N</code>是一个非常大的数，使用卷积核在<code>N</code>的方向上进行移动，假设每次卷积核的视野为$n \times H$，每次卷积核与感受野范围内的矩阵进行运算得到一个输出值，假设<code>n=2</code>，经过卷积，最终可以得到<code>N-2</code>个卷积输出，将这些输出连接在一起</li>
+<li>卷积之后进行池化降采样，可以使用最大池化或者平均池化</li>
+<li>池化之后链接<code>softmax</code>进行文本分类输出</li>
+</ul>
+<h2 id="循环神经网络"><a href="#循环神经网络" class="headerlink" title="循环神经网络"></a>循环神经网络</h2><h3 id="网络结构"><a href="#网络结构" class="headerlink" title="网络结构"></a>网络结构</h3><p>对于循环神经网络，设计的初衷是为了解决序列型数据。</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>赏杯咖啡！</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat.jpeg" alt="ShiXiaofeng 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpeg" alt="ShiXiaofeng 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>ShiXiaofeng
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://xiaofengshi.com/2018/11/20/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E7%9F%A5%E8%AF%86%E7%82%B9/" title="机器学习-常用知识点">http://xiaofengshi.com/2018/11/20/机器学习-常用知识点/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+              <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag"># 深度学习</a>
+              <a href="/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" rel="tag"># 神经网络</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/11/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89CNN/" rel="prev" title="深度学习-计算机视觉CNN">
+      <i class="fa fa-chevron-left"></i> 深度学习-计算机视觉CNN
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/11/12/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/" rel="next" title="深度学习-目标检测">
+      深度学习-目标检测 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E5%B1%82%E6%84%9F%E7%9F%A5%E6%9C%BA%E5%92%8C%E5%B8%83%E5%B0%94%E5%87%BD%E6%95%B0"><span class="nav-number">1.</span> <span class="nav-text">多层感知机和布尔函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%84%E4%BB%B7%E6%8C%87%E6%A0%87"><span class="nav-number">2.</span> <span class="nav-text">评价指标</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E7%B1%BB%E9%97%AE%E9%A2%98"><span class="nav-number">2.1.</span> <span class="nav-text">分类问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B7%B7%E6%B7%86%E7%9F%A9%E9%98%B5"><span class="nav-number">2.1.1.</span> <span class="nav-text">混淆矩阵</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%87%86%E7%A1%AE%E7%8E%87"><span class="nav-number">2.1.2.</span> <span class="nav-text">准确率</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%AC%E5%9B%9E%E7%8E%87"><span class="nav-number">2.1.3.</span> <span class="nav-text">召回率</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B2%BE%E7%A1%AE%E7%8E%87"><span class="nav-number">2.1.4.</span> <span class="nav-text">精确率</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#F%E5%80%BC"><span class="nav-number">2.1.5.</span> <span class="nav-text">F值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PR%E6%9B%B2%E7%BA%BF"><span class="nav-number">2.1.6.</span> <span class="nav-text">PR曲线</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ROC%E6%9B%B2%E7%BA%BF"><span class="nav-number">2.1.7.</span> <span class="nav-text">ROC曲线</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PR-VS-ROC"><span class="nav-number">2.1.8.</span> <span class="nav-text">PR_VS_ROC</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0"><span class="nav-number">3.</span> <span class="nav-text">激活函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sigmoid%E5%87%BD%E6%95%B0"><span class="nav-number">3.1.</span> <span class="nav-text">sigmoid函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Tanh%E5%87%BD%E6%95%B0"><span class="nav-number">3.2.</span> <span class="nav-text">Tanh函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Relu-%E6%95%B4%E6%B5%81%E7%BA%BF%E6%80%A7%E5%87%BD%E6%95%B0"><span class="nav-number">3.3.</span> <span class="nav-text">Relu 整流线性函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#relu%E6%94%B9%E8%BF%9B%E5%9E%8B"><span class="nav-number">3.3.1.</span> <span class="nav-text">relu改进型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#swish%E5%87%BD%E6%95%B0"><span class="nav-number">3.4.</span> <span class="nav-text">swish函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#softmax-%E5%A4%84%E7%90%86%E5%88%86%E7%B1%BB%E5%A4%84%E7%90%86%E9%97%AE%E9%A2%98"><span class="nav-number">4.</span> <span class="nav-text">softmax-处理分类处理问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Loss-Fuction"><span class="nav-number">5.</span> <span class="nav-text">Loss_Fuction</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MSE"><span class="nav-number">5.1.</span> <span class="nav-text">MSE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#crossentropy"><span class="nav-number">5.2.</span> <span class="nav-text">crossentropy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%B3%E6%96%B9%E5%B7%AE%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E4%B8%BA%E4%BD%95%E4%B8%8D%E9%80%82%E5%90%88%E6%9C%80%E5%90%8E%E4%B8%80%E5%B1%82%E5%90%AB%E6%9C%89sigmoid%E6%88%96softmax"><span class="nav-number">5.3.</span> <span class="nav-text">平方差损失函数为何不适合最后一层含有sigmoid或softmax</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%B2%E6%AD%A2%E8%BF%87%E6%8B%9F%E5%90%88"><span class="nav-number">6.</span> <span class="nav-text">防止过拟合</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%80%E8%B0%93%E6%AD%A3%E5%88%99%E5%8C%96"><span class="nav-number">6.1.</span> <span class="nav-text">所谓正则化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#L1%E6%AD%A3%E5%88%99%E5%8C%96"><span class="nav-number">6.2.</span> <span class="nav-text">L1正则化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#L2%E6%AD%A3%E5%88%99%E5%8C%96"><span class="nav-number">6.3.</span> <span class="nav-text">L2正则化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%A4%E7%A7%8D%E6%AD%A3%E5%88%99%E7%9A%84%E6%95%88%E6%9E%9C"><span class="nav-number">6.4.</span> <span class="nav-text">两种正则的效果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dropuout-%E9%98%B2%E6%AD%A2%E8%BF%87%E6%8B%9F%E5%90%88"><span class="nav-number">6.5.</span> <span class="nav-text">Dropuout-防止过拟合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%B9%E5%BD%92%E4%B8%80%E5%8C%96BN-%E9%98%B2%E6%AD%A2%E8%BF%87%E6%8B%9F%E5%90%88"><span class="nav-number">6.6.</span> <span class="nav-text">批归一化BN-防止过拟合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E5%8C%96%E4%B8%8E%E6%AC%A0%E7%BA%A6%E6%9D%9F%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">6.7.</span> <span class="nav-text">正则化与欠约束的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86%E5%A2%9E%E5%BC%BA"><span class="nav-number">6.8.</span> <span class="nav-text">数据集增强</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%BE%E5%83%8F%E6%95%B0%E6%8D%AE"><span class="nav-number">6.8.1.</span> <span class="nav-text">图像数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%AD%E9%9F%B3%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE"><span class="nav-number">6.8.2.</span> <span class="nav-text">语音序列数据</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%99%AA%E5%A3%B0%E9%B2%81%E6%A3%92%E6%80%A7"><span class="nav-number">6.9.</span> <span class="nav-text">噪声鲁棒性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%90%E5%89%8D%E7%BB%88%E6%AD%A2"><span class="nav-number">6.10.</span> <span class="nav-text">提前终止</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E6%8A%97%E8%AE%AD%E7%BB%83"><span class="nav-number">6.11.</span> <span class="nav-text">对抗训练</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%B7%E7%A7%AF%E7%BD%91%E7%BB%9C"><span class="nav-number">7.</span> <span class="nav-text">卷积网络</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%B7%E7%A7%AF%E8%BE%93%E5%87%BA%E7%9A%84%E5%B0%BA%E5%AF%B8%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F"><span class="nav-number">7.1.</span> <span class="nav-text">卷积输出的尺寸计算公式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%B7%E7%A7%AF%E6%93%8D%E4%BD%9C%E7%9A%84%E6%9C%AC%E8%B4%A8%E7%89%B9%E5%BE%81"><span class="nav-number">7.2.</span> <span class="nav-text">卷积操作的本质特征</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A8%80%E7%96%8F%E4%BA%A4%E4%BA%92"><span class="nav-number">7.2.1.</span> <span class="nav-text">稀疏交互</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E6%95%B0%E5%85%B1%E4%BA%AB"><span class="nav-number">7.2.2.</span> <span class="nav-text">参数共享</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B1%A0%E5%8C%96%E6%93%8D%E4%BD%9C"><span class="nav-number">7.3.</span> <span class="nav-text">池化操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%B7%E7%A7%AF%E5%BA%94%E7%94%A8%E4%BA%8E%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB"><span class="nav-number">7.4.</span> <span class="nav-text">卷积应用于文本分类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="nav-number">8.</span> <span class="nav-text">循环神经网络</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84"><span class="nav-number">8.1.</span> <span class="nav-text">网络结构</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ShiXiaofeng"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">ShiXiaofeng</p>
+  <div class="site-description" itemprop="description">LLM,搜索,数据挖掘,深度学习相关技术记录分享</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xiaofengShi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xiaofengShi" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sxf1052566766@163.com" title="E-Mail → mailto:sxf1052566766@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ShiXiaofeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v7.1.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+  
+      
+<script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el: '#valine-comments',
+      verify: false,
+      notify: false,
+      appId: 'rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz',
+      appKey: 'zJasiQnAqgUwf4kiHhHyXwOP',
+      placeholder: "Leave Your Message and Contact Details",
+      avatar: 'mm',
+      meta: guest,
+      pageSize: '10' || 10,
+      visitor: true,
+      lang: '' || 'zh-cn',
+      path: location.pathname,
+      recordIP: false,
+      serverURLs: ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

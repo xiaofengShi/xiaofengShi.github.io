@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/panda_32px.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/panda_16px.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://xiaofengshi.com').hostname,
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="本篇主要涉及LSTM,GRU以及seq2seq_attention的原理以及非调用API方式的代码实现，此外，还实现了LSTM和GRU的层归一化代码，主要是为了更好的理解相关模型的算法，并且可以将之作为脚手架代码进行更多的应用。转载请表明出处。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习-PythonTutorial_LSTM_GRU_Attention_LNLSTM_LNGRU">
+<meta property="og:url" content="http://xiaofengshi.com/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/index.html">
+<meta property="og:site_name" content="做一个有用的人">
+<meta property="og:description" content="本篇主要涉及LSTM,GRU以及seq2seq_attention的原理以及非调用API方式的代码实现，此外，还实现了LSTM和GRU的层归一化代码，主要是为了更好的理解相关模型的算法，并且可以将之作为脚手架代码进行更多的应用。转载请表明出处。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/RNN_chain.jpg">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/LSTM.jpg">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/GRU.png">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/lstm_gru_run.png">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/seq2seq.png">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/attention.png">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/attention_theory.png">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/att_func.png">
+<meta property="og:image" content="http://xiaofengshi.com/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/attention_score.png">
+<meta property="article:published_time" content="2018-11-27T06:13:26.000Z">
+<meta property="article:modified_time" content="2020-01-31T05:53:21.000Z">
+<meta property="article:author" content="ShiXiaofeng">
+<meta property="article:tag" content="深度学习">
+<meta property="article:tag" content="循环神经网络">
+<meta property="article:tag" content="LSTM">
+<meta property="article:tag" content="GRU">
+<meta property="article:tag" content="Attention">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://xiaofengshi.com/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/RNN_chain.jpg">
+
+<link rel="canonical" href="http://xiaofengshi.com/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>深度学习-PythonTutorial_LSTM_GRU_Attention_LNLSTM_LNGRU | 做一个有用的人</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">做一个有用的人</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">LLM And Search</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-guestbook">
+
+    <a href="/guestbook/" rel="section"><i class="fa fa-fw fa-commenting"></i>guestbook</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/xiaofengShi" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ShiXiaofeng">
+      <meta itemprop="description" content="LLM,搜索,数据挖掘,深度学习相关技术记录分享">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="做一个有用的人">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          深度学习-PythonTutorial_LSTM_GRU_Attention_LNLSTM_LNGRU
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-11-27 14:13:26" itemprop="dateCreated datePublished" datetime="2018-11-27T14:13:26+08:00">2018-11-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-01-31 13:53:21" itemprop="dateModified" datetime="2020-01-31T13:53:21+08:00">2020-01-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/seq2seq/" itemprop="url" rel="index">
+                    <span itemprop="name">seq2seq</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/" class="post-meta-item leancloud_visitors" data-flag-title="深度学习-PythonTutorial_LSTM_GRU_Attention_LNLSTM_LNGRU" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本篇主要涉及<code>LSTM</code>,<code>GRU</code>以及<code>seq2seq_attention</code>的原理以及非调用<code>API</code>方式的代码实现，此外，还实现了<code>LSTM</code>和<code>GRU</code>的层归一化代码，主要是为了更好的理解相关模型的算法，并且可以将之作为脚手架代码进行更多的应用。转载请表明出处。</p>
+<span id="more"></span>
+
+<h2 id="RNN"><a href="#RNN" class="headerlink" title="RNN"></a>RNN</h2><p>首先已经知道了在进行图像相关处理时，使用<code>cnn</code>网络可以实现权值共享并且具有平移不变性等优势，<code>CNN</code>取得了非常好的效果，那么对于序列数据该如何处理呢，序列模型可以看做时间序列数据。</p>
+<img src="/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/RNN_chain.jpg" class="" title="RnnChain">
+
+<p>对于普通的<code>RNN</code>结构来说，接收的输入为当前的时刻的输入序列信息$x_{t}$，以及上一时刻隐藏层的输出$h_{t-1}$，当前节点通过输入的信息计算得到当前节点的隐藏层输出$h_{t}$网络输出$y_{t}$。<br>$$<br>\begin{align}<br>h_{t}&amp;&#x3D;w_{h}*h_{t-1}+w_{i}*x_{t} \<br>y_{t}&amp;&#x3D;softmax(w_{o}*h_{t})<br>\end{align}<br>$$<br>对于<code>RNN</code>的模型结构已然了解，使用整个序列的信息作出输出预测，但是会会显著存在一个问题就是距离输出较近的部分对于整个输出影响非常大，并且，传统的RNN容易出现梯度爆炸或者梯度消失的问题，具体原因是由于训练策略基于<code>BTPP</code>。</p>
+<h2 id="LSTM-GRU"><a href="#LSTM-GRU" class="headerlink" title="LSTM &amp; GRU"></a>LSTM &amp; GRU</h2><h3 id="LSTM"><a href="#LSTM" class="headerlink" title="LSTM"></a>LSTM</h3><img src="/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/LSTM.jpg" class="" title="LSTM_CELL">
+
+<p>长短时依赖循环单元，如上所示，简单的说就是在传统的<code>RNN</code>基础上添加了3个<code>gate</code>来控制信息的流量，三个<code>gate</code>分别控制输入<code>input_gate</code>，输出<code>output_gate</code>，遗忘<code>forget_gate</code>，当前的<code>cell</code>的信息输入为当前的编码向量$x_t$以及上一个时刻的隐藏状态的输出$h_{t-1}$，并且三个门的计算也是根据这两个变量进行计算得到，网络学习的过程实际上就是学习这些计算参数的过程。计算公式如下<br>$$<br>i,f,o&#x3D;sigmoid(w<em>x_t+w</em>h_{t-1}+b) \<br>g&#x3D;tanh(w<em>x_t+w</em>h_{t-1}+b)<br>$$<br>其中$i,f,o,g$分别对应为输入门，遗忘门，输出门及当前的输入，并且式子中的参数$w$为对应四个输出的不同变量。使用<code>sigmoid</code>函数是由于该函数的取值范围为<code>0-1</code>，可以显然的去对应控制信息流的流量。根据这几个门就可以得到当前这个<code>cell</code>得到的信息，通过上一个时刻的<code>cell</code>信息$cell_{t-1}$并结合门控单元的遗忘门以及输入门得到<br>$$<br>cell_{t}&#x3D;f \odot cell_{t-1}+i \odot g<br>$$<br>对应当前时隐藏状态的输出$h_{t}$才是我们真正要得到的东西，通过当前的<code>cell</code>和输出门共同控制当前<code>cell</code>的隐藏状态输出，实际上这也就是当前时刻经过<code>LSTM</code>得到的输出并以此向后传播，最终得到整个序列最后一个输出就是这个序列的输出<br>$$<br>h_{t}&#x3D;o \odot tanh(cell_{t})<br>$$</p>
+<p>在每一步的<code>LSTM</code>计算中，接收上一个时刻的<code>cell</code>信息和隐藏层状态输出，并通过上述计算得到当前步的<code>cell</code>信息和隐藏层输出，并将这两个信息传递下去直至序列结束。</p>
+<h4 id="激活函数的选择"><a href="#激活函数的选择" class="headerlink" title="激活函数的选择"></a>激活函数的选择</h4><p>门控的激活函数是<code>sigmoid</code>，生成候选输出是<code>tanh</code>，这两个都是饱和函数，在输入值达到一定情况是，输出不会发生明显的变化，如果使用relu的话，很难实现门控的效果。</p>
+<p><code>sigmoid</code>的函数控制在0-1之间，符合门控的物理意义，当输入较大或者较小的时候，输出会非常接近1或0，保证了门的开或者关。</p>
+<p><code>tanh</code>函数控制输出在<code>-1~1</code>之间，与多数场景下的分布是0中心相吻合，并且在输入为0时相比sigmoid有更大的梯度，是模型更快的收敛。</p>
+<p>在计算能力有限的情况下，也可以使用0&#x2F;1进行门控设计，设定一个阈值控制输出为0或者1</p>
+<h3 id="GRU"><a href="#GRU" class="headerlink" title="GRU"></a>GRU</h3><p><code>GRU</code>也是一种门控单元网络，于2014年提出，相比于<code>LSTM</code>计算量更小，效果相当。因此在进行网络设计时优先使用<code>GRU</code></p>
+<img src="/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/GRU.png" class="" title="GRU_Cell">
+
+<p>对于<code>GRU</code>来说，每个<code>cell</code>接收上一时刻隐藏层状态的输出$h_{t-1}$和当前时刻的编码向量$x_{t}$，与普通的<code>RNN</code>单元相同，当前的<code>GRU</code>单元会计算得到当前的输出$y_{t}$和传递给下一个节点的隐藏层状态$h_{t}$。</p>
+<p>不同于<code>LSTM</code>，<code>GRU</code>单元具有两个门控单元，分别为重置门$r$和更新门$z$，其计算方式和<code>LSTM</code>相同，同样是使用上一个时刻隐藏状态的输出$h_{t-1}$和当前时刻的编码向量$x_{t}$，其计算方法为<br>$$<br>r,z&#x3D;sigmoid(w \odot [x_{t},h_{t-1}])<br>$$<br>使用重置门对上一时刻隐藏层状态的输出$h_{t-1}$进行重置<br>$$<br>h_{t-1}^{r}&#x3D;h_{t-1} \odot r<br>$$<br>之后将$h_{t-1}^{r}$和当前时刻的编码向量$x_{t}$拼接之后经过<code>tanh</code>对输入的数据进行缩放<br>$$<br>h_{t}^{temp}&#x3D;tanh(w \odot [x_{t},h_{t-1}^{r}])<br>$$<br>最后通过更新门$z$来对上一个时刻隐藏层传递来的信息和当前的信息进行控制<br>$$<br>h_{t}&#x3D;z\odot h_{t-1}+(1-z) \odot h_{t}^{temp}<br>$$<br>实际上可以将更新门$z$看成LSTM中输出门和遗忘门的合并</p>
+<h3 id="代码实现LSTM"><a href="#代码实现LSTM" class="headerlink" title="代码实现LSTM"></a>代码实现LSTM</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> absolute_import, division, print_function</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">from</span> tensorflow.contrib.rnn <span class="keyword">import</span> RNNCell</span><br><span class="line"><span class="keyword">from</span> tensorflow.python.ops <span class="keyword">import</span> array_ops</span><br><span class="line"><span class="keyword">from</span> tensorflow.python.ops <span class="keyword">import</span> variable_scope <span class="keyword">as</span> vs</span><br><span class="line"><span class="keyword">from</span> tensorflow.python.ops.math_ops <span class="keyword">import</span> sigmoid, tanh</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">LSTMCell</span>(<span class="title class_ inherited__">RNNCell</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Gated Recurrent Unit cell (cf. http://arxiv.org/abs/1406.1078).&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, name, num_units, input_size=<span class="literal">None</span>, activation=tanh</span>):</span><br><span class="line">        <span class="keyword">if</span> input_size <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;%s: The input_size parameter is deprecated.&quot;</span> % self)</span><br><span class="line">        self._name = name</span><br><span class="line">        self._num_units = num_units</span><br><span class="line">        self._activation = activation</span><br><span class="line"></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="comment"># <span class="doctag">NOTE:</span> The lstm cell state is contained with  hidden output and memory cell, the shape is 2*num_units</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">state_size</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="number">2</span>*self._num_units</span><br><span class="line"></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">output_size</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> self._num_units</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__call__</span>(<span class="params">self, inputs, state</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Gated recurrent unit (LSTM) with nunits cells.</span></span><br><span class="line"><span class="string">            inputs: the sequence at current step, shape is [B,D]</span></span><br><span class="line"><span class="string">            state: shape conme from pre step ,shape is [B,2*_num_units], which is contained with hidden output and memory cell for the Previous step</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        c_tm1, h_tm1 = tf.split(axis=<span class="number">1</span>, num_or_size_splits=<span class="number">2</span>, value=state)</span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(self._name):</span><br><span class="line">            <span class="keyword">with</span> vs.variable_scope(<span class="string">&quot;Gates&quot;</span>):  <span class="comment"># Reset gate and update gate.,reuse=True</span></span><br><span class="line">                <span class="comment"># We start with bias of 1.0 to not reset and not update.</span></span><br><span class="line">                value = tf.layers.dense(</span><br><span class="line">                    inputs=tf.concat(values=[inputs, h_tm1],</span><br><span class="line">                                     axis=<span class="number">1</span>),</span><br><span class="line">                    units=<span class="number">4</span> * self._num_units, use_bias=<span class="literal">True</span>,</span><br><span class="line">                    kernel_initializer=tf.orthogonal_initializer(),</span><br><span class="line">                    bias_initializer=tf.constant_initializer(<span class="number">1.0</span>))</span><br><span class="line">                <span class="comment"># i: input; f :forget; o:output ; g: current step input</span></span><br><span class="line">                i, f, o, g = array_ops.split(value=value, num_or_size_splits=<span class="number">4</span>, axis=<span class="number">1</span>)</span><br><span class="line">                <span class="comment"># calculate gate and input vector</span></span><br><span class="line">                i, f, o, g = sigmoid(i), sigmoid(f), sigmoid(o), tanh(g)</span><br><span class="line">            <span class="keyword">with</span> vs.variable_scope(<span class="string">&quot;Candidate&quot;</span>):</span><br><span class="line">                 <span class="comment"># new cell </span></span><br><span class="line">                new_cell = f*c_tm1+i*g</span><br><span class="line">            new_h = o * self._activation(new_cell)</span><br><span class="line">            new_state = tf.concat(axis=<span class="number">1</span>, values=[new_cell, new_h])</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> new_h, new_state</span><br></pre></td></tr></table></figure>
+
+<h3 id="代码实现GRU"><a href="#代码实现GRU" class="headerlink" title="代码实现GRU"></a>代码实现GRU</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> absolute_import, division, print_function</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">from</span> tensorflow.contrib.rnn <span class="keyword">import</span> RNNCell</span><br><span class="line"><span class="keyword">from</span> tensorflow.python.ops <span class="keyword">import</span> array_ops</span><br><span class="line"><span class="keyword">from</span> tensorflow.python.ops <span class="keyword">import</span> variable_scope <span class="keyword">as</span> vs</span><br><span class="line"><span class="keyword">from</span> tensorflow.python.ops.math_ops <span class="keyword">import</span> sigmoid, tanh</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">GRUCell</span>(<span class="title class_ inherited__">RNNCell</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Gated Recurrent Unit cell (cf. http://arxiv.org/abs/1406.1078).&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, name, num_units, input_size=<span class="literal">None</span>, activation=tanh</span>):</span><br><span class="line">        <span class="keyword">if</span> input_size <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;%s: The input_size parameter is deprecated.&quot;</span> % self)</span><br><span class="line">        self._name = name</span><br><span class="line">        self._num_units = num_units</span><br><span class="line">        self._activation = activation</span><br><span class="line"></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">state_size</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> self._num_units</span><br><span class="line"></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">output_size</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> self._num_units</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__call__</span>(<span class="params">self, inputs, state</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Gated recurrent unit (GRU) with nunits cells.</span></span><br><span class="line"><span class="string">            inputs: the sequence at each step ,shape is [B,D]</span></span><br><span class="line"><span class="string">            state: shape conme from pre step ,shape is [B,_num_units]</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(self._name):</span><br><span class="line">            <span class="keyword">with</span> vs.variable_scope(<span class="string">&quot;Gates&quot;</span>):  <span class="comment"># Reset gate and update gate.,reuse=True</span></span><br><span class="line">                <span class="comment"># We start with bias of 1.0 to not reset and not update.</span></span><br><span class="line">                value = tf.layers.dense(</span><br><span class="line">                    inputs=tf.concat(values=[inputs, state], axis=<span class="number">1</span>),</span><br><span class="line">                    units=<span class="number">2</span> * self._num_units, use_bias=<span class="literal">True</span>,</span><br><span class="line">                    kernel_initializer=tf.constant_initializer(value=<span class="number">1.0</span>))</span><br><span class="line">                r, u = array_ops.split(value=value, num_or_size_splits=<span class="number">2</span>, axis=<span class="number">1</span>)</span><br><span class="line">               </span><br><span class="line">                r, u = sigmoid(r), sigmoid(u)</span><br><span class="line">            <span class="keyword">with</span> vs.variable_scope(<span class="string">&quot;Candidate&quot;</span>):</span><br><span class="line">                Cand = tf.layers.dense(</span><br><span class="line">                    inputs=tf.concat(values=[inputs, r * state],</span><br><span class="line">                                     axis=<span class="number">1</span>),</span><br><span class="line">                    units=self._num_units, use_bias=<span class="literal">True</span>)</span><br><span class="line">                c = self._activation(Cand)</span><br><span class="line">            new_h = u * state + (<span class="number">1</span> - u) * c</span><br><span class="line">        <span class="keyword">return</span> new_h, new_h</span><br></pre></td></tr></table></figure>
+
+<p>如上就实现了一个<code>LSTMcell</code>和<code>GRU</code>，其中的计算完全按照公式进行。</p>
+<p>在调用的时候，就是先进行<code>LSTMCell</code>或者<code>GRU</code>的设置，也就是<code>__init__</code>中的参数，来建立<code>LSTMcell</code>和输入数据之间的连接，具体如何设置在上面的代码中已有详细的说明。</p>
+<p>举个栗子</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 假设输入的维度是[32,40,256]的维度，用来模拟数据，可以认为是batch=32，n_step=40,input_dim=256</span></span><br><span class="line"><span class="comment"># 直接生成随机数</span></span><br><span class="line">inputs=tf.random_normal([<span class="number">32</span>,<span class="number">40</span>,<span class="number">256</span>],mean=<span class="number">0.0</span>,stddev=<span class="number">1.0</span>,dtype=tf.float32) </span><br><span class="line"><span class="comment"># 创建lstmcell，input为256，对应着inputs的维度</span></span><br><span class="line">lstm=LSTMCell(<span class="string">&#x27;LSTM&#x27;</span>,num_units=<span class="number">512</span>)</span><br><span class="line"><span class="comment"># 创建动态RNN输出</span></span><br><span class="line">out,state=tf.nn.dynamic_rnn(lstm,inputs)</span><br><span class="line"><span class="comment"># 创建gru</span></span><br><span class="line">gru=GRUCell(<span class="string">&#x27;GRU&#x27;</span>,num_units=<span class="number">512</span>)</span><br><span class="line">gru_out,gru_state=tf.nn.dynamic_rnn(gru,inputs)</span><br></pre></td></tr></table></figure>
+
+<p>直接在命令行启动<code>jupyter notebook</code>可以进行测试，启动命令如下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jupyter lab</span><br></pre></td></tr></table></figure>
+
+<p>上面完成了<code>lstm</code>和<code>gru</code>单元的编写以及测试</p>
+<img src="/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/lstm_gru_run.png" class="" title="lstm_gru_run">
+
+<p>如上完成了创建的<code>LSTM</code>和<code>GRU</code>的测试，注意一点，<code>LSTM</code>要从初始的<code>initial_state</code>中提取出<code>memory_cell</code>和<code>hidden</code>因此，输入的<code>state</code>的尺度为<code>[batch,2*num_units]</code>，而对于<code>GRU</code>来说，直接使用提供的<code>state</code>进行门控的计算，因此输入的尺度为<code>[batch,2*num_units]</code>，由于测试时设置的两个<code>cell</code>的参数一样，可以看到经过<code>cell</code>的计算得到的序列的维度是相同的。</p>
+<h2 id="seq2seq"><a href="#seq2seq" class="headerlink" title="seq2seq"></a>seq2seq</h2><p><code>seq2seq</code>是<code>sequence to sequence</code> 的缩写顾名思义就是实现序列到序列的模型，主要用于机器翻译，图像描述，语音识别等任务。</p>
+<h3 id="核心思想"><a href="#核心思想" class="headerlink" title="核心思想"></a>核心思想</h3><p>通过深度神经网络讲一个输入的序列映射为一个作为输出的序列，这个过程中由编码和解码两个过程组成，也就是<code>encoder-decoder</code>，一般的实现中<code>encoder</code>和<code>decoder</code>的部分由循环神经网络完成，并且在<code>seq2seq</code>模型中是一个端对端的训练过程，最简单的seq2seq模型是将输入的序列进行<code>encoder</code>，并将<code>encoder</code>最后的<code>state</code>作为<code>decoder</code>部分的初始输入<code>state</code>。</p>
+<p>需要说明的是，对于<code>encoder</code>部分，完成将输入的数据进行编码的过程，目前有使用<code>RNN</code>、<code>CNN</code>的方式，当然也有如论文<strong>《Attention is all you need》</strong>中所述的全部由<code>attention</code>完成的；在<code>decoder</code>部分一般使用的是RNN的方式。</p>
+<h3 id="seq2seq解码"><a href="#seq2seq解码" class="headerlink" title="seq2seq解码"></a>seq2seq解码</h3><h4 id="Greedy-search"><a href="#Greedy-search" class="headerlink" title="Greedy search"></a>Greedy search</h4><p>对于seq2seq最核心的是解码部分，最基本的解码方法是贪心算法，选择一个度量标准之后，每次都在当前状态下选择最佳的一个结果(如进行<code>softmax</code>之后使用<code>argmax</code>返回最大值，类似于对输出的每个点进行一个分类计算)，直至整个序列结束，贪心算法的计算代价相对较低，但是这种方法一般获得是一个局部最优解，一般结果不会太好。</p>
+<h4 id="beam-search"><a href="#beam-search" class="headerlink" title="beam search"></a>beam search</h4><p><strong>集束搜索</strong>是目前常用的改进算法，用于模型的测试阶段，因为在训练过程中，每一个<code>decoder</code>的输出是有正确答案的，也就不需要<code>beam search</code>去加大输出的准确率。保存当前b个较好的选择，然后在解码时，每一步根据保存的选择进行下一步的扩展和排序，接着选择前b个进行保存，循环迭代，直到结束的时候选择最佳的一个作为解码的结果。</p>
+<p>此外还有解码的时候使用多层堆叠<code>RNN</code>，增加<code>droupout</code>机制，与编码器之间建立残差连接等。</p>
+<h2 id="Attention"><a href="#Attention" class="headerlink" title="Attention"></a>Attention</h2><h3 id="原理公式"><a href="#原理公式" class="headerlink" title="原理公式"></a>原理公式</h3><p>由于在原始的<code>seq2seq</code>模型中，对于输入的训练序列和输出的目标序列之间之间，每个目标序列的生成都是利用了整个训练序列的信息(<strong>encoder部分最后得到的state作为decoder的部分的初始输入，可以看做decoder接受了全部的encoder信息</strong>)，但是在实际我们的生活应用中，对于目标序列的表述一般和训练序列之间存在着关键点的联系的，比如说输入的训练序列为中文”我爱你”，对应的输出的英文目标为’i love you’，显然”我”这个词对于生成目标中的”i”的贡献是最大的，但是传统的seq2seq模型中并没有考虑这层关系，直接使用了”我爱你”这三个字来生成”i”之后在根据”I”生成后面的目标序列，显然这样是不太可靠的。</p>
+<p>对于传统seq2seq模型，结构图如下所示</p>
+<img src="/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/seq2seq.png" class="" title="seq2seq">
+
+<p>首先输入序列和目标序列都要进行embeding转化为词向量，对输入序列进行encoder，并得到序列的final_state作为dencoder的初始输入，认为final_state包含了全部的输入序列的信息，也就是将输入序列的全部信息都压缩到了最后一个state之中，在decoder部分，将encoder的state作为decoder的初始state，目标序列为该部分的输入，至此一步步传递得到了最终输出序列。对于该模型，存在一个显然的问题就是encodr的最后的state显然无法对长度较长的序列进行信息的保存，此外，在预测输出的时候将全部的输入序列信息全部传入decoder，无法进行输入序列中不同词语输出词之间的对应关系。由此引入了attention结构，实际上也是一种序列对齐的方式。</p>
+<p>attention结构</p>
+<img src="/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/attention.png" class="" title="Attention">
+
+<p>对于<code>attention</code>结构，在<code>decoder_cell</code>接收的输入为目标序列的当前输入，上一个时刻的状态，以及上一个时刻的label，以及<code>encoder</code>部分得到的<code>context</code>向量，对于<code>contex</code>由<code>attention</code>向量和<code>encoder</code>的输出进行向量想乘并加和得到，<code>attention</code>向量可以理解为一个<code>encoder</code>部分输出向量的一个权重分布，说道权重，我们就应该想到了<code>softmax</code>，可以很显然的将所有的权重归一化到$0-1$之间，那么<code>attention</code>的权重分布由何计算得到呢？前面我们说了，引入<code>attention</code>是为了将输入序列和输出序列对齐，那么在当前时刻，我们可以使用<code>decoder</code>部分当前时刻的<code>state</code>和<code>encoder</code>部分的输出进行计算得到<code>encoder</code>输出向量和当前时刻<code>decoder</code>的对齐程度，实际上是一中条件概率，在得到<code>encoder</code>输出前提下，得到当前<code>attention</code>的概率。</p>
+<img src="/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/attention_theory.png" class="" title="AttentionStructure">
+
+<p>接下来看一下各部分公式<a href="https://github.com/tensorflow/nmt">Reference</a></p>
+<img src="/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/att_func.png" class="" title="AttFunc">
+
+<img src="/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/attention_score.png" class="" title="attention_score">
+
+<blockquote>
+<p>Here, the function <code>score</code> is used to compared the target hidden state $h_t$ with each of the source hidden states $$\overline{h}_s$$, and the result is normalized to produced attention weights (a distribution over source positions). There are various choices of the scoring function; popular scoring functions include the multiplicative and additive forms given in Eq. (4). Once computed, the attention vector $$a_t$$ is used to derive the softmax logit and loss. This is similar to the target hidden state at the top layer of a vanilla seq2seq model. The function <code>f</code> can also take other forms.</p>
+</blockquote>
+<p>翻译一下：<code>score</code>方程用于计算当前decoder隐藏层encoder部分所有的输出向量之间的对齐程度，常用的有直接向量相城的方程，求和的方式（两种attention计算方式）；将<code>score</code>计算的得分使用softmax的方式归一化为权重分布，也就是方程(1)中的attention权重的计算，attention权重和所有的encoder部分的输出进行向量相乘，得到的当前的contex向量，使用contex向量和当前decoder的输出向量计算得到当前时刻的decoder的输出，该输出即可与目标label进行损失计算。</p>
+<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><p>和上面实现<code>LSTM</code>和<code>GRU</code>类似，按照公式进<code>attention</code>的设计，<code>atttention</code>和<code>decoder</code>进行连接，因此实际上可以设计一个<code>cell</code>实现<code>attention</code>机制的<code>decoder_Cell</code>。计算<code>attention</code>的权重可以通过线性计算的方式，之后在进行<code>softmax</code>，或者使用直接加和然后进行归一化，得到分布，两种方式只是实现的方式不同，本人没感觉有什么不一样。</p>
+<h3 id="对于seq2seq模型的attention设计"><a href="#对于seq2seq模型的attention设计" class="headerlink" title="对于seq2seq模型的attention设计"></a>对于seq2seq模型的attention设计</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> absolute_import, division, print_function</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">from</span> tensorflow.contrib.rnn <span class="keyword">import</span> GRUCell, LSTMCell, RNNCell</span><br><span class="line"><span class="keyword">from</span> tensorflow.python.ops <span class="keyword">import</span> array_ops</span><br><span class="line"><span class="keyword">from</span> tensorflow.python.ops <span class="keyword">import</span> variable_scope <span class="keyword">as</span> vs</span><br><span class="line"><span class="keyword">from</span> tensorflow.python.ops.math_ops <span class="keyword">import</span> sigmoid, tanh</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MLTAttentionCell</span>(<span class="title class_ inherited__">RNNCell</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot; Attention structure for the MIT model </span></span><br><span class="line"><span class="string">        input vector and target vector are all sequences</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, name, num_units, encoder_output, decoder_cell=<span class="literal">None</span>, input_size=<span class="literal">None</span></span>):</span><br><span class="line">        <span class="keyword">if</span> input_size <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;%s: The input_size parameter is deprecated.&quot;</span> % self)</span><br><span class="line">        self._name = name</span><br><span class="line">        self._num_units = num_units</span><br><span class="line">        <span class="keyword">if</span> decoder_cell <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            self._decoder_cell = GRUCell(num_units=num_units)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self._decoder_cell = decoder_cell</span><br><span class="line">        self._encoder_output = encoder_output  <span class="comment"># B,L,E_D</span></span><br><span class="line">        self._max_length = self._encoder_output.get_shape().as_list()[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">state_size</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> self._num_units</span><br><span class="line"></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">output_size</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> self._num_units</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__call__</span>(<span class="params">self, inputs, state</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Gated recurrent unit (GRU) with nunits cells.</span></span><br><span class="line"><span class="string">            inputs: the sequence at each step ,shape is [B,D]</span></span><br><span class="line"><span class="string">            state: shape conme from pre step ,shape is [B,_num_units]</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        hidden = state  <span class="comment"># B,D</span></span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(self._name):</span><br><span class="line">            _att = tf.layers.dense(</span><br><span class="line">                inputs=tf.concat(values=[inputs, hidden], axis=<span class="number">1</span>),</span><br><span class="line">                units=self._max_length)  <span class="comment"># B,L</span></span><br><span class="line"></span><br><span class="line">            attention_weight = tf.nn.softmax(_att)  <span class="comment"># B,L</span></span><br><span class="line">            attention_weight = tf.expand_dims(attention_weight, axis=<span class="number">1</span>)  <span class="comment"># B,1,L</span></span><br><span class="line"></span><br><span class="line">            att_applied = tf.matmul(attention_weight, self._encoder_output)[</span><br><span class="line">                :, <span class="number">0</span>]  <span class="comment"># (B,1,L)*(B,L,D)=(B,1,D)-&gt;(B,D)</span></span><br><span class="line"></span><br><span class="line">            output = tf.layers.dense(</span><br><span class="line">                inputs=tf.concat(values=[inputs, att_applied],</span><br><span class="line">                                 axis=<span class="number">1</span>),</span><br><span class="line">                units=self._num_units)  <span class="comment"># (B,D)</span></span><br><span class="line"></span><br><span class="line">            output = tf.nn.relu(output)</span><br><span class="line"></span><br><span class="line">            output, hidden = self._decoder_cell.__call__(output, hidden)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> output, hidden</span><br></pre></td></tr></table></figure>
+
+<h3 id="对于ImageCaption的attention设计"><a href="#对于ImageCaption的attention设计" class="headerlink" title="对于ImageCaption的attention设计"></a>对于ImageCaption的attention设计</h3><p>对<code>IimageCaption</code>任务来说，输入的是图片，输出的是该图片对应的描述，可以先将图像使用<code>CNN</code>的方式进行编码得到图片的序列编码，将该编码输入到<code>Attention</code>中，之后的方式与普通的<code>seq2seq</code>模型相似，每一步输入图片的label编码向量，并使用图片序列计算得到对应的<code>Attention</code>权重，并使用<code>RNN</code>解码得到输出。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> collections</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">from</span> tensorflow.contrib.rnn <span class="keyword">import</span> GRUCell, LSTMCell, RNNCell</span><br><span class="line"></span><br><span class="line">AttentionState = collections.namedtuple(<span class="string">&quot;AttentionState&quot;</span>, (<span class="string">&quot;cell_state&quot;</span>, <span class="string">&quot;output&quot;</span>))</span><br><span class="line"></span><br><span class="line">Attention_weight = <span class="built_in">list</span>()</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">AttCell</span>(<span class="title class_ inherited__">RNNCell</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params"></span></span><br><span class="line"><span class="params">            self, name, att_input, cell, n_hid, dim_att, dim_o, dropuout, vacab_size, batch_size, tiles,</span></span><br><span class="line"><span class="params">            dtype=tf.float32</span>):</span><br><span class="line">        self._scope_name = name</span><br><span class="line">        self._encoder_sequence = att_input  <span class="comment"># img-cnn=rnn之后得到 [B,HW,E_DIM]</span></span><br><span class="line">        self._cell = cell   <span class="comment"># decoder rnn cell</span></span><br><span class="line">        self._n_hid = n_hid  <span class="comment"># decoder的隐藏节点数 D_DIM</span></span><br><span class="line">        self._dim_att = dim_att   <span class="comment"># Attention维度，计算的中间变量，一般可以选择输入的_encoder_sequence相同的维度</span></span><br><span class="line">        self._dim_o = dim_o   <span class="comment"># rnn输出的维度，该维度与rnn设置的num_unit相同</span></span><br><span class="line">        self._dropout = dropuout</span><br><span class="line">        self._vacab_size = vacab_size  <span class="comment"># 词表中包含的单词数量</span></span><br><span class="line">        self._dtype = dtype</span><br><span class="line">        self._batch_size = batch_size</span><br><span class="line">        self._tiles = tiles</span><br><span class="line">        self._n_regions = tf.shape(self._encoder_sequence)[<span class="number">1</span>]  <span class="comment"># HW</span></span><br><span class="line">        self._n_channels = self._encoder_sequence.shape[<span class="number">2</span>].value  <span class="comment"># E_DIM</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># self._state_size = AttentionState(self._cell._state_size, self._dim_o)</span></span><br><span class="line">        self._state_size = AttentionState(self._n_hid, self._dim_o)</span><br><span class="line"></span><br><span class="line">        self._att_img = tf.layers.dense(</span><br><span class="line">            inputs=self._encoder_sequence, units=self._dim_att, use_bias=<span class="literal">False</span>, name=<span class="string">&quot;att_img&quot;</span>)  <span class="comment"># B,HW,dim_att</span></span><br><span class="line">        <span class="keyword">if</span> self._tiles &gt; <span class="number">1</span>:</span><br><span class="line">            self._encoder_sequence = tf.expand_dims(</span><br><span class="line">                self._encoder_sequence, axis=<span class="number">1</span>)  <span class="comment"># (B,1,HW,E_DIM)</span></span><br><span class="line">            self._encoder_sequence = tf.tile(self._encoder_sequence, multiples=[</span><br><span class="line">                <span class="number">1</span>, self._tiles, <span class="number">1</span>, <span class="number">1</span>])  <span class="comment"># (B,T,HW,E_DIM)</span></span><br><span class="line">            self._encoder_sequence = tf.reshape(</span><br><span class="line">                self._encoder_sequence, shape=[-<span class="number">1</span>, self._n_regions, self._n_channels])  <span class="comment"># (B*D,HW,E_DIM)</span></span><br><span class="line"></span><br><span class="line">            self._att_img = tf.expand_dims(self._att_img, axis=<span class="number">1</span>)  <span class="comment"># batch,1,HW,dim_att</span></span><br><span class="line">            self._att_img = tf.tile(self._att_img, multiples=[<span class="number">1</span>, self._tiles, <span class="number">1</span>, <span class="number">1</span>])</span><br><span class="line">            self._att_img = tf.reshape(self._att_img, shape=[-<span class="number">1</span>, self._n_regions,</span><br><span class="line">                                                             self._dim_att])</span><br><span class="line"></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">state_size</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> self._state_size</span><br><span class="line"></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">output_size</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> self._vacab_size  <span class="comment"># beacause in the function the return is logits,so the size is vocab_size</span></span><br><span class="line"></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">output_dtype</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> self._dtype</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">initial_cell_state</span>(<span class="params">self, cell</span>):</span><br><span class="line">        _states_0 = []</span><br><span class="line">        <span class="keyword">for</span> hidden_name <span class="keyword">in</span> cell._state_size._fields:</span><br><span class="line">            hidden_dim = <span class="built_in">getattr</span>(cell._state_size, hidden_name)</span><br><span class="line">            h = self._CalStateBasedSeq(hidden_name, hidden_dim)</span><br><span class="line">            _states_0.append(h)</span><br><span class="line"></span><br><span class="line">        initial_state_cell = <span class="built_in">type</span>(cell.state_size)(*_states_0)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> initial_state_cell</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_CalStateBasedSeq</span>(<span class="params">self, name, dim</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Returns initial state of dimension specified by dim&quot;&quot;&quot;</span></span><br><span class="line">        scope = tf.get_variable_scope()</span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(scope):</span><br><span class="line">            img_mean = tf.reduce_mean(self._encoder_sequence, axis=<span class="number">1</span>)  <span class="comment"># (N,H*W,C)--&gt;(N,1,C)</span></span><br><span class="line">            W = tf.get_variable(<span class="string">&quot;W_&#123;&#125;_0&quot;</span>.<span class="built_in">format</span>(name), shape=[self._n_channels, dim])</span><br><span class="line">            b = tf.get_variable(<span class="string">&quot;b_&#123;&#125;_0&quot;</span>.<span class="built_in">format</span>(name), shape=[<span class="number">1</span>, dim])</span><br><span class="line">            h = tf.tanh(tf.matmul(img_mean, W) + b)</span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span> h</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">initial_state</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot; setting initial state  and output &quot;&quot;&quot;</span></span><br><span class="line">        initial_states = self._CalStateBasedSeq(<span class="string">&#x27;init_state&#x27;</span>, self._n_hid)  <span class="comment"># batch,</span></span><br><span class="line">        <span class="comment"># initial_states = self.initial_cell_state(self._cell)  # batch,</span></span><br><span class="line">        initial_out = self._CalStateBasedSeq(<span class="string">&#x27;init_out&#x27;</span>, self._dim_o)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> AttentionState(initial_states, initial_out)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_cal_att</span>(<span class="params">self, hid_cur</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        calculate attention weight </span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(<span class="string">&#x27;att_cal&#x27;</span>):</span><br><span class="line">            <span class="comment"># computes attention over the hidden vector</span></span><br><span class="line">            <span class="comment"># h [ batch,num_units]</span></span><br><span class="line">            <span class="comment"># att_h [batch,dim_att]</span></span><br><span class="line">            att_h = tf.layers.dense(inputs=hid_cur, units=self._dim_att, use_bias=<span class="literal">False</span>)</span><br><span class="line">            <span class="comment"># sums the two contributions</span></span><br><span class="line">            <span class="comment"># att_h --&gt; [batch,1,dim_att]</span></span><br><span class="line">            att_h = tf.expand_dims(att_h, axis=<span class="number">1</span>)</span><br><span class="line">            <span class="comment"># att_img [batch，h*w, _dim_att]</span></span><br><span class="line">            <span class="comment"># att_h [batch,1,dim_att]</span></span><br><span class="line">            <span class="comment"># att shape is [batch,h*w,dim_att]</span></span><br><span class="line">            att = tf.tanh(self._att_img + att_h)</span><br><span class="line"></span><br><span class="line">            <span class="comment"># computes scalar product with beta vector</span></span><br><span class="line">            <span class="comment"># works faster with a matmul than with a * and a tf.reduce_sum</span></span><br><span class="line">            att_beta = tf.get_variable(<span class="string">&quot;att_beta&quot;</span>, shape=[self._dim_att, <span class="number">1</span>],</span><br><span class="line">                                       dtype=tf.float32)</span><br><span class="line">            <span class="comment"># att_flat shape is [batch*h*w,dim_att]</span></span><br><span class="line">            att_flat = tf.reshape(att, shape=[-<span class="number">1</span>, self._dim_att])</span><br><span class="line">            <span class="comment"># [batch*h*w,1]</span></span><br><span class="line">            e = tf.matmul(att_flat, att_beta)</span><br><span class="line">            <span class="comment"># [batch,h*w]</span></span><br><span class="line">            e = tf.reshape(e, shape=[-<span class="number">1</span>, self._n_regions])</span><br><span class="line">            <span class="comment"># compute weights</span></span><br><span class="line">            <span class="comment"># (B,HW)</span></span><br><span class="line">            a = tf.nn.softmax(e)</span><br><span class="line">            <span class="keyword">return</span> a</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">step</span>(<span class="params">self, embeding, attention_cell_state</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        Args:</span></span><br><span class="line"><span class="string">            embeding: shape is (B,EM_DIM)</span></span><br><span class="line"><span class="string">            attention_cell_state: state from previous step comes from AttentionState </span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        _initial_state, output_tm1 = attention_cell_state</span><br><span class="line">        scope = tf.get_variable_scope()</span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(scope, initializer=tf.orthogonal_initializer()):</span><br><span class="line">            x = tf.concat([embeding, output_tm1], axis=-<span class="number">1</span>)</span><br><span class="line">            new_hid, new_cell_state = self._cell.__call__(inputs=x, state=_initial_state)</span><br><span class="line">            _attention = self._cal_att(new_hid)</span><br><span class="line"></span><br><span class="line">            <span class="keyword">def</span> <span class="title function_">_debug_att</span>(<span class="params">val</span>):</span><br><span class="line">                <span class="keyword">global</span> Attention_weight</span><br><span class="line">                Attention_weight = []</span><br><span class="line">                Attention_weight += [val]</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">            print_func = tf.py_func(_debug_att, [_attention], [tf.<span class="built_in">bool</span>])</span><br><span class="line">            <span class="keyword">with</span> tf.control_dependencies(print_func):</span><br><span class="line">                _attention = tf.identity(_attention, name=<span class="string">&#x27;Attention_weight&#x27;</span>)</span><br><span class="line"></span><br><span class="line">            <span class="comment"># B,HW,1</span></span><br><span class="line">            attention = tf.expand_dims(_attention, axis=-<span class="number">1</span>)</span><br><span class="line">            <span class="comment"># [B,HW,1]*[B,HW,C]</span></span><br><span class="line">            <span class="comment"># CONTEX SHAPE IS [B,C]</span></span><br><span class="line">            contex = tf.reduce_sum(attention * self._encoder_sequence, axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">            o_W_c = tf.get_variable(<span class="string">&quot;o_W_c&quot;</span>, dtype=tf.float32,</span><br><span class="line">                                    shape=(self._n_channels, self._n_hid))</span><br><span class="line">            o_W_h = tf.get_variable(<span class="string">&quot;o_W_h&quot;</span>, dtype=tf.float32,</span><br><span class="line">                                    shape=(self._n_hid, self._dim_o))</span><br><span class="line"></span><br><span class="line">            new_o = tf.tanh(tf.matmul(new_hid, o_W_h) + tf.matmul(contex, o_W_c))</span><br><span class="line">            new_o = tf.nn.dropout(new_o, self._dropout)</span><br><span class="line"></span><br><span class="line">            y_W_o = tf.get_variable(<span class="string">&quot;y_W_o&quot;</span>, dtype=tf.float32,</span><br><span class="line">                                    shape=(self._dim_o, self._vacab_size))</span><br><span class="line">            <span class="comment"># logits for current step</span></span><br><span class="line">            <span class="comment"># shape is [batch_size,vocabsize] for each size</span></span><br><span class="line">            logits = tf.matmul(new_o, y_W_o)</span><br><span class="line">            new_state = AttentionState(new_cell_state, new_o)</span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span> logits, new_state</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__call__</span>(<span class="params">self, _inputs, _state</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        The dynamic rnn function will use this call function to calculate step by step</span></span><br><span class="line"><span class="string">        Args:</span></span><br><span class="line"><span class="string">            inputs: the embedding of the previous word for training only</span></span><br><span class="line"><span class="string">            state: (AttentionState) (h,c, o) where h is the hidden state and</span></span><br><span class="line"><span class="string">                o is the vector used to make the prediction of</span></span><br><span class="line"><span class="string">                the previous word</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        logits, state = self.step(_inputs, _state)</span><br><span class="line">        <span class="keyword">return</span> (logits, state)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="层归一化的实现"><a href="#层归一化的实现" class="headerlink" title="层归一化的实现"></a>层归一化的实现</h2><p>对于<code>LSTM</code>和<code>GRU</code>来说，目前并没有相应实现层归一化的api可以调用，不像<code>CNN</code>中的<code>BN</code>那样方便，基于此，现编写相关的代码以实现层归一化处理。</p>
+<h3 id="LN-GRU代码实现"><a href="#LN-GRU代码实现" class="headerlink" title="LN_GRU代码实现"></a>LN_GRU代码实现</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> absolute_import, division, print_function</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">from</span> tensorflow.contrib.rnn <span class="keyword">import</span> GRUCell, LSTMCell, RNNCell</span><br><span class="line"><span class="keyword">from</span> tensorflow.python.ops <span class="keyword">import</span> array_ops</span><br><span class="line"><span class="keyword">from</span> tensorflow.python.ops <span class="keyword">import</span> variable_scope <span class="keyword">as</span> vs</span><br><span class="line"><span class="keyword">from</span> tensorflow.python.ops.math_ops <span class="keyword">import</span> sigmoid, tanh</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">LNGRUCell</span>(<span class="title class_ inherited__">RNNCell</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Gated Recurrent Unit cell (cf. http://arxiv.org/abs/1406.1078).&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, name, num_units, input_size=<span class="literal">None</span>, activation=tanh</span>):</span><br><span class="line">        <span class="keyword">if</span> input_size <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;%s: The input_size parameter is deprecated.&quot;</span> % self)</span><br><span class="line">        self._name = name</span><br><span class="line">        self._num_units = num_units</span><br><span class="line">        self._activation = activation</span><br><span class="line"></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">state_size</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> self._num_units</span><br><span class="line"></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">output_size</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> self._num_units</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_LN</span>(<span class="params">self, tensor, scope=<span class="literal">None</span>, epsilon=<span class="number">1e-5</span></span>):</span><br><span class="line">        <span class="keyword">assert</span>(<span class="built_in">len</span>(tensor.get_shape()) == <span class="number">2</span>)</span><br><span class="line">        m, v = tf.nn.moments(tensor, [<span class="number">1</span>], keep_dims=<span class="literal">True</span>)</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> <span class="built_in">isinstance</span>(scope, <span class="built_in">str</span>):</span><br><span class="line">            scope = <span class="string">&#x27;&#x27;</span></span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(scope + <span class="string">&#x27;layer_norm&#x27;</span>):</span><br><span class="line">            scale = tf.get_variable(<span class="string">&#x27;scale&#x27;</span>,</span><br><span class="line">                                    shape=[tensor.get_shape()[<span class="number">1</span>]],</span><br><span class="line">                                    initializer=tf.constant_initializer(value=<span class="number">1.0</span>))</span><br><span class="line">            shift = tf.get_variable(<span class="string">&#x27;shift&#x27;</span>,</span><br><span class="line">                                    shape=[tensor.get_shape()[<span class="number">1</span>]],</span><br><span class="line">                                    initializer=tf.constant_initializer(value=<span class="number">0.</span>))</span><br><span class="line">        _LnInitial = (tensor - m) / tf.sqrt(v + epsilon)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> _LnInitial * scale + shift</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__call__</span>(<span class="params">self, inputs, state</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Gated recurrent unit (GRU) with nunits cells.</span></span><br><span class="line"><span class="string">            inputs: the sequence at each step ,shape is [B,D]</span></span><br><span class="line"><span class="string">            state: shape conme from pre step ,shape is [B,_num_units]</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(self._name):</span><br><span class="line">            <span class="keyword">with</span> vs.variable_scope(<span class="string">&quot;Gates&quot;</span>):  <span class="comment"># Reset gate and update gate.,reuse=True</span></span><br><span class="line">                <span class="comment"># We start with bias of 1.0 to not reset and not update.</span></span><br><span class="line">                value = tf.layers.dense(</span><br><span class="line">                    inputs=tf.concat(values=[inputs, state], axis=<span class="number">1</span>),</span><br><span class="line">                    units=<span class="number">2</span> * self._num_units, use_bias=<span class="literal">True</span>,</span><br><span class="line">                    kernel_initializer=tf.constant_initializer(value=<span class="number">1.0</span>))</span><br><span class="line">                r, u = array_ops.split(value=value, num_or_size_splits=<span class="number">2</span>, axis=<span class="number">1</span>)</span><br><span class="line">                r = self._LN(r, scope=<span class="string">&#x27;r/&#x27;</span>)</span><br><span class="line">                u = self._LN(u, scope=<span class="string">&#x27;u/&#x27;</span>)</span><br><span class="line">                r, u = sigmoid(r), sigmoid(u)</span><br><span class="line">            <span class="keyword">with</span> vs.variable_scope(<span class="string">&quot;Candidate&quot;</span>):</span><br><span class="line">                Cand = tf.layers.dense(</span><br><span class="line">                    inputs=tf.concat(values=[inputs, r * state],</span><br><span class="line">                                     axis=<span class="number">1</span>),</span><br><span class="line">                    units=self._num_units, use_bias=<span class="literal">True</span>)</span><br><span class="line">                c_pre = self._LN(Cand,  scope=<span class="string">&#x27;new_h/&#x27;</span>)</span><br><span class="line">                c = self._activation(c_pre)</span><br><span class="line">            new_h = u * state + (<span class="number">1</span> - u) * c</span><br><span class="line">        <span class="keyword">return</span> new_h, new_h</span><br></pre></td></tr></table></figure>
+
+<h3 id="LN-LSTM代码实现"><a href="#LN-LSTM代码实现" class="headerlink" title="LN_LSTM代码实现"></a>LN_LSTM代码实现</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">LNLSTMCell</span>(<span class="title class_ inherited__">RNNCell</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Gated Recurrent Unit cell (cf. http://arxiv.org/abs/1406.1078).&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, name, num_units, input_size=<span class="literal">None</span>, activation=tanh</span>):</span><br><span class="line">        <span class="keyword">if</span> input_size <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;%s: The input_size parameter is deprecated.&quot;</span> % self)</span><br><span class="line">        self._name = name</span><br><span class="line">        self._num_units = num_units</span><br><span class="line">        self._activation = activation</span><br><span class="line"></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">state_size</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="number">2</span>*self._num_units</span><br><span class="line"></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">output_size</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> self._num_units</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_LN</span>(<span class="params">self, tensor, scope=<span class="literal">None</span>, epsilon=<span class="number">1e-5</span></span>):</span><br><span class="line">        <span class="keyword">assert</span>(<span class="built_in">len</span>(tensor.get_shape()) == <span class="number">2</span>)</span><br><span class="line">        m, v = tf.nn.moments(tensor, [<span class="number">1</span>], keep_dims=<span class="literal">True</span>)</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> <span class="built_in">isinstance</span>(scope, <span class="built_in">str</span>):</span><br><span class="line">            scope = <span class="string">&#x27;&#x27;</span></span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(scope + <span class="string">&#x27;layer_norm&#x27;</span>):</span><br><span class="line">            scale = tf.get_variable(<span class="string">&#x27;scale&#x27;</span>,</span><br><span class="line">                                    shape=[tensor.get_shape()[<span class="number">1</span>]],</span><br><span class="line">                                    initializer=tf.constant_initializer(value=<span class="number">1.0</span>))</span><br><span class="line">            shift = tf.get_variable(<span class="string">&#x27;shift&#x27;</span>,</span><br><span class="line">                                    shape=[tensor.get_shape()[<span class="number">1</span>]],</span><br><span class="line">                                    initializer=tf.constant_initializer(value=<span class="number">0.</span>))</span><br><span class="line">        _LnInitial = (tensor - m) / tf.sqrt(v + epsilon)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> _LnInitial * scale + shift</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__call__</span>(<span class="params">self, inputs, state</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Gated recurrent unit (GRU) with nunits cells.</span></span><br><span class="line"><span class="string">            inputs: the sequence at each step ,shape is [B,D]</span></span><br><span class="line"><span class="string">            state: shape conme from pre step ,shape is [B,_num_units]</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        c_tm1, h_tm1 = tf.split(axis=<span class="number">1</span>, num_or_size_splits=<span class="number">2</span>, value=state)</span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(self._name):</span><br><span class="line">            <span class="keyword">with</span> vs.variable_scope(<span class="string">&quot;Gates&quot;</span>):  <span class="comment"># Reset gate and update gate.,reuse=True</span></span><br><span class="line">                <span class="comment"># We start with bias of 1.0 to not reset and not update.</span></span><br><span class="line">                value = tf.layers.dense(</span><br><span class="line">                    inputs=tf.concat(values=[inputs, h_tm1],</span><br><span class="line">                                     axis=<span class="number">1</span>),</span><br><span class="line">                    units=<span class="number">4</span> * self._num_units, use_bias=<span class="literal">True</span>,</span><br><span class="line">                    kernel_initializer=tf.orthogonal_initializer(),</span><br><span class="line">                    bias_initializer=tf.constant_initializer(<span class="number">1.0</span>))</span><br><span class="line">                i, f, o, g = array_ops.split(value=value, num_or_size_splits=<span class="number">4</span>, axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">                i = self._LN(i, scope=<span class="string">&#x27;input/&#x27;</span>)</span><br><span class="line">                f = self._LN(f, scope=<span class="string">&#x27;forget/&#x27;</span>)</span><br><span class="line">                o = self._LN(o, scope=<span class="string">&#x27;output/&#x27;</span>)</span><br><span class="line">                g = self._LN(g, scope=<span class="string">&#x27;instep/&#x27;</span>)</span><br><span class="line"></span><br><span class="line">                i, f, o, g = sigmoid(i), sigmoid(f), sigmoid(o), tanh(g)</span><br><span class="line"></span><br><span class="line">            <span class="keyword">with</span> vs.variable_scope(<span class="string">&quot;Candidate&quot;</span>):</span><br><span class="line">                c_pre = f*c_tm1+i*g</span><br><span class="line">                new_cell = self._LN(c_pre, scope=<span class="string">&#x27;new_cell/&#x27;</span>)</span><br><span class="line"></span><br><span class="line">            new_h = o * self._activation(new_cell)</span><br><span class="line">            new_state = tf.concat(axis=<span class="number">1</span>, values=[new_cell, new_h])</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> new_h, new_state</span><br></pre></td></tr></table></figure>
+
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>可以看到在实现<code>LN</code>的过程中，在标准<code>LSTM/GRU</code>的基础上增加了<code>LN</code>的处理，就是减去变量的均值并处以标准差，很简单即可完成。这两个<code>cell</code>完全可以在模型设计中取代标准的<code>GRU</code>或者<code>LSTM</code>，以提高模型的鲁棒性。</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>赏杯咖啡！</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat.jpeg" alt="ShiXiaofeng 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpeg" alt="ShiXiaofeng 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>ShiXiaofeng
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://xiaofengshi.com/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Python-tutorial-LSTM-GRU-Attention/" title="深度学习-PythonTutorial_LSTM_GRU_Attention_LNLSTM_LNGRU">http://xiaofengshi.com/2018/11/27/深度学习-Python-tutorial-LSTM-GRU-Attention/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag"># 深度学习</a>
+              <a href="/tags/%E5%BE%AA%E7%8E%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" rel="tag"># 循环神经网络</a>
+              <a href="/tags/LSTM/" rel="tag"># LSTM</a>
+              <a href="/tags/GRU/" rel="tag"># GRU</a>
+              <a href="/tags/Attention/" rel="tag"># Attention</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/12/12/Awesomes-Process/" rel="prev" title="Awesomes-Process">
+      <i class="fa fa-chevron-left"></i> Awesomes-Process
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/11/25/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-EM%E7%AE%97%E6%B3%95/" rel="next" title="机器学习-EM算法">
+      机器学习-EM算法 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#RNN"><span class="nav-number">1.</span> <span class="nav-text">RNN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LSTM-GRU"><span class="nav-number">2.</span> <span class="nav-text">LSTM &amp; GRU</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LSTM"><span class="nav-number">2.1.</span> <span class="nav-text">LSTM</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0%E7%9A%84%E9%80%89%E6%8B%A9"><span class="nav-number">2.1.1.</span> <span class="nav-text">激活函数的选择</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GRU"><span class="nav-number">2.2.</span> <span class="nav-text">GRU</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0LSTM"><span class="nav-number">2.3.</span> <span class="nav-text">代码实现LSTM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0GRU"><span class="nav-number">2.4.</span> <span class="nav-text">代码实现GRU</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#seq2seq"><span class="nav-number">3.</span> <span class="nav-text">seq2seq</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="nav-number">3.1.</span> <span class="nav-text">核心思想</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#seq2seq%E8%A7%A3%E7%A0%81"><span class="nav-number">3.2.</span> <span class="nav-text">seq2seq解码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Greedy-search"><span class="nav-number">3.2.1.</span> <span class="nav-text">Greedy search</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#beam-search"><span class="nav-number">3.2.2.</span> <span class="nav-text">beam search</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Attention"><span class="nav-number">4.</span> <span class="nav-text">Attention</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E7%90%86%E5%85%AC%E5%BC%8F"><span class="nav-number">4.1.</span> <span class="nav-text">原理公式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0"><span class="nav-number">4.2.</span> <span class="nav-text">实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E4%BA%8Eseq2seq%E6%A8%A1%E5%9E%8B%E7%9A%84attention%E8%AE%BE%E8%AE%A1"><span class="nav-number">4.3.</span> <span class="nav-text">对于seq2seq模型的attention设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E4%BA%8EImageCaption%E7%9A%84attention%E8%AE%BE%E8%AE%A1"><span class="nav-number">4.4.</span> <span class="nav-text">对于ImageCaption的attention设计</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B1%82%E5%BD%92%E4%B8%80%E5%8C%96%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">5.</span> <span class="nav-text">层归一化的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LN-GRU%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-number">5.1.</span> <span class="nav-text">LN_GRU代码实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LN-LSTM%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-number">5.2.</span> <span class="nav-text">LN_LSTM代码实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.3.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ShiXiaofeng"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">ShiXiaofeng</p>
+  <div class="site-description" itemprop="description">LLM,搜索,数据挖掘,深度学习相关技术记录分享</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xiaofengShi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xiaofengShi" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sxf1052566766@163.com" title="E-Mail → mailto:sxf1052566766@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ShiXiaofeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v7.1.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+  
+      
+<script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el: '#valine-comments',
+      verify: false,
+      notify: false,
+      appId: 'rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz',
+      appKey: 'zJasiQnAqgUwf4kiHhHyXwOP',
+      placeholder: "Leave Your Message and Contact Details",
+      avatar: 'mm',
+      meta: guest,
+      pageSize: '10' || 10,
+      visitor: true,
+      lang: '' || 'zh-cn',
+      path: location.pathname,
+      recordIP: false,
+      serverURLs: ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
