@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/panda_32px.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/panda_16px.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://xiaofengshi.com').hostname,
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="1. 什么是PromptEngineering所谓prompt工程，就是让LLM模型清晰准确的知道你要干什么，引导模型充分的发掘它的能力上限，类比到人与人之间，就是提升沟通的效率。OpenAI提出了prompt工程的6条原则[1]，在这篇文档里，按照个人的理解，将这部分按照适用场景分成用户和开发者两个部分，一共6条（与openai的6条顺序有所不同）： 用户策略：  Write clear ins">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[Survey]PromptEngineering">
+<meta property="og:url" content="http://xiaofengshi.com/2024/02/01/Survey-PromptEngineering/index.html">
+<meta property="og:site_name" content="做一个有用的人">
+<meta property="og:description" content="1. 什么是PromptEngineering所谓prompt工程，就是让LLM模型清晰准确的知道你要干什么，引导模型充分的发掘它的能力上限，类比到人与人之间，就是提升沟通的效率。OpenAI提出了prompt工程的6条原则[1]，在这篇文档里，按照个人的理解，将这部分按照适用场景分成用户和开发者两个部分，一共6条（与openai的6条顺序有所不同）： 用户策略：  Write clear ins">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-02-01T03:06:39.000Z">
+<meta property="article:modified_time" content="2024-02-01T03:22:16.079Z">
+<meta property="article:author" content="ShiXiaofeng">
+<meta property="article:tag" content="LLM">
+<meta property="article:tag" content="prompt">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://xiaofengshi.com/2024/02/01/Survey-PromptEngineering/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>[Survey]PromptEngineering | 做一个有用的人</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">做一个有用的人</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">LLM And Search</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-guestbook">
+
+    <a href="/guestbook/" rel="section"><i class="fa fa-fw fa-commenting"></i>guestbook</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/xiaofengShi" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2024/02/01/Survey-PromptEngineering/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ShiXiaofeng">
+      <meta itemprop="description" content="LLM,搜索,数据挖掘,深度学习相关技术记录分享">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="做一个有用的人">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          [Survey]PromptEngineering
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-02-01 11:06:39 / 修改时间：11:22:16" itemprop="dateCreated datePublished" datetime="2024-02-01T11:06:39+08:00">2024-02-01</time>
+            </span>
+
+          
+            <span id="/2024/02/01/Survey-PromptEngineering/" class="post-meta-item leancloud_visitors" data-flag-title="[Survey]PromptEngineering" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2024/02/01/Survey-PromptEngineering/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2024/02/01/Survey-PromptEngineering/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="1-什么是PromptEngineering"><a href="#1-什么是PromptEngineering" class="headerlink" title="1. 什么是PromptEngineering"></a>1. 什么是PromptEngineering</h2><p>所谓prompt工程，就是让LLM模型清晰准确的知道你要干什么，引导模型充分的发掘它的能力上限，类比到人与人之间，就是提升沟通的效率。OpenAI提出了prompt工程的6条原则[1]，在这篇文档里，按照个人的理解，将这部分按照适用场景分成用户和开发者两个部分，一共6条（与openai的6条顺序有所不同）：</p>
+<p>用户策略：</p>
+<ul>
+<li>Write clear instructions（写出清晰的指令）</li>
+<li>Provide reference text（提供参考文本）</li>
+<li>Give the model time to “think”（给模型时间“思考”）</li>
+</ul>
+<p>开发者策略：</p>
+<ul>
+<li>Split complex tasks into simpler subtasks（将复杂的任务拆分为更简单的子任务）</li>
+<li>Use external tools（使用外部工具）</li>
+<li>Test changes systematically（系统地测试变更）</li>
+</ul>
+<p>这几个原则概括了一个好的prompt应该是什么样子的。实际应用中，prompt工程能否有效，很大程度上依赖LLM的指令追随能力，要不然就变成 了，对着聋子打鼓–充耳不闻，说了也白说……</p>
+<span id="more"></span>
+
+<h2 id="2-理论派"><a href="#2-理论派" class="headerlink" title="2. 理论派"></a>2. 理论派</h2><p>详细说一下这6条原则各自包含的内容。</p>
+<h3 id="2-1-清晰的指令"><a href="#2-1-清晰的指令" class="headerlink" title="2.1 清晰的指令"></a>2.1 清晰的指令</h3><p>这是最重要的一个原则，包括下面6条内容：</p>
+<ul>
+<li><p>把话说详细，在查询中包含详细信息以获得更相关的答案（不要让模型猜，详细且准确的表述出你的需求），举例如下：</p>
+<ul>
+<li><p>bad：如何在Excel中添加数字？ </p>
+</li>
+<li><p>good：如何在Excel中添加一行花费金额？我想自动为整张表的行执行此操作，所有总计都在右侧名为“总计”的列中结束</p>
+</li>
+</ul>
+</li>
+<li><p>让模型充当某个角色（角色和要回答的问题要适配，例如数学老师和装修，这种不搭配的角色会带来更差的结果），这是一个广为人知的策略，从生成的角度来说，模型预设某个角色，模型会更容易使用该领域的知识，有助于问题的解决。在同一个生成参数下，使用34B模型进行生成。</p>
+<ul>
+<li><p>测试1： </p>
+<ul>
+<li>Q：你是一个专业，聪明，经验丰富的<strong>数学老师</strong>。100+180&#x3D;？ </li>
+<li>A：答案是280。</li>
+</ul>
+</li>
+<li><p>测试2： </p>
+<ul>
+<li><p>Q：你是一个专业，聪明，经验丰富的<strong>汽车司机</strong>。100+180&#x3D;？ </p>
+</li>
+<li><p>A：答案是200。</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>使用分隔符清楚地指示输入的不同部分。这样可以让模型准确的知道什么地方是什么内容，举例如下：</p>
+<ul>
+<li>Q &#x3D;下面用户将为你提供三重引号的文本(‘’’文本内容’’’)。用一个带有’摘要：’前缀的一句话总结这段文本。</li>
+</ul>
+</li>
+<li><p>指定完成任务所需的步骤（优化COT，让模型逐步生成，任务如果可以拆分，那最好进行拆分成更简单的单步任务），这是一个被广泛应用的策略，个人一直认为Agent目前的实现思路，本质上就是这个策略的深挖。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">使用以下分步说明响应用户输入。  </span><br><span class="line">第1步-用户将为您提供三重引号的文本。用一个带有“摘要：”前缀的句子总结这段文本。 </span><br><span class="line">第2步-将第1步中的摘要翻译成西班牙语，前缀为“翻译：”</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>提供例子， oneshot 或者 fewshot</p>
+<ul>
+<li>Q&#x3D;按照下面的给出的示例风格来写’冬天’的文章：’落霞与孤鹜齐飞</li>
+</ul>
+</li>
+<li><p>指定所输出长度（在中文场景中，尽量使用 一句话，两个段落 这种说法，而不要使用100个字这种表述，这种只能给出个大概，模型无法准确的生成），举例如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">使用一句话总结下面给出的文本内容。</span><br><span class="line">“文本插入这里”</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="2-2-提供参考上下文"><a href="#2-2-提供参考上下文" class="headerlink" title="2.2 提供参考上下文"></a>2.2 提供参考上下文</h3><ul>
+<li><p>模型使用参考文本来回答。</p>
+<p>例如RAG方案，或手动提供外部文档进行回答，这样会减少模型的幻觉，与此同时，对模型的文本检索能力提出了要求。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">使用提供的由三重引号引起来的文章来回答问题。如果在文章中找不到答案，请写“我找不到答案”。 </span><br><span class="line">&quot;&quot;&quot;&lt;在此插入文档&gt;&quot;&quot;&quot; </span><br><span class="line">&quot;&quot;&quot;&lt;在此插入文档&gt;&quot;&quot;&quot; </span><br><span class="line">问题：&lt;在此插入问题&gt; </span><br><span class="line">回答： </span><br></pre></td></tr></table></figure>
+</li>
+<li><p>生成引文的格式</p>
+<p>要求模型通过引用所提供文档中的段落来为其答案添加引用。可以提高正确性，增加可验证性，并能够减少幻觉。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">你将得到一份由三重引号和一个问题分隔的文件。你的任务是只用提供的文件回答问题，并引用用于回答问题的文件的段落。如果文件不包含回答这个问题所需的信息，那么只需写：“信息不足”。如果提供了问题的答案，则必须用引文注释。使用以下格式引用相关段落（&#123;“引文”&#125;)</span><br><span class="line">&quot;&quot;&quot;&lt;在此处插入文档&gt;&quot;&quot;&quot;</span><br><span class="line">问题：&lt;在此处插入问题&gt;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="2-3-让模型思考-think-step-by-step"><a href="#2-3-让模型思考-think-step-by-step" class="headerlink" title="2.3 让模型思考(think step by step)"></a>2.3 让模型思考(think step by step)</h3><p>这是一个经常被提到的策略，是从COT的角度提出的优化策略，逐步推导，给出答案。</p>
+<ul>
+<li><p>与其直接让模型判断，不如让模型得出结论之前找出自己的解决方案</p>
+<p>比如扔个数学题给大模型，直接让LLM判断对错与否，会发现结果很随机。但是如果先让LLM自己做一遍，再去判断对与不对，结果就会提升 非常多了。</p>
+<p>假如是一个判断学生回答的题目是否正确的场景，prompt可以这样设计：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">PROMPT=&#x27;&#x27;&#x27;首先找出你自己的解决方案。然后将你的解决方案与学生的解决方案进行比较，评估学生的解决方案是否正确。在你自己做这道题之前，不要决定学生的解决方案是否正确。</span><br><span class="line">问题陈述：我正在建造一个太阳能装置，我需要帮助解决财务问题。</span><br><span class="line">-土地成本100美元/平方英尺</span><br><span class="line">-我可以以250美元/平方英尺的价格购买太阳能电池板</span><br><span class="line">-我协商了一份维护合同，每年将花费我10万美元，另外10美元/平方英尺</span><br><span class="line">作为平方英尺数的函数，第一年运营的总成本是多少。</span><br><span class="line"></span><br><span class="line">学生解：设x为装置的大小，单位为平方英尺。</span><br><span class="line">1.土地成本：100倍</span><br><span class="line">2.太阳能电池板成本：250x</span><br><span class="line">3、维护成本：10万+100x</span><br><span class="line">总成本：100x+250x+100,000+100x=450x+100,000</span><br><span class="line">&#x27;&#x27;&#x27;</span><br><span class="line"></span><br><span class="line">ASSISTANT（GPT4）=&#x27;&#x27;&#x27;我的解：设装置的面积为y平方英尺。</span><br><span class="line">1. 土地成本：100y </span><br><span class="line">2. 太阳能电池板成本：250y</span><br><span class="line">3. 维护成本：100,000+10y</span><br><span class="line">总成本 = 100y + 250y + 100,000 + 10y = 360y + 100,000</span><br><span class="line"></span><br><span class="line">比较学生的解与我的解，发现学生在计算维护成本时，将每平方英尺的费用误写为100美元，实际上应该是10美元，所以学生的解答存在错误。&#x27;&#x27;&#x27;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<blockquote>
+<p>在gpt3.5和aquila34b上使用该prompt进行测试 ，基本以失败告终，gpt4可以成功生成</p>
+</blockquote>
+<ul>
+<li><p>使用内心独白或一系列查询来隐藏模型的推理过程（教育场景？）</p>
+<p>模型在回答特定问题之前，详细推理问题有时很重要。对于某些场景，模型用来得出最终答案的推理过程不适合与用户共享。例如，在教育辅导相关的场景中，我们可能希望鼓励学生自己找出答案，但是模型关于学生解决方案的推理过程可能会向学生揭示答案，所以这种情况下，模型的推导过程要对用户隐藏。</p>
+<p>内心独白是一种可以用来缓解这种情况的策略。内心独白的想法是：指示模型将应对用户隐藏的部分输出放入结构化的特定格式中，这可以是这部分的解析变得容易。然后在将输出呈现给用户之前，只有一部分输出是可见的，对用户隐藏的部分对外不可见。比如下面的查询，告诉模型如何逐步完成这次查询</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">PROMPT=&#x27;&#x27;&#x27;</span><br><span class="line">按照以下步骤回答用户查询。</span><br><span class="line"></span><br><span class="line">第一步-首先找出你自己的解决方案。不要依赖学生的解决方案，因为它可能是不正确的。将这一步的所有工作都用三重引号括起来 (&quot;&quot;&quot;).</span><br><span class="line"></span><br><span class="line">第2步-将您的解决方案与学生的解决方案进行比较，并评估学生的解决方案是否正确。将此步骤的所有工作用三重引号括起来 (&quot;&quot;&quot;).</span><br><span class="line"></span><br><span class="line">第3步-如果学生犯了错误，确定你可以在不泄露答案的情况下给学生什么提示。将这一步的所有工作用三重引号括起来 (&quot;&quot;&quot;).</span><br><span class="line"></span><br><span class="line">第4步-如果学生犯了错误，请向学生提供上一步的提示（三重引号之外）。而不是写“步骤4-…”写“提示：”。</span><br><span class="line"></span><br><span class="line">问题陈述：&lt;插入问题陈述&gt;</span><br><span class="line"></span><br><span class="line">学生解决方案：&lt;插入学生解决方案&gt;&#x27;&#x27;&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>当然也可以将上面的四步拆分成4个调用来完成，前面几次对用户隐藏让用户无法感知，这两个具体哪个表现更好，直觉上分成四次调用可能更准确[<a href="https://platform.openai.com/docs/guides/prompt-engineering/tactic-use-inner-monologue-or-a-sequence-of-queries-to-hide-the-model-s-reasoning-process">7]</a></p>
+</li>
+<li><p>询问模型在之前的过程中是否遗漏了任何内容（多轮对话后续追问）</p>
+<p>长文本问答中常用。比如我们给了一个文档，要让大模型模型来列出与一个特定问题相关的信息。如果源文档很大，模型通常会过早停止或者无法列出所有相关信息。在这种情况下，通过使用后续的prompt让模型查找之前错过的任何相关信息，通常可以获得更好的性能。例如下面这种查询场景</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">SYSTEM=&#x27;&#x27;&#x27;您将获得一份由三重引号分隔的文档。您的任务是选择与以下问题相关的摘录：“人工智能历史上发生了哪些重大范式转变。”</span><br><span class="line"></span><br><span class="line">确保摘录包含解释它们所需的所有相关上下文——换句话说，不要提取缺少重要上下文的小片段。提供JSON格式的输出，如下所示：</span><br><span class="line"></span><br><span class="line">[&#123;“摘录”：“……”&#125;，</span><br><span class="line">…</span><br><span class="line">&#123;“摘录”：“……”&#125;]</span><br><span class="line">&#x27;&#x27;&#x27;</span><br><span class="line">USER=&quot;&quot;&quot;&lt;insert document here&gt;&quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">ASST=&quot;&quot;&quot;[&#123;&quot;摘录&quot;：&quot;模型在这里写摘录&quot;&#125;，</span><br><span class="line">…</span><br><span class="line">&#123;&quot;摘录&quot;：&quot;模型在这里写另一个摘录&quot;&#125;]&quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">USER=&quot;&quot;&quot;还有更多相关的摘录吗？注意不要重复摘录。还要确保摘录包含解释它们所需的所有相关上下文——换句话说，不要摘录缺少重要上下文的小片段。</span><br><span class="line">&quot;&quot;&quot;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="2-4-将复杂任务拆分为更简单的子任务"><a href="#2-4-将复杂任务拆分为更简单的子任务" class="headerlink" title="2.4 将复杂任务拆分为更简单的子任务"></a>2.4 将复杂任务拆分为更简单的子任务</h3><ul>
+<li><p>[开发者策略] 使用意图分类来识别与用户查询最相关的指令，这条策略直接说不好理解。</p>
+<p>举个例子：在客服场景下，直接问模型“我连不上网了”模型需要从查找整个知识库，去匹配连不上网了该怎么办。将这个任务进行拆解，第一步根据用户的问题，来判断这个问题对应的是预先设定好的哪个类别的服务</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">SYSTEM=&#x27;&#x27;&#x27;您将获得客户服务查询。将每个查询分类为主要类别和次要类别。以json格式提供带有键的输出：主要和次要。</span><br><span class="line"></span><br><span class="line">主要类别：计费、技术支持、账户管理或一般查询。</span><br><span class="line"></span><br><span class="line">计费二级类别：</span><br><span class="line">-取消订阅或升级</span><br><span class="line"></span><br><span class="line">技术支持二级类别：</span><br><span class="line">-故障排除</span><br><span class="line"></span><br><span class="line">账户管理二级类别：</span><br><span class="line">-密码重置</span><br><span class="line"></span><br><span class="line">一般查询二级类别：</span><br><span class="line">-产品信息</span><br><span class="line">-和人类说话&#x27;&#x27;&#x27;</span><br><span class="line"></span><br><span class="line">USER=&#x27;&#x27;&#x27;我连不上网络怎么办&#x27;&#x27;&#x27;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>这一步会对输入的问题进行意图判断，假设认为用户要找”技术支持&#x2F;故障排除”，接下来根据第一步得到的结果找到该类别下的内容，将该内容作为上下文，用来回答用户的问题。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">SYSTEM=&#x27;&#x27;&#x27;您将获得需要在技术支持上下文中进行故障排除的客户服务查询。通过以下方式帮助用户：</span><br><span class="line"></span><br><span class="line">-请他们检查所有进出路由器的电缆是否已连接。请注意，随着时间的推移，电缆松动是很常见的。</span><br><span class="line">-如果所有电缆都已连接并且问题仍然存在，请询问他们使用的路由器型号</span><br><span class="line">-现在您将建议他们如何重新启动设备：</span><br><span class="line">--如果型号是MTD-327J，建议他们按下红色按钮并按住5秒钟，然后等待5分钟再测试连接。</span><br><span class="line">-如果客户的问题在重新启动设备并等待5分钟后仍然存在，请通过输出&#123;“请求IT支持”&#125;将他们连接到IT支持。</span><br><span class="line">-如果用户开始问与此主题无关的问题，请确认他们是否愿意结束当前关于故障排除的聊天并根据以下方案对他们的请求进行分类：</span><br><span class="line"></span><br><span class="line">&lt;技术支持/故障排除&gt;&#x27;&#x27;&#x27;</span><br><span class="line"></span><br><span class="line">USER=我连不上网络怎么办</span><br></pre></td></tr></table></figure>
+
+<p>通过将任务拆解，可以有效提升准确率并减少上下文的长度。</p>
+</li>
+<li><p>[开发者策略] 长文本对话，总结或者过滤之前的对话或者使用RAG方案</p>
+<p>因为模型具有固定的上下文长度，因此用户和助手之间的对话无法无限期地继续，一般的解决办法是：</p>
+<ul>
+<li><p>总结对话中的历史记录。一旦输入的大小达到预定的阈值长度，这可能会触发总结部分对话的查询，并且先前对话的摘要可以作为系统消息的一部分包括在内；</p>
+</li>
+<li><p>或者，可以在整个对话过程中在后台异步总结之前的对话；</p>
+</li>
+<li><p>或者，把过去的所有聊天记录存成向量库，后续跟用户对话的时候动态查询embedding[5]，这里设计要如何进行特征压缩和信息嵌入；</p>
+</li>
+</ul>
+</li>
+<li><p>[开发者策略] 分段总结长文档并递归构建完整摘要</p>
+<p>让大模型总结一本书，肯定是超Token上限了，所以可以使用一系列查询来总结文档的每个部分。章节摘要可以连接和总结，生成摘要的摘要。这个过程可以递归地进行，直到总结整个文档。openai对实现方案进行了详细的阐述[6]。</p>
+<blockquote>
+<p>Our model works by first summarizing small sections of a book, then summarizing those summaries into a higher-level summary, and so on.</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="2-5-使用外部工具"><a href="#2-5-使用外部工具" class="headerlink" title="2.5 使用外部工具"></a>2.5 使用外部工具</h3><p>对于一些数学，查天气之类的问题，外部的工具可以获得稳定且正确的结果。LLM擅长的是逻辑推理，擅长写公式或者function但是并不是擅长具体执行。那最优的办法是，让LLM来告知该怎么做，拿到代码或者执行语句之后使用专业的软件去执行，只让大模型做一个答案组装的工作就够了。</p>
+<ul>
+<li>RAG技术的使用，将信息检索的工作外放给专门的向量模型来执行（不在这里赘述）</li>
+<li>使用代码执行来进行更准确的计算或调用外部API</li>
+<li>[开发者策略]给模型提供特定的功能[9]</li>
+</ul>
+<h3 id="2-6-开发者策略-系统的测试变更-10"><a href="#2-6-开发者策略-系统的测试变更-10" class="headerlink" title="2.6 [开发者策略]系统的测试变更[10]"></a>2.6 [开发者策略]系统的测试变更[10]</h3><p>一条新指令或一个新设计是让你的系统变得更好还是更坏。看几个例子可能会暗示哪个更好，但在样本量较小的情况下，很难区分真正的改进还是随机的运气。也许这种变化有助于某些输入的性能，但会损害其他输入的性能[10]。那么如何评估呢？</p>
+<h2 id="3-实践派"><a href="#3-实践派" class="headerlink" title="3. 实践派"></a>3. 实践派</h2><h3 id="3-1-生成引文格式"><a href="#3-1-生成引文格式" class="headerlink" title="3.1 生成引文格式"></a>3.1 生成引文格式</h3><p>在基于RAG的请求中，让模型能够数据出带引文编号的格式。这个考验的是prompt编写能力和模型的指令追随能力，此外为了提升模型的生产准确性，会使用fewshot。在论文[2]中给出了好用的prompt模板。</p>
+<ul>
+<li><strong>Instruction</strong> <strong>for</strong> <strong>VANILLA.</strong></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Instruction: Write an accurate, engaging, and concise answer for the given question using only the provided search results (some of which might be irrelevant) and cite them properly. Use an unbiased and journalistic tone. Always cite for any factual claim. When citing several search results, use [1][2][3]. Cite at least one document and at most three documents in each sentence. If multiple documents support the sentence, only cite a minimum sufficient subset of the documents.</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>Short instruction</strong> <strong>for</strong> <strong>VANILLA.</strong></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Instruction: Write a high-quality answer for the given question using only the provided search results and cite them properly using [1][2][3].</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>在<strong>VANILLA</strong>基础上扩展出中文模板</p>
+<p>在下面的模板中可以看到，坚定的贯穿了理论中的各种prompt策略：准确的表达，给出例子。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">你是一个专业，聪明的汽车助手。使用提供的参考内容（其中一些可能无关，参考内容在两个&#x27;===&#x27;之间）编写用户给定问题的准确、简洁的答案，并确保正确引用。要使用无偏见的新闻语气。对任何事实主张都应提供引用。在引用多个搜索结果时，使用[1][2][3]。在每个句子中，至少引用1个文档，最多引用3个文档。如果多个文档支持这个句子，只引用最少的足够的文档子集。如果连续的句子都引用同一个文档，那么只在最后1个句子处引用文档。如果所有的参考内容都与给定的问题不相关，那么不依赖参考内容进行回答。</span><br><span class="line"></span><br><span class="line">按照下面给出的两个例子进行生成</span><br><span class="line"></span><br><span class="line">示例1开始</span><br><span class="line">参考内容如下：</span><br><span class="line">===</span><br><span class="line">参考内容[0] (标题:提示信息；摘要:排放控制系统因发动机型号不同会有差异。；作者:无)：排放控制系统因发动机型号不同会有差异，具体配备请以实车为准。禁止对发动机或排放控制系统的任何部件进行改装。</span><br><span class="line">参考内容[1] (标题:无；摘要:涡轮增压和自然吸气发动机的动力表现差异，以及昂科威和自由光在外观和尺寸上的差异。；作者:无)：涡轮PK自吸 有人觉得带“T”的发动机动力表现够强劲，再加上不大的排气量也能保证较低的油耗；又有人觉得涡轮增压发动机或多或少会在低转速时遇到动力迟滞，不如自然吸气发动机来的平顺。</span><br><span class="line">===</span><br><span class="line">参考内容全部结束。</span><br><span class="line"></span><br><span class="line">用户给定的问题：排放控制系统是否会因为发动机型号不同而有差异？各有什么优势?</span><br><span class="line">回答：排放控制系统会因发动机型号不同而有差异[0]。例如，涡轮增压发动机动力表现强劲，排气量小可以保证较低的油耗；但可能在低转速时遇到动力迟滞。相比之下，自然吸气发动机运行更平顺[1]。具体的设备配置需要以实车为准[0]。另外，对发动机或排放控制系统的任何部件进行改装是被禁止的[0]。</span><br><span class="line">示例1结束</span><br><span class="line"></span><br><span class="line">示例2开始</span><br><span class="line">参考内容如下：</span><br><span class="line">===</span><br><span class="line">参考内容[0] (标题:提示信息；摘要:排放控制系统因发动机型号不同会有差异。；作者:无)：排放控制系统因发动机型号不同会有差异，具体配备请以实车为准。禁止对发动机或排放控制系统的任何部件进行改装。</span><br><span class="line">参考内容[1] (标题:无；摘要:涡轮增压和自然吸气发动机的动力表现差异。；作者:无)：涡轮PK自吸 有人觉得带“T”的发动机动力表现够强劲，再加上不大的排气量也能保证较低的油耗；又有人觉得涡轮增压发动机或多或少会在低转速时遇到动力迟滞</span><br><span class="line">===</span><br><span class="line">参考内容全部结束。</span><br><span class="line"></span><br><span class="line">燃油车有什么优势</span><br><span class="line">回答：燃油车可能的优势包括更广泛的加油站网络、更长的驾驶距离（在需要加油/充电前）和更短的“加油”时间。然而，具体的优势可能取决于特定的车型和驾驶条件。</span><br><span class="line">示例2结束</span><br><span class="line"></span><br><span class="line">参考内容如下：</span><br><span class="line">===</span><br><span class="line">&#123;refers&#125;</span><br><span class="line">===</span><br><span class="line">参考内容全部结束。</span><br><span class="line"></span><br><span class="line">用户给定的问题：&#123;question&#125;</span><br><span class="line">回答：</span><br><span class="line">&quot;&quot;&quot;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="3-2-使用LLM来作为evaluator"><a href="#3-2-使用LLM来作为evaluator" class="headerlink" title="3.2 使用LLM来作为evaluator"></a>3.2 使用LLM来作为evaluator</h3><p>在很多场景下会使用GPT模型作为evaluator，来对比来对于同一个问题的两个回答AB的优劣，在这种AB对比的场景下，为了消除位置偏见，在[3]给出了一个模板，用来解决这种情况。对于一条数据，会进行两个验证，分别是A在前和B在前，使用GPT模型对A,B进行两次打分，取两次打分的均值。prompt的设计可以参考下面代码。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">gen_prompt</span>(<span class="params">ques, ans1, ans2</span>):</span><br><span class="line">    sys_prompt = <span class="string">&#x27;You are a helpful and precise assistant for checking the quality of the answer.&#x27;</span></span><br><span class="line">    prompt_template = <span class="string">&quot;[Question]\n&#123;question&#125;\n\n[The Start of Assistant 1&#x27;s Answer]\n&#123;answer_1&#125;\n[The End of Assistant 1&#x27;s Answer]\n\n[The Start of Assistant 2&#x27;s Answer]\n&#123;answer_2&#125;\n[The End of Assistant 2&#x27;s Answer]\n\n[System]\n&#123;prompt&#125;\n&quot;</span></span><br><span class="line">    default_prompt =  <span class="string">&quot;&quot;&quot;We would like to request your feedback on the performance of two AI assistants in response to the user question displayed above.</span></span><br><span class="line"><span class="string">    Please rate the helpfulness, relevance, accuracy, level of details of their responses. </span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Each assistant receives an overall score on a scale of 1 to 10, where a higher score indicates better overall performance.</span></span><br><span class="line"><span class="string">    Please first provide a comprehensive explanation of your evaluation, avoiding any potential bias and ensuring that the order in which the responses were presented does not affect your judgment. </span></span><br><span class="line"><span class="string">    Then, output two lines indicating the scores for Assistant 1 and 2, respectively.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Output with the following format:</span></span><br><span class="line"><span class="string">    Evaluation evidence: &lt;your evluation explanation here&gt;</span></span><br><span class="line"><span class="string">    Score of the Assistant 1: &lt;score&gt;</span></span><br><span class="line"><span class="string">    Score of the Assistant 2: &lt;score&gt;&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> sys_prompt, prompt_template.<span class="built_in">format</span>(question=ques, answer_1=ans1, answer_2=ans2, prompt=default_prompt)</span><br></pre></td></tr></table></figure>
+
+<p>这个模板可以扩展成只包含一个答案的评估，代码如下所示</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">gen_prompt</span>(<span class="params">ques, ans1</span>):</span><br><span class="line">    sys_prompt = <span class="string">&quot;You are a helpful and precise assistant for checking the quality of the answer.&quot;</span></span><br><span class="line">    prompt_template = <span class="string">&quot;[Question]\n&#123;question&#125;\n\n[The Start of Assistant  Answer]\n&#123;answer_1&#125;\n[The End of Assistant  Answer]\n\n[System]\n&#123;prompt&#125;\n&quot;</span></span><br><span class="line"></span><br><span class="line">    default_prompt = <span class="string">&quot;&quot;&quot;We would like to request your feedback on the performance of two AI assistants in response to the user question displayed above.</span></span><br><span class="line"><span class="string">    Please rate the helpfulness, relevance, accuracy, level of details of their responses.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    The assistant receives an overall score on a scale of 1 to 10, where a higher score indicates better overall performance.</span></span><br><span class="line"><span class="string">    Please first provide a comprehensive explanation of your evaluation, avoiding any potential bias and ensuring that the order in which the responses were presented does not affect your judgment.</span></span><br><span class="line"><span class="string">    Then, output one line indicating the score for Assistant&#x27;s response.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Output with the following format:</span></span><br><span class="line"><span class="string">    Evaluation evidence: </span></span><br><span class="line"><span class="string">    Score of the Assistant : &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> sys_prompt, prompt_template.<span class="built_in">format</span>(</span><br><span class="line">        question=ques, answer_1=ans1, prompt=default_prompt</span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-query改写"><a href="#3-3-query改写" class="headerlink" title="3.3 query改写"></a>3.3 query改写</h3><pre><code>这个任务比较简单，要标明改写的用于，例如是用来做搜索，还是用来做主题生成。列举一个rag-fusion中来进行query扩充的prompt
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">rag_fusion_query_rewrite_prompt = <span class="string">&quot;&quot;&quot;你是一个聪明的智能助手，可以根据单个输入查询语句生成多个与它相关的搜索查询语句。下面根据用户的问题生成3个用于查询的相关问题。要求逐行显示。</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">约定生成的回答格式为：</span></span><br><span class="line"><span class="string">1. answer1</span></span><br><span class="line"><span class="string">2. answer2</span></span><br><span class="line"><span class="string">...</span></span><br><span class="line"><span class="string">N. answerN</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">用户的问题为:&#123;question&#125;</span></span><br><span class="line"><span class="string">生成回答:</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## from https://github.com/Raudaschl/rag-fusion/blob/master/main.py#L16</span></span><br><span class="line">rag_fusion_prompt_en=<span class="string">&quot;&quot;&quot;You are a helpful assistant that generates multiple search queries based on a single input query.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Generate multiple search queries related to: &#123;question&#125;</span></span><br><span class="line"><span class="string">OUTPUT (4 querys):</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-4-…"><a href="#3-4-…" class="headerlink" title="3.4 …"></a>3.4 …</h3><h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>OpenAI PromptEngineering：<a href="https://platform.openai.com/docs/guides/prompt-engineering">https://platform.openai.com/docs/guides/prompt-engineering</a></li>
+<li>OpenAI的官方Prompt工程指南详解<a href="https://mp.weixin.qq.com/s/jOU2qT5o88tuZC1p6vLkJw">https://mp.weixin.qq.com/s/jOU2qT5o88tuZC1p6vLkJw</a></li>
+<li>ALCE: <a href="https://arxiv.org/pdf/2305.14627.pdf">https://arxiv.org/pdf/2305.14627.pdf</a> </li>
+<li>FairEval：<a href="https://github.com/i-Eval/FairEval">https://github.com/i-Eval/FairEval</a></li>
+<li><a href="https://platform.openai.com/docs/guides/prompt-engineering/tactic-use-embeddings-based-search-to-implement-efficient-knowledge-retrieval">https://platform.openai.com/docs/guides/prompt-engineering/tactic-use-embeddings-based-search-to-implement-efficient-knowledge-retrieval</a></li>
+<li><a href="https://openai.com/research/summarizing-books">https://openai.com/research/summarizing-books</a></li>
+<li><a href="https://platform.openai.com/docs/guides/prompt-engineering/tactic-use-inner-monologue-or-a-sequence-of-queries-to-hide-the-model-s-reasoning-process">https://platform.openai.com/docs/guides/prompt-engineering/tactic-use-inner-monologue-or-a-sequence-of-queries-to-hide-the-model-s-reasoning-process</a></li>
+<li><a href="https://www.promptingguide.ai/zh/techniques">https://www.promptingguide.ai/zh/techniques</a></li>
+<li><a href="https://cookbook.openai.com/examples/how_to_call_functions_with_chat_models">https://cookbook.openai.com/examples/how_to_call_functions_with_chat_models</a></li>
+<li><a href="https://platform.openai.com/docs/guides/prompt-engineering/strategy-test-changes-systematically">https://platform.openai.com/docs/guides/prompt-engineering/strategy-test-changes-systematically</a></li>
+<li></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>赏杯咖啡！</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat.jpeg" alt="ShiXiaofeng 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpeg" alt="ShiXiaofeng 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>ShiXiaofeng
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://xiaofengshi.com/2024/02/01/Survey-PromptEngineering/" title="[Survey]PromptEngineering">http://xiaofengshi.com/2024/02/01/Survey-PromptEngineering/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/LLM/" rel="tag"># LLM</a>
+              <a href="/tags/prompt/" rel="tag"># prompt</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2024/02/01/%E8%B5%84%E6%BA%90-%E4%BC%98%E8%B4%A8%E9%98%BF%E9%87%8C%E4%BA%91%E7%9B%98%E8%B5%84%E6%BA%90%E6%B1%87%E6%80%BB/" rel="next" title="[资源]-优质阿里云盘资源汇总">
+      [资源]-优质阿里云盘资源汇总 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E4%BB%80%E4%B9%88%E6%98%AFPromptEngineering"><span class="nav-number">1.</span> <span class="nav-text">1. 什么是PromptEngineering</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E7%90%86%E8%AE%BA%E6%B4%BE"><span class="nav-number">2.</span> <span class="nav-text">2. 理论派</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E6%B8%85%E6%99%B0%E7%9A%84%E6%8C%87%E4%BB%A4"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 清晰的指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E6%8F%90%E4%BE%9B%E5%8F%82%E8%80%83%E4%B8%8A%E4%B8%8B%E6%96%87"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 提供参考上下文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-%E8%AE%A9%E6%A8%A1%E5%9E%8B%E6%80%9D%E8%80%83-think-step-by-step"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 让模型思考(think step by step)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-%E5%B0%86%E5%A4%8D%E6%9D%82%E4%BB%BB%E5%8A%A1%E6%8B%86%E5%88%86%E4%B8%BA%E6%9B%B4%E7%AE%80%E5%8D%95%E7%9A%84%E5%AD%90%E4%BB%BB%E5%8A%A1"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 将复杂任务拆分为更简单的子任务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-%E4%BD%BF%E7%94%A8%E5%A4%96%E9%83%A8%E5%B7%A5%E5%85%B7"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 使用外部工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-6-%E5%BC%80%E5%8F%91%E8%80%85%E7%AD%96%E7%95%A5-%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%B5%8B%E8%AF%95%E5%8F%98%E6%9B%B4-10"><span class="nav-number">2.6.</span> <span class="nav-text">2.6 [开发者策略]系统的测试变更[10]</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%AE%9E%E8%B7%B5%E6%B4%BE"><span class="nav-number">3.</span> <span class="nav-text">3. 实践派</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E7%94%9F%E6%88%90%E5%BC%95%E6%96%87%E6%A0%BC%E5%BC%8F"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 生成引文格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E4%BD%BF%E7%94%A8LLM%E6%9D%A5%E4%BD%9C%E4%B8%BAevaluator"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 使用LLM来作为evaluator</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-query%E6%94%B9%E5%86%99"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 query改写</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-%E2%80%A6"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 …</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">4.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ShiXiaofeng"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">ShiXiaofeng</p>
+  <div class="site-description" itemprop="description">LLM,搜索,数据挖掘,深度学习相关技术记录分享</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">48</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">54</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xiaofengShi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xiaofengShi" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sxf1052566766@163.com" title="E-Mail → mailto:sxf1052566766@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ShiXiaofeng</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v7.1.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+  
+      
+<script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el: '#valine-comments',
+      verify: false,
+      notify: false,
+      appId: 'rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz',
+      appKey: 'zJasiQnAqgUwf4kiHhHyXwOP',
+      placeholder: "Leave Your Message and Contact Details",
+      avatar: 'mm',
+      meta: guest,
+      pageSize: '10' || 10,
+      visitor: true,
+      lang: '' || 'zh-cn',
+      path: location.pathname,
+      recordIP: false,
+      serverURLs: ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

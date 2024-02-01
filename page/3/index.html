@@ -228,6 +228,431 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-ShuffleNet/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ShiXiaofeng">
+      <meta itemprop="description" content="LLM,搜索,数据挖掘,深度学习相关技术记录分享">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="做一个有用的人">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-ShuffleNet/" class="post-title-link" itemprop="url">深度学习-ConvNet-Shufflenet</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-02-09 15:06:18" itemprop="dateCreated datePublished" datetime="2020-02-09T15:06:18+08:00">2020-02-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-02-16 21:49:26" itemprop="dateModified" datetime="2020-02-16T21:49:26+08:00">2020-02-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/CV/" itemprop="url" rel="index">
+                    <span itemprop="name">CV</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-ShuffleNet/" class="post-meta-item leancloud_visitors" data-flag-title="深度学习-ConvNet-Shufflenet" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-ShuffleNet/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-ShuffleNet/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>本篇主要分析轻量化Conv-ShuffleNet</p>
+<img src="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-ShuffleNet/shufflenetv2-block.png" class="">
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-ShuffleNet/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-MnasNet/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ShiXiaofeng">
+      <meta itemprop="description" content="LLM,搜索,数据挖掘,深度学习相关技术记录分享">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="做一个有用的人">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-MnasNet/" class="post-title-link" itemprop="url">深度学习-ConvNet-MnasNet</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-02-09 14:56:52 / 修改时间：15:01:33" itemprop="dateCreated datePublished" datetime="2020-02-09T14:56:52+08:00">2020-02-09</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/CV/" itemprop="url" rel="index">
+                    <span itemprop="name">CV</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-MnasNet/" class="post-meta-item leancloud_visitors" data-flag-title="深度学习-ConvNet-MnasNet" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-MnasNet/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-MnasNet/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-EfficientNet/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ShiXiaofeng">
+      <meta itemprop="description" content="LLM,搜索,数据挖掘,深度学习相关技术记录分享">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="做一个有用的人">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-EfficientNet/" class="post-title-link" itemprop="url">深度学习-ConvNet-EfficientNet</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-02-09 11:48:15" itemprop="dateCreated datePublished" datetime="2020-02-09T11:48:15+08:00">2020-02-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-02-10 13:45:52" itemprop="dateModified" datetime="2020-02-10T13:45:52+08:00">2020-02-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/CV/" itemprop="url" rel="index">
+                    <span itemprop="name">CV</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-EfficientNet/" class="post-meta-item leancloud_visitors" data-flag-title="深度学习-ConvNet-EfficientNet" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-EfficientNet/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-EfficientNet/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <img src="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-EfficientNet/efficientnet-params-acc.png" class="">
+
+<p>上图为不同模型的参数量和模型ACC曲线，可以看到和EfficientNet对比的网络包含ResNet，SENet，GPipe，Inception，NASNet，DenseNet等目前的主流网络，并且处于领先位置。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-EfficientNet/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2020/02/05/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Convolution-Summary/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ShiXiaofeng">
+      <meta itemprop="description" content="LLM,搜索,数据挖掘,深度学习相关技术记录分享">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="做一个有用的人">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/02/05/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Convolution-Summary/" class="post-title-link" itemprop="url">深度学习-Convolution-Summary</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-02-05 21:56:11" itemprop="dateCreated datePublished" datetime="2020-02-05T21:56:11+08:00">2020-02-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-02-09 11:25:15" itemprop="dateModified" datetime="2020-02-09T11:25:15+08:00">2020-02-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/02/05/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Convolution-Summary/" class="post-meta-item leancloud_visitors" data-flag-title="深度学习-Convolution-Summary" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/02/05/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Convolution-Summary/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/02/05/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Convolution-Summary/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <img src="/2020/02/05/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Convolution-Summary/convs.png" class="" title="convolution">
+
+<p>本篇主要总结一下卷积的不同的方式以特点，包括普通卷积，反卷积，空洞卷积，深度可分离卷积，可变形卷积等，如果有更新的方式出来了或者我看到了，继续更新在此。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/02/05/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Convolution-Summary/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2020/02/03/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-MobileNetV1-V3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -890,454 +1315,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2019/02/25/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="ShiXiaofeng">
-      <meta itemprop="description" content="LLM,搜索,数据挖掘,深度学习相关技术记录分享">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="做一个有用的人">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/02/25/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF/" class="post-title-link" itemprop="url">机器学习-朴素贝叶斯</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-02-25 15:22:57" itemprop="dateCreated datePublished" datetime="2019-02-25T15:22:57+08:00">2019-02-25</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-02-26 11:29:14" itemprop="dateModified" datetime="2019-02-26T11:29:14+08:00">2019-02-26</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index">
-                    <span itemprop="name">机器学习</span>
-                  </a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF/" itemprop="url" rel="index">
-                    <span itemprop="name">朴素贝叶斯</span>
-                  </a>
-                </span>
-            </span>
-
-          
-            <span id="/2019/02/25/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF/" class="post-meta-item leancloud_visitors" data-flag-title="机器学习-朴素贝叶斯" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2019/02/25/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2019/02/25/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>朴素贝叶斯从是基于贝叶斯定理和条件独立性假设的一种分类器，是一种基于概率统计的分类方法。对于给定的数据，基于条件独立性假设学习输入和输出的联合概率分布，然后根据给定的输入数据利用贝叶斯定理求解最大的后验概率的的输出类别，是一种非常常见的分类算法。</p>
-<p>对于贝叶斯定理，实际上就是求解条件概率的方法<br>$$<br>P(A | B)&#x3D;\frac{P(B | A)P(A)}{P(B)}<br>$$<br>$P(A)​$就是先验概率，是事件A发生之前事件B发生的概率</p>
-<p>$P(A|B)$是后验概率，是事件B发生以后发生事件A的概率，也是条件概率</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/02/25/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="ShiXiaofeng">
-      <meta itemprop="description" content="LLM,搜索,数据挖掘,深度学习相关技术记录分享">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="做一个有用的人">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/" class="post-title-link" itemprop="url">深度学习-对抗生成网络</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-02-23 20:23:04" itemprop="dateCreated datePublished" datetime="2019-02-23T20:23:04+08:00">2019-02-23</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-03-05 17:02:38" itemprop="dateModified" datetime="2019-03-05T17:02:38+08:00">2019-03-05</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index">
-                    <span itemprop="name">深度学习</span>
-                  </a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Gan/" itemprop="url" rel="index">
-                    <span itemprop="name">Gan</span>
-                  </a>
-                </span>
-            </span>
-
-          
-            <span id="/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/" class="post-meta-item leancloud_visitors" data-flag-title="深度学习-对抗生成网络" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>GAN(Generative Adversary Networks)的思想是是一种二人零和博弈思想（two-player game），博弈双方的利益之和是一个常数，比如两个人掰手腕，假设总的空间是一定的，你的力气大一点，那你就得到的空间多一点，相应的我的空间就少一点，相反我力气大我就得到的多一点，但有一点是确定的就是，我两的总空间是一定的，这就是二人博弈，但是总利益是一定的。</p>
-<p>引申到GAN里面就是可以看成，GAN中有两个这样的博弈者，一个人名字是生成模型(G)，另一个人名字是判别模型(D)。他们各自有各自的功能。</p>
-<img src="/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/gans.jpg" class="" title="Gan">
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2019/02/15/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-NLP-Attention_is_all_you_need/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="ShiXiaofeng">
-      <meta itemprop="description" content="LLM,搜索,数据挖掘,深度学习相关技术记录分享">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="做一个有用的人">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/02/15/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-NLP-Attention_is_all_you_need/" class="post-title-link" itemprop="url">深度学习-NLP-Attention_is_all_you_need</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-02-15 17:42:31" itemprop="dateCreated datePublished" datetime="2019-02-15T17:42:31+08:00">2019-02-15</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-02-15 16:55:07" itemprop="dateModified" datetime="2023-02-15T16:55:07+08:00">2023-02-15</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index">
-                    <span itemprop="name">深度学习</span>
-                  </a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/seq2seq/" itemprop="url" rel="index">
-                    <span itemprop="name">seq2seq</span>
-                  </a>
-                </span>
-            </span>
-
-          
-            <span id="/2019/02/15/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-NLP-Attention_is_all_you_need/" class="post-meta-item leancloud_visitors" data-flag-title="深度学习-NLP-Attention_is_all_you_need" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2019/02/15/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-NLP-Attention_is_all_you_need/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2019/02/15/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-NLP-Attention_is_all_you_need/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Transformer是在2017年的Google发布的论文《Attention is all you need》中提出，主要用于解决RNN相关网络无法捕获序列的长期依赖，以及网络无法并行化的问题，其网络结构示意图如下</p>
-<p><img src="/transformer_model.png" alt="transformer_model"></p>
-<p>从示意图中可以看出在Transformer中包含多个组件，分别为Multi-Head Attention, Masked Multi-Head Attention, Add, Norm, Feed Forward, Position Encoding，会在接下来的内容中结合Transformer的前向传播过程依次解释。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/02/15/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-NLP-Attention_is_all_you_need/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2019/02/14/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-CTC%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="ShiXiaofeng">
-      <meta itemprop="description" content="LLM,搜索,数据挖掘,深度学习相关技术记录分享">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="做一个有用的人">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/02/14/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-CTC%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/" class="post-title-link" itemprop="url">深度学习-CTC算法原理</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-02-14 10:47:32" itemprop="dateCreated datePublished" datetime="2019-02-14T10:47:32+08:00">2019-02-14</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-02-03 21:34:13" itemprop="dateModified" datetime="2020-02-03T21:34:13+08:00">2020-02-03</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index">
-                    <span itemprop="name">深度学习</span>
-                  </a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/seq2seq/" itemprop="url" rel="index">
-                    <span itemprop="name">seq2seq</span>
-                  </a>
-                </span>
-            </span>
-
-          
-            <span id="/2019/02/14/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-CTC%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/" class="post-meta-item leancloud_visitors" data-flag-title="深度学习-CTC算法原理" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2019/02/14/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-CTC%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2019/02/14/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-CTC%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>本来以前深入看过CTC的相关论文，前段时间有人问我相关算法原理，瞬间懵逼，以前看过的东西愣是一点没记起来，这就很尴尬了，本人在ocr任务的文字识别中还用过相关的解码方式，一定要搞明白为什么这种方法是可行的。在这里对CTC进行分析和总结，还是验证是否掌握的最好方法就是看能否做到有效的输出，主要参考论文和相关讲解博客。</p>
-<p>先上图</p>
-<img src="/2019/02/14/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-CTC%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/CTC.png" class="" title="CTC对语音进行对齐与文本对齐方式比较">
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/02/14/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-CTC%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1410,20 +1387,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-count">48</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-count">54</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
