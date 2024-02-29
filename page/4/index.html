@@ -228,6 +228,118 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2019/03/06/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Normalization/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ShiXiaofeng">
+      <meta itemprop="description" content="LLM,搜索,数据挖掘,深度学习相关技术记录分享">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="做一个有用的人">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/03/06/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Normalization/" class="post-title-link" itemprop="url">深度学习-Normalization</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-03-06 12:02:30" itemprop="dateCreated datePublished" datetime="2019-03-06T12:02:30+08:00">2019-03-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-16 21:46:21" itemprop="dateModified" datetime="2020-03-16T21:46:21+08:00">2020-03-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Normalization/" itemprop="url" rel="index">
+                    <span itemprop="name">Normalization</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2019/03/06/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Normalization/" class="post-meta-item leancloud_visitors" data-flag-title="深度学习-Normalization" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2019/03/06/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Normalization/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2019/03/06/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Normalization/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>在深度学习领域，往往需要处理复杂的任务场景，一般使用较深层数的模型进行网络设计，这就涉及到复杂困难的模型调参：学习率的设置，权重初始化的设置以及激活函数的设置等。深度学习之所以难以训练，一个重要的原因在神经网络中层与层之间存在着极强的关联性，并且目前绝大部分使用的都是基于梯度下降的方法进行反向传播训练，当网络的底层发生微弱变化时，这些变化会随着层数的增加被放大，意味着对于高层网络要不断进行参数更新以适应底层参数的变化，如此导致了训练的困难，很容易会出现梯度爆炸或者梯度消失的情况，导致模型训练失败。</p>
+<p>本文主要分析深度学习中的各种标准化方法(<strong>BN,LN,IN,GN,WN</strong>)的原理，来帮助实现对深度学习网络的训练。</p>
+<img src="/2019/03/06/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Normalization/normalization.png" class="" title="BN_LN_WN">
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/03/06/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Normalization/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2019/02/25/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1211,118 +1323,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://xiaofengshi.com/2018/11/25/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-EM%E7%AE%97%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="ShiXiaofeng">
-      <meta itemprop="description" content="LLM,搜索,数据挖掘,深度学习相关技术记录分享">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="做一个有用的人">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/11/25/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-EM%E7%AE%97%E6%B3%95/" class="post-title-link" itemprop="url">机器学习-EM算法</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-11-25 21:16:20" itemprop="dateCreated datePublished" datetime="2018-11-25T21:16:20+08:00">2018-11-25</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-01-31 14:00:43" itemprop="dateModified" datetime="2020-01-31T14:00:43+08:00">2020-01-31</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index">
-                    <span itemprop="name">机器学习</span>
-                  </a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/EM/" itemprop="url" rel="index">
-                    <span itemprop="name">EM</span>
-                  </a>
-                </span>
-            </span>
-
-          
-            <span id="/2018/11/25/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-EM%E7%AE%97%E6%B3%95/" class="post-meta-item leancloud_visitors" data-flag-title="机器学习-EM算法" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2018/11/25/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-EM%E7%AE%97%E6%B3%95/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2018/11/25/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-EM%E7%AE%97%E6%B3%95/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><blockquote>
-<p>按照[wiki百科的<a href="(https://zh.wikipedia.org/wiki/%E6%9C%80%E5%A4%A7%E6%9C%9F%E6%9C%9B%E7%AE%97%E6%B3%95)">定义</a>，<code>EM</code>算法被用于寻找，依赖于不可观察的隐形变量的模型中参数的最大似然估计。在<a href="https://zh.wikipedia.org/wiki/%E7%BB%9F%E8%AE%A1">统计</a><a href="https://zh.wikipedia.org/wiki/%E8%AE%A1%E7%AE%97">计算</a>中，<strong>最大期望（EM）算法</strong>是在<a href="https://zh.wikipedia.org/wiki/%E6%A6%82%E7%8E%87%E6%A8%A1%E5%9E%8B">概率模型</a>中寻找<a href="https://zh.wikipedia.org/wiki/%E5%8F%82%E6%95%B0">参数</a><a href="https://zh.wikipedia.org/wiki/%E6%9C%80%E5%A4%A7%E4%BC%BC%E7%84%B6%E4%BC%B0%E8%AE%A1">最大似然估计</a>或者<a href="https://zh.wikipedia.org/w/index.php?title=%E6%9C%80%E5%A4%A7%E5%90%8E%E9%AA%8C%E4%BC%B0%E8%AE%A1&action=edit&redlink=1">最大后验估计</a>的<a href="https://zh.wikipedia.org/wiki/%E7%AE%97%E6%B3%95">算法</a>，其中概率模型依赖于无法观测的<a href="https://zh.wikipedia.org/w/index.php?title=%E9%9A%90%E6%80%A7%E5%8F%98%E9%87%8F&action=edit&redlink=1">隐性变量</a>。最大期望算法经常用在<a href="https://zh.wikipedia.org/wiki/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0">机器学习</a>和<a href="https://zh.wikipedia.org/wiki/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89">计算机视觉</a>的<a href="https://zh.wikipedia.org/wiki/%E6%95%B0%E6%8D%AE%E8%81%9A%E7%B1%BB">数据聚类</a>（Data Clustering）领域。最大期望算法经过两个步骤交替进行计算，第一步是计算期望（E），利用对隐藏变量的现有估计值，计算其最大似然估计值；第二步是最大化（M），最大化在E步上求得的<a href="https://zh.wikipedia.org/wiki/%E6%9C%80%E5%A4%A7%E4%BC%BC%E7%84%B6%E4%BC%B0%E8%AE%A1">最大似然值</a>来计算参数的值。M步上找到的参数估计值被用于下一个E步计算中，这个过程不断交替进行。</p>
-</blockquote>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/11/25/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-EM%E7%AE%97%E6%B3%95/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1395,7 +1395,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">48</span>
+          <span class="site-state-item-count">49</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
