@@ -538,8 +538,8 @@
 <li><p>场景</p>
 <p>对于 Git 来说，<strong>邮箱是识别用户的唯一手段</strong>，所以对于不同的服务商，由于邮箱不同，那么通过邮件名创建的 SSH Key自然是不同的，这时候在不同的服务商之间进行push命令的时候，Git 是不知道使用哪个 SSH Key ，自然导致  push 的失败。场景如下：</p>
 <ul>
-<li>在公司团队使用搭建的 Gitlab 服务，提交邮箱$<a href="mailto:&#x78;&#x78;&#x78;&#64;&#99;&#x6f;&#x6d;&#112;&#97;&#x6e;&#x79;&#46;&#x63;&#x6f;&#109;">&#x78;&#x78;&#x78;&#64;&#99;&#x6f;&#x6d;&#112;&#97;&#x6e;&#x79;&#46;&#x63;&#x6f;&#109;</a>$</li>
-<li>个人 Github 服务，提交邮箱$ <a href="mailto:&#x78;&#x78;&#x78;&#x40;&#49;&#54;&#51;&#46;&#99;&#x6f;&#x6d;">&#x78;&#x78;&#x78;&#x40;&#49;&#54;&#51;&#46;&#99;&#x6f;&#x6d;</a>$</li>
+<li>在公司团队使用搭建的 Gitlab 服务，提交邮箱$<a href="mailto:&#120;&#120;&#120;&#x40;&#99;&#x6f;&#109;&#112;&#x61;&#x6e;&#121;&#46;&#99;&#111;&#109;">&#120;&#120;&#120;&#x40;&#99;&#x6f;&#109;&#112;&#x61;&#x6e;&#121;&#46;&#99;&#111;&#109;</a>$</li>
+<li>个人 Github 服务，提交邮箱$ <a href="mailto:&#x78;&#120;&#120;&#64;&#x31;&#54;&#x33;&#46;&#99;&#x6f;&#x6d;">&#x78;&#120;&#120;&#64;&#x31;&#54;&#x33;&#46;&#99;&#x6f;&#x6d;</a>$</li>
 <li>有两个Github账户，不同的账户想不通的服务器进行提交</li>
 </ul>
 </li>
@@ -2244,6 +2244,15 @@
       </tags>
   </entry>
   <entry>
+    <title>[Survey]LLM-PPO算法原理和实现</title>
+    <url>/2024/02/28/Survey-LLM-PPO%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86%E5%92%8C%E5%AE%9E%E7%8E%B0/</url>
+    <content><![CDATA[<img src="/2024/02/28/Survey-LLM-PPO%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86%E5%92%8C%E5%AE%9E%E7%8E%B0/ppo_pipeline.png" class="" title="ppo-pipeline">
+
+<p>本篇是在印象笔记写的，详细的信息可以从这里跳转</p>
+<p><a href="https://app.yinxiang.com/fx/22b789dc-b169-4cf8-af27-610aebbdeb7a">https://app.yinxiang.com/fx/22b789dc-b169-4cf8-af27-610aebbdeb7a</a></p>
+]]></content>
+  </entry>
+  <entry>
     <title>[Survey]PromptEngineering</title>
     <url>/2024/02/01/Survey-PromptEngineering/</url>
     <content><![CDATA[<h2 id="1-什么是PromptEngineering"><a href="#1-什么是PromptEngineering" class="headerlink" title="1. 什么是PromptEngineering"></a>1. 什么是PromptEngineering</h2><p>所谓prompt工程，就是让LLM模型清晰准确的知道你要干什么，引导模型充分的发掘它的能力上限，类比到人与人之间，就是提升沟通的效率。OpenAI提出了prompt工程的6条原则[1]，在这篇文档里，按照个人的理解，将这部分按照适用场景分成用户和开发者两个部分，一共6条（与openai的6条顺序有所不同）：</p>
@@ -3570,15 +3579,6 @@
 ]]></content>
   </entry>
   <entry>
-    <title>[Survey]LLM-PPO算法原理和实现</title>
-    <url>/2024/02/28/Survey-LLM-PPO%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86%E5%92%8C%E5%AE%9E%E7%8E%B0/</url>
-    <content><![CDATA[<img src="/2024/02/28/Survey-LLM-PPO%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86%E5%92%8C%E5%AE%9E%E7%8E%B0/ppo_pipeline.png" class="" title="ppo-pipeline">
-
-<p>本篇是在印象笔记写的，详细的信息可以从这里跳转</p>
-<p><a href="https://app.yinxiang.com/fx/22b789dc-b169-4cf8-af27-610aebbdeb7a">https://app.yinxiang.com/fx/22b789dc-b169-4cf8-af27-610aebbdeb7a</a></p>
-]]></content>
-  </entry>
-  <entry>
     <title>机器学习-EM算法</title>
     <url>/2018/11/25/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-EM%E7%AE%97%E6%B3%95/</url>
     <content><![CDATA[<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><blockquote>
@@ -4423,21 +4423,6 @@ $$
       </tags>
   </entry>
   <entry>
-    <title>深度学习-ConvNet-MnasNet</title>
-    <url>/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-MnasNet/</url>
-    <content><![CDATA[]]></content>
-      <categories>
-        <category>深度学习</category>
-        <category>CV</category>
-      </categories>
-      <tags>
-        <tag>深度学习</tag>
-        <tag>ConvNet</tag>
-        <tag>CV</tag>
-        <tag>轻量化CNN</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>深度学习-CTC算法原理</title>
     <url>/2019/02/14/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-CTC%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/</url>
     <content><![CDATA[<p>本来以前深入看过CTC的相关论文，前段时间有人问我相关算法原理，瞬间懵逼，以前看过的东西愣是一点没记起来，这就很尴尬了，本人在ocr任务的文字识别中还用过相关的解码方式，一定要搞明白为什么这种方法是可行的。在这里对CTC进行分析和总结，还是验证是否掌握的最好方法就是看能否做到有效的输出，主要参考论文和相关讲解博客。</p>
@@ -4560,6 +4545,135 @@ $$
       <tags>
         <tag>nlp</tag>
         <tag>不定长字符识别</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>深度学习-ConvNet-EfficientNet</title>
+    <url>/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-EfficientNet/</url>
+    <content><![CDATA[<img src="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-EfficientNet/efficientnet-params-acc.png" class="">
+
+<p>上图为不同模型的参数量和模型ACC曲线，可以看到和EfficientNet对比的网络包含ResNet，SENet，GPipe，Inception，NASNet，DenseNet等目前的主流网络，并且处于领先位置。</p>
+<span id="more"></span>
+
+<h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><p>开篇明义，整篇论文一直围绕着下面这张图在进行的</p>
+<hr> Flops-Acc曲线
+
+<img src="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-EfficientNet/efficient-flops-acc.png" class="">
+
+<p>横坐标为模型所需要的算力<code>FLOPS，</code>纵坐标为ACC。在相同的算力需求下，不同的模型策略对应的模型准确率曲线，联合多维度模型优化的策略是优于单个维度优化的策略的。 <hr></p>
+<p>前几年的发展，在模型设计上为了提高模型的准确率，研究学者从模型的宽度，深度和输入分辨率来进行设计研究。在这个论文中，作者提出了一个思考：能否找到一个规范化的神经网络扩展方法可以同时提高网络的准确率和效率。要实现这点，一个很关键的步骤便是如何平衡<strong>宽度、深度和分辨率</strong>这三个维度。从Alexnet到2018年的GPipe，人们不断探寻更高效的模型。</p>
+<table>
+<thead>
+<tr>
+<th align="left">Architecture</th>
+<th align="left">Year</th>
+<th align="left">Accuracy</th>
+<th align="left">Parameters</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">AlexNet</td>
+<td align="left">2012</td>
+<td align="left">56.55%</td>
+<td align="left">62M</td>
+</tr>
+<tr>
+<td align="left">GoogleNet</td>
+<td align="left">2014</td>
+<td align="left">74.8%</td>
+<td align="left">6.8M</td>
+</tr>
+<tr>
+<td align="left">SENet</td>
+<td align="left">2017</td>
+<td align="left">82.7%</td>
+<td align="left">145M</td>
+</tr>
+<tr>
+<td align="left">GPipe</td>
+<td align="left">2018</td>
+<td align="left">84.3%</td>
+<td align="left">557M</td>
+</tr>
+</tbody></table>
+<h2 id="Model-Acc-vs-Model-Size"><a href="#Model-Acc-vs-Model-Size" class="headerlink" title="Model Acc vs Model Size"></a>Model Acc vs Model Size</h2><p>很显然，为了提升模型的准确率，往往会带来更多的模型参数，因此我们在选择模型的时候要考虑模型准确率和模型参数里的trade-off，在图表中可以说GoogleNet是全面碾压AlexNet的，因为不论从准确率还是参数里上，GoogleNet都是更优的，目前我们设计<strong>ConvNet</strong>网络的几个准则</p>
+<h3 id="模型压缩"><a href="#模型压缩" class="headerlink" title="模型压缩"></a>模型压缩</h3><ol>
+<li><p>模型剪枝 </p>
+<p>去掉无法提升模型效率的部分</p>
+</li>
+<li><p>量化 </p>
+<p>从数据类型的角度，比如将<strong>float</strong>转化为<strong>int</strong>，将<strong>float32</strong>转化为<strong>float16</strong>或者<strong>float8</strong>，可以成倍的缩小模型大小</p>
+</li>
+</ol>
+<h3 id="网络搜索"><a href="#网络搜索" class="headerlink" title="网络搜索"></a>网络搜索</h3><p>以<code>MnasNet</code>为例，自动搜索的方法找到最佳的网络深度，卷积内核的宽度，大小等。</p>
+<h3 id="模型缩放"><a href="#模型缩放" class="headerlink" title="模型缩放"></a>模型缩放</h3><p>仍然使用使用标准CNN网络，例如GoogleNet或ResNet，并通过更改网络的宽度和&#x2F;或深度或网络的大小来放大（即使用较大的参数）或缩小（即使用较少的参数）。EfficientNet也是采用的这种方式。</p>
+<h2 id="模型设计"><a href="#模型设计" class="headerlink" title="模型设计"></a>模型设计</h2><p>为了提高模型的效率。扩大网络宽度，深度或分辨率的任何尺寸都可以提高精度，但是对于较大的模型，精度增益会降低。为了追求更好的准确性和效率，在<strong>ConvNet</strong>扩展过程中平衡网络宽度，深度和分辨率的所有维度至关重要。</p>
+<p>关键点就在于：是如何选择应该使网络更深或更宽的范围，或者增加图像分辨率的程度。</p>
+<h3 id="Compound-Scaling复合模型缩放"><a href="#Compound-Scaling复合模型缩放" class="headerlink" title="Compound Scaling复合模型缩放"></a>Compound Scaling复合模型缩放</h3><p>这个是在<code>EfficientNet</code>中提出来的，使用复合系数来原则上均匀地缩放宽度，深度和分辨率。在论文中，为了将三个维度结合起来，作者设计了一个公式<br>$$<br>\begin{array}{l}<br>{\text { depth: } d&#x3D;\alpha^{\phi}} \<br>{\text { width: } w&#x3D;\beta^{\phi}} \<br>{\text { resolution: } r&#x3D;\gamma^{\phi}} \<br>s.t. (\alpha \cdot \beta^{2} \cdot \gamma^{2} \approx 2) \<br>\alpha \geq 1, \beta \geq 1, \gamma \geq 1<br>\end{array}<br>$$<br>按照论文所述</p>
+<blockquote>
+<p>使用$d$表示模型的深度，$w$表示模型宽度，$\gamma$表示模型的输入分辨率对模型准确性和效率的影响。$\alpha, \beta, \gamma$是由网格搜索的方法得到的三个常数，$\phi$是用户指定的参数，用于控制有多少资源可用于模型缩放，而$\alpha, \beta, \gamma$指定如何分别将这些额外资源分配给网络宽度，深度和分辨率。常规卷积运算的<strong>FLOPS</strong>与$d$，$w^2$，$\gamma ^2$成正比，即网络深度加倍将使<strong>FLOPS</strong>加倍，但网络宽度或分辨率加倍将使<strong>FLOPS</strong>增加四倍。 由于卷积运算通常在<strong>ConvNet</strong>中占主导地位，因此按照上述公式符合缩放<strong>ConvNet</strong>将使总<strong>FLOPS</strong>大约增加$\left(\alpha \cdot \beta^{2} \cdot \gamma^{2}\right)^{\phi}$。在论文中建立约束条件，$\alpha \cdot \beta^{2} \cdot \gamma^{2} \approx 2$，这样对于任意网格搜索得到的参数$\alpha, \beta, \gamma$对需要的<strong>FLOPS</strong>算力的影响被限制为$2^{\phi}$。</p>
+</blockquote>
+<h2 id="模型训练"><a href="#模型训练" class="headerlink" title="模型训练"></a>模型训练</h2><p>在EfficientNet中使用的是MnasNet的训练方法，使用的是和MnasNet相同的搜索空间，优化目标为<br>$$<br>A C C(m) \times[F L O P S(m) &#x2F; T]^{w}<br>$$<br>其中$A C C(m)$对应着模型的准确率，$[F L O P S(m) &#x2F; T]^{w}$对应着模型需要的算力，$T$对应着我们一开始设置的需要的算力值，$w&#x3D;-0.07$是控制准确率和算力之间平衡的超参数</p>
+<p>区别于MnasNet的是这里优化的是FLOPS而不是延迟，这是因为模型没有针对专门的设备进行设计，因此使用算力这个值更加合理。经过这中方法，搜索得到模型<strong>EfficientNet-B0</strong>。</p>
+<hr> 模型结构如下图所示
+
+<img src="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-EfficientNet/efficientnet-b0.png" class="">
+
+<hr>
+
+<p>图中的MBConv对应着MobilenetV2中提出的翻转残差模块。可以看到经过MnasNet搜索得到的网络结构跟我们手工设计的网络的确不太一样。</p>
+<p>在固定上面公式的$\phi&#x3D;1$，在约束条件下，经过网格搜索得到最优参数$\alpha&#x3D;1.2，\beta&#x3D;1.1,\gamma&#x3D;1.15$，实际上网格搜索是最暴力的搜索方法，这里不得不说要有强大的计算资源才能进行如此计算。</p>
+<p>个人看这个论文的时候被一张图吸引</p>
+<hr>不同的模型缩放方式对应的激活图
+
+<img src="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-EfficientNet/efficientNet-activation-map.png" class="">
+
+<hr>
+
+<p>这张图展示了在不同的模型策略下，对应的激活图，可以看到</p>
+<ul>
+<li><p>基础模型，区域信息加大，包含很多噪音特征</p>
+</li>
+<li><p>模型加深之后，特征变得稀疏，会集中在相对更明显的物体上</p>
+</li>
+<li><p>模型加宽之后，特征值变得较大，但是区域仍然包含较多噪音</p>
+</li>
+<li><p>增大输入分辨率，特征会集中在单个实体上，但是特征值很少</p>
+</li>
+<li><p>符合缩放模型，特征值具有了三者的优势，特征值变大，并且集中在单个实体上。</p>
+</li>
+</ul>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ul>
+<li><p>论文链接<a href="https://arxiv.org/abs/1905.11946">“EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks”</a></p>
+</li>
+<li><p>官方代码 <a href="https://github.com/tensorflow/tpu/blob/master/models/official/efficientnet/efficientnet_builder.py">https://github.com/tensorflow/tpu/blob/master/models/official/efficientnet/efficientnet_builder.py</a></p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>深度学习</category>
+        <category>CV</category>
+      </categories>
+      <tags>
+        <tag>深度学习</tag>
+        <tag>ConvNet</tag>
+        <tag>CV</tag>
+        <tag>轻量化Conv</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>深度学习-ConvNet-MnasNet</title>
+    <url>/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-MnasNet/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>深度学习</category>
+        <category>CV</category>
+      </categories>
+      <tags>
+        <tag>深度学习</tag>
+        <tag>ConvNet</tag>
+        <tag>CV</tag>
+        <tag>轻量化CNN</tag>
       </tags>
   </entry>
   <entry>
@@ -4949,120 +5063,6 @@ $$
       <tags>
         <tag>深度学习</tag>
         <tag>ConvNet</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>深度学习-ConvNet-EfficientNet</title>
-    <url>/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-EfficientNet/</url>
-    <content><![CDATA[<img src="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-EfficientNet/efficientnet-params-acc.png" class="">
-
-<p>上图为不同模型的参数量和模型ACC曲线，可以看到和EfficientNet对比的网络包含ResNet，SENet，GPipe，Inception，NASNet，DenseNet等目前的主流网络，并且处于领先位置。</p>
-<span id="more"></span>
-
-<h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><p>开篇明义，整篇论文一直围绕着下面这张图在进行的</p>
-<hr> Flops-Acc曲线
-
-<img src="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-EfficientNet/efficient-flops-acc.png" class="">
-
-<p>横坐标为模型所需要的算力<code>FLOPS，</code>纵坐标为ACC。在相同的算力需求下，不同的模型策略对应的模型准确率曲线，联合多维度模型优化的策略是优于单个维度优化的策略的。 <hr></p>
-<p>前几年的发展，在模型设计上为了提高模型的准确率，研究学者从模型的宽度，深度和输入分辨率来进行设计研究。在这个论文中，作者提出了一个思考：能否找到一个规范化的神经网络扩展方法可以同时提高网络的准确率和效率。要实现这点，一个很关键的步骤便是如何平衡<strong>宽度、深度和分辨率</strong>这三个维度。从Alexnet到2018年的GPipe，人们不断探寻更高效的模型。</p>
-<table>
-<thead>
-<tr>
-<th align="left">Architecture</th>
-<th align="left">Year</th>
-<th align="left">Accuracy</th>
-<th align="left">Parameters</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">AlexNet</td>
-<td align="left">2012</td>
-<td align="left">56.55%</td>
-<td align="left">62M</td>
-</tr>
-<tr>
-<td align="left">GoogleNet</td>
-<td align="left">2014</td>
-<td align="left">74.8%</td>
-<td align="left">6.8M</td>
-</tr>
-<tr>
-<td align="left">SENet</td>
-<td align="left">2017</td>
-<td align="left">82.7%</td>
-<td align="left">145M</td>
-</tr>
-<tr>
-<td align="left">GPipe</td>
-<td align="left">2018</td>
-<td align="left">84.3%</td>
-<td align="left">557M</td>
-</tr>
-</tbody></table>
-<h2 id="Model-Acc-vs-Model-Size"><a href="#Model-Acc-vs-Model-Size" class="headerlink" title="Model Acc vs Model Size"></a>Model Acc vs Model Size</h2><p>很显然，为了提升模型的准确率，往往会带来更多的模型参数，因此我们在选择模型的时候要考虑模型准确率和模型参数里的trade-off，在图表中可以说GoogleNet是全面碾压AlexNet的，因为不论从准确率还是参数里上，GoogleNet都是更优的，目前我们设计<strong>ConvNet</strong>网络的几个准则</p>
-<h3 id="模型压缩"><a href="#模型压缩" class="headerlink" title="模型压缩"></a>模型压缩</h3><ol>
-<li><p>模型剪枝 </p>
-<p>去掉无法提升模型效率的部分</p>
-</li>
-<li><p>量化 </p>
-<p>从数据类型的角度，比如将<strong>float</strong>转化为<strong>int</strong>，将<strong>float32</strong>转化为<strong>float16</strong>或者<strong>float8</strong>，可以成倍的缩小模型大小</p>
-</li>
-</ol>
-<h3 id="网络搜索"><a href="#网络搜索" class="headerlink" title="网络搜索"></a>网络搜索</h3><p>以<code>MnasNet</code>为例，自动搜索的方法找到最佳的网络深度，卷积内核的宽度，大小等。</p>
-<h3 id="模型缩放"><a href="#模型缩放" class="headerlink" title="模型缩放"></a>模型缩放</h3><p>仍然使用使用标准CNN网络，例如GoogleNet或ResNet，并通过更改网络的宽度和&#x2F;或深度或网络的大小来放大（即使用较大的参数）或缩小（即使用较少的参数）。EfficientNet也是采用的这种方式。</p>
-<h2 id="模型设计"><a href="#模型设计" class="headerlink" title="模型设计"></a>模型设计</h2><p>为了提高模型的效率。扩大网络宽度，深度或分辨率的任何尺寸都可以提高精度，但是对于较大的模型，精度增益会降低。为了追求更好的准确性和效率，在<strong>ConvNet</strong>扩展过程中平衡网络宽度，深度和分辨率的所有维度至关重要。</p>
-<p>关键点就在于：是如何选择应该使网络更深或更宽的范围，或者增加图像分辨率的程度。</p>
-<h3 id="Compound-Scaling复合模型缩放"><a href="#Compound-Scaling复合模型缩放" class="headerlink" title="Compound Scaling复合模型缩放"></a>Compound Scaling复合模型缩放</h3><p>这个是在<code>EfficientNet</code>中提出来的，使用复合系数来原则上均匀地缩放宽度，深度和分辨率。在论文中，为了将三个维度结合起来，作者设计了一个公式<br>$$<br>\begin{array}{l}<br>{\text { depth: } d&#x3D;\alpha^{\phi}} \<br>{\text { width: } w&#x3D;\beta^{\phi}} \<br>{\text { resolution: } r&#x3D;\gamma^{\phi}} \<br>s.t. (\alpha \cdot \beta^{2} \cdot \gamma^{2} \approx 2) \<br>\alpha \geq 1, \beta \geq 1, \gamma \geq 1<br>\end{array}<br>$$<br>按照论文所述</p>
-<blockquote>
-<p>使用$d$表示模型的深度，$w$表示模型宽度，$\gamma$表示模型的输入分辨率对模型准确性和效率的影响。$\alpha, \beta, \gamma$是由网格搜索的方法得到的三个常数，$\phi$是用户指定的参数，用于控制有多少资源可用于模型缩放，而$\alpha, \beta, \gamma$指定如何分别将这些额外资源分配给网络宽度，深度和分辨率。常规卷积运算的<strong>FLOPS</strong>与$d$，$w^2$，$\gamma ^2$成正比，即网络深度加倍将使<strong>FLOPS</strong>加倍，但网络宽度或分辨率加倍将使<strong>FLOPS</strong>增加四倍。 由于卷积运算通常在<strong>ConvNet</strong>中占主导地位，因此按照上述公式符合缩放<strong>ConvNet</strong>将使总<strong>FLOPS</strong>大约增加$\left(\alpha \cdot \beta^{2} \cdot \gamma^{2}\right)^{\phi}$。在论文中建立约束条件，$\alpha \cdot \beta^{2} \cdot \gamma^{2} \approx 2$，这样对于任意网格搜索得到的参数$\alpha, \beta, \gamma$对需要的<strong>FLOPS</strong>算力的影响被限制为$2^{\phi}$。</p>
-</blockquote>
-<h2 id="模型训练"><a href="#模型训练" class="headerlink" title="模型训练"></a>模型训练</h2><p>在EfficientNet中使用的是MnasNet的训练方法，使用的是和MnasNet相同的搜索空间，优化目标为<br>$$<br>A C C(m) \times[F L O P S(m) &#x2F; T]^{w}<br>$$<br>其中$A C C(m)$对应着模型的准确率，$[F L O P S(m) &#x2F; T]^{w}$对应着模型需要的算力，$T$对应着我们一开始设置的需要的算力值，$w&#x3D;-0.07$是控制准确率和算力之间平衡的超参数</p>
-<p>区别于MnasNet的是这里优化的是FLOPS而不是延迟，这是因为模型没有针对专门的设备进行设计，因此使用算力这个值更加合理。经过这中方法，搜索得到模型<strong>EfficientNet-B0</strong>。</p>
-<hr> 模型结构如下图所示
-
-<img src="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-EfficientNet/efficientnet-b0.png" class="">
-
-<hr>
-
-<p>图中的MBConv对应着MobilenetV2中提出的翻转残差模块。可以看到经过MnasNet搜索得到的网络结构跟我们手工设计的网络的确不太一样。</p>
-<p>在固定上面公式的$\phi&#x3D;1$，在约束条件下，经过网格搜索得到最优参数$\alpha&#x3D;1.2，\beta&#x3D;1.1,\gamma&#x3D;1.15$，实际上网格搜索是最暴力的搜索方法，这里不得不说要有强大的计算资源才能进行如此计算。</p>
-<p>个人看这个论文的时候被一张图吸引</p>
-<hr>不同的模型缩放方式对应的激活图
-
-<img src="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-EfficientNet/efficientNet-activation-map.png" class="">
-
-<hr>
-
-<p>这张图展示了在不同的模型策略下，对应的激活图，可以看到</p>
-<ul>
-<li><p>基础模型，区域信息加大，包含很多噪音特征</p>
-</li>
-<li><p>模型加深之后，特征变得稀疏，会集中在相对更明显的物体上</p>
-</li>
-<li><p>模型加宽之后，特征值变得较大，但是区域仍然包含较多噪音</p>
-</li>
-<li><p>增大输入分辨率，特征会集中在单个实体上，但是特征值很少</p>
-</li>
-<li><p>符合缩放模型，特征值具有了三者的优势，特征值变大，并且集中在单个实体上。</p>
-</li>
-</ul>
-<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ul>
-<li><p>论文链接<a href="https://arxiv.org/abs/1905.11946">“EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks”</a></p>
-</li>
-<li><p>官方代码 <a href="https://github.com/tensorflow/tpu/blob/master/models/official/efficientnet/efficientnet_builder.py">https://github.com/tensorflow/tpu/blob/master/models/official/efficientnet/efficientnet_builder.py</a></p>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>深度学习</category>
-        <category>CV</category>
-      </categories>
-      <tags>
-        <tag>深度学习</tag>
-        <tag>ConvNet</tag>
-        <tag>CV</tag>
-        <tag>轻量化Conv</tag>
       </tags>
   </entry>
   <entry>
@@ -7336,11 +7336,6 @@ yolov3模型结构如下所示
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>[论文精读]ALBEF-跨模态交互前对齐</title>
-    <url>/2023/02/10/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-ALBEF-%E8%B7%A8%E6%A8%A1%E6%80%81%E4%BA%A4%E4%BA%92%E5%89%8D%E5%AF%B9%E9%BD%90/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
     <title>视觉编码器的发展</title>
     <url>/2023/03/30/%E8%A7%86%E8%A7%89%E7%BC%96%E7%A0%81%E5%99%A8%E7%9A%84%E5%8F%91%E5%B1%95/</url>
     <content><![CDATA[<p>本篇主要总结一下当前视觉模型的发展，算是一个论文汇总，主要包含: EVA,PAINTER,VIT22B,MAE,SWIN-T等模型</p>
@@ -7391,6 +7386,11 @@ yolov3模型结构如下所示
         <tag>多模态</tag>
         <tag>深度学习</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>[论文精读]ALBEF-跨模态交互前对齐</title>
+    <url>/2023/02/10/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-ALBEF-%E8%B7%A8%E6%A8%A1%E6%80%81%E4%BA%A4%E4%BA%92%E5%89%8D%E5%AF%B9%E9%BD%90/</url>
+    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>[论文精读]BLIP-多任务结构统一与数据筛选策略</title>
