@@ -538,8 +538,8 @@
 <li><p>场景</p>
 <p>对于 Git 来说，<strong>邮箱是识别用户的唯一手段</strong>，所以对于不同的服务商，由于邮箱不同，那么通过邮件名创建的 SSH Key自然是不同的，这时候在不同的服务商之间进行push命令的时候，Git 是不知道使用哪个 SSH Key ，自然导致  push 的失败。场景如下：</p>
 <ul>
-<li>在公司团队使用搭建的 Gitlab 服务，提交邮箱$<a href="mailto:&#x78;&#120;&#120;&#64;&#99;&#x6f;&#x6d;&#x70;&#97;&#110;&#x79;&#x2e;&#99;&#111;&#109;">&#x78;&#120;&#120;&#64;&#99;&#x6f;&#x6d;&#x70;&#97;&#110;&#x79;&#x2e;&#99;&#111;&#109;</a>$</li>
-<li>个人 Github 服务，提交邮箱$ <a href="mailto:&#120;&#x78;&#x78;&#x40;&#49;&#54;&#51;&#x2e;&#x63;&#111;&#x6d;">&#120;&#x78;&#x78;&#x40;&#49;&#54;&#51;&#x2e;&#x63;&#111;&#x6d;</a>$</li>
+<li>在公司团队使用搭建的 Gitlab 服务，提交邮箱$<a href="mailto:&#120;&#120;&#120;&#64;&#x63;&#x6f;&#109;&#112;&#x61;&#x6e;&#121;&#46;&#x63;&#111;&#109;">&#120;&#120;&#120;&#64;&#x63;&#x6f;&#109;&#112;&#x61;&#x6e;&#121;&#46;&#x63;&#111;&#109;</a>$</li>
+<li>个人 Github 服务，提交邮箱$ <a href="mailto:&#x78;&#x78;&#x78;&#x40;&#x31;&#x36;&#51;&#x2e;&#x63;&#x6f;&#109;">&#x78;&#x78;&#x78;&#x40;&#x31;&#x36;&#51;&#x2e;&#x63;&#x6f;&#109;</a>$</li>
 <li>有两个Github账户，不同的账户想不通的服务器进行提交</li>
 </ul>
 </li>
@@ -2781,143 +2781,6 @@
       </tags>
   </entry>
   <entry>
-    <title>扩散模型</title>
-    <url>/2023/03/30/%E6%89%A9%E6%95%A3%E6%A8%A1%E5%9E%8B/</url>
-    <content><![CDATA[<p>扩散模型是AIGC方向的基础，这里对扩散模型进行学习总结。</p>
-<p>VAE–&gt;DM–&gt;LDM–&gt;StableDiffusion–&gt;AltDiffusion–&gt;MidJourney–&gt;&gt;StableDiffusion 2–&gt;DreamBooth</p>
-]]></content>
-  </entry>
-  <entry>
-    <title>机器学习-EM算法</title>
-    <url>/2018/11/25/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-EM%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><blockquote>
-<p>按照[wiki百科的<a href="(https://zh.wikipedia.org/wiki/%E6%9C%80%E5%A4%A7%E6%9C%9F%E6%9C%9B%E7%AE%97%E6%B3%95)">定义</a>，<code>EM</code>算法被用于寻找，依赖于不可观察的隐形变量的模型中参数的最大似然估计。在<a href="https://zh.wikipedia.org/wiki/%E7%BB%9F%E8%AE%A1">统计</a><a href="https://zh.wikipedia.org/wiki/%E8%AE%A1%E7%AE%97">计算</a>中，<strong>最大期望（EM）算法</strong>是在<a href="https://zh.wikipedia.org/wiki/%E6%A6%82%E7%8E%87%E6%A8%A1%E5%9E%8B">概率模型</a>中寻找<a href="https://zh.wikipedia.org/wiki/%E5%8F%82%E6%95%B0">参数</a><a href="https://zh.wikipedia.org/wiki/%E6%9C%80%E5%A4%A7%E4%BC%BC%E7%84%B6%E4%BC%B0%E8%AE%A1">最大似然估计</a>或者<a href="https://zh.wikipedia.org/w/index.php?title=%E6%9C%80%E5%A4%A7%E5%90%8E%E9%AA%8C%E4%BC%B0%E8%AE%A1&action=edit&redlink=1">最大后验估计</a>的<a href="https://zh.wikipedia.org/wiki/%E7%AE%97%E6%B3%95">算法</a>，其中概率模型依赖于无法观测的<a href="https://zh.wikipedia.org/w/index.php?title=%E9%9A%90%E6%80%A7%E5%8F%98%E9%87%8F&action=edit&redlink=1">隐性变量</a>。最大期望算法经常用在<a href="https://zh.wikipedia.org/wiki/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0">机器学习</a>和<a href="https://zh.wikipedia.org/wiki/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89">计算机视觉</a>的<a href="https://zh.wikipedia.org/wiki/%E6%95%B0%E6%8D%AE%E8%81%9A%E7%B1%BB">数据聚类</a>（Data Clustering）领域。最大期望算法经过两个步骤交替进行计算，第一步是计算期望（E），利用对隐藏变量的现有估计值，计算其最大似然估计值；第二步是最大化（M），最大化在E步上求得的<a href="https://zh.wikipedia.org/wiki/%E6%9C%80%E5%A4%A7%E4%BC%BC%E7%84%B6%E4%BC%B0%E8%AE%A1">最大似然值</a>来计算参数的值。M步上找到的参数估计值被用于下一个E步计算中，这个过程不断交替进行。</p>
-</blockquote>
-<span id="more"></span>
-
-<h2 id="极大似然估计"><a href="#极大似然估计" class="headerlink" title="极大似然估计"></a>极大似然估计</h2><p>首先是最大估计的原理，<a href="https://zh.wikipedia.org/wiki/%E6%9C%80%E5%A4%A7%E4%BC%BC%E7%84%B6%E4%BC%B0%E8%AE%A1">wiki定义如下</a>，进行通俗解释如下</p>
-<h3 id="问题引入"><a href="#问题引入" class="headerlink" title="问题引入"></a>问题引入</h3><p>​	给定了一个样本集<code>D</code>，现在需要进行估计这个样本集的数据对于一个特征的分布(比如估计一个学校的学生的身高分布)，一般情况下<code>D</code>是很大的，因此这时候可以随机抽取一定数量的样本(N)进行样本集数据分布的估计。通常先假设样本集$D$服从一个分布，比如服从高斯分布$N(\mu,\delta^{2})$（<strong>对于极大似然估计，一定是要先假设数据服从某一个分布，如果不知道数据的总体分布则无法使用极大似然估计</strong>），那么这个分布中的参数$\mu$和$\delta$就是需要进行估计并计算的参数。</p>
-<p>​	为了得到总体的样本分布，我们独立的按照概率密度$p(x|\theta)$抽取了N个样本，并组成了样本集$X&#x3D;x_{1},x_{2},…,x_{N}$，其中$x_{i}$表示抽取到的第$i$个人的特征值(例如身高值)，我们通过样本集$X$来估计总体的位置参数$\theta$，这里的概率密度$p(x| \theta)$服从提前假设的高斯分布$N(\mu,\delta^{2})$，其中未知参数为$\theta&#x3D;[\mu,\delta]^{T}$，极大似然的任务也就是去估计这个参数$\theta$</p>
-<h3 id="参数估计"><a href="#参数估计" class="headerlink" title="参数估计"></a>参数估计</h3><ul>
-<li><p>得到样本$X$的概率是多大？</p>
-<p>由于抽取到的样本$X$，是独立抽取到的，也就是说抽取每个的概率为$p(x_{i}|\theta)$，由于样本之间相互独立，因此得到样本集$X$的联合概率为<br>$$<br>L(\theta)&#x3D;L(x_{1},x_{2},…,x_{N};\theta)&#x3D;\prod_{i&#x3D;1}^{N}p(x_{i}|\theta),::::: \theta \in \Theta<br>$$<br>上面这个式子表明了在概率密度参数为$\theta$时，得到$X$这组样本集的概率，这是一个关于$\theta$的函数。</p>
-<p><strong>这个式子反应了在不同概率密度参数取值情况下，得到当前样本集的可能性，因此称作参数$\theta$相对于样本集$X$的似然函数，记作$L(\theta)$，对$L$取对数，可以将原来的连乘变作连加，称作对数似然函数，如下</strong><br>$$<br>H_{\theta}&#x3D;\ln L(\theta)&#x3D;\ln \prod_{i&#x3D;1}^{N}p(x_{i}|\theta)&#x3D;\sum_{i&#x3D;1}^{N} \ln p(x_{i}|\theta)<br>$$</p>
-<ul>
-<li><p>为什么要使用对数似然函数</p>
-<p><strong>之所以使用对数似然函数，是因为把连乘变为连加，求导更加方便；概率累计会产生非常小的数值，有可能会小于计算机可以识别的精度，取对数之后，非常小的数值可以变得相对较大（例如概率为$1e-50$，对其取对数之后可以得到为$-50$，共容易计算）</strong></p>
-</li>
-</ul>
-</li>
-<li><p>为什么随机抽样得到的是这个样本$X$</p>
-<p>整个样本集$D$那么大，为什么随机抽取$N$个样本得到的是这个样本集$X$的这些样本，而不是其他的样本，是否可以认为抽取$N$个样本，着$N$个样本在整体的样本集$D$中出现的概率是最大的，也就是对应的似然函数$L(\theta)$取得极大值<br>$$<br>\hat {\theta}&#x3D; argmax L(\theta)<br>$$<br>那么这个参数$\hat \theta$就是$\theta$的极大似然估计量，也就是要求的值</p>
-</li>
-<li><p>如何求解极大似然函数</p>
-<p>对于似然函数$L(\theta)$对所有的参数求导，并让偏导数为$0$，如果有$n$个参数吗，那么就得到了$n$个方程组，这些方程组的解就是似然函数的极值点，从而得到$\hat \theta$</p>
-</li>
-</ul>
-<h3 id="极大似然估计总结"><a href="#极大似然估计总结" class="headerlink" title="极大似然估计总结"></a>极大似然估计总结</h3><p>实际上可以看做一个反推的过程，在我们不知道样本数据分布的前提下，首先根据我们的先验来假设一个样本分布，之后寻找使得这个结果出现的可能性最大的条件，并将满足这个极值的条件的相关参数作为整个样本的分布。已知某个样本符合某种概率分布，但是具体的参数我们是不知道的，通过若干次抽样及实验，利用得到的结果推出参数的大概值，这个参数就可以标书整体的样本分布。当一个参数可以使得这个样本出现的概率最大时，我们显然不会再去选择其他小概率的样本，所以就用这个参数当做整个样本的概率密度分布的参数。</p>
-<h4 id="求解的一般步骤"><a href="#求解的一般步骤" class="headerlink" title="求解的一般步骤"></a>求解的一般步骤</h4><ul>
-<li>写出似然函数，首先当然要假设样本服从某个概率分布</li>
-<li>求解对数似然函数</li>
-<li>求导并使得导数为0，得到似然方程组</li>
-<li>求解似然方程组，最终得到我们要估计的参数</li>
-</ul>
-<h3 id="极大似然估计应用"><a href="#极大似然估计应用" class="headerlink" title="极大似然估计应用"></a>极大似然估计应用</h3><ul>
-<li><p>回归问题的极小化平方差</p>
-<ul>
-<li><p>最小二乘法思想</p>
-<p>对于回归问题的优化目标一般是使用的<code>MSE</code>的方法，即估计值和真实值之间的差的平方，并通过梯度下降的方法不断迭代最终得到参数值，这也是常用的<strong>最小二乘估计思想</strong></p>
-</li>
-</ul>
-<p>$$<br>J(\theta)&#x3D;\sum <em>{i&#x3D;1}^{n}(h</em>{\theta}(x_{i})-y_{i})^{2}<br>$$</p>
-<p>​	其中$h_{\theta}$是预测函数，$x_{i}$为输入的样本，$y_{i}$为输入的样本对应的label，</p>
-<ul>
-<li><p>极大似然估计的思想</p>
-<p>假设样本分布满足正太分布$X \thicksim N(\mu,\delta^{2})$，其概率密度函数为<br>$$<br>f(x)&#x3D;\frac{1}{\delta \sqrt{2\pi}} \exp({-\frac{(x-\mu)^2}{2\delta ^{2}}})<br>$$<br>可以得到抽取每个样本的满足的概率密度分布为$y_{i} \in N(\theta x_{i},\delta^2)$，得到每每个样本的概率为<br>$$<br>p(y_{i}|x_{i};\theta)&#x3D;\frac{1}{\delta \sqrt{2\pi}} \exp({-\frac{(y_{i}- \theta x_{i})^2}{2\delta ^{2}}})<br>$$<br>可以得到似然函数为<br>$$<br>\begin{align}<br>L(\theta)&amp;&#x3D;\prod_{i&#x3D;1}^{n}p(y_{i}|x_{i};\theta) \<br>&amp;&#x3D;\prod_{i&#x3D;1}^{n}\frac{1}{\delta \sqrt{2\pi}} \exp({-\frac{(y_{i}- \theta x_{i})^2}{2\delta ^{2}}})<br>\end{align}<br>$$<br>对数似然函数为：<br>$$<br>\begin{align}<br>H(\theta)&#x3D;\log L(\theta) &amp;&#x3D; \log \prod_{i&#x3D;1}^{n}\frac{1}{\delta \sqrt{2\pi}} \exp({-\frac{(y_{i}- \theta x_{i})^2}{2\delta ^{2}}}) \<br>&amp;&#x3D;-\frac{1}{2 \delta^{2}} \sum_{i&#x3D;1}^{n}(y_{i}-\theta x_{i})^{2} -n\ln (\delta \sqrt{2 \pi}) \ &amp;\Rightarrow \sum_{i&#x3D;1}^{n}(y_{i}-\theta x_{i})^{2}<br>\end{align}<br>$$<br>可以得到最大化对数似然函数等价于最小化最小二乘法优化目标<br>$$<br>arg \max_{\theta}H(\theta)\Leftrightarrow arg \min _{\theta}J(\theta)<br>$$<br>虽然最后的表达式一致，但这只是巧合，两种优化方法的原理截然不同</p>
-</li>
-</ul>
-</li>
-<li><p>分类问题极小化交叉熵损失函数</p>
-<p>实际上似然函数的极大化就是交叉熵的本质</p>
-<p>对于逻辑斯蒂模型，设$p(y&#x3D;1|x)&#x3D;p,:: p(y&#x3D;0|x)&#x3D;1-p$，由此可以得到$p(y|x,\theta)&#x3D;p^{y}(1-p)^{1-y}$</p>
-<p>对应的似然函数为<br>$$<br>L(\theta)&#x3D;\prod_{i&#x3D;1}^{n}p(y|x,\theta)&#x3D;\prod_{i&#x3D;1}^{n}p^{y}(1-p)^{1-y}<br>$$<br>对数似然函数为<br>$$<br>H(\theta)&#x3D;\log L(\theta)&#x3D;\sum_{i&#x3D;1}^{n} y_{i} \log p +(1-y_{i}) \log (1-p)<br>$$<br>极大化对数似然函数就是对应的交叉熵优化目标</p>
-</li>
-</ul>
-<h2 id="EM算法"><a href="#EM算法" class="headerlink" title="EM算法"></a>EM算法</h2><p>​	<strong>对于极大似然估计，我们可以假设整个样本服从一个分布，但是现实情况下一个样本不一定会服从一个分布，比如一个学校的学生的身高，对于男生和女生是满足两个正太分布的(EM算法在此处与极大似然估计相同，都要先假设数据分布，不同的是，极大似然估计针对的是一个分布，而EM是针对的多种分布)。</strong>在这种情况下，估计样本的分布，我们从整个样本空间中抽取一个样本，有两个问题需要估计，首先这个人是男是女，其次是男生和女生满足的正太分布的参数，这两个是相互依赖的问题，如果我们知道了男女，那就可以很显然的使用极大似然估计的方法来估计男女的正太分布；反过来，我们知道了男女的分布，那么也知道了抽取到的样本是男女的哪个的可能性更大。</p>
-<p>​	对于例子中的男女身高，这个人属于男生还是女生称之为隐含参数，男女的分布参成为模型参数。我们的目标是求出模型的参数，现在存在隐含参数对模型参数存在着影响。由此EM算法为：首先猜测隐含参数(<code>EM</code>中的<code>E</code>)，接着基于观察数据和猜测的隐含参数一起来极大化对数似然函数(<code>EM</code>中的<code>M</code>)。由于之前的隐含参数是猜测得到的，所以这个时候的模型参数是不可靠的，接下来基于得到的模型参数继续猜测隐含参数(<code>EM</code>中的<code>E</code>)，继续极大化对数似然函数，不断迭代下去直至算法收敛，找到合适的模型参数。</p>
-<p>​	对于机器学习算法中的<code>Kmeans</code>算法就是使用的<code>EM</code>的思想，首先先假设<code>K</code>个样本值为最终的聚类簇的中心点(<code>EM</code>中的E)，之后计算样本中的其他点距离这些点的距离(<code>EM</code>中的<code>M</code>)，并将属于这个簇的所有点的平均值作为新的簇的中心，之后再进行距离计算，直至簇中心坐标不再变化位置。相关具体实现细节可以参考另一边文章<a href="http://xiaofengshi.com/2018/11/09/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%81%9A%E7%B1%BB/#more">机器学习-聚类</a></p>
-<h3 id="EM数学知识准备"><a href="#EM数学知识准备" class="headerlink" title="EM数学知识准备"></a>EM数学知识准备</h3><h4 id="凸函数"><a href="#凸函数" class="headerlink" title="凸函数"></a>凸函数</h4><p>对于定义在实数域的函数，如果对于任意的实数，其二阶导数都存在$f^{‘’}(x) \geq 0$，这个函数称作凸函数。</p>
-<h4 id="Jensen不等式"><a href="#Jensen不等式" class="headerlink" title="Jensen不等式"></a>Jensen不等式</h4><p>因为该不等式在<code>EM</code>算法的推导过程中总会被用到，先了解一下该不等式</p>
-<p>如果$f$是凸函数，$X$是随机变量那么<br>$$<br>E[f(x)]\ge f(E(x))<br>$$<br>如果$f$是严格的凸函数，那么$E[f(x)]&#x3D;f(E(x))$，当且仅当$p(x&#x3D;E[x])&#x3D;1$时，也就是说随机变量$X$是一个常量</p>
-<img src="/2018/11/25/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-EM%E7%AE%97%E6%B3%95/jensen.png" class="" title="Jensen">
-
-<p>在图中可以看到对应着凸函数$f$，随机变量$X$有0.5的概率取到<code>a</code>，有0.5的概率取到<code>b</code>，则<code>a,b</code>的中值为对应的期望值，图中所示，满足<code>Jensen</code>不等式$E[f(x)] \ge f(E(x))$</p>
-<p>同理，如果<code>f</code>是凹函数，则<code>Jensen</code>不等式反号$E[f(x)] \le f(E(x))$</p>
-<h4 id="期望"><a href="#期望" class="headerlink" title="期望"></a>期望</h4><p><a href="https://zh.wikipedia.org/wiki/%E6%9C%9F%E6%9C%9B%E5%80%BC">wiki定义</a></p>
-<p>对于离散变量x的概率分布$p_{i}&#x3D;p[X&#x3D;x_{i}]$，数学期望$E(X)$为$E(X)&#x3D;\sum_{i}x_{i}p_{i}$</p>
-<p>其中$p_{i}$是权值满足条件$0 \le p_{i} \le 1$，$\sum_{i}p_{i}&#x3D;1$</p>
-<p>对于连续的随机变量，满足的概率密度函数为$f(x)$，则数学期望$E(X)$为<br>$$<br>E(X)&#x3D;\int_{-\infty}^{\infty}xf(x)dx<br>$$<br>如果$Y&#x3D;g(X)$，如果$X$是离散随机变量，则$Y$的期望值为<br>$$<br>E(Y)&#x3D;\sum_{i}g(x_{i})p_{i}<br>$$<br>如果$X$是连续速记变量，则$Y$的期望值为<br>$$<br>E(Y)&#x3D;\int _{-\infty}^{\infty}g(x)f(x)dx<br>$$</p>
-<h3 id="EM公式推导"><a href="#EM公式推导" class="headerlink" title="EM公式推导"></a>EM公式推导</h3><p>抽取到的样本为$x&#x3D;(x_{1},x_{2},…x_{m})$，隐含参数为$z&#x3D;(z_{1},z_{2},…,z_{m})$，对应的模型参数为$\theta$，如果是极大似然函数的话，由于没有隐含参数的干扰，因此可以得到抽取个每个样本的概率为$p(x_{i}|\theta)$，对应的似然函数及优化目标为<br>$$<br>\theta: arg \max_{\theta} (H_{\theta})&#x3D;\ln L(\theta)&#x3D;\ln \prod_{i&#x3D;1}^{m}p(x_{i}|\theta)&#x3D;\sum_{i&#x3D;1}^{m} \ln p(x_{i}|\theta)<br>$$<br>但是现在存在着隐含变量，因此对应的抽取每个样本的概率为$p(x_{i},z_{i}|\theta)$，其对应的似然函数及优化目标可以写成<br>$$<br>\theta, : z: arg \max_{\theta,z} (H_{\theta})&#x3D;\ln L(\theta)&#x3D;\ln \prod_{i&#x3D;1}^{m}p(x_{i},z_{i}|\theta)&#x3D;\sum_{i&#x3D;1}^{m} \ln \sum_{z} p(x_{i},z_{i}|\theta)<br>$$<br>引入中间变量$Q(z_{i})$表示$z_{i}$的分布，可以对上面的式子进行整理<br>$$<br>\theta, : z: arg \max_{\theta,z} (H_{\theta})&#x3D;\sum_{i&#x3D;1}^{m} \ln \sum_{z} p(x_{i},z_{i}|\theta)&#x3D;\sum_{i&#x3D;1}^{m} \ln \sum_{z} Q(z_{i}) \frac{p(x_{i},z_{i}|\theta)}{Q(z_{i})}&#x3D;\ln E(y)<br>$$<br>并且满足条件$1 \le Q(z_{i}) \le 1$及$\sum_z Q(z_{i})&#x3D;1$</p>
-<p>结合上面的数值期望的计算方法，可以将上面的式子看成$\ln E(y)$其中$y&#x3D;Q(z_{i}) \frac{p(x_{i},z_{i}|\theta)}{Q(z_{i})}$</p>
-<p>再结合Jensen不等式的定义，对于凸函数存在着不等式$E[f(x)]\ge f(E(x))$，此处的$f(<em>)&#x3D;\ln(</em>)$，由此可以再次对上面的式子进行整理<br>$$<br>\begin{align}<br>\theta, : z: arg \max_{\theta,z} (H_{\theta})&#x3D;\sum_{i&#x3D;1}^{N} \ln \sum_{z_{i}} p(x_{i},z_{i}|\theta) &amp;&#x3D;\sum_{i&#x3D;1}^{N} \ln \sum_{z_{i}} Q(z_{i}) \frac{p(x_{i},z_{i}|\theta)}{Q(z_{i})} &#x3D;\ln E(y) \<br>&amp; \ge \sum_{i&#x3D;1}^{m}\sum_{z_{i}}Q(z_{i}) \ln  (\frac{p(x_{i},z_{i}|\theta)}{Q(z_{i})})&#x3D;E(\ln(y))<br>\end{align}<br>$$<br>由此，利用Jensen不等式，对优化目标函数进行了优化，得到了EM算法中的E步，求期望，找到了优化目标函数的下界。</p>
-<p>为了找到使等号成立的条件，同样根据Jensen定义中得到等号成立的条件为随机变量是常数<br>$$<br>\begin{align}<br>\ln(y) &#x3D; &amp;\ln  (\frac{p(x_{i},z_{i}|\theta)}{Q(z_{i})})&#x3D;C \<br>\Longrightarrow &amp; p(x_{i},z_{i}|\theta)&#x3D;CQ(z_{i}) \<br> \Longrightarrow &amp; \sum_{z}p(x_{i},z_{i}|\theta) &#x3D; C\sum_{z}Q(z_{i})&#x3D;C</p>
-<p>\end{align}<br>$$<br>由此，可以得到<br>$$<br>Q(z_{i})&#x3D;\frac{p(x_{i},z_{i}|\theta)}{C}&#x3D;\frac{p(x_{i},z_{i}|\theta)}{\sum_{z}p(x_{i},z_{i}|\theta)} &#x3D;\frac{p(x_{i},z_{i}|\theta)}{p(x_{i}|\theta)}&#x3D;p(z_{i}|x_{i},\theta)<br>$$<br>其中$p(x_{i}|\theta)$是条件概率</p>
-<p>至此，得到了隐含参数和观察变量及模型参数的关系，由此固定参数$\theta$，就可以根据观察变量来确定$Q(z_{i})$，由此确定Jensen不等式等号成立的条件，也就是优化目标函数的下界，这就是EM中的E步，然后根据固定的参数$Q(z_{i})$，来极大化优化目标$\ln (y)$调整模型参数$\theta$，当参数$Q(z_{i})$固定之后原始的优化目标变为<br>$$<br>\begin{align}<br>\theta, : z: arg \max_{\theta,z} (H_{\theta})&#x3D;\sum_{i&#x3D;1}^{N} \ln \sum_{z_{i}} p(x_{i},z_{i}|\theta) &amp;&#x3D;\sum_{i&#x3D;1}^{N} \ln \sum_{z_{i}} Q(z_{i}) \frac{p(x_{i},z_{i}|\theta)}{Q(z_{i})} &#x3D;\ln E(y) \<br>&amp; \ge \sum_{i&#x3D;1}^{m}\sum_{z_{i}}Q(z_{i}) \ln  (\frac{p(x_{i},z_{i}|\theta)}{Q(z_{i})})&#x3D;E(\ln(y)) \<br>&amp; \Longrightarrow arg \max <em>{\theta} \sum</em>{i&#x3D;1}^{m}\sum_{z_{i}}Q(z_{i}) \ln (p(x_{i},z_{i}|\theta))<br>\end{align}<br>$$</p>
-<h3 id="EM流程"><a href="#EM流程" class="headerlink" title="EM流程"></a>EM流程</h3><p>根据给定的数据$x&#x3D;(x_{1},x_{2},…,x_{m})$，求取联合概率分布$p(x,z|\theta)$和条件分布$p(z|x,\theta)$，极大迭代次数$J$</p>
-<ul>
-<li><p>初始化模型参数$\theta$为$\theta^{0}$</p>
-</li>
-<li><p><code>for i from 1 to J:</code></p>
-<ul>
-<li><p><code>E</code>步，计算联合概率分布的条件概率期望<br>$$<br>Q(z_{i}):&#x3D;P(z_{i}|x_{i},\theta)<br>$$</p>
-</li>
-<li><p><code>M</code>步，极大化对数似然函数<br>$$<br>\theta :arg \max <em>{\theta} \sum</em>{i&#x3D;1}^{m}\sum_{z_{i}}Q(z_{i}) \ln (p(x_{i},z_{i}|\theta))<br>$$</p>
-</li>
-<li><p>重复<code>E,M</code>直至$\theta$收敛</p>
-</li>
-</ul>
-</li>
-<li><p>得到模型参数$\theta$</p>
-</li>
-</ul>
-<h3 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h3><p>如果我们从算法思想的角度来思考EM算法，我们可以发现我们的算法里已知的是观察数据，未知的是隐含数据和模型参数，在E步，我们所做的事情是固定模型参数的值，优化隐含数据的分布，而在<code>M</code>步，我们所做的事情是固定隐含数据分布，优化模型参数的值。<code>EM</code>的应用包括：</p>
-<ul>
-<li>支持向量机的<code>SMO</code>算法</li>
-<li>混合高斯模型</li>
-<li><code>K-means</code></li>
-<li>隐马尔可夫模型</li>
-</ul>
-<h3 id="举个栗子"><a href="#举个栗子" class="headerlink" title="举个栗子"></a>举个栗子</h3><p>本例子来自于参考文献1。扔硬币实验，存在两种硬币A,B，并进行5次实验，每次实验扔硬币10次(结果中H为正面，T为背面)，求硬币出现正面的概率。实验结果如下所示。</p>
-<img src="/2018/11/25/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-EM%E7%AE%97%E6%B3%95/EM_example.png" class="" title="EM_example">
-
-<ul>
-<li>对于情况a，事先知道所选择的硬币进行实验，并得到5次实验的结果</li>
-<li>对于情况b，实现不知道所选则的硬币，同样得到了5次实验的结果。</li>
-</ul>
-<p>求解</p>
-<ul>
-<li><p>对于情况a，显然可以利用极大似然估计的方法求得<br>$$<br>\begin{align}<br>arg \max <em>{\theta</em>{A},\theta_{B}} H(\theta) &amp;&#x3D;\log (\prod <em>{i&#x3D;1}^{5}p(x</em>{i},\theta)) \<br>&amp;&#x3D;\log [\theta_{B}^{5}(1-\theta_{B})^5<em>\theta_{A}^{9}(1-\theta_A)<em>\theta_{A}^{8}(1-\theta_A)^2</em>\theta_{B}^{4}(1-\theta_{B})^6</em>\theta_{A}^{7}(1-\theta_A)^3] \<br>&amp;&#x3D; \log[\theta_{B}^{9}(1-\theta_{B})^{11}*\theta_{A}^{24}(1-\theta_{B})^6]<br>\end{align}<br>$$<br>对数似然函数求偏导<br>$$<br>\begin{align}<br>\frac{\partial H(\theta)}{\partial \theta_{B}}&amp;&#x3D;\frac{9}{\theta_{B}}+\frac{-11}{1-\theta_{B}}&#x3D;0 \<br>\frac{\partial H(\theta)}{\partial \theta_{A}}&amp;&#x3D;\frac{24}{\theta_{A}}+\frac{-6}{1-\theta_{A}}&#x3D;0<br>\end{align}<br>$$<br>由此可以求得<br>$$<br>\begin{align}<br>\theta_{A}&amp;&#x3D;\frac{24}{24+6}&#x3D;0.8\<br>\theta_{B}&amp;&#x3D;\frac{9}{11+9}&#x3D;0.45<br>\end{align}<br>$$</p>
-</li>
-<li><p>对于情况b，这是一个EM的应用，由于事先并不知道选择的硬币，因此按照EM算法，先假设初始的模型参数$\hat \theta_{A}&#x3D;0.6,\hat \theta_{B}&#x3D;0.5$，对于每次实验，先计算概率分布的条件概率$Q(z_{i})$</p>
-<ul>
-<li>针对每次实验得到的结果分别计算对应的条件概率<br>$$<br>Q_{z_{i}}&#x3D;p(z_{i} |x_{i},\theta)&#x3D;\frac{p(z_{i},x_{i}|\theta)}{\sum p(z_{i},x_{i}|\theta)}<br>$$<br>根据示例中得到的实验结果，对每次实验分别都分别计算对应的条件概率<br>$$<br>Q_{z_{i}&#x3D;A}&#x3D;\frac {(\theta_{A})^{5}(1-\theta_{A})^{5}}{(\theta_{A})^{5}(1-\theta_{A})^{5}+(\theta_{B})^{5}(1-\theta_{B})^{5}}\<br>Q_{z_{i}&#x3D;B}&#x3D;\frac {(\theta_{b})^{5}(1-\theta_{B})^{5}}{(\theta_{A})^{5}(1-\theta_{A})^{5}+(\theta_{B})^{5}(1-\theta_{B})^{5}}<br>$$<br>例如<br>$$<br>\begin{align}<br>Q_{z_{1&#x3D;A}}&amp;&#x3D;\frac{0.6^5*(1-0.6)^5}{0.6^5*(1-0.6)^5+0.5^5*(1-0.5)^5}&#x3D;0.45\<br>Q_{z_{1&#x3D;B}}&amp;&#x3D;1-Q_{z_{1&#x3D;A}}&#x3D;0.55<br>\end{align}<br>$$<br>由此可以得到每次实验的条件概率分布如下<br>$$<br>\begin{align}<br>Q_{z_{1}&#x3D;A}&amp; &#x3D;0.45,:::: &amp; Q_{z_{1}&#x3D;B}&amp; &#x3D;0.55 \<br>Q_{z_{2}&#x3D;A}&amp; &#x3D;0.80,:::: &amp; Q_{z_{2}&#x3D;B}&amp; &#x3D;0.20 \<br>Q_{z_{3}&#x3D;A}&amp; &#x3D;0.73,:::: &amp; Q_{z_{3}&#x3D;B}&amp; &#x3D;0.27\<br>Q_{z_{4}&#x3D;A}&amp; &#x3D;0.35,:::: &amp; Q_{z_{4}&#x3D;B}&amp; &#x3D;0.65\<br>Q_{z_{4}&#x3D;A}&amp; &#x3D;0.65,:::: &amp; Q_{z_{4}&#x3D;B}&amp; &#x3D;0.35\<br>\end{align}<br>$$<br>至此完成了EM 算法的E步，接下啦进入M步，<br>$$<br>\begin{align}<br>&amp; \theta :arg \max <em>{\theta} \sum</em>{i&#x3D;1}^{m}\sum_{z_{i}}Q(z_{i}) \ln (p(x_{i},z_{i}|\theta)) \<br>\Longrightarrow &amp; \sum_{i&#x3D;1}^5 Q_{z_{i}&#x3D;A}\log[(\hat \theta_{A})^{k_{i}}(1-\hat \theta_{A})^{10-{k_{i}}}]+ Q_{z_{i}&#x3D;B}\log[(\hat \theta_{B})^{k_{i}}(1-\hat \theta_{B})^{10-{k_{i}}}]<br>\end{align}<br>$$<br>其中$k_{i}$为第$i$次实验中正面朝上的次数。上面的优化目标函数求偏导并取值为0，由此可以得到更新之后的$\hat \theta_{A}$及$\hat \theta_{B}$，不断迭代直至模型参数收敛。</li>
-</ul>
-</li>
-</ul>
-<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p>人人都懂EM算法：<a href="https://zhuanlan.zhihu.com/p/36331115">https://zhuanlan.zhihu.com/p/36331115</a></p>
-<p>EM算法： <a href="http://www.cnblogs.com/jerrylead/archive/2011/04/06/2006936.html">http://www.cnblogs.com/jerrylead/archive/2011/04/06/2006936.html</a></p>
-<p>博客：<a href="http://ai.stanford.edu/~chuongdo/papers/em_tutorial.pdf">http://ai.stanford.edu/~chuongdo/papers/em_tutorial.pdf</a></p>
-]]></content>
-      <categories>
-        <category>机器学习</category>
-        <category>EM</category>
-      </categories>
-      <tags>
-        <tag>机器学习</tag>
-        <tag>EM</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>截止2022多模态进展</title>
     <url>/2023/02/10/%E6%88%AA%E6%AD%A22022%E5%A4%9A%E6%A8%A1%E6%80%81%E8%BF%9B%E5%B1%95/</url>
     <content><![CDATA[<p>从2020年8月左右开始接触多模态，当时也是业界多模态刚起步的阶段，到现在为止，经过了两年半左右的时间，多模态也经历了一系列的发展和工业界应用，这里进行一下总结回顾。</p>
@@ -3706,6 +3569,143 @@
       </categories>
       <tags>
         <tag>多模态</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>扩散模型</title>
+    <url>/2023/03/30/%E6%89%A9%E6%95%A3%E6%A8%A1%E5%9E%8B/</url>
+    <content><![CDATA[<p>扩散模型是AIGC方向的基础，这里对扩散模型进行学习总结。</p>
+<p>VAE–&gt;DM–&gt;LDM–&gt;StableDiffusion–&gt;AltDiffusion–&gt;MidJourney–&gt;&gt;StableDiffusion 2–&gt;DreamBooth</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>机器学习-EM算法</title>
+    <url>/2018/11/25/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-EM%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><blockquote>
+<p>按照[wiki百科的<a href="(https://zh.wikipedia.org/wiki/%E6%9C%80%E5%A4%A7%E6%9C%9F%E6%9C%9B%E7%AE%97%E6%B3%95)">定义</a>，<code>EM</code>算法被用于寻找，依赖于不可观察的隐形变量的模型中参数的最大似然估计。在<a href="https://zh.wikipedia.org/wiki/%E7%BB%9F%E8%AE%A1">统计</a><a href="https://zh.wikipedia.org/wiki/%E8%AE%A1%E7%AE%97">计算</a>中，<strong>最大期望（EM）算法</strong>是在<a href="https://zh.wikipedia.org/wiki/%E6%A6%82%E7%8E%87%E6%A8%A1%E5%9E%8B">概率模型</a>中寻找<a href="https://zh.wikipedia.org/wiki/%E5%8F%82%E6%95%B0">参数</a><a href="https://zh.wikipedia.org/wiki/%E6%9C%80%E5%A4%A7%E4%BC%BC%E7%84%B6%E4%BC%B0%E8%AE%A1">最大似然估计</a>或者<a href="https://zh.wikipedia.org/w/index.php?title=%E6%9C%80%E5%A4%A7%E5%90%8E%E9%AA%8C%E4%BC%B0%E8%AE%A1&action=edit&redlink=1">最大后验估计</a>的<a href="https://zh.wikipedia.org/wiki/%E7%AE%97%E6%B3%95">算法</a>，其中概率模型依赖于无法观测的<a href="https://zh.wikipedia.org/w/index.php?title=%E9%9A%90%E6%80%A7%E5%8F%98%E9%87%8F&action=edit&redlink=1">隐性变量</a>。最大期望算法经常用在<a href="https://zh.wikipedia.org/wiki/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0">机器学习</a>和<a href="https://zh.wikipedia.org/wiki/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89">计算机视觉</a>的<a href="https://zh.wikipedia.org/wiki/%E6%95%B0%E6%8D%AE%E8%81%9A%E7%B1%BB">数据聚类</a>（Data Clustering）领域。最大期望算法经过两个步骤交替进行计算，第一步是计算期望（E），利用对隐藏变量的现有估计值，计算其最大似然估计值；第二步是最大化（M），最大化在E步上求得的<a href="https://zh.wikipedia.org/wiki/%E6%9C%80%E5%A4%A7%E4%BC%BC%E7%84%B6%E4%BC%B0%E8%AE%A1">最大似然值</a>来计算参数的值。M步上找到的参数估计值被用于下一个E步计算中，这个过程不断交替进行。</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="极大似然估计"><a href="#极大似然估计" class="headerlink" title="极大似然估计"></a>极大似然估计</h2><p>首先是最大估计的原理，<a href="https://zh.wikipedia.org/wiki/%E6%9C%80%E5%A4%A7%E4%BC%BC%E7%84%B6%E4%BC%B0%E8%AE%A1">wiki定义如下</a>，进行通俗解释如下</p>
+<h3 id="问题引入"><a href="#问题引入" class="headerlink" title="问题引入"></a>问题引入</h3><p>​	给定了一个样本集<code>D</code>，现在需要进行估计这个样本集的数据对于一个特征的分布(比如估计一个学校的学生的身高分布)，一般情况下<code>D</code>是很大的，因此这时候可以随机抽取一定数量的样本(N)进行样本集数据分布的估计。通常先假设样本集$D$服从一个分布，比如服从高斯分布$N(\mu,\delta^{2})$（<strong>对于极大似然估计，一定是要先假设数据服从某一个分布，如果不知道数据的总体分布则无法使用极大似然估计</strong>），那么这个分布中的参数$\mu$和$\delta$就是需要进行估计并计算的参数。</p>
+<p>​	为了得到总体的样本分布，我们独立的按照概率密度$p(x|\theta)$抽取了N个样本，并组成了样本集$X&#x3D;x_{1},x_{2},…,x_{N}$，其中$x_{i}$表示抽取到的第$i$个人的特征值(例如身高值)，我们通过样本集$X$来估计总体的位置参数$\theta$，这里的概率密度$p(x| \theta)$服从提前假设的高斯分布$N(\mu,\delta^{2})$，其中未知参数为$\theta&#x3D;[\mu,\delta]^{T}$，极大似然的任务也就是去估计这个参数$\theta$</p>
+<h3 id="参数估计"><a href="#参数估计" class="headerlink" title="参数估计"></a>参数估计</h3><ul>
+<li><p>得到样本$X$的概率是多大？</p>
+<p>由于抽取到的样本$X$，是独立抽取到的，也就是说抽取每个的概率为$p(x_{i}|\theta)$，由于样本之间相互独立，因此得到样本集$X$的联合概率为<br>$$<br>L(\theta)&#x3D;L(x_{1},x_{2},…,x_{N};\theta)&#x3D;\prod_{i&#x3D;1}^{N}p(x_{i}|\theta),::::: \theta \in \Theta<br>$$<br>上面这个式子表明了在概率密度参数为$\theta$时，得到$X$这组样本集的概率，这是一个关于$\theta$的函数。</p>
+<p><strong>这个式子反应了在不同概率密度参数取值情况下，得到当前样本集的可能性，因此称作参数$\theta$相对于样本集$X$的似然函数，记作$L(\theta)$，对$L$取对数，可以将原来的连乘变作连加，称作对数似然函数，如下</strong><br>$$<br>H_{\theta}&#x3D;\ln L(\theta)&#x3D;\ln \prod_{i&#x3D;1}^{N}p(x_{i}|\theta)&#x3D;\sum_{i&#x3D;1}^{N} \ln p(x_{i}|\theta)<br>$$</p>
+<ul>
+<li><p>为什么要使用对数似然函数</p>
+<p><strong>之所以使用对数似然函数，是因为把连乘变为连加，求导更加方便；概率累计会产生非常小的数值，有可能会小于计算机可以识别的精度，取对数之后，非常小的数值可以变得相对较大（例如概率为$1e-50$，对其取对数之后可以得到为$-50$，共容易计算）</strong></p>
+</li>
+</ul>
+</li>
+<li><p>为什么随机抽样得到的是这个样本$X$</p>
+<p>整个样本集$D$那么大，为什么随机抽取$N$个样本得到的是这个样本集$X$的这些样本，而不是其他的样本，是否可以认为抽取$N$个样本，着$N$个样本在整体的样本集$D$中出现的概率是最大的，也就是对应的似然函数$L(\theta)$取得极大值<br>$$<br>\hat {\theta}&#x3D; argmax L(\theta)<br>$$<br>那么这个参数$\hat \theta$就是$\theta$的极大似然估计量，也就是要求的值</p>
+</li>
+<li><p>如何求解极大似然函数</p>
+<p>对于似然函数$L(\theta)$对所有的参数求导，并让偏导数为$0$，如果有$n$个参数吗，那么就得到了$n$个方程组，这些方程组的解就是似然函数的极值点，从而得到$\hat \theta$</p>
+</li>
+</ul>
+<h3 id="极大似然估计总结"><a href="#极大似然估计总结" class="headerlink" title="极大似然估计总结"></a>极大似然估计总结</h3><p>实际上可以看做一个反推的过程，在我们不知道样本数据分布的前提下，首先根据我们的先验来假设一个样本分布，之后寻找使得这个结果出现的可能性最大的条件，并将满足这个极值的条件的相关参数作为整个样本的分布。已知某个样本符合某种概率分布，但是具体的参数我们是不知道的，通过若干次抽样及实验，利用得到的结果推出参数的大概值，这个参数就可以标书整体的样本分布。当一个参数可以使得这个样本出现的概率最大时，我们显然不会再去选择其他小概率的样本，所以就用这个参数当做整个样本的概率密度分布的参数。</p>
+<h4 id="求解的一般步骤"><a href="#求解的一般步骤" class="headerlink" title="求解的一般步骤"></a>求解的一般步骤</h4><ul>
+<li>写出似然函数，首先当然要假设样本服从某个概率分布</li>
+<li>求解对数似然函数</li>
+<li>求导并使得导数为0，得到似然方程组</li>
+<li>求解似然方程组，最终得到我们要估计的参数</li>
+</ul>
+<h3 id="极大似然估计应用"><a href="#极大似然估计应用" class="headerlink" title="极大似然估计应用"></a>极大似然估计应用</h3><ul>
+<li><p>回归问题的极小化平方差</p>
+<ul>
+<li><p>最小二乘法思想</p>
+<p>对于回归问题的优化目标一般是使用的<code>MSE</code>的方法，即估计值和真实值之间的差的平方，并通过梯度下降的方法不断迭代最终得到参数值，这也是常用的<strong>最小二乘估计思想</strong></p>
+</li>
+</ul>
+<p>$$<br>J(\theta)&#x3D;\sum <em>{i&#x3D;1}^{n}(h</em>{\theta}(x_{i})-y_{i})^{2}<br>$$</p>
+<p>​	其中$h_{\theta}$是预测函数，$x_{i}$为输入的样本，$y_{i}$为输入的样本对应的label，</p>
+<ul>
+<li><p>极大似然估计的思想</p>
+<p>假设样本分布满足正太分布$X \thicksim N(\mu,\delta^{2})$，其概率密度函数为<br>$$<br>f(x)&#x3D;\frac{1}{\delta \sqrt{2\pi}} \exp({-\frac{(x-\mu)^2}{2\delta ^{2}}})<br>$$<br>可以得到抽取每个样本的满足的概率密度分布为$y_{i} \in N(\theta x_{i},\delta^2)$，得到每每个样本的概率为<br>$$<br>p(y_{i}|x_{i};\theta)&#x3D;\frac{1}{\delta \sqrt{2\pi}} \exp({-\frac{(y_{i}- \theta x_{i})^2}{2\delta ^{2}}})<br>$$<br>可以得到似然函数为<br>$$<br>\begin{align}<br>L(\theta)&amp;&#x3D;\prod_{i&#x3D;1}^{n}p(y_{i}|x_{i};\theta) \<br>&amp;&#x3D;\prod_{i&#x3D;1}^{n}\frac{1}{\delta \sqrt{2\pi}} \exp({-\frac{(y_{i}- \theta x_{i})^2}{2\delta ^{2}}})<br>\end{align}<br>$$<br>对数似然函数为：<br>$$<br>\begin{align}<br>H(\theta)&#x3D;\log L(\theta) &amp;&#x3D; \log \prod_{i&#x3D;1}^{n}\frac{1}{\delta \sqrt{2\pi}} \exp({-\frac{(y_{i}- \theta x_{i})^2}{2\delta ^{2}}}) \<br>&amp;&#x3D;-\frac{1}{2 \delta^{2}} \sum_{i&#x3D;1}^{n}(y_{i}-\theta x_{i})^{2} -n\ln (\delta \sqrt{2 \pi}) \ &amp;\Rightarrow \sum_{i&#x3D;1}^{n}(y_{i}-\theta x_{i})^{2}<br>\end{align}<br>$$<br>可以得到最大化对数似然函数等价于最小化最小二乘法优化目标<br>$$<br>arg \max_{\theta}H(\theta)\Leftrightarrow arg \min _{\theta}J(\theta)<br>$$<br>虽然最后的表达式一致，但这只是巧合，两种优化方法的原理截然不同</p>
+</li>
+</ul>
+</li>
+<li><p>分类问题极小化交叉熵损失函数</p>
+<p>实际上似然函数的极大化就是交叉熵的本质</p>
+<p>对于逻辑斯蒂模型，设$p(y&#x3D;1|x)&#x3D;p,:: p(y&#x3D;0|x)&#x3D;1-p$，由此可以得到$p(y|x,\theta)&#x3D;p^{y}(1-p)^{1-y}$</p>
+<p>对应的似然函数为<br>$$<br>L(\theta)&#x3D;\prod_{i&#x3D;1}^{n}p(y|x,\theta)&#x3D;\prod_{i&#x3D;1}^{n}p^{y}(1-p)^{1-y}<br>$$<br>对数似然函数为<br>$$<br>H(\theta)&#x3D;\log L(\theta)&#x3D;\sum_{i&#x3D;1}^{n} y_{i} \log p +(1-y_{i}) \log (1-p)<br>$$<br>极大化对数似然函数就是对应的交叉熵优化目标</p>
+</li>
+</ul>
+<h2 id="EM算法"><a href="#EM算法" class="headerlink" title="EM算法"></a>EM算法</h2><p>​	<strong>对于极大似然估计，我们可以假设整个样本服从一个分布，但是现实情况下一个样本不一定会服从一个分布，比如一个学校的学生的身高，对于男生和女生是满足两个正太分布的(EM算法在此处与极大似然估计相同，都要先假设数据分布，不同的是，极大似然估计针对的是一个分布，而EM是针对的多种分布)。</strong>在这种情况下，估计样本的分布，我们从整个样本空间中抽取一个样本，有两个问题需要估计，首先这个人是男是女，其次是男生和女生满足的正太分布的参数，这两个是相互依赖的问题，如果我们知道了男女，那就可以很显然的使用极大似然估计的方法来估计男女的正太分布；反过来，我们知道了男女的分布，那么也知道了抽取到的样本是男女的哪个的可能性更大。</p>
+<p>​	对于例子中的男女身高，这个人属于男生还是女生称之为隐含参数，男女的分布参成为模型参数。我们的目标是求出模型的参数，现在存在隐含参数对模型参数存在着影响。由此EM算法为：首先猜测隐含参数(<code>EM</code>中的<code>E</code>)，接着基于观察数据和猜测的隐含参数一起来极大化对数似然函数(<code>EM</code>中的<code>M</code>)。由于之前的隐含参数是猜测得到的，所以这个时候的模型参数是不可靠的，接下来基于得到的模型参数继续猜测隐含参数(<code>EM</code>中的<code>E</code>)，继续极大化对数似然函数，不断迭代下去直至算法收敛，找到合适的模型参数。</p>
+<p>​	对于机器学习算法中的<code>Kmeans</code>算法就是使用的<code>EM</code>的思想，首先先假设<code>K</code>个样本值为最终的聚类簇的中心点(<code>EM</code>中的E)，之后计算样本中的其他点距离这些点的距离(<code>EM</code>中的<code>M</code>)，并将属于这个簇的所有点的平均值作为新的簇的中心，之后再进行距离计算，直至簇中心坐标不再变化位置。相关具体实现细节可以参考另一边文章<a href="http://xiaofengshi.com/2018/11/09/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%81%9A%E7%B1%BB/#more">机器学习-聚类</a></p>
+<h3 id="EM数学知识准备"><a href="#EM数学知识准备" class="headerlink" title="EM数学知识准备"></a>EM数学知识准备</h3><h4 id="凸函数"><a href="#凸函数" class="headerlink" title="凸函数"></a>凸函数</h4><p>对于定义在实数域的函数，如果对于任意的实数，其二阶导数都存在$f^{‘’}(x) \geq 0$，这个函数称作凸函数。</p>
+<h4 id="Jensen不等式"><a href="#Jensen不等式" class="headerlink" title="Jensen不等式"></a>Jensen不等式</h4><p>因为该不等式在<code>EM</code>算法的推导过程中总会被用到，先了解一下该不等式</p>
+<p>如果$f$是凸函数，$X$是随机变量那么<br>$$<br>E[f(x)]\ge f(E(x))<br>$$<br>如果$f$是严格的凸函数，那么$E[f(x)]&#x3D;f(E(x))$，当且仅当$p(x&#x3D;E[x])&#x3D;1$时，也就是说随机变量$X$是一个常量</p>
+<img src="/2018/11/25/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-EM%E7%AE%97%E6%B3%95/jensen.png" class="" title="Jensen">
+
+<p>在图中可以看到对应着凸函数$f$，随机变量$X$有0.5的概率取到<code>a</code>，有0.5的概率取到<code>b</code>，则<code>a,b</code>的中值为对应的期望值，图中所示，满足<code>Jensen</code>不等式$E[f(x)] \ge f(E(x))$</p>
+<p>同理，如果<code>f</code>是凹函数，则<code>Jensen</code>不等式反号$E[f(x)] \le f(E(x))$</p>
+<h4 id="期望"><a href="#期望" class="headerlink" title="期望"></a>期望</h4><p><a href="https://zh.wikipedia.org/wiki/%E6%9C%9F%E6%9C%9B%E5%80%BC">wiki定义</a></p>
+<p>对于离散变量x的概率分布$p_{i}&#x3D;p[X&#x3D;x_{i}]$，数学期望$E(X)$为$E(X)&#x3D;\sum_{i}x_{i}p_{i}$</p>
+<p>其中$p_{i}$是权值满足条件$0 \le p_{i} \le 1$，$\sum_{i}p_{i}&#x3D;1$</p>
+<p>对于连续的随机变量，满足的概率密度函数为$f(x)$，则数学期望$E(X)$为<br>$$<br>E(X)&#x3D;\int_{-\infty}^{\infty}xf(x)dx<br>$$<br>如果$Y&#x3D;g(X)$，如果$X$是离散随机变量，则$Y$的期望值为<br>$$<br>E(Y)&#x3D;\sum_{i}g(x_{i})p_{i}<br>$$<br>如果$X$是连续速记变量，则$Y$的期望值为<br>$$<br>E(Y)&#x3D;\int _{-\infty}^{\infty}g(x)f(x)dx<br>$$</p>
+<h3 id="EM公式推导"><a href="#EM公式推导" class="headerlink" title="EM公式推导"></a>EM公式推导</h3><p>抽取到的样本为$x&#x3D;(x_{1},x_{2},…x_{m})$，隐含参数为$z&#x3D;(z_{1},z_{2},…,z_{m})$，对应的模型参数为$\theta$，如果是极大似然函数的话，由于没有隐含参数的干扰，因此可以得到抽取个每个样本的概率为$p(x_{i}|\theta)$，对应的似然函数及优化目标为<br>$$<br>\theta: arg \max_{\theta} (H_{\theta})&#x3D;\ln L(\theta)&#x3D;\ln \prod_{i&#x3D;1}^{m}p(x_{i}|\theta)&#x3D;\sum_{i&#x3D;1}^{m} \ln p(x_{i}|\theta)<br>$$<br>但是现在存在着隐含变量，因此对应的抽取每个样本的概率为$p(x_{i},z_{i}|\theta)$，其对应的似然函数及优化目标可以写成<br>$$<br>\theta, : z: arg \max_{\theta,z} (H_{\theta})&#x3D;\ln L(\theta)&#x3D;\ln \prod_{i&#x3D;1}^{m}p(x_{i},z_{i}|\theta)&#x3D;\sum_{i&#x3D;1}^{m} \ln \sum_{z} p(x_{i},z_{i}|\theta)<br>$$<br>引入中间变量$Q(z_{i})$表示$z_{i}$的分布，可以对上面的式子进行整理<br>$$<br>\theta, : z: arg \max_{\theta,z} (H_{\theta})&#x3D;\sum_{i&#x3D;1}^{m} \ln \sum_{z} p(x_{i},z_{i}|\theta)&#x3D;\sum_{i&#x3D;1}^{m} \ln \sum_{z} Q(z_{i}) \frac{p(x_{i},z_{i}|\theta)}{Q(z_{i})}&#x3D;\ln E(y)<br>$$<br>并且满足条件$1 \le Q(z_{i}) \le 1$及$\sum_z Q(z_{i})&#x3D;1$</p>
+<p>结合上面的数值期望的计算方法，可以将上面的式子看成$\ln E(y)$其中$y&#x3D;Q(z_{i}) \frac{p(x_{i},z_{i}|\theta)}{Q(z_{i})}$</p>
+<p>再结合Jensen不等式的定义，对于凸函数存在着不等式$E[f(x)]\ge f(E(x))$，此处的$f(<em>)&#x3D;\ln(</em>)$，由此可以再次对上面的式子进行整理<br>$$<br>\begin{align}<br>\theta, : z: arg \max_{\theta,z} (H_{\theta})&#x3D;\sum_{i&#x3D;1}^{N} \ln \sum_{z_{i}} p(x_{i},z_{i}|\theta) &amp;&#x3D;\sum_{i&#x3D;1}^{N} \ln \sum_{z_{i}} Q(z_{i}) \frac{p(x_{i},z_{i}|\theta)}{Q(z_{i})} &#x3D;\ln E(y) \<br>&amp; \ge \sum_{i&#x3D;1}^{m}\sum_{z_{i}}Q(z_{i}) \ln  (\frac{p(x_{i},z_{i}|\theta)}{Q(z_{i})})&#x3D;E(\ln(y))<br>\end{align}<br>$$<br>由此，利用Jensen不等式，对优化目标函数进行了优化，得到了EM算法中的E步，求期望，找到了优化目标函数的下界。</p>
+<p>为了找到使等号成立的条件，同样根据Jensen定义中得到等号成立的条件为随机变量是常数<br>$$<br>\begin{align}<br>\ln(y) &#x3D; &amp;\ln  (\frac{p(x_{i},z_{i}|\theta)}{Q(z_{i})})&#x3D;C \<br>\Longrightarrow &amp; p(x_{i},z_{i}|\theta)&#x3D;CQ(z_{i}) \<br> \Longrightarrow &amp; \sum_{z}p(x_{i},z_{i}|\theta) &#x3D; C\sum_{z}Q(z_{i})&#x3D;C</p>
+<p>\end{align}<br>$$<br>由此，可以得到<br>$$<br>Q(z_{i})&#x3D;\frac{p(x_{i},z_{i}|\theta)}{C}&#x3D;\frac{p(x_{i},z_{i}|\theta)}{\sum_{z}p(x_{i},z_{i}|\theta)} &#x3D;\frac{p(x_{i},z_{i}|\theta)}{p(x_{i}|\theta)}&#x3D;p(z_{i}|x_{i},\theta)<br>$$<br>其中$p(x_{i}|\theta)$是条件概率</p>
+<p>至此，得到了隐含参数和观察变量及模型参数的关系，由此固定参数$\theta$，就可以根据观察变量来确定$Q(z_{i})$，由此确定Jensen不等式等号成立的条件，也就是优化目标函数的下界，这就是EM中的E步，然后根据固定的参数$Q(z_{i})$，来极大化优化目标$\ln (y)$调整模型参数$\theta$，当参数$Q(z_{i})$固定之后原始的优化目标变为<br>$$<br>\begin{align}<br>\theta, : z: arg \max_{\theta,z} (H_{\theta})&#x3D;\sum_{i&#x3D;1}^{N} \ln \sum_{z_{i}} p(x_{i},z_{i}|\theta) &amp;&#x3D;\sum_{i&#x3D;1}^{N} \ln \sum_{z_{i}} Q(z_{i}) \frac{p(x_{i},z_{i}|\theta)}{Q(z_{i})} &#x3D;\ln E(y) \<br>&amp; \ge \sum_{i&#x3D;1}^{m}\sum_{z_{i}}Q(z_{i}) \ln  (\frac{p(x_{i},z_{i}|\theta)}{Q(z_{i})})&#x3D;E(\ln(y)) \<br>&amp; \Longrightarrow arg \max <em>{\theta} \sum</em>{i&#x3D;1}^{m}\sum_{z_{i}}Q(z_{i}) \ln (p(x_{i},z_{i}|\theta))<br>\end{align}<br>$$</p>
+<h3 id="EM流程"><a href="#EM流程" class="headerlink" title="EM流程"></a>EM流程</h3><p>根据给定的数据$x&#x3D;(x_{1},x_{2},…,x_{m})$，求取联合概率分布$p(x,z|\theta)$和条件分布$p(z|x,\theta)$，极大迭代次数$J$</p>
+<ul>
+<li><p>初始化模型参数$\theta$为$\theta^{0}$</p>
+</li>
+<li><p><code>for i from 1 to J:</code></p>
+<ul>
+<li><p><code>E</code>步，计算联合概率分布的条件概率期望<br>$$<br>Q(z_{i}):&#x3D;P(z_{i}|x_{i},\theta)<br>$$</p>
+</li>
+<li><p><code>M</code>步，极大化对数似然函数<br>$$<br>\theta :arg \max <em>{\theta} \sum</em>{i&#x3D;1}^{m}\sum_{z_{i}}Q(z_{i}) \ln (p(x_{i},z_{i}|\theta))<br>$$</p>
+</li>
+<li><p>重复<code>E,M</code>直至$\theta$收敛</p>
+</li>
+</ul>
+</li>
+<li><p>得到模型参数$\theta$</p>
+</li>
+</ul>
+<h3 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h3><p>如果我们从算法思想的角度来思考EM算法，我们可以发现我们的算法里已知的是观察数据，未知的是隐含数据和模型参数，在E步，我们所做的事情是固定模型参数的值，优化隐含数据的分布，而在<code>M</code>步，我们所做的事情是固定隐含数据分布，优化模型参数的值。<code>EM</code>的应用包括：</p>
+<ul>
+<li>支持向量机的<code>SMO</code>算法</li>
+<li>混合高斯模型</li>
+<li><code>K-means</code></li>
+<li>隐马尔可夫模型</li>
+</ul>
+<h3 id="举个栗子"><a href="#举个栗子" class="headerlink" title="举个栗子"></a>举个栗子</h3><p>本例子来自于参考文献1。扔硬币实验，存在两种硬币A,B，并进行5次实验，每次实验扔硬币10次(结果中H为正面，T为背面)，求硬币出现正面的概率。实验结果如下所示。</p>
+<img src="/2018/11/25/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-EM%E7%AE%97%E6%B3%95/EM_example.png" class="" title="EM_example">
+
+<ul>
+<li>对于情况a，事先知道所选择的硬币进行实验，并得到5次实验的结果</li>
+<li>对于情况b，实现不知道所选则的硬币，同样得到了5次实验的结果。</li>
+</ul>
+<p>求解</p>
+<ul>
+<li><p>对于情况a，显然可以利用极大似然估计的方法求得<br>$$<br>\begin{align}<br>arg \max <em>{\theta</em>{A},\theta_{B}} H(\theta) &amp;&#x3D;\log (\prod <em>{i&#x3D;1}^{5}p(x</em>{i},\theta)) \<br>&amp;&#x3D;\log [\theta_{B}^{5}(1-\theta_{B})^5<em>\theta_{A}^{9}(1-\theta_A)<em>\theta_{A}^{8}(1-\theta_A)^2</em>\theta_{B}^{4}(1-\theta_{B})^6</em>\theta_{A}^{7}(1-\theta_A)^3] \<br>&amp;&#x3D; \log[\theta_{B}^{9}(1-\theta_{B})^{11}*\theta_{A}^{24}(1-\theta_{B})^6]<br>\end{align}<br>$$<br>对数似然函数求偏导<br>$$<br>\begin{align}<br>\frac{\partial H(\theta)}{\partial \theta_{B}}&amp;&#x3D;\frac{9}{\theta_{B}}+\frac{-11}{1-\theta_{B}}&#x3D;0 \<br>\frac{\partial H(\theta)}{\partial \theta_{A}}&amp;&#x3D;\frac{24}{\theta_{A}}+\frac{-6}{1-\theta_{A}}&#x3D;0<br>\end{align}<br>$$<br>由此可以求得<br>$$<br>\begin{align}<br>\theta_{A}&amp;&#x3D;\frac{24}{24+6}&#x3D;0.8\<br>\theta_{B}&amp;&#x3D;\frac{9}{11+9}&#x3D;0.45<br>\end{align}<br>$$</p>
+</li>
+<li><p>对于情况b，这是一个EM的应用，由于事先并不知道选择的硬币，因此按照EM算法，先假设初始的模型参数$\hat \theta_{A}&#x3D;0.6,\hat \theta_{B}&#x3D;0.5$，对于每次实验，先计算概率分布的条件概率$Q(z_{i})$</p>
+<ul>
+<li>针对每次实验得到的结果分别计算对应的条件概率<br>$$<br>Q_{z_{i}}&#x3D;p(z_{i} |x_{i},\theta)&#x3D;\frac{p(z_{i},x_{i}|\theta)}{\sum p(z_{i},x_{i}|\theta)}<br>$$<br>根据示例中得到的实验结果，对每次实验分别都分别计算对应的条件概率<br>$$<br>Q_{z_{i}&#x3D;A}&#x3D;\frac {(\theta_{A})^{5}(1-\theta_{A})^{5}}{(\theta_{A})^{5}(1-\theta_{A})^{5}+(\theta_{B})^{5}(1-\theta_{B})^{5}}\<br>Q_{z_{i}&#x3D;B}&#x3D;\frac {(\theta_{b})^{5}(1-\theta_{B})^{5}}{(\theta_{A})^{5}(1-\theta_{A})^{5}+(\theta_{B})^{5}(1-\theta_{B})^{5}}<br>$$<br>例如<br>$$<br>\begin{align}<br>Q_{z_{1&#x3D;A}}&amp;&#x3D;\frac{0.6^5*(1-0.6)^5}{0.6^5*(1-0.6)^5+0.5^5*(1-0.5)^5}&#x3D;0.45\<br>Q_{z_{1&#x3D;B}}&amp;&#x3D;1-Q_{z_{1&#x3D;A}}&#x3D;0.55<br>\end{align}<br>$$<br>由此可以得到每次实验的条件概率分布如下<br>$$<br>\begin{align}<br>Q_{z_{1}&#x3D;A}&amp; &#x3D;0.45,:::: &amp; Q_{z_{1}&#x3D;B}&amp; &#x3D;0.55 \<br>Q_{z_{2}&#x3D;A}&amp; &#x3D;0.80,:::: &amp; Q_{z_{2}&#x3D;B}&amp; &#x3D;0.20 \<br>Q_{z_{3}&#x3D;A}&amp; &#x3D;0.73,:::: &amp; Q_{z_{3}&#x3D;B}&amp; &#x3D;0.27\<br>Q_{z_{4}&#x3D;A}&amp; &#x3D;0.35,:::: &amp; Q_{z_{4}&#x3D;B}&amp; &#x3D;0.65\<br>Q_{z_{4}&#x3D;A}&amp; &#x3D;0.65,:::: &amp; Q_{z_{4}&#x3D;B}&amp; &#x3D;0.35\<br>\end{align}<br>$$<br>至此完成了EM 算法的E步，接下啦进入M步，<br>$$<br>\begin{align}<br>&amp; \theta :arg \max <em>{\theta} \sum</em>{i&#x3D;1}^{m}\sum_{z_{i}}Q(z_{i}) \ln (p(x_{i},z_{i}|\theta)) \<br>\Longrightarrow &amp; \sum_{i&#x3D;1}^5 Q_{z_{i}&#x3D;A}\log[(\hat \theta_{A})^{k_{i}}(1-\hat \theta_{A})^{10-{k_{i}}}]+ Q_{z_{i}&#x3D;B}\log[(\hat \theta_{B})^{k_{i}}(1-\hat \theta_{B})^{10-{k_{i}}}]<br>\end{align}<br>$$<br>其中$k_{i}$为第$i$次实验中正面朝上的次数。上面的优化目标函数求偏导并取值为0，由此可以得到更新之后的$\hat \theta_{A}$及$\hat \theta_{B}$，不断迭代直至模型参数收敛。</li>
+</ul>
+</li>
+</ul>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p>人人都懂EM算法：<a href="https://zhuanlan.zhihu.com/p/36331115">https://zhuanlan.zhihu.com/p/36331115</a></p>
+<p>EM算法： <a href="http://www.cnblogs.com/jerrylead/archive/2011/04/06/2006936.html">http://www.cnblogs.com/jerrylead/archive/2011/04/06/2006936.html</a></p>
+<p>博客：<a href="http://ai.stanford.edu/~chuongdo/papers/em_tutorial.pdf">http://ai.stanford.edu/~chuongdo/papers/em_tutorial.pdf</a></p>
+]]></content>
+      <categories>
+        <category>机器学习</category>
+        <category>EM</category>
+      </categories>
+      <tags>
+        <tag>机器学习</tag>
+        <tag>EM</tag>
       </tags>
   </entry>
   <entry>
@@ -4677,6 +4677,88 @@ $$
       </tags>
   </entry>
   <entry>
+    <title>深度学习-ConvNet-SENet</title>
+    <url>/2020/02/17/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-SENet/</url>
+    <content><![CDATA[<img src="/2020/02/17/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-SENet/SE-pipeline.jpg" class="">
+
+<p>本篇主要记录一下2017年ILSVR竞赛的冠军-SENet，这是一种网络的block结构，可以有效的结合到InceptionNet，Resnet中。</p>
+<span id="more"></span>
+
+<h2 id="Block结构"><a href="#Block结构" class="headerlink" title="Block结构"></a>Block结构</h2><p>网络结构如上图所示，图中参数解释：</p>
+<ol>
+<li>$F_{tr}$–标准卷积操作</li>
+<li>$F_{sq}(.)$–sequeeze操作，这一步进对输入的特征图进行GlobalPooling，特征图由$H \times W \times C$变为$1 \times 1\times C$</li>
+<li>$F_{ex}(.)$–excitation操作，这一步包含两个fc全连接操作<ol>
+<li>第一步FC-压缩维度数量，维度数由$C$变为$C&#x2F;r$，Relu激活层</li>
+<li>第二步FC-扩展维度数量，维度数由$C&#x2F;r$变为$C$，Sigmoid激活层</li>
+</ol>
+</li>
+<li>$F_{scale}(.)$–类似通道注意力，将得到的C维度的值作为权重乘到输入的特征图的维度上。</li>
+</ol>
+<h2 id="参数和结构是如何确定的"><a href="#参数和结构是如何确定的" class="headerlink" title="参数和结构是如何确定的"></a>参数和结构是如何确定的</h2><h3 id="扩展层压缩比"><a href="#扩展层压缩比" class="headerlink" title="扩展层压缩比"></a>扩展层压缩比</h3><p>在论文中，作者认为压缩比为16可以取得模型的精度和运算复杂度之间的平衡，并且作者在论文中提出，由于模型的不同层在整个模型中的作用不一样，因此，在整个模型中使用同一个固定的压缩比不是一个最好的办法，可以设置不同的压缩比以适应不同的基础网络，<strong>我们在日常使用的过程中可以先使用16，之后在模型优化的时候再通过更改压缩比来进行对比试验。</strong></p>
+<h3 id="压缩层"><a href="#压缩层" class="headerlink" title="压缩层"></a>压缩层</h3><p>在sequeeze层中，对比研究了GlobalMaxPooling和GlobalAvgPooling，从指标身上看GlobalAvgPooling表现会更好一些，但是Maxpooling的计算更加简单，因此在模型中使用的是Maxpooling，<strong>这一步也是可以在个人实践的时候进行优化的。</strong></p>
+<img src="/2020/02/17/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-SENet/gap-gmp.png" class="">
+
+<h3 id="扩展层计算方法"><a href="#扩展层计算方法" class="headerlink" title="扩展层计算方法"></a>扩展层计算方法</h3><p>这里主要是讨论选择什么样的激活函数，众所周知常用的激活层是Relu，Sigmoid，Tanh。可以看到Tanh相比Sigmoid表现差一点，并且使用了Relu的Se-Resnet50已经低于了Resnet50的基线表现。这一步使用什么样的激活函数是很重要的，不是想当然的认为这一步要得到0~1之间的数，所以要使用Sigmoid激活函数，任何一个网络模型的设计都是要有依据的。</p>
+<img src="/2020/02/17/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-SENet/opreator.png" class="">
+
+<h3 id="Block结构设计"><a href="#Block结构设计" class="headerlink" title="Block结构设计"></a>Block结构设计</h3><p>为什么选择开篇图中那种Block的设计方式，论文中，作者研究了不同的网络结构设计如下</p>
+<img src="/2020/02/17/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-SENet/se-blocks.png" class="" title="Blocks">
+
+<p>具体的表现为</p>
+<img src="/2020/02/17/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-SENet/blocks-error.png" class="">
+
+<p>可以看出来，SE-POST表现相比是最差的。如果SE单元在分支聚合之前应用，则SE单元所产生的性能改进对其梭子的位置比较鲁棒的，表现差别不大。 </p>
+<p>正常情况下，每个SE块都放置在残差单元的结构外部。 论文中作者还构造了一种设计变体，将SE块移动到剩余单元内，将其直接放置在3×3卷积层之后，虽然论文中作者没给出是哪种block，但是个人感觉应该是瓶颈残差模块。</p>
+<img src="/2020/02/17/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-SENet/bottleneck-resnet-block.png" class="">
+
+<p> 由于3×3卷积层具有较少的通道，因此相应的SE块引入的参数数量会想要减少。从下面的图标可以看出来，SE3x3与标准的SE相比，在减少10%左右参数量的情况下，并没有明显降低模型的精度。 <strong>在后续优化中，通过针对特定架构量身定制SE块使用，可以进一步提高效率。</strong></p>
+<img src="/2020/02/17/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-SENet/block-variance.png" class="">
+
+<h2 id="SEBlock各模块的作用"><a href="#SEBlock各模块的作用" class="headerlink" title="SEBlock各模块的作用"></a>SEBlock各模块的作用</h2><p>整个SEBlock中主要包含2个模块，sequence，excitation，后面的scale属于常规操作。</p>
+<h3 id="Squeeze的作用"><a href="#Squeeze的作用" class="headerlink" title="Squeeze的作用"></a>Squeeze的作用</h3><p>在SEblock中的sequence是通过GlobalAvgpooling实现的，为了查看这一步的作用，在论文中作者做了这么一个实验。</p>
+<ol>
+<li>参数量固定</li>
+<li>移除GlobalAvgpooling操作</li>
+<li>移除两个fc层使用1x1卷积代替，保持输出的通道数与原来相同</li>
+</ol>
+<p>显然，去除了squeeze这一步，在SE模块中，网络无法再直接访问全局特征。在下面的图中通过对比试验，可以看出，去除掉squeeze这一步之后，为模型带了0.7个点的性能损失，并且带来了更多的计算量，而squeeze使用简单地pooling操作，既降低了计算量有带来了性能的提升。</p>
+<img src="/2020/02/17/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-SENet/squeeze-role.png" class="">
+
+<h3 id="Excitation的作用"><a href="#Excitation的作用" class="headerlink" title="Excitation的作用"></a>Excitation的作用</h3><p>这一步很有趣，作者是通过研究分类任务上，网络不同深度上对不同类别的图像和同一类别内的变化。</p>
+<p>这里选择了语义和外观上都有很大差异的四个类：金鱼，狗，飞机，悬崖。使用每个阶段的最后一个在降采样之前的SE模块，均匀采样50个通道，并计算着50个通道的平均值。从下面这个图可以得到两个结论</p>
+<ol>
+<li>在较浅的层，不同的类别之间的激活值是很相似的，这有可能是由于CNN的通道权重共享造成的，比如图中的SE2-3</li>
+<li>随着模型深度的增加，不同类别的激活变得更加特定，这是由于不同类别的输入视觉信号和类别监督信号对特征具有不同的偏好，比如图中的SE4-6,SE5-1</li>
+<li>SE5-2不同的类别的激活表现了趋于饱和的激活状态，在所有激活值取值为1的电商，SE则变成了一个逻辑运算符来判断0&#x2F;1</li>
+<li>在SE5-3，后面加上globalpooling就是最后的分类层了，可以看到在不同的类别上的表现趋势很相似，并且变化不大。这表明SE5-2和SE5-3对模型的贡献已经很小了。这表明，<strong>可以通过删除这一层，也不会太影响模型的性能，但是可以显著的降低模型的参数量，也验证了随着模型深度的增加，获得的收益越来越小</strong>。</li>
+</ol>
+<p>实际上这个表现不是SE独有的，任何一个深度学习网络，经过研究发现，浅层特征表达浅层特征，深层特征表达高层特征。</p>
+<img src="/2020/02/17/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-SENet/extitction-activation.png" class="" title="ActivationCurve">
+
+<p>再看一下不同类别激活值的均值和方差的分布，可以明显的看出来，不同类别的均值和方差的分布曲线和激活值的曲线是一致的。</p>
+<img src="/2020/02/17/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-SENet/excitation-activation-standard.png" class="">
+
+
+
+
+
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>官方repo <a href="https://github.com/hujie-frank/SENet">https://github.com/hujie-frank/SENet</a></li>
+<li></li>
+</ol>
+]]></content>
+      <categories>
+        <category>深度学习</category>
+        <category>CV</category>
+      </categories>
+      <tags>
+        <tag>深度学习</tag>
+        <tag>ConvNet</tag>
+        <tag>CV</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>深度学习-ConvNet-MobileNetV1-V3</title>
     <url>/2020/02/03/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-MobileNetV1-V3/</url>
     <content><![CDATA[<img src="/2020/02/03/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-MobileNetV1-V3/pose_estimation.gif" class="" title="Pose estimation">
@@ -4855,194 +4937,6 @@ $$
       </tags>
   </entry>
   <entry>
-    <title>深度学习-ConvNet-SENet</title>
-    <url>/2020/02/17/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-SENet/</url>
-    <content><![CDATA[<img src="/2020/02/17/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-SENet/SE-pipeline.jpg" class="">
-
-<p>本篇主要记录一下2017年ILSVR竞赛的冠军-SENet，这是一种网络的block结构，可以有效的结合到InceptionNet，Resnet中。</p>
-<span id="more"></span>
-
-<h2 id="Block结构"><a href="#Block结构" class="headerlink" title="Block结构"></a>Block结构</h2><p>网络结构如上图所示，图中参数解释：</p>
-<ol>
-<li>$F_{tr}$–标准卷积操作</li>
-<li>$F_{sq}(.)$–sequeeze操作，这一步进对输入的特征图进行GlobalPooling，特征图由$H \times W \times C$变为$1 \times 1\times C$</li>
-<li>$F_{ex}(.)$–excitation操作，这一步包含两个fc全连接操作<ol>
-<li>第一步FC-压缩维度数量，维度数由$C$变为$C&#x2F;r$，Relu激活层</li>
-<li>第二步FC-扩展维度数量，维度数由$C&#x2F;r$变为$C$，Sigmoid激活层</li>
-</ol>
-</li>
-<li>$F_{scale}(.)$–类似通道注意力，将得到的C维度的值作为权重乘到输入的特征图的维度上。</li>
-</ol>
-<h2 id="参数和结构是如何确定的"><a href="#参数和结构是如何确定的" class="headerlink" title="参数和结构是如何确定的"></a>参数和结构是如何确定的</h2><h3 id="扩展层压缩比"><a href="#扩展层压缩比" class="headerlink" title="扩展层压缩比"></a>扩展层压缩比</h3><p>在论文中，作者认为压缩比为16可以取得模型的精度和运算复杂度之间的平衡，并且作者在论文中提出，由于模型的不同层在整个模型中的作用不一样，因此，在整个模型中使用同一个固定的压缩比不是一个最好的办法，可以设置不同的压缩比以适应不同的基础网络，<strong>我们在日常使用的过程中可以先使用16，之后在模型优化的时候再通过更改压缩比来进行对比试验。</strong></p>
-<h3 id="压缩层"><a href="#压缩层" class="headerlink" title="压缩层"></a>压缩层</h3><p>在sequeeze层中，对比研究了GlobalMaxPooling和GlobalAvgPooling，从指标身上看GlobalAvgPooling表现会更好一些，但是Maxpooling的计算更加简单，因此在模型中使用的是Maxpooling，<strong>这一步也是可以在个人实践的时候进行优化的。</strong></p>
-<img src="/2020/02/17/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-SENet/gap-gmp.png" class="">
-
-<h3 id="扩展层计算方法"><a href="#扩展层计算方法" class="headerlink" title="扩展层计算方法"></a>扩展层计算方法</h3><p>这里主要是讨论选择什么样的激活函数，众所周知常用的激活层是Relu，Sigmoid，Tanh。可以看到Tanh相比Sigmoid表现差一点，并且使用了Relu的Se-Resnet50已经低于了Resnet50的基线表现。这一步使用什么样的激活函数是很重要的，不是想当然的认为这一步要得到0~1之间的数，所以要使用Sigmoid激活函数，任何一个网络模型的设计都是要有依据的。</p>
-<img src="/2020/02/17/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-SENet/opreator.png" class="">
-
-<h3 id="Block结构设计"><a href="#Block结构设计" class="headerlink" title="Block结构设计"></a>Block结构设计</h3><p>为什么选择开篇图中那种Block的设计方式，论文中，作者研究了不同的网络结构设计如下</p>
-<img src="/2020/02/17/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-SENet/se-blocks.png" class="" title="Blocks">
-
-<p>具体的表现为</p>
-<img src="/2020/02/17/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-SENet/blocks-error.png" class="">
-
-<p>可以看出来，SE-POST表现相比是最差的。如果SE单元在分支聚合之前应用，则SE单元所产生的性能改进对其梭子的位置比较鲁棒的，表现差别不大。 </p>
-<p>正常情况下，每个SE块都放置在残差单元的结构外部。 论文中作者还构造了一种设计变体，将SE块移动到剩余单元内，将其直接放置在3×3卷积层之后，虽然论文中作者没给出是哪种block，但是个人感觉应该是瓶颈残差模块。</p>
-<img src="/2020/02/17/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-SENet/bottleneck-resnet-block.png" class="">
-
-<p> 由于3×3卷积层具有较少的通道，因此相应的SE块引入的参数数量会想要减少。从下面的图标可以看出来，SE3x3与标准的SE相比，在减少10%左右参数量的情况下，并没有明显降低模型的精度。 <strong>在后续优化中，通过针对特定架构量身定制SE块使用，可以进一步提高效率。</strong></p>
-<img src="/2020/02/17/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-SENet/block-variance.png" class="">
-
-<h2 id="SEBlock各模块的作用"><a href="#SEBlock各模块的作用" class="headerlink" title="SEBlock各模块的作用"></a>SEBlock各模块的作用</h2><p>整个SEBlock中主要包含2个模块，sequence，excitation，后面的scale属于常规操作。</p>
-<h3 id="Squeeze的作用"><a href="#Squeeze的作用" class="headerlink" title="Squeeze的作用"></a>Squeeze的作用</h3><p>在SEblock中的sequence是通过GlobalAvgpooling实现的，为了查看这一步的作用，在论文中作者做了这么一个实验。</p>
-<ol>
-<li>参数量固定</li>
-<li>移除GlobalAvgpooling操作</li>
-<li>移除两个fc层使用1x1卷积代替，保持输出的通道数与原来相同</li>
-</ol>
-<p>显然，去除了squeeze这一步，在SE模块中，网络无法再直接访问全局特征。在下面的图中通过对比试验，可以看出，去除掉squeeze这一步之后，为模型带了0.7个点的性能损失，并且带来了更多的计算量，而squeeze使用简单地pooling操作，既降低了计算量有带来了性能的提升。</p>
-<img src="/2020/02/17/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-SENet/squeeze-role.png" class="">
-
-<h3 id="Excitation的作用"><a href="#Excitation的作用" class="headerlink" title="Excitation的作用"></a>Excitation的作用</h3><p>这一步很有趣，作者是通过研究分类任务上，网络不同深度上对不同类别的图像和同一类别内的变化。</p>
-<p>这里选择了语义和外观上都有很大差异的四个类：金鱼，狗，飞机，悬崖。使用每个阶段的最后一个在降采样之前的SE模块，均匀采样50个通道，并计算着50个通道的平均值。从下面这个图可以得到两个结论</p>
-<ol>
-<li>在较浅的层，不同的类别之间的激活值是很相似的，这有可能是由于CNN的通道权重共享造成的，比如图中的SE2-3</li>
-<li>随着模型深度的增加，不同类别的激活变得更加特定，这是由于不同类别的输入视觉信号和类别监督信号对特征具有不同的偏好，比如图中的SE4-6,SE5-1</li>
-<li>SE5-2不同的类别的激活表现了趋于饱和的激活状态，在所有激活值取值为1的电商，SE则变成了一个逻辑运算符来判断0&#x2F;1</li>
-<li>在SE5-3，后面加上globalpooling就是最后的分类层了，可以看到在不同的类别上的表现趋势很相似，并且变化不大。这表明SE5-2和SE5-3对模型的贡献已经很小了。这表明，<strong>可以通过删除这一层，也不会太影响模型的性能，但是可以显著的降低模型的参数量，也验证了随着模型深度的增加，获得的收益越来越小</strong>。</li>
-</ol>
-<p>实际上这个表现不是SE独有的，任何一个深度学习网络，经过研究发现，浅层特征表达浅层特征，深层特征表达高层特征。</p>
-<img src="/2020/02/17/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-SENet/extitction-activation.png" class="" title="ActivationCurve">
-
-<p>再看一下不同类别激活值的均值和方差的分布，可以明显的看出来，不同类别的均值和方差的分布曲线和激活值的曲线是一致的。</p>
-<img src="/2020/02/17/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-SENet/excitation-activation-standard.png" class="">
-
-
-
-
-
-<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
-<li>官方repo <a href="https://github.com/hujie-frank/SENet">https://github.com/hujie-frank/SENet</a></li>
-<li></li>
-</ol>
-]]></content>
-      <categories>
-        <category>深度学习</category>
-        <category>CV</category>
-      </categories>
-      <tags>
-        <tag>深度学习</tag>
-        <tag>ConvNet</tag>
-        <tag>CV</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>深度学习-ConvNet-Shufflenet</title>
-    <url>/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-ShuffleNet/</url>
-    <content><![CDATA[<p>本篇主要分析轻量化Conv-ShuffleNet</p>
-<img src="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-ShuffleNet/shufflenetv2-block.png" class=""> 
-
-<span id="more"></span>
-
-<h2 id="ShuffleNetV1"><a href="#ShuffleNetV1" class="headerlink" title="ShuffleNetV1"></a>ShuffleNetV1</h2><img src="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-ShuffleNet/shufflenet-mobilenet.png" class="">
-
-<p><code>ShuffleNet</code>是$2017$年由<code>Facebook</code>提出的，它的主要竞争对手是<code>Google</code>提出的<code>MobilenetV1</code>，上图作者在论文中与<code>MobileNetV1</code>在<code>ImageNet</code>的的对比。<hr></p>
-<h3 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h3><p>ShuffleNet网络主要是针对的<code>Xception</code>和<code>ResNet</code>，由于$1 \times 1$卷积部分的计算开销在小型网络中不够理想的问题。受<code>depthwise</code>卷积的启发，每个通道都与一个卷积核进行计算，那么在$1 \times 1$这部分卷积中，一个很自然的方法就是，对当前的<code>featuremap</code>的通道进行分组计算，但是如果直接分组的话，就造成了不同特征的隔离，不同的组之间的特征无法交互，这样做显然会造成数据特征的丢失，效果不好。<code>ShuffleNet</code>就是针对这个问题提出的解决方案，对<code>featuremap</code>的通道进行分组进行<strong>group convolution</strong>，然后每组输出的<code>featuremap</code>进行重排<strong>channel shuffle</strong>，这样不同组的的信息由此得到交换，并没有完全隔离，能在较小计算量的情况下保持较好的精度。</p>
-<hr> 不同featuremap分组方式对比
-
-<img src="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-ShuffleNet/comparison.png" class="">
-
-<p>图$a$，是将<code>featuremap</code>的通道进行分组，显然这样会造成特征之间的隔离，输出只有一部分输入决定；图b&#x2F;c在第一步卷积后对分组的通道进行重排，这样下层的输入就会接收到上层所有<code>channel</code>的数据，效果相比图$a$更好。<hr></p>
-<p>在图c中可以看到，channelshuffle层，在进行group convolution之后，对得到的通道进行shuffle，这里的shuffle不是随机的，而是均匀的打乱。在程序上的实现方法很简单：假设将输入层分成g组，每组的数量为n，那么总的通道数为$g \times n$，将通道拆成两个维度$(g,n)$，然后将这两个维度进行转置$(n,g)$，最后reshape成一个维度，这样得到的维度就是均匀shuffle之后的channel了，也就是图c中的channel shuffle的样子。</p>
-<p>代码实现如下</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">ShuffleBlock</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, groups</span>):</span><br><span class="line">        <span class="built_in">super</span>(ShuffleBlock, self).__init__()</span><br><span class="line">        self.groups = groups</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;Channel shuffle: [N,C,H,W] -&gt; [N,g,C/g,H,W] -&gt; [N,C/g,g,H,w] -&gt; [N,C,H,W]&#x27;&#x27;&#x27;</span></span><br><span class="line">        N,C,H,W = x.size()</span><br><span class="line">        g = self.groups</span><br><span class="line">        <span class="keyword">return</span> x.view(N,g,C//g,H,W).permute(<span class="number">0</span>,<span class="number">2</span>,<span class="number">1</span>,<span class="number">3</span>,<span class="number">4</span>).reshape(N,C,H,W)</span><br></pre></td></tr></table></figure>
-
-<h3 id="网络结构"><a href="#网络结构" class="headerlink" title="网络结构"></a>网络结构</h3><p>在<code>ShuffleNet</code>中，也是和<code>ResNet</code>等模型相似，使用的是<code>Block</code>，结构如下所示。</p>
-<img src="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-ShuffleNet/shufflenet-unite.png" class="">
-
-<p>图$a$是<code>ResNet</code>中的<code>Block</code>结构，图$b$是<code>ShuffleNet</code>中使用的<code>Block</code>，先经过$1 \times 1$通道分组卷积，然后通道重排，在$3 \times 3$空间上的depthwise convolution，然后再经过一个$1 \times 1$的通道分组卷积，图$c$是要进行降维时候的结构$stride&#x3D;2$，旁边的shortcut也变为$stride&#x3D;2$的平均池化。</p>
-<p>可以看到shufflenet中的blcok是从残差网络的block中改造得到的。在resnet中block模块的设计是：$1 \times 1$的卷积–&gt;$3\times 3$的深度卷积，并且在这一步数据通道减少，可以理解成一个bottleneck–&gt;$1 \times 1$卷积，最后是一个短路连接，将输入直接加到输出上。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">1x1 Conv --&gt; 3x3 DWConv--&gt; 1x1 Conv --------&gt;</span><br><span class="line"> |                                     |</span><br><span class="line"> |-------------------------------------|</span><br></pre></td></tr></table></figure>
-
-<p>在shufflenet中对resnet的block进行了改进设计，将$1 \times 1$的普通卷积换成了组卷积，并且在后面加入了channel shuffle操作。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">1x1 Group convolution --&gt; channel shuffle --&gt; 3x3 DWConv--&gt; 1x1 Group convolution --------&gt;</span><br><span class="line"> |                                                                                    |</span><br><span class="line"> |------------------------------------------------------------------------------------|</span><br></pre></td></tr></table></figure>
-
-<p>ShuffleNet的block设计代码如下所示</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Bottleneck</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, in_planes, out_planes, stride, groups</span>):</span><br><span class="line">        <span class="built_in">super</span>(Bottleneck, self).__init__()</span><br><span class="line">        self.stride = stride</span><br><span class="line"></span><br><span class="line">        mid_planes = out_planes/<span class="number">4</span></span><br><span class="line">        g = <span class="number">1</span> <span class="keyword">if</span> in_planes==<span class="number">24</span> <span class="keyword">else</span> groups</span><br><span class="line">        self.conv1 = nn.Conv2d(in_planes, mid_planes, kernel_size=<span class="number">1</span>, groups=g, bias=<span class="literal">False</span>)</span><br><span class="line">        self.bn1 = nn.BatchNorm2d(mid_planes)</span><br><span class="line">        self.shuffle1 = ShuffleBlock(groups=g)</span><br><span class="line">        self.conv2 = nn.Conv2d(mid_planes, mid_planes, kernel_size=<span class="number">3</span>, stride=stride, padding=<span class="number">1</span>, groups=mid_planes, bias=<span class="literal">False</span>)</span><br><span class="line">        self.bn2 = nn.BatchNorm2d(mid_planes)</span><br><span class="line">        self.conv3 = nn.Conv2d(mid_planes, out_planes, kernel_size=<span class="number">1</span>, groups=groups, bias=<span class="literal">False</span>)</span><br><span class="line">        self.bn3 = nn.BatchNorm2d(out_planes)</span><br><span class="line"></span><br><span class="line">        self.shortcut = nn.Sequential()</span><br><span class="line">        <span class="keyword">if</span> stride == <span class="number">2</span>:</span><br><span class="line">            self.shortcut = nn.Sequential(nn.AvgPool2d(<span class="number">3</span>, stride=<span class="number">2</span>, padding=<span class="number">1</span>))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">      	<span class="comment"># group convolution and bn, relu </span></span><br><span class="line">        out = F.relu(self.bn1(self.conv1(x)))</span><br><span class="line">        <span class="comment"># channel shuffle</span></span><br><span class="line">        out = self.shuffle1(out)</span><br><span class="line">        <span class="comment"># depthwise convolution and output channel num is out/4</span></span><br><span class="line">        out = F.relu(self.bn2(self.conv2(out)))</span><br><span class="line">        <span class="comment"># group convolution and bn, relu</span></span><br><span class="line">        out = self.bn3(self.conv3(out))</span><br><span class="line">        <span class="comment"># shortcut</span></span><br><span class="line">        res = self.shortcut(x)</span><br><span class="line">        <span class="comment"># relu </span></span><br><span class="line">        out = F.relu(torch.cat([out,res], <span class="number">1</span>)) <span class="keyword">if</span> self.stride==<span class="number">2</span> <span class="keyword">else</span> F.relu(out+res)</span><br><span class="line">        <span class="keyword">return</span> out</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<hr>下图是shufflenet的模型结构示意图
-
-<img src="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-ShuffleNet/shufflenet-architecture.png" class="">
-
-<p>开始是普通的$3 \times 3$的卷积，和maxpool层，然后是3个stage，每个stage都是重复堆叠shufflenet中的block结构，在每个stage中，第一个基本单元采用的是$stride&#x3D;2$，这样特征图width和height各降低一半，而通道数增加1倍。后面的基本单元都是$stride&#x3D;1$，特征图和通道数都保持不变。对于基本单元来说，其中瓶颈层，就是3x3卷积层的通道数为输出通道数的1&#x2F;4，这里和resnet中的残差单元设计是一致的。<hr></p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>实际上就像开头说的那样，shufflenet的设计的竞标对象是mobilenetv1，在论文中也可以看到作者的实验中对比对象是MobileNetV1。</p>
-<img src="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-ShuffleNet/comparison.png" class="">
-
-<p>可以看出来，shufflenet在计算复杂度和模型准确率上都是由于mobilenet的。</p>
-<h2 id="ShuffleNetV2"><a href="#ShuffleNetV2" class="headerlink" title="ShuffleNetV2"></a>ShuffleNetV2</h2><img src="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-ShuffleNet/shufflenetv2-conv-time.png" class="">
-
-<p>在<code>ShuffleNet</code>中，作者使用<code>FLOPS</code>来作为模型效率的一个评价指标，但是在在<code>ShuffleNetV2</code>的论文中作者指出这个指标是间接的，因为一个模型实际的运行时间除了要把计算操作算进去之外，还有例如内存读写，<code>GPU</code>并行性，文件<code>IO</code>等也应该考虑进去。最直接的方案还应该回归到最原始的策略，即直接在同一个硬件上观察每个模型的运行时间。如上图所示，在整个模型的计算周期中，<code>Conv</code>耗时仅占$50 %$左右，如果我们能优化另外$50 %$，我们就能够在不损失计算量的前提下进一步提高模型的效率。</p>
-<p>在ShuffleNetV2中作者从内存访问代价（Memory Access Cost，MAC）和GPU并行性的方向分析了网络应该怎么设计才能进一步减少运行时间，提高模型的效率。</p>
-<h3 id="高效模型的设计原则"><a href="#高效模型的设计原则" class="headerlink" title="高效模型的设计原则"></a>高效模型的设计原则</h3><h4 id="相同输入输出情况下MAC最小"><a href="#相同输入输出情况下MAC最小" class="headerlink" title="相同输入输出情况下MAC最小"></a>相同输入输出情况下MAC最小</h4><p>对于一个featuremap，假设尺寸为$h \times w \times c_{1}$，经过卷积之后输出的featuremap为$h \times w \times c_{2}$，那么卷积操作需要的算力FLOPs为$B&#x3D;hwc_{1}c_{2}$，在计算过程中占用的内存，输入featuremap为$hwc_{1}$，输出featuremap为$hwc_{2}$，卷积核为$c_{1}c_{2}$，也就是$MAC&#x3D;hw(c_{1}+c_{2})+c_{1}c_{2}$</p>
-<p>有如下的推导公式<br>$$<br>\begin{aligned}<br>M A C&amp;&#x3D;h w\left(c_{1}+c_{2}\right)+c_{1} c_{2}\<br>&amp;&#x3D;\sqrt{\left(h w\left(c_{1}+c_{2}\right)\right)^{2}}+\frac{B}{h w}\<br>&amp;&#x3D;\sqrt{(h w)^{2} \cdot\left(c_{1}+c_{2}\right)^{2}}+\frac{B}{h w}\<br>&amp;\geq \sqrt{(h w)^{2} \cdot 4 c_{1} c_{2}}+\frac{B}{h w}\<br>&amp;&#x3D;s \sqrt{h w \cdot\left(h w c_{1} c_{2}\right)}+\frac{B}{h w}\<br>&amp;&#x3D;2 \sqrt{h w B}+\frac{B}{h w}<br>\end{aligned}<br>$$<br>当满足$c_{1}&#x3D;c_{2}$的时候，上式可以取到等号，也就是说，当所需算力确定的前提下，$c_{1}&#x3D;c_{2}$时所需的<code>MAC</code>最小，此时的模型效率最高。</p>
-<h4 id="MAC与group-convolution的分组数量成正比"><a href="#MAC与group-convolution的分组数量成正比" class="headerlink" title="MAC与group convolution的分组数量成正比"></a>MAC与group convolution的分组数量成正比</h4><p>在group convolution中，FLOPs为$B &#x3D; hwc_{1}c_{2}&#x2F;g$，对应的<code>MAC</code>计算公式为<br>$$<br>\begin{aligned}<br>M A C &amp;&#x3D;h w\left(c_{1}+c_{2}\right)+\frac{c_{1}}{g} \frac{c_{2}}{g} g \<br>&amp;&#x3D;h w\left(c_{1}+c_{2}\right)+\frac{c_{1} c_{2}}{g} \<br>&amp;&#x3D;B g\left(\frac{1}{c_{1}}+\frac{1}{c_{2}}\right)+\frac{B}{h w}<br>\end{aligned}<br>$$<br>也就是在使用group convolution的时候，group的分组数量不要太大。</p>
-<h4 id="模型的分支会降低网络并行能力"><a href="#模型的分支会降低网络并行能力" class="headerlink" title="模型的分支会降低网络并行能力"></a>模型的分支会降低网络并行能力</h4><p>在比较典型的模型结构中，<a href="https://towardsdatascience.com/a-simple-guide-to-the-versions-of-the-inception-network-7fc52b863202">InceptionNet</a>和<code>NasNet</code>是分支比较多的，在论文里，作者对比了几种不同的网络结构，通过控制卷积的通道数来使5组对照试验的<code>FLOPs</code>相同，通过实验我们发现它们按效率从高到低排列依次是$a&gt;b&gt;d&gt;c&gt;e$</p>
-<img src="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-ShuffleNet/shuffnetv2-branches.png" class="" title="Branches">
-
-<hr>
-
-<p>可以明显的看到，模型的效率和模型的分支数量是成反比的。</p>
-<h4 id="ElementWise操作是很昂贵的"><a href="#ElementWise操作是很昂贵的" class="headerlink" title="ElementWise操作是很昂贵的"></a>ElementWise操作是很昂贵的</h4><p>所谓的<code>ElementWise</code>是指在模型网络中的激活函数，bias_add等操作，这些操作在计算FLOPs时被忽略掉了，但是根据上面论文中作者提供的<code>shufflenetv1</code>和<code>mobilebnetv2</code>的计算时间分布饼图，可以知道<code>ElementWise</code>实际上所占的比例一点都不小。</p>
-<h4 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h4><p>既然有了上面四个设计准则，那么要想设计更高效的网络就有了入手点</p>
-<ol>
-<li>使用输入通道和输出通道相同的卷积操作</li>
-<li>谨慎使用分组卷积</li>
-<li>减少网络分支数</li>
-<li>减少<code>ElementWise</code>操作</li>
-</ol>
-<p>在shufflenetv1中设计的block中有两个分组卷积层存在，并且每个分组卷积层group数量一般为3，这显然就不满足第二个准则了，回顾MobileNetV2的结构借鉴了resnet的设计，包含深度可分离卷积，扩展层和映射层以及大量的Relu6操作，显然不太符合条件3，4。</p>
-<h3 id="网络结构-1"><a href="#网络结构-1" class="headerlink" title="网络结构"></a>网络结构</h3><p>上面说了一大堆，主要是作者在阐述shufflenetv2的设计思路，那么网络结构到底啥样子</p>
-<img src="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-ShuffleNet/shufflenetv2-block.png" class="" title="Shufflenet Block">
-
-<hr>
-
-<p>左边两个是第一节中所说的V1的结构，右边是需要重点说的V2的结构。</p>
-<p>对比发现</p>
-<ol>
-<li>$c$中加入了通道分割操作(channel split)，具体的操作方法是：将c个输入的feature分成$c-c^{1}$和$c^{1}$两组，并且一般情况下$c^{1}&#x3D;\frac{c}{2}$，这样是为了满足设计准则的第三点，尽量控制模型的分支数量</li>
-<li>进行通道分割之后左侧的分支直接映射，右侧是一个输入通道数和输出通道数相等的深度可分离卷积，这样是为了满足条件1</li>
-<li>右侧的分支中只使用了$1\times1$卷积，并没有使用V1的分组卷积，这样是为了满足条件2</li>
-<li>在最后合并的时候都是使用的concat操作，并没有使用Add，是为了满足条件4</li>
-<li>在堆叠<code>ShuffleNetv2</code>的时候，concat，channel-split和channel-shuffle合并成1个element-wise操作，也是为了满足条件4。</li>
-</ol>
-<p>图$d$是降采样操作，不进行channel-split操作，每个分支直接copy一份输入，每个分支进行stride&#x3D;2的下采样，最后concat在一起，这样featuremap减半，但是通道数量加倍。</p>
-<p>其他的地方就和V1模型相似了，通过多个block堆叠，组成ShuffleNetV2模型，模型结构如下</p>
-<img src="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-ShuffleNet/shufflenetv2-architecture.png" class="" title="ShuffleNetV2 Architecture">
-
-<p>V2相比V1多了一个conv5层，除了这个外就没什么不一样的了。</p>
-<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ol>
-<li><p>论文地址：<a href="https://arxiv.org/abs/1707.01083">https://arxiv.org/abs/1707.01083</a></p>
-</li>
-<li><p>V1代码-Pytorch：<a href="https://github.com/kuangliu/pytorch-cifar/blob/master/models/shufflenet.py">https://github.com/kuangliu/pytorch-cifar/blob/master/models/shufflenet.py</a></p>
-</li>
-<li><p>V2代码-Pytorch：<a href="https://pytorch.org/hub/pytorch_vision_shufflenet_v2/">https://pytorch.org/hub/pytorch_vision_shufflenet_v2/</a></p>
-</li>
-<li><p>V2代码-TensorFlow：<a href="https://github.com/tensorpack/tensorpack/blob/master/examples/ImageNetModels/shufflenet.py">https://github.com/tensorpack/tensorpack/blob/master/examples/ImageNetModels/shufflenet.py</a></p>
-</li>
-</ol>
-]]></content>
-      <categories>
-        <category>深度学习</category>
-        <category>CV</category>
-      </categories>
-      <tags>
-        <tag>深度学习</tag>
-        <tag>ConvNet</tag>
-        <tag>CV</tag>
-        <tag>轻量化Conv</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>深度学习-Convolution-Summary</title>
     <url>/2020/02/05/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Convolution-Summary/</url>
     <content><![CDATA[<img src="/2020/02/05/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Convolution-Summary/convs.png" class="" title="convolution">
@@ -5063,6 +4957,32 @@ $$
       <tags>
         <tag>深度学习</tag>
         <tag>ConvNet</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Loss-softmax-based</title>
+    <url>/2020/03/17/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Loss-softmax-based/</url>
+    <content><![CDATA[<p>本篇主要记录 一下softmax-loss以及相关变体，该loss的发展主要有人脸识别领域推进，本篇中主要借鉴人脸是识别中的相关Loss。</p>
+<span id="more"></span>
+
+
+
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ol>
+<li><a href="https://zhuanlan.zhihu.com/p/60747096">人脸识别损失函数简介与Pytorch实现：ArcFace、SphereFace、CosFace</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/76391405">人脸识别中Softmax-based Loss的演化史</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/34404607">人脸识别的LOSS（上）</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/34436551">人脸识别的LOSS（下）</a></li>
+<li><a href="https://github.com/adambielski/siamese-triplet">Github siamese-triplet</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>深度学习</category>
+        <category>Loss</category>
+      </categories>
+      <tags>
+        <tag>深度学习</tag>
+        <tag>Loss</tag>
+        <tag>Softmax</tag>
       </tags>
   </entry>
   <entry>
@@ -5203,6 +5123,112 @@ $$
       <tags>
         <tag>深度学习，NLP</tag>
         <tag>Transformer</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>深度学习-ConvNet-Shufflenet</title>
+    <url>/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-ShuffleNet/</url>
+    <content><![CDATA[<p>本篇主要分析轻量化Conv-ShuffleNet</p>
+<img src="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-ShuffleNet/shufflenetv2-block.png" class=""> 
+
+<span id="more"></span>
+
+<h2 id="ShuffleNetV1"><a href="#ShuffleNetV1" class="headerlink" title="ShuffleNetV1"></a>ShuffleNetV1</h2><img src="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-ShuffleNet/shufflenet-mobilenet.png" class="">
+
+<p><code>ShuffleNet</code>是$2017$年由<code>Facebook</code>提出的，它的主要竞争对手是<code>Google</code>提出的<code>MobilenetV1</code>，上图作者在论文中与<code>MobileNetV1</code>在<code>ImageNet</code>的的对比。<hr></p>
+<h3 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h3><p>ShuffleNet网络主要是针对的<code>Xception</code>和<code>ResNet</code>，由于$1 \times 1$卷积部分的计算开销在小型网络中不够理想的问题。受<code>depthwise</code>卷积的启发，每个通道都与一个卷积核进行计算，那么在$1 \times 1$这部分卷积中，一个很自然的方法就是，对当前的<code>featuremap</code>的通道进行分组计算，但是如果直接分组的话，就造成了不同特征的隔离，不同的组之间的特征无法交互，这样做显然会造成数据特征的丢失，效果不好。<code>ShuffleNet</code>就是针对这个问题提出的解决方案，对<code>featuremap</code>的通道进行分组进行<strong>group convolution</strong>，然后每组输出的<code>featuremap</code>进行重排<strong>channel shuffle</strong>，这样不同组的的信息由此得到交换，并没有完全隔离，能在较小计算量的情况下保持较好的精度。</p>
+<hr> 不同featuremap分组方式对比
+
+<img src="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-ShuffleNet/comparison.png" class="">
+
+<p>图$a$，是将<code>featuremap</code>的通道进行分组，显然这样会造成特征之间的隔离，输出只有一部分输入决定；图b&#x2F;c在第一步卷积后对分组的通道进行重排，这样下层的输入就会接收到上层所有<code>channel</code>的数据，效果相比图$a$更好。<hr></p>
+<p>在图c中可以看到，channelshuffle层，在进行group convolution之后，对得到的通道进行shuffle，这里的shuffle不是随机的，而是均匀的打乱。在程序上的实现方法很简单：假设将输入层分成g组，每组的数量为n，那么总的通道数为$g \times n$，将通道拆成两个维度$(g,n)$，然后将这两个维度进行转置$(n,g)$，最后reshape成一个维度，这样得到的维度就是均匀shuffle之后的channel了，也就是图c中的channel shuffle的样子。</p>
+<p>代码实现如下</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">ShuffleBlock</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, groups</span>):</span><br><span class="line">        <span class="built_in">super</span>(ShuffleBlock, self).__init__()</span><br><span class="line">        self.groups = groups</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;Channel shuffle: [N,C,H,W] -&gt; [N,g,C/g,H,W] -&gt; [N,C/g,g,H,w] -&gt; [N,C,H,W]&#x27;&#x27;&#x27;</span></span><br><span class="line">        N,C,H,W = x.size()</span><br><span class="line">        g = self.groups</span><br><span class="line">        <span class="keyword">return</span> x.view(N,g,C//g,H,W).permute(<span class="number">0</span>,<span class="number">2</span>,<span class="number">1</span>,<span class="number">3</span>,<span class="number">4</span>).reshape(N,C,H,W)</span><br></pre></td></tr></table></figure>
+
+<h3 id="网络结构"><a href="#网络结构" class="headerlink" title="网络结构"></a>网络结构</h3><p>在<code>ShuffleNet</code>中，也是和<code>ResNet</code>等模型相似，使用的是<code>Block</code>，结构如下所示。</p>
+<img src="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-ShuffleNet/shufflenet-unite.png" class="">
+
+<p>图$a$是<code>ResNet</code>中的<code>Block</code>结构，图$b$是<code>ShuffleNet</code>中使用的<code>Block</code>，先经过$1 \times 1$通道分组卷积，然后通道重排，在$3 \times 3$空间上的depthwise convolution，然后再经过一个$1 \times 1$的通道分组卷积，图$c$是要进行降维时候的结构$stride&#x3D;2$，旁边的shortcut也变为$stride&#x3D;2$的平均池化。</p>
+<p>可以看到shufflenet中的blcok是从残差网络的block中改造得到的。在resnet中block模块的设计是：$1 \times 1$的卷积–&gt;$3\times 3$的深度卷积，并且在这一步数据通道减少，可以理解成一个bottleneck–&gt;$1 \times 1$卷积，最后是一个短路连接，将输入直接加到输出上。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">1x1 Conv --&gt; 3x3 DWConv--&gt; 1x1 Conv --------&gt;</span><br><span class="line"> |                                     |</span><br><span class="line"> |-------------------------------------|</span><br></pre></td></tr></table></figure>
+
+<p>在shufflenet中对resnet的block进行了改进设计，将$1 \times 1$的普通卷积换成了组卷积，并且在后面加入了channel shuffle操作。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">1x1 Group convolution --&gt; channel shuffle --&gt; 3x3 DWConv--&gt; 1x1 Group convolution --------&gt;</span><br><span class="line"> |                                                                                    |</span><br><span class="line"> |------------------------------------------------------------------------------------|</span><br></pre></td></tr></table></figure>
+
+<p>ShuffleNet的block设计代码如下所示</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Bottleneck</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, in_planes, out_planes, stride, groups</span>):</span><br><span class="line">        <span class="built_in">super</span>(Bottleneck, self).__init__()</span><br><span class="line">        self.stride = stride</span><br><span class="line"></span><br><span class="line">        mid_planes = out_planes/<span class="number">4</span></span><br><span class="line">        g = <span class="number">1</span> <span class="keyword">if</span> in_planes==<span class="number">24</span> <span class="keyword">else</span> groups</span><br><span class="line">        self.conv1 = nn.Conv2d(in_planes, mid_planes, kernel_size=<span class="number">1</span>, groups=g, bias=<span class="literal">False</span>)</span><br><span class="line">        self.bn1 = nn.BatchNorm2d(mid_planes)</span><br><span class="line">        self.shuffle1 = ShuffleBlock(groups=g)</span><br><span class="line">        self.conv2 = nn.Conv2d(mid_planes, mid_planes, kernel_size=<span class="number">3</span>, stride=stride, padding=<span class="number">1</span>, groups=mid_planes, bias=<span class="literal">False</span>)</span><br><span class="line">        self.bn2 = nn.BatchNorm2d(mid_planes)</span><br><span class="line">        self.conv3 = nn.Conv2d(mid_planes, out_planes, kernel_size=<span class="number">1</span>, groups=groups, bias=<span class="literal">False</span>)</span><br><span class="line">        self.bn3 = nn.BatchNorm2d(out_planes)</span><br><span class="line"></span><br><span class="line">        self.shortcut = nn.Sequential()</span><br><span class="line">        <span class="keyword">if</span> stride == <span class="number">2</span>:</span><br><span class="line">            self.shortcut = nn.Sequential(nn.AvgPool2d(<span class="number">3</span>, stride=<span class="number">2</span>, padding=<span class="number">1</span>))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">      	<span class="comment"># group convolution and bn, relu </span></span><br><span class="line">        out = F.relu(self.bn1(self.conv1(x)))</span><br><span class="line">        <span class="comment"># channel shuffle</span></span><br><span class="line">        out = self.shuffle1(out)</span><br><span class="line">        <span class="comment"># depthwise convolution and output channel num is out/4</span></span><br><span class="line">        out = F.relu(self.bn2(self.conv2(out)))</span><br><span class="line">        <span class="comment"># group convolution and bn, relu</span></span><br><span class="line">        out = self.bn3(self.conv3(out))</span><br><span class="line">        <span class="comment"># shortcut</span></span><br><span class="line">        res = self.shortcut(x)</span><br><span class="line">        <span class="comment"># relu </span></span><br><span class="line">        out = F.relu(torch.cat([out,res], <span class="number">1</span>)) <span class="keyword">if</span> self.stride==<span class="number">2</span> <span class="keyword">else</span> F.relu(out+res)</span><br><span class="line">        <span class="keyword">return</span> out</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<hr>下图是shufflenet的模型结构示意图
+
+<img src="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-ShuffleNet/shufflenet-architecture.png" class="">
+
+<p>开始是普通的$3 \times 3$的卷积，和maxpool层，然后是3个stage，每个stage都是重复堆叠shufflenet中的block结构，在每个stage中，第一个基本单元采用的是$stride&#x3D;2$，这样特征图width和height各降低一半，而通道数增加1倍。后面的基本单元都是$stride&#x3D;1$，特征图和通道数都保持不变。对于基本单元来说，其中瓶颈层，就是3x3卷积层的通道数为输出通道数的1&#x2F;4，这里和resnet中的残差单元设计是一致的。<hr></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>实际上就像开头说的那样，shufflenet的设计的竞标对象是mobilenetv1，在论文中也可以看到作者的实验中对比对象是MobileNetV1。</p>
+<img src="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-ShuffleNet/comparison.png" class="">
+
+<p>可以看出来，shufflenet在计算复杂度和模型准确率上都是由于mobilenet的。</p>
+<h2 id="ShuffleNetV2"><a href="#ShuffleNetV2" class="headerlink" title="ShuffleNetV2"></a>ShuffleNetV2</h2><img src="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-ShuffleNet/shufflenetv2-conv-time.png" class="">
+
+<p>在<code>ShuffleNet</code>中，作者使用<code>FLOPS</code>来作为模型效率的一个评价指标，但是在在<code>ShuffleNetV2</code>的论文中作者指出这个指标是间接的，因为一个模型实际的运行时间除了要把计算操作算进去之外，还有例如内存读写，<code>GPU</code>并行性，文件<code>IO</code>等也应该考虑进去。最直接的方案还应该回归到最原始的策略，即直接在同一个硬件上观察每个模型的运行时间。如上图所示，在整个模型的计算周期中，<code>Conv</code>耗时仅占$50 %$左右，如果我们能优化另外$50 %$，我们就能够在不损失计算量的前提下进一步提高模型的效率。</p>
+<p>在ShuffleNetV2中作者从内存访问代价（Memory Access Cost，MAC）和GPU并行性的方向分析了网络应该怎么设计才能进一步减少运行时间，提高模型的效率。</p>
+<h3 id="高效模型的设计原则"><a href="#高效模型的设计原则" class="headerlink" title="高效模型的设计原则"></a>高效模型的设计原则</h3><h4 id="相同输入输出情况下MAC最小"><a href="#相同输入输出情况下MAC最小" class="headerlink" title="相同输入输出情况下MAC最小"></a>相同输入输出情况下MAC最小</h4><p>对于一个featuremap，假设尺寸为$h \times w \times c_{1}$，经过卷积之后输出的featuremap为$h \times w \times c_{2}$，那么卷积操作需要的算力FLOPs为$B&#x3D;hwc_{1}c_{2}$，在计算过程中占用的内存，输入featuremap为$hwc_{1}$，输出featuremap为$hwc_{2}$，卷积核为$c_{1}c_{2}$，也就是$MAC&#x3D;hw(c_{1}+c_{2})+c_{1}c_{2}$</p>
+<p>有如下的推导公式<br>$$<br>\begin{aligned}<br>M A C&amp;&#x3D;h w\left(c_{1}+c_{2}\right)+c_{1} c_{2}\<br>&amp;&#x3D;\sqrt{\left(h w\left(c_{1}+c_{2}\right)\right)^{2}}+\frac{B}{h w}\<br>&amp;&#x3D;\sqrt{(h w)^{2} \cdot\left(c_{1}+c_{2}\right)^{2}}+\frac{B}{h w}\<br>&amp;\geq \sqrt{(h w)^{2} \cdot 4 c_{1} c_{2}}+\frac{B}{h w}\<br>&amp;&#x3D;s \sqrt{h w \cdot\left(h w c_{1} c_{2}\right)}+\frac{B}{h w}\<br>&amp;&#x3D;2 \sqrt{h w B}+\frac{B}{h w}<br>\end{aligned}<br>$$<br>当满足$c_{1}&#x3D;c_{2}$的时候，上式可以取到等号，也就是说，当所需算力确定的前提下，$c_{1}&#x3D;c_{2}$时所需的<code>MAC</code>最小，此时的模型效率最高。</p>
+<h4 id="MAC与group-convolution的分组数量成正比"><a href="#MAC与group-convolution的分组数量成正比" class="headerlink" title="MAC与group convolution的分组数量成正比"></a>MAC与group convolution的分组数量成正比</h4><p>在group convolution中，FLOPs为$B &#x3D; hwc_{1}c_{2}&#x2F;g$，对应的<code>MAC</code>计算公式为<br>$$<br>\begin{aligned}<br>M A C &amp;&#x3D;h w\left(c_{1}+c_{2}\right)+\frac{c_{1}}{g} \frac{c_{2}}{g} g \<br>&amp;&#x3D;h w\left(c_{1}+c_{2}\right)+\frac{c_{1} c_{2}}{g} \<br>&amp;&#x3D;B g\left(\frac{1}{c_{1}}+\frac{1}{c_{2}}\right)+\frac{B}{h w}<br>\end{aligned}<br>$$<br>也就是在使用group convolution的时候，group的分组数量不要太大。</p>
+<h4 id="模型的分支会降低网络并行能力"><a href="#模型的分支会降低网络并行能力" class="headerlink" title="模型的分支会降低网络并行能力"></a>模型的分支会降低网络并行能力</h4><p>在比较典型的模型结构中，<a href="https://towardsdatascience.com/a-simple-guide-to-the-versions-of-the-inception-network-7fc52b863202">InceptionNet</a>和<code>NasNet</code>是分支比较多的，在论文里，作者对比了几种不同的网络结构，通过控制卷积的通道数来使5组对照试验的<code>FLOPs</code>相同，通过实验我们发现它们按效率从高到低排列依次是$a&gt;b&gt;d&gt;c&gt;e$</p>
+<img src="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-ShuffleNet/shuffnetv2-branches.png" class="" title="Branches">
+
+<hr>
+
+<p>可以明显的看到，模型的效率和模型的分支数量是成反比的。</p>
+<h4 id="ElementWise操作是很昂贵的"><a href="#ElementWise操作是很昂贵的" class="headerlink" title="ElementWise操作是很昂贵的"></a>ElementWise操作是很昂贵的</h4><p>所谓的<code>ElementWise</code>是指在模型网络中的激活函数，bias_add等操作，这些操作在计算FLOPs时被忽略掉了，但是根据上面论文中作者提供的<code>shufflenetv1</code>和<code>mobilebnetv2</code>的计算时间分布饼图，可以知道<code>ElementWise</code>实际上所占的比例一点都不小。</p>
+<h4 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h4><p>既然有了上面四个设计准则，那么要想设计更高效的网络就有了入手点</p>
+<ol>
+<li>使用输入通道和输出通道相同的卷积操作</li>
+<li>谨慎使用分组卷积</li>
+<li>减少网络分支数</li>
+<li>减少<code>ElementWise</code>操作</li>
+</ol>
+<p>在shufflenetv1中设计的block中有两个分组卷积层存在，并且每个分组卷积层group数量一般为3，这显然就不满足第二个准则了，回顾MobileNetV2的结构借鉴了resnet的设计，包含深度可分离卷积，扩展层和映射层以及大量的Relu6操作，显然不太符合条件3，4。</p>
+<h3 id="网络结构-1"><a href="#网络结构-1" class="headerlink" title="网络结构"></a>网络结构</h3><p>上面说了一大堆，主要是作者在阐述shufflenetv2的设计思路，那么网络结构到底啥样子</p>
+<img src="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-ShuffleNet/shufflenetv2-block.png" class="" title="Shufflenet Block">
+
+<hr>
+
+<p>左边两个是第一节中所说的V1的结构，右边是需要重点说的V2的结构。</p>
+<p>对比发现</p>
+<ol>
+<li>$c$中加入了通道分割操作(channel split)，具体的操作方法是：将c个输入的feature分成$c-c^{1}$和$c^{1}$两组，并且一般情况下$c^{1}&#x3D;\frac{c}{2}$，这样是为了满足设计准则的第三点，尽量控制模型的分支数量</li>
+<li>进行通道分割之后左侧的分支直接映射，右侧是一个输入通道数和输出通道数相等的深度可分离卷积，这样是为了满足条件1</li>
+<li>右侧的分支中只使用了$1\times1$卷积，并没有使用V1的分组卷积，这样是为了满足条件2</li>
+<li>在最后合并的时候都是使用的concat操作，并没有使用Add，是为了满足条件4</li>
+<li>在堆叠<code>ShuffleNetv2</code>的时候，concat，channel-split和channel-shuffle合并成1个element-wise操作，也是为了满足条件4。</li>
+</ol>
+<p>图$d$是降采样操作，不进行channel-split操作，每个分支直接copy一份输入，每个分支进行stride&#x3D;2的下采样，最后concat在一起，这样featuremap减半，但是通道数量加倍。</p>
+<p>其他的地方就和V1模型相似了，通过多个block堆叠，组成ShuffleNetV2模型，模型结构如下</p>
+<img src="/2020/02/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-ConvNet-ShuffleNet/shufflenetv2-architecture.png" class="" title="ShuffleNetV2 Architecture">
+
+<p>V2相比V1多了一个conv5层，除了这个外就没什么不一样的了。</p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ol>
+<li><p>论文地址：<a href="https://arxiv.org/abs/1707.01083">https://arxiv.org/abs/1707.01083</a></p>
+</li>
+<li><p>V1代码-Pytorch：<a href="https://github.com/kuangliu/pytorch-cifar/blob/master/models/shufflenet.py">https://github.com/kuangliu/pytorch-cifar/blob/master/models/shufflenet.py</a></p>
+</li>
+<li><p>V2代码-Pytorch：<a href="https://pytorch.org/hub/pytorch_vision_shufflenet_v2/">https://pytorch.org/hub/pytorch_vision_shufflenet_v2/</a></p>
+</li>
+<li><p>V2代码-TensorFlow：<a href="https://github.com/tensorpack/tensorpack/blob/master/examples/ImageNetModels/shufflenet.py">https://github.com/tensorpack/tensorpack/blob/master/examples/ImageNetModels/shufflenet.py</a></p>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>深度学习</category>
+        <category>CV</category>
+      </categories>
+      <tags>
+        <tag>深度学习</tag>
+        <tag>ConvNet</tag>
+        <tag>CV</tag>
+        <tag>轻量化Conv</tag>
       </tags>
   </entry>
   <entry>
@@ -7310,11 +7336,6 @@ yolov3模型结构如下所示
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>[论文精读]ALBEF-跨模态交互前对齐</title>
-    <url>/2023/02/10/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-ALBEF-%E8%B7%A8%E6%A8%A1%E6%80%81%E4%BA%A4%E4%BA%92%E5%89%8D%E5%AF%B9%E9%BD%90/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
     <title>视觉编码器的发展</title>
     <url>/2023/03/30/%E8%A7%86%E8%A7%89%E7%BC%96%E7%A0%81%E5%99%A8%E7%9A%84%E5%8F%91%E5%B1%95/</url>
     <content><![CDATA[<p>本篇主要总结一下当前视觉模型的发展，算是一个论文汇总，主要包含: EVA,PAINTER,VIT22B,MAE,SWIN-T等模型</p>
@@ -7365,6 +7386,11 @@ yolov3模型结构如下所示
         <tag>多模态</tag>
         <tag>深度学习</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>[论文精读]ALBEF-跨模态交互前对齐</title>
+    <url>/2023/02/10/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-ALBEF-%E8%B7%A8%E6%A8%A1%E6%80%81%E4%BA%A4%E4%BA%92%E5%89%8D%E5%AF%B9%E9%BD%90/</url>
+    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>[论文精读]BLIP-多任务结构统一与数据筛选策略</title>
@@ -7652,32 +7678,6 @@ yolov3模型结构如下所示
       <tags>
         <tag>资源</tag>
         <tag>阿里云盘</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Loss-softmax-based</title>
-    <url>/2020/03/17/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Loss-softmax-based/</url>
-    <content><![CDATA[<p>本篇主要记录 一下softmax-loss以及相关变体，该loss的发展主要有人脸识别领域推进，本篇中主要借鉴人脸是识别中的相关Loss。</p>
-<span id="more"></span>
-
-
-
-<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ol>
-<li><a href="https://zhuanlan.zhihu.com/p/60747096">人脸识别损失函数简介与Pytorch实现：ArcFace、SphereFace、CosFace</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/76391405">人脸识别中Softmax-based Loss的演化史</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/34404607">人脸识别的LOSS（上）</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/34436551">人脸识别的LOSS（下）</a></li>
-<li><a href="https://github.com/adambielski/siamese-triplet">Github siamese-triplet</a></li>
-</ol>
-]]></content>
-      <categories>
-        <category>深度学习</category>
-        <category>Loss</category>
-      </categories>
-      <tags>
-        <tag>深度学习</tag>
-        <tag>Loss</tag>
-        <tag>Softmax</tag>
       </tags>
   </entry>
   <entry>
