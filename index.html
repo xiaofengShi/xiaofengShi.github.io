@@ -1,1496 +1,309 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
+<!doctype html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 7.3.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/panda_32px.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/panda_16px.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
-
-<link rel="stylesheet" href="/css/main.css">
-
-<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
-
-
-<script id="hexo-configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    hostname: new URL('https://xiaofengshi.com').hostname,
-    root: '/',
-    scheme: 'Pisces',
-    version: '7.7.0',
-    exturl: false,
-    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
-    copycode: {"enable":true,"show_result":true,"style":"mac"},
-    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
-    bookmark: {"enable":false,"color":"#222","save":"auto"},
-    fancybox: false,
-    mediumzoom: false,
-    lazyload: false,
-    pangu: false,
-    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
-    algolia: {
-      appID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8fafc">
+  <meta name="description" content="Xiaofeng Shi is an AI researcher at BAAI working on domain LLM post-training, agentic retrieval, open data and models, and industrial multimodal reasoning.">
+  <meta name="author" content="Xiaofeng Shi">
+  <meta name="robots" content="index,follow">
+  <meta property="og:type" content="profile">
+  <meta property="og:title" content="Xiaofeng Shi — AI Researcher at BAAI">
+  <meta property="og:description" content="Open data, post-training methods, and agentic/multimodal systems for specialized domains.">
+  <meta property="og:url" content="https://xiaofengshi.com/">
+  <meta property="og:image" content="https://xiaofengshi.com/images/avatar.gif">
+  <meta name="twitter:card" content="summary">
+  <link rel="canonical" href="https://xiaofengshi.com/">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="stylesheet" href="/css/research.css">
+  <title>Xiaofeng Shi — Domain LLMs, Agents & Multimodal Reasoning</title>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Xiaofeng Shi",
+    "url": "https://xiaofengshi.com/",
+    "image": "https://xiaofengshi.com/images/avatar.gif",
+    "jobTitle": "AI Researcher and Engineer",
+    "worksFor": {
+      "@type": "Organization",
+      "name": "Beijing Academy of Artificial Intelligence",
+      "alternateName": "BAAI",
+      "url": "https://www.baai.ac.cn/"
     },
-    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":false,"preload":false},
-    path: 'search.xml',
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
-  };
-</script>
-
-  <meta name="description" content="LLM,搜索,数据挖掘,深度学习相关技术记录分享">
-<meta property="og:type" content="website">
-<meta property="og:title" content="做一个有用的人">
-<meta property="og:url" content="https://xiaofengshi.com/index.html">
-<meta property="og:site_name" content="做一个有用的人">
-<meta property="og:description" content="LLM,搜索,数据挖掘,深度学习相关技术记录分享">
-<meta property="og:locale" content="zh_CN">
-<meta property="article:author" content="ShiXiaofeng">
-<meta property="article:tag" content="LLM">
-<meta property="article:tag" content="RAG">
-<meta property="article:tag" content="搜索">
-<meta property="article:tag" content="机器学习">
-<meta property="article:tag" content="深度学习">
-<meta property="article:tag" content="CV">
-<meta property="article:tag" content="NLP">
-<meta property="article:tag" content="Python">
-<meta name="twitter:card" content="summary">
-
-<link rel="canonical" href="https://xiaofengshi.com/">
-
-
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome: true,
-    isPost: false
-  };
-</script>
-
-  <title>做一个有用的人</title>
-  
-
-
-
-
-
-
-  <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
+    "email": "mailto:xfshi@baai.ac.cn",
+    "knowsAbout": [
+      "Domain large language models",
+      "Post-training",
+      "AI agents",
+      "Information retrieval",
+      "Multimodal reasoning",
+      "Open datasets and models"
+    ],
+    "sameAs": [
+      "https://github.com/xiaofengShi",
+      "https://huggingface.co/XiaofengAlg",
+      "https://scholar.google.com/citations?user=DJLXJtAAAAAJ",
+      "https://orcid.org/0009-0009-6052-7713",
+      "https://openreview.net/profile?id=~Xiaofeng_Shi1",
+      "https://www.semanticscholar.org/author/Xiaofeng-Shi/2307379264"
+    ]
   }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
-
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-meta">
-
-    <div>
-      <a href="/" class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">做一个有用的人</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
-        <h1 class="site-subtitle" itemprop="description">LLM And Search</h1>
-      
-  </div>
-
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
-    </div>
-  </div>
-</div>
-
-
-<nav class="site-nav">
-  
-  <ul id="menu" class="menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-about">
-
-    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
-
-  </li>
-        <li class="menu-item menu-item-schedule">
-
-    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>日程表</a>
-
-  </li>
-        <li class="menu-item menu-item-guestbook">
-
-    <a href="/guestbook/" rel="section"><i class="fa fa-fw fa-commenting"></i>guestbook</a>
-
-  </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
-        </a>
-      </li>
-  </ul>
-
-</nav>
-  <div class="site-search">
-    <div class="popup search-popup">
-    <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container">
-    <input autocomplete="off" autocorrect="off" autocapitalize="none"
-           placeholder="搜索..." spellcheck="false"
-           type="text" id="search-input">
-  </div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div id="search-result"></div>
-
-</div>
-<div class="search-pop-overlay"></div>
-
-  </div>
-</div>
-    </header>
-
-    
-  <div class="reading-progress-bar"></div>
-
-  <a href="https://github.com/xiaofengShi" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
-
-
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content">
-            
-
-  <div class="posts-expand">
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://xiaofengshi.com/2024/02/28/Survey-LLM-PPO%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86%E5%92%8C%E5%AE%9E%E7%8E%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="ShiXiaofeng">
-      <meta itemprop="description" content="LLM,搜索,数据挖掘,深度学习相关技术记录分享">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="做一个有用的人">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/02/28/Survey-LLM-PPO%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86%E5%92%8C%E5%AE%9E%E7%8E%B0/" class="post-title-link" itemprop="url">[Survey]LLM-PPO算法原理和实现</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-02-28 14:24:56" itemprop="dateCreated datePublished" datetime="2024-02-28T14:24:56+00:00">2024-02-28</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-02-29 16:36:22" itemprop="dateModified" datetime="2024-02-29T16:36:22+00:00">2024-02-29</time>
-              </span>
-
-          
-            <span id="/2024/02/28/Survey-LLM-PPO%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86%E5%92%8C%E5%AE%9E%E7%8E%B0/" class="post-meta-item leancloud_visitors" data-flag-title="[Survey]LLM-PPO算法原理和实现" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2024/02/28/Survey-LLM-PPO%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86%E5%92%8C%E5%AE%9E%E7%8E%B0/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2024/02/28/Survey-LLM-PPO%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86%E5%92%8C%E5%AE%9E%E7%8E%B0/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <img src="/2024/02/28/Survey-LLM-PPO%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86%E5%92%8C%E5%AE%9E%E7%8E%B0/ppo_pipeline.png" class="" title="ppo-pipeline">
-
-<p>本篇是在印象笔记写的，详细的信息可以从这里跳转</p>
-<p><a href="https://app.yinxiang.com/fx/22b789dc-b169-4cf8-af27-610aebbdeb7a">https://app.yinxiang.com/fx/22b789dc-b169-4cf8-af27-610aebbdeb7a</a></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://xiaofengshi.com/2024/02/01/Survey-PromptEngineering/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="ShiXiaofeng">
-      <meta itemprop="description" content="LLM,搜索,数据挖掘,深度学习相关技术记录分享">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="做一个有用的人">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/02/01/Survey-PromptEngineering/" class="post-title-link" itemprop="url">[Survey]PromptEngineering</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-02-01 11:06:39 / 修改时间：12:07:18" itemprop="dateCreated datePublished" datetime="2024-02-01T11:06:39+00:00">2024-02-01</time>
-            </span>
-
-          
-            <span id="/2024/02/01/Survey-PromptEngineering/" class="post-meta-item leancloud_visitors" data-flag-title="[Survey]PromptEngineering" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2024/02/01/Survey-PromptEngineering/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2024/02/01/Survey-PromptEngineering/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="1-什么是PromptEngineering"><a href="#1-什么是PromptEngineering" class="headerlink" title="1. 什么是PromptEngineering"></a>1. 什么是PromptEngineering</h2><p>所谓prompt工程，就是让LLM模型清晰准确的知道你要干什么，引导模型充分的发掘它的能力上限，类比到人与人之间，就是提升沟通的效率。OpenAI提出了prompt工程的6条原则[1]，在这篇文档里，按照个人的理解，将这部分按照适用场景分成用户和开发者两个部分，一共6条（与openai的6条顺序有所不同）：</p>
-<p>用户策略：</p>
-<ul>
-<li>Write clear instructions（写出清晰的指令）</li>
-<li>Provide reference text（提供参考文本）</li>
-<li>Give the model time to “think”（给模型时间“思考”）</li>
-</ul>
-<p>开发者策略：</p>
-<ul>
-<li>Split complex tasks into simpler subtasks（将复杂的任务拆分为更简单的子任务）</li>
-<li>Use external tools（使用外部工具）</li>
-<li>Test changes systematically（系统地测试变更）</li>
-</ul>
-<p>这几个原则概括了一个好的prompt应该是什么样子的。实际应用中，prompt工程能否有效，很大程度上依赖LLM的指令追随能力，要不然就变成 了，对着聋子打鼓–充耳不闻，说了也白说……</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/02/01/Survey-PromptEngineering/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://xiaofengshi.com/2024/02/01/%E8%B5%84%E6%BA%90-%E4%BC%98%E8%B4%A8%E9%98%BF%E9%87%8C%E4%BA%91%E7%9B%98%E8%B5%84%E6%BA%90%E6%B1%87%E6%80%BB/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="ShiXiaofeng">
-      <meta itemprop="description" content="LLM,搜索,数据挖掘,深度学习相关技术记录分享">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="做一个有用的人">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/02/01/%E8%B5%84%E6%BA%90-%E4%BC%98%E8%B4%A8%E9%98%BF%E9%87%8C%E4%BA%91%E7%9B%98%E8%B5%84%E6%BA%90%E6%B1%87%E6%80%BB/" class="post-title-link" itemprop="url">[资源]-优质阿里云盘资源汇总</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-02-01 10:44:34 / 修改时间：11:23:28" itemprop="dateCreated datePublished" datetime="2024-02-01T10:44:34+00:00">2024-02-01</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%B5%84%E6%BA%90/" itemprop="url" rel="index">
-                    <span itemprop="name">资源</span>
-                  </a>
-                </span>
-            </span>
-
-          
-            <span id="/2024/02/01/%E8%B5%84%E6%BA%90-%E4%BC%98%E8%B4%A8%E9%98%BF%E9%87%8C%E4%BA%91%E7%9B%98%E8%B5%84%E6%BA%90%E6%B1%87%E6%80%BB/" class="post-meta-item leancloud_visitors" data-flag-title="[资源]-优质阿里云盘资源汇总" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2024/02/01/%E8%B5%84%E6%BA%90-%E4%BC%98%E8%B4%A8%E9%98%BF%E9%87%8C%E4%BA%91%E7%9B%98%E8%B5%84%E6%BA%90%E6%B1%87%E6%80%BB/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2024/02/01/%E8%B5%84%E6%BA%90-%E4%BC%98%E8%B4%A8%E9%98%BF%E9%87%8C%E4%BA%91%E7%9B%98%E8%B5%84%E6%BA%90%E6%B1%87%E6%80%BB/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://xiaofengshi.com/2024/02/01/%E6%83%85%E6%84%9F-%E4%BB%8E%E7%94%B5%E5%BD%B1%E4%B8%AD%E7%9C%8B%E4%BA%BA%E7%94%9F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="ShiXiaofeng">
-      <meta itemprop="description" content="LLM,搜索,数据挖掘,深度学习相关技术记录分享">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="做一个有用的人">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/02/01/%E6%83%85%E6%84%9F-%E4%BB%8E%E7%94%B5%E5%BD%B1%E4%B8%AD%E7%9C%8B%E4%BA%BA%E7%94%9F/" class="post-title-link" itemprop="url">[情感]-从电影中看人生</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-02-01 10:43:28 / 修改时间：10:45:41" itemprop="dateCreated datePublished" datetime="2024-02-01T10:43:28+00:00">2024-02-01</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%83%85%E6%84%9F/" itemprop="url" rel="index">
-                    <span itemprop="name">情感</span>
-                  </a>
-                </span>
-            </span>
-
-          
-            <span id="/2024/02/01/%E6%83%85%E6%84%9F-%E4%BB%8E%E7%94%B5%E5%BD%B1%E4%B8%AD%E7%9C%8B%E4%BA%BA%E7%94%9F/" class="post-meta-item leancloud_visitors" data-flag-title="[情感]-从电影中看人生" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2024/02/01/%E6%83%85%E6%84%9F-%E4%BB%8E%E7%94%B5%E5%BD%B1%E4%B8%AD%E7%9C%8B%E4%BA%BA%E7%94%9F/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2024/02/01/%E6%83%85%E6%84%9F-%E4%BB%8E%E7%94%B5%E5%BD%B1%E4%B8%AD%E7%9C%8B%E4%BA%BA%E7%94%9F/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://xiaofengshi.com/2024/02/01/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB-streaming-llm-%E8%A7%A3%E5%86%B3%E9%95%BF%E6%96%87%E6%9C%AC%E7%9A%84kv-cache%E9%97%AE%E9%A2%98/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="ShiXiaofeng">
-      <meta itemprop="description" content="LLM,搜索,数据挖掘,深度学习相关技术记录分享">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="做一个有用的人">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/02/01/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB-streaming-llm-%E8%A7%A3%E5%86%B3%E9%95%BF%E6%96%87%E6%9C%AC%E7%9A%84kv-cache%E9%97%AE%E9%A2%98/" class="post-title-link" itemprop="url">[论文阅读]streaming-llm:解决长文本的kv-cache问题</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-02-01 10:27:05 / 修改时间：10:38:04" itemprop="dateCreated datePublished" datetime="2024-02-01T10:27:05+00:00">2024-02-01</time>
-            </span>
-
-          
-            <span id="/2024/02/01/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB-streaming-llm-%E8%A7%A3%E5%86%B3%E9%95%BF%E6%96%87%E6%9C%AC%E7%9A%84kv-cache%E9%97%AE%E9%A2%98/" class="post-meta-item leancloud_visitors" data-flag-title="[论文阅读]streaming-llm:解决长文本的kv-cache问题" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2024/02/01/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB-streaming-llm-%E8%A7%A3%E5%86%B3%E9%95%BF%E6%96%87%E6%9C%AC%E7%9A%84kv-cache%E9%97%AE%E9%A2%98/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2024/02/01/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB-streaming-llm-%E8%A7%A3%E5%86%B3%E9%95%BF%E6%96%87%E6%9C%AC%E7%9A%84kv-cache%E9%97%AE%E9%A2%98/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>论文地址：<a href="https://arxiv.org/pdf/2309.17453.pdf">https://arxiv.org/pdf/2309.17453.pdf</a></p>
-<p>代码地址：<a href="https://github.com/mit-han-lab/streaming-llm">https://github.com/mit-han-lab/streaming-llm</a></p>
-<p>在LLM的训练和推理过程中，transformer的kv-cache一直是个非常头痛的问题，因为attention的计算机制，kv-cache是与输入的tokes数量呈平方关系的，在decoder结构中，第N步的forward都要计算前面的所有的N-1步的所有token，随着文本长度的增加，这会带来非常大的计算和存储开销。</p>
-<p>在保证模型效果的条件小减少kv缓存是一个非常值得研究的事情。从下面徒可以看到，模型结合了window-attention和slide windiw的优势，有非常好的表现。</p>
-<img src="/2024/02/01/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB-streaming-llm-%E8%A7%A3%E5%86%B3%E9%95%BF%E6%96%87%E6%9C%AC%E7%9A%84kv-cache%E9%97%AE%E9%A2%98/streaming-llm.png" class="" title="streaming-llm">
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/02/01/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB-streaming-llm-%E8%A7%A3%E5%86%B3%E9%95%BF%E6%96%87%E6%9C%AC%E7%9A%84kv-cache%E9%97%AE%E9%A2%98/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://xiaofengshi.com/2024/01/31/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB-Gist-token-%E5%B0%86instruction%E5%8E%8B%E7%BC%A9%E5%88%B0%E8%99%9A%E6%8B%9Ftoken/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="ShiXiaofeng">
-      <meta itemprop="description" content="LLM,搜索,数据挖掘,深度学习相关技术记录分享">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="做一个有用的人">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/01/31/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB-Gist-token-%E5%B0%86instruction%E5%8E%8B%E7%BC%A9%E5%88%B0%E8%99%9A%E6%8B%9Ftoken/" class="post-title-link" itemprop="url">[论文阅读]Gist-token:将instruction压缩到虚拟token</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-01-31 23:12:32" itemprop="dateCreated datePublished" datetime="2024-01-31T23:12:32+00:00">2024-01-31</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-02-01 10:34:04" itemprop="dateModified" datetime="2024-02-01T10:34:04+00:00">2024-02-01</time>
-              </span>
-
-          
-            <span id="/2024/01/31/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB-Gist-token-%E5%B0%86instruction%E5%8E%8B%E7%BC%A9%E5%88%B0%E8%99%9A%E6%8B%9Ftoken/" class="post-meta-item leancloud_visitors" data-flag-title="[论文阅读]Gist-token:将instruction压缩到虚拟token" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2024/01/31/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB-Gist-token-%E5%B0%86instruction%E5%8E%8B%E7%BC%A9%E5%88%B0%E8%99%9A%E6%8B%9Ftoken/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2024/01/31/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB-Gist-token-%E5%B0%86instruction%E5%8E%8B%E7%BC%A9%E5%88%B0%E8%99%9A%E6%8B%9Ftoken/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>论文链接：<a href="https://arxiv.org/pdf/2304.08467v1.pdf">https://arxiv.org/pdf/2304.08467v1.pdf</a></p>
-<p>压缩instruction部分的token长度</p>
-<img src="/2024/01/31/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB-Gist-token-%E5%B0%86instruction%E5%8E%8B%E7%BC%A9%E5%88%B0%E8%99%9A%E6%8B%9Ftoken/gisting.png" class="" title="gisting">
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/01/31/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB-Gist-token-%E5%B0%86instruction%E5%8E%8B%E7%BC%A9%E5%88%B0%E8%99%9A%E6%8B%9Ftoken/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://xiaofengshi.com/2023/03/30/%E6%89%A9%E6%95%A3%E6%A8%A1%E5%9E%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="ShiXiaofeng">
-      <meta itemprop="description" content="LLM,搜索,数据挖掘,深度学习相关技术记录分享">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="做一个有用的人">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/03/30/%E6%89%A9%E6%95%A3%E6%A8%A1%E5%9E%8B/" class="post-title-link" itemprop="url">扩散模型</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2023-03-30 15:45:46 / 修改时间：15:56:33" itemprop="dateCreated datePublished" datetime="2023-03-30T15:45:46+00:00">2023-03-30</time>
-            </span>
-
-          
-            <span id="/2023/03/30/%E6%89%A9%E6%95%A3%E6%A8%A1%E5%9E%8B/" class="post-meta-item leancloud_visitors" data-flag-title="扩散模型" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2023/03/30/%E6%89%A9%E6%95%A3%E6%A8%A1%E5%9E%8B/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2023/03/30/%E6%89%A9%E6%95%A3%E6%A8%A1%E5%9E%8B/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>扩散模型是AIGC方向的基础，这里对扩散模型进行学习总结。</p>
-<p>VAE–&gt;DM–&gt;LDM–&gt;StableDiffusion–&gt;AltDiffusion–&gt;MidJourney–&gt;&gt;StableDiffusion 2–&gt;DreamBooth</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://xiaofengshi.com/2023/03/30/AIGC/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="ShiXiaofeng">
-      <meta itemprop="description" content="LLM,搜索,数据挖掘,深度学习相关技术记录分享">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="做一个有用的人">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/03/30/AIGC/" class="post-title-link" itemprop="url">AIGB</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-03-30 13:40:32" itemprop="dateCreated datePublished" datetime="2023-03-30T13:40:32+00:00">2023-03-30</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-01-31 23:32:56" itemprop="dateModified" datetime="2024-01-31T23:32:56+00:00">2024-01-31</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/AIGC/" itemprop="url" rel="index">
-                    <span itemprop="name">AIGC</span>
-                  </a>
-                </span>
-            </span>
-
-          
-            <span id="/2023/03/30/AIGC/" class="post-meta-item leancloud_visitors" data-flag-title="AIGB" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2023/03/30/AIGC/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2023/03/30/AIGC/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="ALTCLIP"><a href="#ALTCLIP" class="headerlink" title="ALTCLIP"></a>ALTCLIP</h2><ul>
-<li><p>目的：多语言版本多模态文本模型，主要想得到 text encoder，image encoder固定</p>
-</li>
-<li><p>论文：<a href="https://arxiv.org/abs/2211.06679">https://arxiv.org/abs/2211.06679</a></p>
-</li>
-<li><p>做法：</p>
-<img src="/2023/03/30/AIGC/ALTCLIP.png" class="" title="image-20230330140536968">
-
-<ul>
-<li>两阶段训练<ul>
-<li>阶段1：<ul>
-<li>目的：XLMR在保持多语言能力的同时，从CLIP中获取两种语言的文本-图像对齐能力</li>
-<li>teacher：权重固定的 clip text encoder</li>
-<li>student：Facebook的多语言NLP模型XLMR</li>
-<li>数据：语言平行语料</li>
-<li>任务设计：xlmr和clip_text_encoder的mse</li>
-</ul>
-</li>
-<li>阶段2：<ul>
-<li>目的：对比学习，微调模型，进一步提升图文对齐能力</li>
-<li>teacher：权重固定的clip image encoder</li>
-<li>student：一阶段训练之后的XLMR</li>
-<li>数据：图文对数据</li>
-<li>任务设计：图文对比学习</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h2 id="latent-diffusion"><a href="#latent-diffusion" class="headerlink" title="latent diffusion"></a>latent diffusion</h2><ul>
-<li><p>论文地址：<a href="https://arxiv.org/abs/2112.10752">https://arxiv.org/abs/2112.10752</a></p>
-</li>
-<li><p>代码地址：<a href="https://github.com/CompVis/latent-diffusion">https://github.com/CompVis/latent-diffusion</a></p>
-</li>
-<li><p>博客文章：</p>
-<ul>
-<li><a href="https://zhuanlan.zhihu.com/p/563543020">https://zhuanlan.zhihu.com/p/563543020</a> </li>
-<li><a href="https://zhuanlan.zhihu.com/p/582693939">https://zhuanlan.zhihu.com/p/582693939</a></li>
-</ul>
-</li>
-<li><p>训练方式：两阶段</p>
-<ul>
-<li>阶段1：训练autoencoder</li>
-<li>阶段2：训练LMD</li>
-</ul>
-<h2 id="stable-diffusion"><a href="#stable-diffusion" class="headerlink" title="stable diffusion"></a>stable diffusion</h2></li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://xiaofengshi.com/2023/03/30/%E8%A7%86%E8%A7%89%E7%BC%96%E7%A0%81%E5%99%A8%E7%9A%84%E5%8F%91%E5%B1%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="ShiXiaofeng">
-      <meta itemprop="description" content="LLM,搜索,数据挖掘,深度学习相关技术记录分享">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="做一个有用的人">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/03/30/%E8%A7%86%E8%A7%89%E7%BC%96%E7%A0%81%E5%99%A8%E7%9A%84%E5%8F%91%E5%B1%95/" class="post-title-link" itemprop="url">视觉编码器的发展</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2023-03-30 10:55:10 / 修改时间：13:40:01" itemprop="dateCreated datePublished" datetime="2023-03-30T10:55:10+00:00">2023-03-30</time>
-            </span>
-
-          
-            <span id="/2023/03/30/%E8%A7%86%E8%A7%89%E7%BC%96%E7%A0%81%E5%99%A8%E7%9A%84%E5%8F%91%E5%B1%95/" class="post-meta-item leancloud_visitors" data-flag-title="视觉编码器的发展" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2023/03/30/%E8%A7%86%E8%A7%89%E7%BC%96%E7%A0%81%E5%99%A8%E7%9A%84%E5%8F%91%E5%B1%95/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2023/03/30/%E8%A7%86%E8%A7%89%E7%BC%96%E7%A0%81%E5%99%A8%E7%9A%84%E5%8F%91%E5%B1%95/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>本篇主要总结一下当前视觉模型的发展，算是一个论文汇总，主要包含: EVA,PAINTER,VIT22B,MAE,SWIN-T等模型</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/03/30/%E8%A7%86%E8%A7%89%E7%BC%96%E7%A0%81%E5%99%A8%E7%9A%84%E5%8F%91%E5%B1%95/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://xiaofengshi.com/2023/03/23/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-MAE-%E5%A6%82%E4%BD%95%E5%9C%A8CV%E4%BB%BB%E5%8A%A1%E4%B8%AD%E8%BF%9B%E8%A1%8CMASK/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="ShiXiaofeng">
-      <meta itemprop="description" content="LLM,搜索,数据挖掘,深度学习相关技术记录分享">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="做一个有用的人">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/03/23/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-MAE-%E5%A6%82%E4%BD%95%E5%9C%A8CV%E4%BB%BB%E5%8A%A1%E4%B8%AD%E8%BF%9B%E8%A1%8CMASK/" class="post-title-link" itemprop="url">[论文精读]MAE-如何在CV任务中进行MASK</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-03-23 14:11:59" itemprop="dateCreated datePublished" datetime="2023-03-23T14:11:59+00:00">2023-03-23</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-03-28 20:10:44" itemprop="dateModified" datetime="2023-03-28T20:10:44+00:00">2023-03-28</time>
-              </span>
-
-          
-            <span id="/2023/03/23/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-MAE-%E5%A6%82%E4%BD%95%E5%9C%A8CV%E4%BB%BB%E5%8A%A1%E4%B8%AD%E8%BF%9B%E8%A1%8CMASK/" class="post-meta-item leancloud_visitors" data-flag-title="[论文精读]MAE-如何在CV任务中进行MASK" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2023/03/23/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-MAE-%E5%A6%82%E4%BD%95%E5%9C%A8CV%E4%BB%BB%E5%8A%A1%E4%B8%AD%E8%BF%9B%E8%A1%8CMASK/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2023/03/23/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-MAE-%E5%A6%82%E4%BD%95%E5%9C%A8CV%E4%BB%BB%E5%8A%A1%E4%B8%AD%E8%BF%9B%E8%A1%8CMASK/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>恺明大神在2021年的时候发布了论文<a href="https://arxiv.org/pdf/2111.06377.pdf">MAE</a>(Masked Autoencoders Are Scalable Vision Learners)，给大家指出了如何在cv预训练任务中设计无监督任务。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/03/23/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB-MAE-%E5%A6%82%E4%BD%95%E5%9C%A8CV%E4%BB%BB%E5%8A%A1%E4%B8%AD%E8%BF%9B%E8%A1%8CMASK/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-  </div>
-
-  
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
-  </nav>
-
-
-
-          </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let activeClass = CONFIG.comments.activeClass;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-
-        </div>
-          
-  
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
-
-  <aside class="sidebar">
-    <div class="sidebar-inner">
-
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="ShiXiaofeng"
-      src="/images/avatar.gif">
-  <p class="site-author-name" itemprop="name">ShiXiaofeng</p>
-  <div class="site-description" itemprop="description">LLM,搜索,数据挖掘,深度学习相关技术记录分享</div>
-</div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives/">
-        
-          <span class="site-state-item-count">49</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-          
-        <span class="site-state-item-count">26</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-          
-        <span class="site-state-item-count">54</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-  <div class="links-of-author motion-element">
-      <span class="links-of-author-item">
-        <a href="https://github.com/xiaofengShi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xiaofengShi" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="mailto:sxf1052566766@163.com" title="E-Mail → mailto:sxf1052566766@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
-      </span>
-  </div>
-  <div class="cc-license motion-element" itemprop="license">
-    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
-  </div>
-
-
-
-      </div>
-        <div class="back-to-top motion-element">
-          <i class="fa fa-arrow-up"></i>
-          <span>0%</span>
-        </div>
-
-    </div>
-  </aside>
-  <div id="sidebar-dimmer"></div>
-
-
-      </div>
-    </main>
-
-    <footer class="footer">
-      <div class="footer-inner">
-        
-
-<div class="copyright">
-  
-  &copy; 2018 – 
-  <span itemprop="copyrightYear">2026</span>
-  <span class="with-love">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">ShiXiaofeng</span>
-</div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v7.3.0
-  </div>
-
-        
-
-
-
-
-
-
-
-
-      </div>
-    </footer>
-  </div>
-
-  
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
-
-<script src="/js/utils.js"></script>
-
-<script src="/js/motion.js"></script>
-
-
-<script src="/js/schemes/pisces.js"></script>
-
-
-<script src="/js/next-boot.js"></script>
-
-
-
-
-  
-  <script>
-    (function(){
-      var bp = document.createElement('script');
-      var curProtocol = window.location.protocol.split(':')[0];
-      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(bp, s);
-    })();
   </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="site-header">
+    <nav class="nav" aria-label="Primary navigation">
+      <a class="brand" href="/">Xiaofeng Shi</a>
+      <ul class="nav-links">
+        <li><a href="#research">Research</a></li>
+        <li><a href="#resources">Open resources</a></li>
+        <li><a href="#publications">Publications</a></li>
+        <li><a href="/archives/">Notes</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
 
+  <main id="main" class="page">
+    <section class="hero" aria-labelledby="hero-title">
+      <div>
+        <p class="eyebrow">AI researcher & engineer · BAAI</p>
+        <h1 id="hero-title">Making foundation models work in specialized domains.</h1>
+        <p class="hero-copy">
+          I build <strong>open data, post-training methods, and
+          agentic/multimodal systems</strong> that connect research advances
+          with demanding real-world knowledge and reasoning tasks.
+        </p>
+        <p class="hero-cn">让基础模型真正进入专业领域：开放数据、后训练方法与 Agent / 多模态系统。</p>
+        <div class="actions" aria-label="Profile links">
+          <a class="button" href="#research">Explore research</a>
+          <a class="button secondary" href="https://github.com/xiaofengShi">GitHub</a>
+          <a class="button secondary" href="https://huggingface.co/XiaofengAlg">Hugging Face</a>
+          <a class="button secondary" href="https://scholar.google.com/citations?user=DJLXJtAAAAAJ&hl=en">Google Scholar</a>
+        </div>
+      </div>
+      <div class="portrait-frame">
+        <img class="portrait" src="/images/avatar.gif" alt="Portrait of Xiaofeng Shi" width="300" height="336">
+      </div>
+    </section>
 
+    <section class="proof-strip" aria-label="Selected research credentials">
+      <div class="proof-item">
+        <span class="proof-label">ICML 2026</span>
+        <span class="proof-note">MechVQA / MechVL</span>
+      </div>
+      <div class="proof-item">
+        <span class="proof-label">AAAI 2025</span>
+        <span class="proof-note">CareBot</span>
+      </div>
+      <div class="proof-item">
+        <span class="proof-label">COLING 2025</span>
+        <span class="proof-note">MoSLD</span>
+      </div>
+      <div class="proof-item">
+        <span class="proof-label">3 BAAI collections</span>
+        <span class="proof-note">Led IndustryCorpus, IndustryCorpus2, and Industry Instruction</span>
+      </div>
+    </section>
 
+    <section id="research" class="section" aria-labelledby="research-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">Signature research</p>
+          <h2 id="research-title">Three connected research directions</h2>
+        </div>
+        <p>
+          My work spans the full path from data and post-training to systems
+          that retrieve, reason, and operate in specialized domains.
+        </p>
+      </div>
 
-  
-<script src="/js/local-search.js"></script>
+      <div class="cards">
+        <article class="card">
+          <span class="tag">Industrial multimodal reasoning</span>
+          <h3>MechVQA / MechVL</h3>
+          <p>
+            An ICML 2026 benchmark with 3.3K mechanical drawings and 21K
+            question-answer pairs, plus a domain-specialized multimodal model
+            trained with SFT and self-play RL.
+          </p>
+          <div class="card-links">
+            <a href="https://arxiv.org/abs/2605.30794">Paper</a>
+            <a href="https://github.com/xiaofengShi/MechVQA">Code</a>
+            <a href="https://huggingface.co/collections/XiaofengAlg/mechvqa">Models & data</a>
+          </div>
+        </article>
 
+        <article class="card">
+          <span class="tag">Agentic knowledge systems</span>
+          <h3>SPAR & SciSage</h3>
+          <p>
+            Multi-agent systems for scholarly retrieval and scientific survey
+            generation, paired with SPARBench and SurveyScope for systematic
+            evaluation.
+          </p>
+          <div class="card-links">
+            <a href="https://github.com/xiaofengShi/SPAR">SPAR</a>
+            <a href="https://github.com/FlagOpen/SciSage">SciSage</a>
+            <a href="https://huggingface.co/datasets/BAAI/SurveyScope">SurveyScope</a>
+          </div>
+        </article>
 
+        <article class="card">
+          <span class="tag">Domain LLM infrastructure</span>
+          <h3>Open data & post-training</h3>
+          <p>
+            Multilingual industry corpora, instruction data, domain models,
+            data-quality models, and methods for capability-preserving
+            adaptation.
+          </p>
+          <div class="card-links">
+            <a href="https://huggingface.co/collections/BAAI/industrycorpus2">IndustryCorpus2</a>
+            <a href="https://arxiv.org/abs/2606.00147">RAFT</a>
+            <a href="https://arxiv.org/abs/2512.21017">Rethinking SFT</a>
+          </div>
+        </article>
+      </div>
+    </section>
 
+    <section id="resources" class="section" aria-labelledby="resources-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">Open resources</p>
+          <h2 id="resources-title">Industry data and models</h2>
+        </div>
+        <p>
+          I led the development of these BAAI collections and work to release
+          reusable datasets, models, evaluation assets, and training recipes.
+        </p>
+      </div>
+      <div class="resource-grid">
+        <article class="resource">
+          <h3><a href="https://huggingface.co/collections/BAAI/industrycorpus2">IndustryCorpus2</a></h3>
+          <p>Multilingual, multi-industry pre-training data with DataRater and classification models.</p>
+        </article>
+        <article class="resource">
+          <h3><a href="https://huggingface.co/collections/BAAI/industry-instruction">Industry Instruction</a></h3>
+          <p>2.7M multilingual instruction samples and a family of domain-adapted models.</p>
+        </article>
+        <article class="resource">
+          <h3><a href="https://huggingface.co/collections/BAAI/industrycorpus">IndustryCorpus</a></h3>
+          <p>Open pre-training corpora spanning finance, medicine, law, education, and technology.</p>
+        </article>
+      </div>
+    </section>
 
+    <section id="publications" class="section" aria-labelledby="publications-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">Selected publications</p>
+          <h2 id="publications-title">Recent work</h2>
+        </div>
+        <p>
+          Complete and current bibliographic records are also available on
+          <a href="https://scholar.google.com/citations?user=DJLXJtAAAAAJ&hl=en">Google Scholar</a>,
+          <a href="https://orcid.org/0009-0009-6052-7713">ORCID</a>, and
+          <a href="https://openreview.net/profile?id=~Xiaofeng_Shi1">OpenReview</a>.
+        </p>
+      </div>
+      <div class="research-list">
+        <article class="research-item">
+          <div class="research-year">2026</div>
+          <div><span class="research-title">Wnuan: Staged Post-Training for Question Answering over Proprietary Enterprise Knowledge</span><span class="research-role">First author / equal contribution</span></div>
+          <div class="research-links"><a href="https://arxiv.org/abs/2608.01862">Paper</a></div>
+        </article>
+        <article class="research-item">
+          <div class="research-year">ICML 2026</div>
+          <div><span class="research-title">MechVQA: Benchmarking and Enhancing Multimodal LLMs on Comprehensive Mechanical Drawing Understanding</span><span class="research-role">Co-first & corresponding author</span></div>
+          <div class="research-links"><a href="https://arxiv.org/abs/2605.30794">Paper</a><a href="https://github.com/xiaofengShi/MechVQA">Code</a></div>
+        </article>
+        <article class="research-item">
+          <div class="research-year">2026</div>
+          <div><span class="research-title">RAFT: Data Refinement and Adaptive Distillation for Domain Fine-Tuning with Alleviated Forgetting</span><span class="research-role">Co-first & corresponding author</span></div>
+          <div class="research-links"><a href="https://arxiv.org/abs/2606.00147">Paper</a></div>
+        </article>
+        <article class="research-item">
+          <div class="research-year">2026</div>
+          <div><span class="research-title">ChartWalker: Benchmarking the Cross-Chart RAG Task with Hierarchical Knowledge Graphs</span><span class="research-role">Corresponding author</span></div>
+          <div class="research-links"><a href="https://arxiv.org/abs/2606.23997">Paper</a></div>
+        </article>
+        <article class="research-item">
+          <div class="research-year">2025</div>
+          <div><span class="research-title">Rethinking Supervised Fine-Tuning: Emphasizing Key Answer Tokens for Improved LLM Accuracy</span><span class="research-role">First author · formerly SFTKey</span></div>
+          <div class="research-links"><a href="https://arxiv.org/abs/2512.21017">Paper</a></div>
+        </article>
+        <article class="research-item">
+          <div class="research-year">2025</div>
+          <div><span class="research-title">SPAR: Scholar Paper Retrieval with LLM-based Agents for Enhanced Academic Search</span><span class="research-role">First author</span></div>
+          <div class="research-links"><a href="https://arxiv.org/abs/2507.15245">Paper</a><a href="https://github.com/xiaofengShi/SPAR">Code</a></div>
+        </article>
+        <article class="research-item">
+          <div class="research-year">2025</div>
+          <div><span class="research-title">SciSage: A Multi-Agent Framework for High-Quality Scientific Survey Generation</span><span class="research-role">First author</span></div>
+          <div class="research-links"><a href="https://arxiv.org/abs/2506.12689">Paper</a><a href="https://github.com/FlagOpen/SciSage">Code</a></div>
+        </article>
+        <article class="research-item">
+          <div class="research-year">AAAI 2025</div>
+          <div><span class="research-title">CareBot: A Pioneering Full-Process Open-Source Medical Language Model</span><span class="research-role">Open model, data, and training process</span></div>
+          <div class="research-links"><a href="https://doi.org/10.1609/aaai.v39i24.34799">Paper</a><a href="https://github.com/FlagOpen/CareBot">Code</a></div>
+        </article>
+        <article class="research-item">
+          <div class="research-year">COLING 2025</div>
+          <div><span class="research-title">MoSLD: An Extremely Parameter-Efficient Mixture-of-Shared LoRAs for Multi-Task Learning</span><span class="research-role">Parameter-efficient multi-task adaptation</span></div>
+          <div class="research-links"><a href="https://arxiv.org/abs/2412.08946">Paper</a></div>
+        </article>
+        <article class="research-item">
+          <div class="research-year">2024</div>
+          <div><span class="research-title">CCI3.0-HQ: A Large-Scale Chinese Dataset of High Quality Designed for Pre-Training Large Language Models</span><span class="research-role">500GB high-quality Chinese pre-training corpus</span></div>
+          <div class="research-links"><a href="https://arxiv.org/abs/2410.18505">Paper</a><a href="https://huggingface.co/datasets/BAAI/CCI3-HQ">Data</a></div>
+        </article>
+        <article class="research-item">
+          <div class="research-year">2024</div>
+          <div><span class="research-title">Aquila-Med LLM: Pioneering Full-Process Open-Source Medical Language Models</span><span class="research-role">Bilingual medical LLM and training resources</span></div>
+          <div class="research-links"><a href="https://arxiv.org/abs/2406.12182">Paper</a><a href="https://huggingface.co/BAAI/AquilaMed-RL">Model</a></div>
+        </article>
+      </div>
+    </section>
 
+    <section id="about" class="section" aria-labelledby="about-title">
+      <div class="about-grid">
+        <div>
+          <p class="section-kicker">About</p>
+          <h2 id="about-title">Research with an engineering path to adoption</h2>
+          <p>
+            I am an AI researcher and engineer at the Beijing Academy of
+            Artificial Intelligence. Before BAAI, I worked at ByteDance and
+            Meituan. My work has evolved from computer vision and OCR to domain
+            language models, post-training, AI agents, retrieval, and
+            multimodal reasoning.
+          </p>
+          <p>
+            I aim to release the code, models, datasets, evaluation assets, and
+            training recipes behind my research whenever possible.
+          </p>
+          <p><a href="/about/">More about my background</a> · <a href="/archives/">Technical notes archive</a></p>
+        </div>
+        <div id="contact">
+          <p class="section-kicker">Identity & contact</p>
+          <ul class="identity-list">
+            <li><span>Email</span><a href="mailto:xfshi@baai.ac.cn">xfshi@baai.ac.cn</a></li>
+            <li><span>GitHub</span><a href="https://github.com/xiaofengShi">xiaofengShi</a></li>
+            <li><span>Hugging Face</span><a href="https://huggingface.co/XiaofengAlg">XiaofengAlg</a></li>
+            <li><span>ORCID</span><a href="https://orcid.org/0009-0009-6052-7713">0009-0009-6052-7713</a></li>
+            <li><span>OpenReview</span><a href="https://openreview.net/profile?id=~Xiaofeng_Shi1">Xiaofeng Shi</a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
 
-
-
-
-<script>
-if (document.querySelectorAll('div.pdf').length) {
-  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
-    document.querySelectorAll('div.pdf').forEach(element => {
-      PDFObject.embed(element.getAttribute('target'), element, {
-        pdfOpenParams: {
-          navpanes: 0,
-          toolbar: 0,
-          statusbar: 0,
-          pagemode: 'thumbs',
-          view: 'FitH'
-        },
-        PDFJS_URL: '/lib/pdf/web/viewer.html',
-        height: element.getAttribute('height') || '500px'
-      });
-    });
-  }, window.PDFObject);
-}
-</script>
-
-
-<script>
-if (document.querySelectorAll('pre.mermaid').length) {
-  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
-    mermaid.initialize({
-      theme: 'forest',
-      logLevel: 3,
-      flowchart: { curve: 'linear' },
-      gantt: { axisFormat: '%m/%d/%Y' },
-      sequence: { actorMargin: 50 }
-    });
-  }, window.mermaid);
-}
-</script>
-
-
-  
-
-  
-      
-<script type="text/x-mathjax-config">
-
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
-      processEscapes: true,
-      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-    },
-    TeX: {
-      equationNumbers: {
-        autoNumber: 'AMS'
-      }
-    }
-  });
-
-  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
-    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
-      if (data.display) {
-        var next = data.script.nextSibling;
-        while (next && next.nodeName.toLowerCase() === '#text') {
-          next = next.nextSibling;
-        }
-        if (next && next.nodeName.toLowerCase() === 'br') {
-          next.parentNode.removeChild(next);
-        }
-      }
-    });
-  });
-
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for (i = 0; i < all.length; i += 1) {
-      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
-      if (element.nodeName.toLowerCase() == 'li') {
-        element = element.parentNode;
-      }
-      element.classList.add('has-jax');
-    }
-  });
-</script>
-<script>
-  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
-    MathJax.Hub.Typeset();
-  }, window.MathJax);
-</script>
-
-    
-
-  
-
-
-<script>
-NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
-  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
-    var GUEST = ['nick', 'mail', 'link'];
-    var guest = 'nick,mail,link';
-    guest = guest.split(',').filter(item => {
-      return GUEST.includes(item);
-    });
-    new Valine({
-      el: '#valine-comments',
-      verify: false,
-      notify: false,
-      appId: 'rBlWbsM2JDda6CTwJlGaUFpI-gzGzoHsz',
-      appKey: 'zJasiQnAqgUwf4kiHhHyXwOP',
-      placeholder: "Leave Your Message and Contact Details",
-      avatar: 'mm',
-      meta: guest,
-      pageSize: '10' || 10,
-      visitor: true,
-      lang: '' || 'zh-cn',
-      path: location.pathname,
-      recordIP: false,
-      serverURLs: ''
-    });
-  }, window.Valine);
-});
-</script>
-
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>© 2018–2026 Xiaofeng Shi</span>
+      <span>Research, open source, and technical notes</span>
+    </div>
+  </footer>
 </body>
 </html>
